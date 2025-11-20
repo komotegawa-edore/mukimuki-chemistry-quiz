@@ -60,18 +60,15 @@ export default async function DashboardPage() {
     <div className="min-h-screen">
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">講師ダッシュボード</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-gray-600">{profile.name}</span>
-            <form action={handleLogout}>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
-              >
-                ログアウト
-              </button>
-            </form>
-          </div>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900">講師ダッシュボード</h1>
+          <form action={handleLogout}>
+            <button
+              type="submit"
+              className="px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap"
+            >
+              ログアウト
+            </button>
+          </form>
         </div>
       </header>
 

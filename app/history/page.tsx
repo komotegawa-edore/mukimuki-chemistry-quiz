@@ -23,10 +23,10 @@ export default async function HistoryPage() {
     <div className="min-h-screen">
       <header className="bg-white shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">テスト履歴</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900">テスト履歴</h1>
           <Link
             href="/"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 whitespace-nowrap"
           >
             ホームに戻る
           </Link>
@@ -39,16 +39,16 @@ export default async function HistoryPage() {
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                     日時
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                     章
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                     スコア
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                     正答率
                   </th>
                 </tr>
@@ -60,14 +60,14 @@ export default async function HistoryPage() {
                   )
                   return (
                     <tr key={result.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 text-sm text-gray-600">
+                      <td className="px-6 py-4 text-sm text-gray-700">
                         {new Date(result.created_at).toLocaleString('ja-JP')}
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium">
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
                         {(result.mukimuki_chapters as { title: string } | null)?.title ||
                           '不明'}
                       </td>
-                      <td className="px-6 py-4 text-sm">
+                      <td className="px-6 py-4 text-sm text-gray-900">
                         {result.score} / {result.total}
                       </td>
                       <td className="px-6 py-4">
@@ -90,7 +90,7 @@ export default async function HistoryPage() {
             </table>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center text-gray-600">
+          <div className="bg-white rounded-lg shadow-md p-8 text-center text-gray-700">
             まだテスト履歴がありません。
           </div>
         )}
