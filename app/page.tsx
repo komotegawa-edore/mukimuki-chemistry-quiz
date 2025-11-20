@@ -51,7 +51,7 @@ export default async function HomePage() {
     <div className="min-h-screen">
       <header className="bg-white shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">無機化学小テスト</h1>
+          <h1 className="text-2xl font-bold">mukimuki</h1>
           <div className="flex items-center gap-4">
             <span className="text-gray-600">{profile.name}</span>
             <Link
@@ -65,7 +65,6 @@ export default async function HomePage() {
                 type="submit"
                 className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
               >
-                ログアウト
               </button>
             </form>
           </div>

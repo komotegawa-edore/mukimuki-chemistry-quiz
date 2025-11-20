@@ -45,7 +45,7 @@ export default function LoginPage() {
       <div className="max-w-md w-full">
         <div className="bg-white rounded-lg shadow-md p-8">
           <h1 className="text-3xl font-bold text-center mb-8">
-            無機化学小テストアプリ
+            MUKIMUKI
           </h1>
 
           <form onSubmit={handleLogin} className="space-y-6">
