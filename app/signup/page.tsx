@@ -27,6 +27,7 @@ export default function SignupPage() {
         email,
         password,
         options: {
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/`,
           data: {
             name,
             role,
@@ -120,7 +121,7 @@ export default function SignupPage() {
                     name="role"
                     value="student"
                     checked={role === 'student'}
-                    onChange={(e) => setRole('student')}
+                    onChange={() => setRole('student')}
                     className="mr-2"
                   />
                   生徒
@@ -131,7 +132,7 @@ export default function SignupPage() {
                     name="role"
                     value="teacher"
                     checked={role === 'teacher'}
-                    onChange={(e) => setRole('teacher')}
+                    onChange={() => setRole('teacher')}
                     className="mr-2"
                   />
                   講師

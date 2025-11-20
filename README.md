@@ -73,7 +73,10 @@ cp .env.example .env.local
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your-project-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
+
+**注**: `NEXT_PUBLIC_SITE_URL` はメール認証時のリダイレクトURLです。ローカル開発では `http://localhost:3000`、本番環境ではVercelのURLを設定します。
 
 ### 4. データベースのセットアップ
 
@@ -223,11 +226,39 @@ npx supabase gen types typescript --project-id your-project-id > lib/types/datab
 npm run build
 ```
 
-### 本番環境へのデプロイ
+### 本番環境へのデプロイ（Vercel）
 
-Vercel などでデプロイする際は、環境変数を設定してください：
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+#### 1. Vercelへのデプロイ
+
+1. Vercelにプロジェクトをインポート
+2. 環境変数を設定（Settings → Environment Variables）：
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SITE_URL=https://your-app.vercel.app
+```
+
+**重要**: `NEXT_PUBLIC_SITE_URL` には実際のVercel URLを設定してください。これはメール認証時のリダイレクトURLとして使用されます。
+
+#### 2. Supabaseでのリダイレクト許可設定
+
+メール認証が正しく動作するように、Supabaseで本番URLを許可する必要があります：
+
+1. Supabase Dashboard → **Authentication** → **URL Configuration**
+2. **Site URL** に本番URL（例: `https://your-app.vercel.app`）を設定
+3. **Redirect URLs** に以下を追加：
+   - `https://your-app.vercel.app/**`
+   - `http://localhost:3000/**` （開発用）
+4. 保存
+
+これにより、メール認証リンクをクリックした際に本番環境の正しいURLにリダイレクトされます。
+
+#### 3. デプロイ後の確認
+
+- サインアップページでアカウント作成
+- メール認証リンクが本番URLを指していることを確認
+- ログイン後、正しくリダイレクトされることを確認
 
 ## 📄 ライセンス
 
