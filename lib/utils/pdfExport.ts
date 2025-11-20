@@ -46,29 +46,32 @@ function generateHTMLContent(
         { label: 'D', text: question.choice_d },
       ]
 
-      const choicesHTML = choices
-        .map((choice) => {
-          const isCorrect = includeAnswers && choice.label === question.correct_answer
-          return `
-            <div style="display: flex; margin-bottom: 2px; ${isCorrect ? 'font-weight: bold; color: #059669;' : ''}">
-              <span style="min-width: 24px; font-weight: bold;">${choice.label}.</span>
-              <span style="flex: 1;">${choice.text}</span>
-              ${isCorrect ? '<span style="margin-left: 6px;">●</span>' : ''}
-            </div>
-          `
-        })
-        .join('')
+      const choicesHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px;">
+          ${choices
+            .map((choice) => {
+              const isCorrect = includeAnswers && choice.label === question.correct_answer
+              return `
+                <div style="display: flex; ${isCorrect ? 'font-weight: bold; color: #059669;' : ''}">
+                  <span style="min-width: 24px; font-weight: bold;">${choice.label}.</span>
+                  <span style="flex: 1;">${choice.text}${isCorrect ? ' ●' : ''}</span>
+                </div>
+              `
+            })
+            .join('')}
+        </div>
+      `
 
       const answerLine = !includeAnswers
         ? '<div style="margin-top: 4px; padding-top: 3px; border-top: 1px solid #e5e7eb;"><span style="font-weight: bold; font-size: 8pt;">解答:</span> __________</div>'
         : ''
 
       return `
-        <div style="margin-bottom: 10px; page-break-inside: avoid;">
-          <div style="background-color: #428bca; color: white; padding: 3px 8px; font-weight: bold; margin-bottom: 3px; font-size: 9pt;">
+        <div style="margin-bottom: 14px; page-break-inside: avoid;">
+          <div style="background-color: #428bca; color: white; padding: 4px 8px; font-weight: bold; margin-bottom: 4px; font-size: 10pt;">
             問題 ${index + 1}
           </div>
-          <div style="padding: 4px 8px; margin-bottom: 4px; border-left: 2px solid #428bca; background-color: #f9fafb;">
+          <div style="padding: 5px 8px; margin-bottom: 5px; border-left: 2px solid #428bca; background-color: #f9fafb;">
             ${question.question_text}
           </div>
           <div style="padding: 0 8px;">
@@ -93,24 +96,24 @@ function generateHTMLContent(
         }
         body {
           font-family: 'Noto Sans JP', 'Yu Gothic', 'Meiryo', sans-serif;
-          font-size: 9pt;
-          line-height: 1.4;
+          font-size: 9.5pt;
+          line-height: 1.5;
           color: #1f2937;
           padding: 12px;
         }
         .header {
-          margin-bottom: 12px;
+          margin-bottom: 14px;
           border-bottom: 2px solid #428bca;
           padding-bottom: 8px;
         }
         .title {
-          font-size: 14pt;
+          font-size: 15pt;
           font-weight: bold;
           margin-bottom: 4px;
           color: #1f2937;
         }
         .meta {
-          font-size: 8pt;
+          font-size: 9pt;
           color: #6b7280;
         }
       </style>
