@@ -103,7 +103,10 @@ export default function LoginPage() {
             </div>
 
             <button
-              onClick={() => window.location.href = '/api/auth/line'}
+              onClick={() => {
+                console.log('LINEログインボタンがクリックされました')
+                window.location.href = '/api/auth/line'
+              }}
               disabled={isLoading}
               className="mt-4 w-full py-3 bg-[#06C755] text-white rounded-lg font-semibold hover:bg-[#05b34b] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >

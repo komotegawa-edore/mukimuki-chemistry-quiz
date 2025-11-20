@@ -3,11 +3,24 @@ import { cookies } from 'next/headers'
 
 export async function GET(request: NextRequest) {
   const channelId = process.env.LINE_CHANNEL_ID
-  const redirectUri = `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback/line`
+  const channelSecret = process.env.LINE_CHANNEL_SECRET
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  const redirectUri = `${siteUrl}/api/auth/callback/line`
 
-  if (!channelId) {
+  console.log('LINE Auth - Channel ID:', channelId ? 'Set' : 'Not Set')
+  console.log('LINE Auth - Channel Secret:', channelSecret ? 'Set' : 'Not Set')
+  console.log('LINE Auth - Site URL:', siteUrl)
+
+  if (!channelId || !channelSecret) {
+    console.error('LINE環境変数が設定されていません')
     return NextResponse.json(
-      { error: 'LINE設定が不完全です' },
+      {
+        error: 'LINE設定が不完全です',
+        details: {
+          channelId: !channelId ? '未設定' : '設定済み',
+          channelSecret: !channelSecret ? '未設定' : '設定済み',
+        }
+      },
       { status: 500 }
     )
   }
