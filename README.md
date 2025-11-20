@@ -8,13 +8,21 @@
 - 33章分の無機化学クイズに挑戦
 - 4択形式の問題
 - 結果の自動保存
-- 履歴閲覧
+- 履歴閲覧（モバイル対応）
 - 章ごとの正答率表示
 
 ### 講師機能
 - 問題の追加・編集・削除（CRUD）
+- CSV一括インポート
+- PDF印刷機能（テスト用・解答付き）
 - 生徒一覧と結果閲覧
 - 章ごとの定着率マトリックス表示
+- **認証キーによる講師アカウント保護**
+
+### セキュリティ機能
+- 講師アカウント作成時の認証キー必須
+- Row Level Security (RLS) によるデータ保護
+- ロールベースのアクセス制御
 
 ## 🏛️ 技術スタック
 
@@ -74,9 +82,12 @@ cp .env.example .env.local
 NEXT_PUBLIC_SUPABASE_URL=your-project-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+TEACHER_REGISTRATION_KEY=your-secret-teacher-key
 ```
 
-**注**: `NEXT_PUBLIC_SITE_URL` はメール認証時のリダイレクトURLです。ローカル開発では `http://localhost:3000`、本番環境ではVercelのURLを設定します。
+**環境変数の説明**:
+- `NEXT_PUBLIC_SITE_URL`: メール認証時のリダイレクトURL（ローカル: `http://localhost:3000`、本番: VercelのURL）
+- `TEACHER_REGISTRATION_KEY`: 講師アカウント作成時に必要な認証キー（**本番環境では必ず変更してください**）
 
 ### 4. データベースのセットアップ
 
@@ -161,7 +172,9 @@ http://localhost:3000 を開く
 
 ### 生徒として
 
-1. 生徒アカウントでログイン
+1. 新規登録またはログイン
+   - 役割で「生徒」を選択
+   - メールアドレスとパスワードで登録
 2. 章一覧から挑戦したい章を選択
 3. 4択問題に順番に回答
 4. 結果を確認
@@ -169,10 +182,17 @@ http://localhost:3000 を開く
 
 ### 講師として
 
-1. 講師アカウントでログイン
+1. 新規登録（**講師用認証キーが必要**）
+   - 役割で「講師」を選択
+   - 講師用認証キーを入力
+   - メールアドレスとパスワードで登録
 2. ダッシュボードで生徒の定着率を確認
-3. 章カードをクリックして問題管理ページへ
-4. 問題の追加・編集・削除が可能
+3. CSV一括インポートで問題を追加
+4. 章カードをクリックして問題管理ページへ
+5. 問題の追加・編集・削除が可能
+6. PDF印刷機能でテスト問題を出力
+
+**講師用認証キーの取得**: 管理者にお問い合わせください
 
 ## 🗄️ データベーススキーマ
 
@@ -237,9 +257,12 @@ npm run build
 NEXT_PUBLIC_SUPABASE_URL=your-project-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 NEXT_PUBLIC_SITE_URL=https://your-app.vercel.app
+TEACHER_REGISTRATION_KEY=your-production-secret-key
 ```
 
-**重要**: `NEXT_PUBLIC_SITE_URL` には実際のVercel URLを設定してください。これはメール認証時のリダイレクトURLとして使用されます。
+**重要**:
+- `NEXT_PUBLIC_SITE_URL` には実際のVercel URLを設定してください
+- `TEACHER_REGISTRATION_KEY` には強力で推測困難なキーを設定してください（講師アカウント作成時の認証に使用）
 
 #### 2. Supabaseでのリダイレクト許可設定
 
@@ -259,6 +282,41 @@ NEXT_PUBLIC_SITE_URL=https://your-app.vercel.app
 - サインアップページでアカウント作成
 - メール認証リンクが本番URLを指していることを確認
 - ログイン後、正しくリダイレクトされることを確認
+
+## 🔐 セキュリティ設定
+
+### 講師アカウント保護
+
+講師アカウントは認証キーで保護されています。
+
+#### キーの変更方法
+
+1. `.env.local`（ローカル）または Vercel の環境変数（本番）で `TEACHER_REGISTRATION_KEY` を変更
+2. 強力なキーを使用してください（例: 16文字以上のランダムな文字列）
+3. キーを安全に管理し、関係者にのみ共有してください
+
+#### 推奨されるキーの生成方法
+
+```bash
+# ランダムなキーを生成
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+## 📱 ソーシャルログイン（オプション）
+
+現在、メールアドレスとパスワードによるログインをサポートしています。
+
+LINEログインやその他のソーシャルログインを追加したい場合は、`docs/LINE_LOGIN_SETUP.md` を参照してください。
+
+SupabaseがネイティブにサポートしているOAuthプロバイダー：
+- Google
+- GitHub
+- Facebook
+- Twitter/X
+- Discord
+- Azure
+
+詳細な実装手順は `docs/LINE_LOGIN_SETUP.md` をご覧ください。
 
 ## 📄 ライセンス
 
