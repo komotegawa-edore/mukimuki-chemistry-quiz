@@ -1,15 +1,5 @@
-import jsPDF from 'jspdf'
-import 'jspdf-autotable'
+import html2pdf from 'html2pdf.js'
 import { Question } from '@/lib/types/database'
-
-// jspdf-autotableの型拡張
-declare module 'jspdf' {
-  interface jsPDF {
-    lastAutoTable: {
-      finalY: number
-    }
-  }
-}
 
 export interface ExportOptions {
   includeAnswers?: boolean
@@ -22,118 +12,120 @@ export function exportChapterToPDF(
   questions: Question[],
   options: ExportOptions = {}
 ) {
-  const {
-    includeAnswers = true,
-    fontSize = 10,
-    orientation = 'portrait',
-  } = options
+  const { includeAnswers = true, orientation = 'portrait' } = options
 
-  // PDFドキュメントを作成
-  const doc = new jsPDF({
-    orientation,
-    unit: 'mm',
-    format: 'a4',
-  })
+  // HTMLコンテンツを生成
+  const htmlContent = generateHTMLContent(chapterTitle, questions, includeAnswers)
 
-  const pageWidth = doc.internal.pageSize.getWidth()
-  const margin = 15
+  // html2pdfのオプション
+  const opt = {
+    margin: [10, 10, 10, 10] as [number, number, number, number],
+    filename: `${chapterTitle.replace(/[\/\\?%*:|"<>]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`,
+    image: { type: 'jpeg' as const, quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation },
+  }
 
-  // タイトル
-  doc.setFontSize(16)
-  doc.text(chapterTitle, margin, 20)
+  // HTMLをPDFに変換してダウンロード
+  html2pdf().set(opt).from(htmlContent).save()
+}
 
-  // サブタイトル
-  doc.setFontSize(10)
-  doc.text(`問題数: ${questions.length}`, margin, 28)
-  doc.text(`作成日: ${new Date().toLocaleDateString('ja-JP')}`, margin, 33)
+function generateHTMLContent(
+  chapterTitle: string,
+  questions: Question[],
+  includeAnswers: boolean
+): string {
+  const now = new Date().toLocaleDateString('ja-JP')
 
-  let startY = 40
+  const questionsHTML = questions
+    .map((question, index) => {
+      const choices = [
+        { label: 'A', text: question.choice_a },
+        { label: 'B', text: question.choice_b },
+        { label: 'C', text: question.choice_c },
+        { label: 'D', text: question.choice_d },
+      ]
 
-  // 各問題を出力
-  questions.forEach((question, index) => {
-    // 問題番号と問題文をテーブルで表示
-    ;(doc as any).autoTable({
-      startY,
-      head: [[`問題 ${index + 1}`]],
-      body: [[question.question_text]],
-      theme: 'plain',
-      headStyles: {
-        fillColor: [66, 139, 202],
-        textColor: [255, 255, 255],
-        fontSize: 12,
-        fontStyle: 'bold',
-      },
-      bodyStyles: {
-        fontSize: fontSize,
-        cellPadding: 5,
-      },
-      margin: { left: margin, right: margin },
-      tableWidth: pageWidth - margin * 2,
+      const choicesHTML = choices
+        .map((choice) => {
+          const isCorrect = includeAnswers && choice.label === question.correct_answer
+          return `
+            <div style="display: flex; margin-bottom: 8px; ${isCorrect ? 'font-weight: bold; color: #059669;' : ''}">
+              <span style="min-width: 30px; font-weight: bold;">${choice.label}.</span>
+              <span style="flex: 1;">${choice.text}</span>
+              ${isCorrect ? '<span style="margin-left: 10px;">●</span>' : ''}
+            </div>
+          `
+        })
+        .join('')
+
+      const answerLine = !includeAnswers
+        ? '<div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #e5e7eb;"><span style="font-weight: bold;">解答:</span> __________</div>'
+        : ''
+
+      return `
+        <div style="margin-bottom: 24px; page-break-inside: avoid;">
+          <div style="background-color: #428bca; color: white; padding: 8px 12px; font-weight: bold; margin-bottom: 8px; border-radius: 4px;">
+            問題 ${index + 1}
+          </div>
+          <div style="padding: 8px 12px; margin-bottom: 12px; border-left: 3px solid #428bca; background-color: #f9fafb;">
+            ${question.question_text}
+          </div>
+          <div style="padding: 0 12px;">
+            ${choicesHTML}
+          </div>
+          ${answerLine}
+        </div>
+      `
     })
+    .join('')
 
-    // 選択肢をテーブルで表示
-    const choicesData = [
-      ['A', question.choice_a, question.correct_answer === 'A' ? '●' : ''],
-      ['B', question.choice_b, question.correct_answer === 'B' ? '●' : ''],
-      ['C', question.choice_c, question.correct_answer === 'C' ? '●' : ''],
-      ['D', question.choice_d, question.correct_answer === 'D' ? '●' : ''],
-    ]
-
-    const columns = includeAnswers
-      ? ['選択肢', '内容', '正解']
-      : ['選択肢', '内容']
-
-    const bodyData = includeAnswers
-      ? choicesData
-      : choicesData.map((row) => [row[0], row[1]])
-
-    ;(doc as any).autoTable({
-      startY: doc.lastAutoTable.finalY + 2,
-      head: [columns],
-      body: bodyData,
-      theme: 'grid',
-      headStyles: {
-        fillColor: [240, 240, 240],
-        textColor: [0, 0, 0],
-        fontSize: fontSize,
-        fontStyle: 'bold',
-      },
-      bodyStyles: {
-        fontSize: fontSize,
-        cellPadding: 4,
-      },
-      columnStyles: {
-        0: { cellWidth: 20, halign: 'center', fontStyle: 'bold' },
-        1: { cellWidth: includeAnswers ? 130 : 155 },
-        ...(includeAnswers && {
-          2: {
-            cellWidth: 20,
-            halign: 'center',
-            fontStyle: 'bold',
-            textColor: [0, 128, 0],
-          },
-        }),
-      },
-      margin: { left: margin, right: margin },
-      tableWidth: pageWidth - margin * 2,
-    })
-
-    // 解答欄（解答を含めない場合）
-    if (!includeAnswers) {
-      const currentY = doc.lastAutoTable.finalY
-      doc.setFontSize(fontSize)
-      doc.text('解答:', margin, currentY + 8)
-      doc.setDrawColor(0, 0, 0)
-      doc.line(margin + 15, currentY + 8, margin + 40, currentY + 8)
-      startY = currentY + 15
-    } else {
-      startY = doc.lastAutoTable.finalY + 10
-    }
-  })
-
-  // PDFを保存
-  const fileName = `${chapterTitle.replace(/[\/\\?%*:|"<>]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
-  doc.save(fileName)
+  return `
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+      <meta charset="UTF-8">
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        body {
+          font-family: 'Noto Sans JP', 'Yu Gothic', 'Meiryo', sans-serif;
+          font-size: 11pt;
+          line-height: 1.6;
+          color: #1f2937;
+          padding: 20px;
+        }
+        .header {
+          margin-bottom: 30px;
+          border-bottom: 2px solid #428bca;
+          padding-bottom: 15px;
+        }
+        .title {
+          font-size: 20pt;
+          font-weight: bold;
+          margin-bottom: 8px;
+          color: #1f2937;
+        }
+        .meta {
+          font-size: 10pt;
+          color: #6b7280;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="title">${chapterTitle}</div>
+        <div class="meta">
+          問題数: ${questions.length} | 作成日: ${now}
+        </div>
+      </div>
+      ${questionsHTML}
+    </body>
+    </html>
+  `
 }
 
 // テスト用PDF（解答なし）を生成する関数
