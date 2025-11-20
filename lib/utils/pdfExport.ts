@@ -19,7 +19,7 @@ export function exportChapterToPDF(
 
   // html2pdfのオプション
   const opt = {
-    margin: [10, 10, 10, 10] as [number, number, number, number],
+    margin: [8, 8, 8, 8] as [number, number, number, number],
     filename: `${chapterTitle.replace(/[\/\\?%*:|"<>]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`,
     image: { type: 'jpeg' as const, quality: 0.98 },
     html2canvas: { scale: 2, useCORS: true },
@@ -50,28 +50,28 @@ function generateHTMLContent(
         .map((choice) => {
           const isCorrect = includeAnswers && choice.label === question.correct_answer
           return `
-            <div style="display: flex; margin-bottom: 8px; ${isCorrect ? 'font-weight: bold; color: #059669;' : ''}">
-              <span style="min-width: 30px; font-weight: bold;">${choice.label}.</span>
+            <div style="display: flex; margin-bottom: 2px; ${isCorrect ? 'font-weight: bold; color: #059669;' : ''}">
+              <span style="min-width: 24px; font-weight: bold;">${choice.label}.</span>
               <span style="flex: 1;">${choice.text}</span>
-              ${isCorrect ? '<span style="margin-left: 10px;">●</span>' : ''}
+              ${isCorrect ? '<span style="margin-left: 6px;">●</span>' : ''}
             </div>
           `
         })
         .join('')
 
       const answerLine = !includeAnswers
-        ? '<div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #e5e7eb;"><span style="font-weight: bold;">解答:</span> __________</div>'
+        ? '<div style="margin-top: 4px; padding-top: 3px; border-top: 1px solid #e5e7eb;"><span style="font-weight: bold; font-size: 8pt;">解答:</span> __________</div>'
         : ''
 
       return `
-        <div style="margin-bottom: 24px; page-break-inside: avoid;">
-          <div style="background-color: #428bca; color: white; padding: 8px 12px; font-weight: bold; margin-bottom: 8px; border-radius: 4px;">
+        <div style="margin-bottom: 10px; page-break-inside: avoid;">
+          <div style="background-color: #428bca; color: white; padding: 3px 8px; font-weight: bold; margin-bottom: 3px; font-size: 9pt;">
             問題 ${index + 1}
           </div>
-          <div style="padding: 8px 12px; margin-bottom: 12px; border-left: 3px solid #428bca; background-color: #f9fafb;">
+          <div style="padding: 4px 8px; margin-bottom: 4px; border-left: 2px solid #428bca; background-color: #f9fafb;">
             ${question.question_text}
           </div>
-          <div style="padding: 0 12px;">
+          <div style="padding: 0 8px;">
             ${choicesHTML}
           </div>
           ${answerLine}
@@ -93,24 +93,24 @@ function generateHTMLContent(
         }
         body {
           font-family: 'Noto Sans JP', 'Yu Gothic', 'Meiryo', sans-serif;
-          font-size: 11pt;
-          line-height: 1.6;
+          font-size: 9pt;
+          line-height: 1.4;
           color: #1f2937;
-          padding: 20px;
+          padding: 12px;
         }
         .header {
-          margin-bottom: 30px;
+          margin-bottom: 12px;
           border-bottom: 2px solid #428bca;
-          padding-bottom: 15px;
+          padding-bottom: 8px;
         }
         .title {
-          font-size: 20pt;
+          font-size: 14pt;
           font-weight: bold;
-          margin-bottom: 8px;
+          margin-bottom: 4px;
           color: #1f2937;
         }
         .meta {
-          font-size: 10pt;
+          font-size: 8pt;
           color: #6b7280;
         }
       </style>
