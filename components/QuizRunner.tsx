@@ -190,7 +190,7 @@ export default function QuizRunner({
               className={`px-6 py-3 rounded-lg font-semibold ${
                 selectedAnswer
                   ? 'bg-blue-600 text-white hover:bg-blue-700'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-gray-300 text-black cursor-not-allowed'
               }`}
             >
               回答する

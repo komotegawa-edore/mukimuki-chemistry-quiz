@@ -130,7 +130,7 @@ export default async function DashboardPage() {
                         if (!result) {
                           return (
                             <td key={chapter.id} className="px-2 py-3 text-center">
-                              <span className="text-gray-400">-</span>
+                              <span className="text-black">-</span>
                             </td>
                           )
                         }
