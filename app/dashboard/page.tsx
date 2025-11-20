@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
+import CSVImport from '@/components/CSVImport'
 
 export default async function DashboardPage() {
   const profile = await getCurrentProfile()
@@ -75,6 +76,10 @@ export default async function DashboardPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
+        <div className="mb-8">
+          <CSVImport />
+        </div>
+
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4">章管理</h2>
           <div className="bg-white rounded-lg shadow-md p-6">
