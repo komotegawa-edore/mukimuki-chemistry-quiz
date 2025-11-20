@@ -302,11 +302,48 @@ TEACHER_REGISTRATION_KEY=your-production-secret-key
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-## 📱 ソーシャルログイン（オプション）
+## 📱 LINEログイン
 
-現在、メールアドレスとパスワードによるログインをサポートしています。
+LINEログイン機能が実装済みです。以下の手順で設定してください。
 
-LINEログインやその他のソーシャルログインを追加したい場合は、`docs/LINE_LOGIN_SETUP.md` を参照してください。
+### LINEログインの設定
+
+#### 1. LINE Developersでアプリを登録
+
+1. [LINE Developers Console](https://developers.line.biz/console/) にアクセス
+2. 新規プロバイダーを作成
+3. 新規チャネルを作成（LINE Login）
+4. チャネル基本設定で以下を取得：
+   - **Channel ID**
+   - **Channel Secret**
+5. コールバックURLを設定：
+   - 開発: `http://localhost:3000/api/auth/callback/line`
+   - 本番: `https://your-app.vercel.app/api/auth/callback/line`
+
+#### 2. 環境変数の設定
+
+`.env.local` に以下を追加：
+
+```env
+LINE_CHANNEL_ID=your-line-channel-id
+LINE_CHANNEL_SECRET=your-line-channel-secret
+```
+
+Vercel（本番環境）でも同様に環境変数を設定してください。
+
+#### 3. 動作確認
+
+1. ログインページまたはサインアップページにアクセス
+2. 「LINEでログイン」または「LINEで登録」ボタンをクリック
+3. LINE認証画面でログイン
+4. 許可すると自動的にアプリにリダイレクトされます
+
+**注意事項**:
+- LINEログインで登録したユーザーは自動的に**生徒アカウント**として作成されます
+- 講師アカウントが必要な場合は、メールアドレスでの登録と講師用認証キーが必要です
+- LINEユーザーIDは内部的に管理され、次回以降のログインで同じアカウントとして認識されます
+
+### その他のソーシャルログイン（オプション）
 
 SupabaseがネイティブにサポートしているOAuthプロバイダー：
 - Google
