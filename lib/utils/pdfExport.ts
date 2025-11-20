@@ -47,34 +47,26 @@ function generateHTMLContent(
       ]
 
       const choicesHTML = `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px;">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
           ${choices
             .map((choice) => {
               const isCorrect = includeAnswers && choice.label === question.correct_answer
-              return `
-                <div style="display: flex; ${isCorrect ? 'font-weight: bold; color: #059669;' : ''}">
-                  <span style="min-width: 24px; font-weight: bold;">${choice.label}.</span>
-                  <span style="flex: 1;">${choice.text}${isCorrect ? ' ●' : ''}</span>
-                </div>
-              `
+              return `<span style="${isCorrect ? 'font-weight: bold; color: #059669;' : ''}"><strong>${choice.label}.</strong> ${choice.text}${isCorrect ? ' ●' : ''}</span>`
             })
             .join('')}
         </div>
       `
 
       const answerLine = !includeAnswers
-        ? '<div style="margin-top: 4px; padding-top: 3px; border-top: 1px solid #e5e7eb;"><span style="font-weight: bold; font-size: 8pt;">解答:</span> __________</div>'
+        ? '<div style="margin-top: 6px;"><span style="font-weight: bold;">解答:</span> __________</div>'
         : ''
 
       return `
-        <div style="margin-bottom: 14px; page-break-inside: avoid;">
-          <div style="background-color: #428bca; color: white; padding: 4px 8px; font-weight: bold; margin-bottom: 4px; font-size: 10pt;">
-            問題 ${index + 1}
+        <div style="margin-bottom: 12px; page-break-inside: avoid;">
+          <div style="font-weight: bold; margin-bottom: 4px;">
+            問題 ${index + 1}： ${question.question_text}
           </div>
-          <div style="padding: 5px 8px; margin-bottom: 5px; border-left: 2px solid #428bca; background-color: #f9fafb;">
-            ${question.question_text}
-          </div>
-          <div style="padding: 0 8px;">
+          <div style="padding-left: 12px;">
             ${choicesHTML}
           </div>
           ${answerLine}
