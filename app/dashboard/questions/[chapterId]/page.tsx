@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import QuestionEditor from '@/components/QuestionEditor'
 import { Question } from '@/lib/types/database'
+import { exportChapterTestToPDF, exportChapterWithAnswersToPDF } from '@/lib/utils/pdfExport'
 
 export default function QuestionsManagePage({
   params,
@@ -99,25 +100,59 @@ export default function QuestionsManagePage({
     )
   }
 
+  const handleExportTestPDF = () => {
+    if (questions.length === 0) {
+      alert('エクスポートする問題がありません')
+      return
+    }
+    exportChapterTestToPDF(chapterTitle, questions)
+  }
+
+  const handleExportAnswerPDF = () => {
+    if (questions.length === 0) {
+      alert('エクスポートする問題がありません')
+      return
+    }
+    exportChapterWithAnswersToPDF(chapterTitle, questions)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div>
-            <button
-              onClick={() => router.push('/dashboard')}
-              className="text-blue-600 hover:underline mb-2 block"
-            >
-              ← ダッシュボードに戻る
-            </button>
-            <h1 className="text-2xl font-bold">{chapterTitle}</h1>
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <button
+                onClick={() => router.push('/dashboard')}
+                className="text-blue-600 hover:underline mb-2 block"
+              >
+                ← ダッシュボードに戻る
+              </button>
+              <h1 className="text-2xl font-bold">{chapterTitle}</h1>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleExportTestPDF}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
+                disabled={questions.length === 0}
+              >
+                テスト用PDF
+              </button>
+              <button
+                onClick={handleExportAnswerPDF}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm"
+                disabled={questions.length === 0}
+              >
+                解答付きPDF
+              </button>
+              <button
+                onClick={() => setIsCreating(true)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                新規問題を追加
+              </button>
+            </div>
           </div>
-          <button
-            onClick={() => setIsCreating(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            新規問題を追加
-          </button>
         </div>
       </header>
 
