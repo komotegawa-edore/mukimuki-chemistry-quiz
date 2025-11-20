@@ -53,13 +53,13 @@ export default function QuestionEditor({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6">
+          <h2 className="text-2xl font-bold mb-6 text-black">
             {question ? '問題を編集' : '新しい問題を追加'}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold mb-2">問題文</label>
+              <label className="block text-sm font-semibold mb-2 text-black">問題文</label>
               <textarea
                 name="question_text"
                 value={formData.question_text}
@@ -72,7 +72,7 @@ export default function QuestionEditor({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">選択肢 A</label>
+              <label className="block text-sm font-semibold mb-2 text-black">選択肢 A</label>
               <input
                 type="text"
                 name="choice_a"
@@ -85,7 +85,7 @@ export default function QuestionEditor({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">選択肢 B</label>
+              <label className="block text-sm font-semibold mb-2 text-black">選択肢 B</label>
               <input
                 type="text"
                 name="choice_b"
@@ -98,7 +98,7 @@ export default function QuestionEditor({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">選択肢 C</label>
+              <label className="block text-sm font-semibold mb-2 text-black">選択肢 C</label>
               <input
                 type="text"
                 name="choice_c"
@@ -111,7 +111,7 @@ export default function QuestionEditor({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">選択肢 D</label>
+              <label className="block text-sm font-semibold mb-2 text-black">選択肢 D</label>
               <input
                 type="text"
                 name="choice_d"
@@ -124,7 +124,7 @@ export default function QuestionEditor({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">正解</label>
+              <label className="block text-sm font-semibold mb-2 text-black">正解</label>
               <select
                 name="correct_answer"
                 value={formData.correct_answer}
@@ -140,7 +140,7 @@ export default function QuestionEditor({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">解説（任意）</label>
+              <label className="block text-sm font-semibold mb-2 text-black">解説（任意）</label>
               <textarea
                 name="explanation"
                 value={formData.explanation}
@@ -156,7 +156,7 @@ export default function QuestionEditor({
                 type="button"
                 onClick={onCancel}
                 disabled={isSaving}
-                className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-black"
               >
                 キャンセル
               </button>

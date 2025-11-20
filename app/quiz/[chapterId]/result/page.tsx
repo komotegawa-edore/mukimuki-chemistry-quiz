@@ -19,7 +19,7 @@ export default function ResultPage({
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <h1 className="text-3xl font-bold mb-6">テスト完了！</h1>
+          <h1 className="text-3xl font-bold mb-6 text-black">テスト完了！</h1>
 
           <div className="mb-8">
             <div
@@ -59,7 +59,7 @@ export default function ResultPage({
             </button>
             <Link
               href="/"
-              className="block w-full py-3 bg-gray-200 rounded-lg font-semibold hover:bg-gray-300"
+              className="block w-full py-3 bg-gray-200 rounded-lg font-semibold hover:bg-gray-300 text-black"
             >
               章一覧に戻る
             </Link>

@@ -128,7 +128,7 @@ export default function QuestionsManagePage({
               >
                 ← ダッシュボードに戻る
               </button>
-              <h1 className="text-2xl font-bold">{chapterTitle}</h1>
+              <h1 className="text-2xl font-bold text-black">{chapterTitle}</h1>
             </div>
             <div className="flex gap-2">
               <button
@@ -162,7 +162,7 @@ export default function QuestionsManagePage({
             {questions.map((question, index) => (
               <div key={question.id} className="bg-white rounded-lg shadow-md p-6">
                 <div className="flex justify-between items-start mb-4">
-                  <h3 className="font-semibold text-lg">
+                  <h3 className="font-semibold text-lg text-black">
                     問題 {index + 1}: {question.question_text}
                   </h3>
                   <div className="flex gap-2">
@@ -181,7 +181,7 @@ export default function QuestionsManagePage({
                   </div>
                 </div>
 
-                <div className="space-y-2 text-sm">
+                <div className="space-y-2 text-sm text-black">
                   <div className="flex gap-2">
                     <span className="font-semibold">A:</span>
                     <span>{question.choice_a}</span>

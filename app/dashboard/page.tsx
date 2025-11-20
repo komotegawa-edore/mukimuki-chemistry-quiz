@@ -64,7 +64,7 @@ export default async function DashboardPage() {
           <form action={handleLogout}>
             <button
               type="submit"
-              className="px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap"
+              className="px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap text-black"
             >
               ログアウト
             </button>
@@ -78,7 +78,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">章管理</h2>
+          <h2 className="text-xl font-semibold mb-4 text-black">章管理</h2>
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {chapters?.map((chapter) => (
@@ -88,7 +88,7 @@ export default async function DashboardPage() {
                   className="p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all"
                 >
                   <div className="flex justify-between items-start">
-                    <h3 className="font-semibold">{chapter.title}</h3>
+                    <h3 className="font-semibold text-black">{chapter.title}</h3>
                     <span className="text-sm text-black">#{chapter.order_num}</span>
                   </div>
                   <p className="text-sm text-blue-600 mt-2">問題を管理 →</p>
@@ -99,7 +99,7 @@ export default async function DashboardPage() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-4">生徒の定着率</h2>
+          <h2 className="text-xl font-semibold mb-4 text-black">生徒の定着率</h2>
           <div className="bg-white rounded-lg shadow-md overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-50">
@@ -122,7 +122,7 @@ export default async function DashboardPage() {
                   const userResults = studentResults.get(student.id)
                   return (
                     <tr key={student.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 font-medium sticky left-0 bg-white">
+                      <td className="px-4 py-3 font-medium sticky left-0 bg-white text-black">
                         {student.name}
                       </td>
                       {chapters?.slice(0, 10).map((chapter) => {

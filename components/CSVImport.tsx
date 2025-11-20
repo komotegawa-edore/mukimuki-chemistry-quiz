@@ -103,7 +103,7 @@ export default function CSVImport() {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-lg font-semibold mb-4">CSV一括インポート</h3>
+      <h3 className="text-lg font-semibold mb-4 text-black">CSV一括インポート</h3>
 
       <div className="mb-4">
         <label className="block text-sm font-medium text-black mb-2">
@@ -129,19 +129,19 @@ export default function CSVImport() {
 
       {preview.length > 0 && (
         <div className="mb-4">
-          <h4 className="text-sm font-semibold mb-2">プレビュー（最初の5行）</h4>
+          <h4 className="text-sm font-semibold mb-2 text-black">プレビュー（最初の5行）</h4>
           <div className="overflow-x-auto border border-gray-200 rounded-lg">
-            <table className="min-w-full text-xs">
+            <table className="min-w-full text-xs text-black">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-2 py-2 text-left">章ID</th>
-                  <th className="px-2 py-2 text-left">問題文</th>
-                  <th className="px-2 py-2 text-left">選択肢A</th>
-                  <th className="px-2 py-2 text-left">選択肢B</th>
-                  <th className="px-2 py-2 text-left">選択肢C</th>
-                  <th className="px-2 py-2 text-left">選択肢D</th>
-                  <th className="px-2 py-2 text-left">正解</th>
-                  <th className="px-2 py-2 text-left">解説</th>
+                  <th className="px-2 py-2 text-left text-black">章ID</th>
+                  <th className="px-2 py-2 text-left text-black">問題文</th>
+                  <th className="px-2 py-2 text-left text-black">選択肢A</th>
+                  <th className="px-2 py-2 text-left text-black">選択肢B</th>
+                  <th className="px-2 py-2 text-left text-black">選択肢C</th>
+                  <th className="px-2 py-2 text-left text-black">選択肢D</th>
+                  <th className="px-2 py-2 text-left text-black">正解</th>
+                  <th className="px-2 py-2 text-left text-black">解説</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -210,7 +210,7 @@ export default function CSVImport() {
               setError(null)
             }}
             disabled={isImporting}
-            className="px-4 py-2 bg-gray-200 text-black rounded-lg hover:bg-gray-300 disabled:opacity-50"
+            className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50 text-black"
           >
             キャンセル
           </button>

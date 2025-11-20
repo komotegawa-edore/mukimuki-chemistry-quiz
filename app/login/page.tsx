@@ -44,13 +44,13 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-center mb-8">
+          <h1 className="text-3xl font-bold text-center mb-8 text-black">
             MUKIMUKI
           </h1>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold mb-2">
+              <label className="block text-sm font-semibold mb-2 text-black">
                 メールアドレス
               </label>
               <input
@@ -64,7 +64,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">
+              <label className="block text-sm font-semibold mb-2 text-black">
                 パスワード
               </label>
               <input

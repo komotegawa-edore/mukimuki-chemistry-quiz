@@ -62,7 +62,7 @@ export default async function HomePage() {
             <form action={handleLogout}>
               <button
                 type="submit"
-                className="px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap"
+                className="px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap text-black"
               >
                 ログアウト
               </button>

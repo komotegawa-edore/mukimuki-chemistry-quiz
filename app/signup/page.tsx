@@ -62,7 +62,7 @@ export default function SignupPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-center mb-2">
+          <h1 className="text-3xl font-bold text-center mb-2 text-black">
             アカウント作成
           </h1>
           <p className="text-center text-black mb-8">
@@ -71,7 +71,7 @@ export default function SignupPage() {
 
           <form onSubmit={handleSignup} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold mb-2">名前</label>
+              <label className="block text-sm font-semibold mb-2 text-black">名前</label>
               <input
                 type="text"
                 value={name}
@@ -83,7 +83,7 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">
+              <label className="block text-sm font-semibold mb-2 text-black">
                 メールアドレス
               </label>
               <input
@@ -97,7 +97,7 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">
+              <label className="block text-sm font-semibold mb-2 text-black">
                 パスワード
               </label>
               <input
@@ -112,9 +112,9 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">役割</label>
+              <label className="block text-sm font-semibold mb-2 text-black">役割</label>
               <div className="flex gap-4">
-                <label className="flex items-center">
+                <label className="flex items-center text-black">
                   <input
                     type="radio"
                     name="role"
@@ -125,7 +125,7 @@ export default function SignupPage() {
                   />
                   生徒
                 </label>
-                <label className="flex items-center">
+                <label className="flex items-center text-black">
                   <input
                     type="radio"
                     name="role"
