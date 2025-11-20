@@ -10,6 +10,7 @@ interface CSVRow {
   choice_c: string
   choice_d: string
   correct_answer: string
+  explanation?: string
 }
 
 interface ImportResult {
@@ -123,6 +124,7 @@ export async function POST(request: NextRequest) {
             choice_c: row.choice_c.trim(),
             choice_d: row.choice_d.trim(),
             correct_answer: correctAnswer as 'A' | 'B' | 'C' | 'D',
+            explanation: row.explanation?.trim() || null,
             updated_by: user.id,
           })
 

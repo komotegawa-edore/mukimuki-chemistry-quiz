@@ -11,6 +11,7 @@ interface CSVRow {
   choice_c: string
   choice_d: string
   correct_answer: string
+  explanation?: string
 }
 
 interface ImportResult {
@@ -139,6 +140,7 @@ export default function CSVImport() {
                   <th className="px-2 py-2 text-left">選択肢C</th>
                   <th className="px-2 py-2 text-left">選択肢D</th>
                   <th className="px-2 py-2 text-left">正解</th>
+                  <th className="px-2 py-2 text-left">解説</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -151,6 +153,7 @@ export default function CSVImport() {
                     <td className="px-2 py-2 max-w-xs truncate">{row.choice_c}</td>
                     <td className="px-2 py-2 max-w-xs truncate">{row.choice_d}</td>
                     <td className="px-2 py-2">{row.correct_answer}</td>
+                    <td className="px-2 py-2 max-w-xs truncate">{row.explanation || '-'}</td>
                   </tr>
                 ))}
               </tbody>

@@ -5,7 +5,7 @@
 ### ヘッダー行（必須）
 
 ```csv
-chapter_id,question_text,choice_a,choice_b,choice_c,choice_d,correct_answer
+chapter_id,question_text,choice_a,choice_b,choice_c,choice_d,correct_answer,explanation
 ```
 
 ### 各列の説明
@@ -19,6 +19,7 @@ chapter_id,question_text,choice_a,choice_b,choice_c,choice_d,correct_answer
 | `choice_c` | 選択肢C | ✅ | テキスト | 酸化鉄の還元 |
 | `choice_d` | 選択肢D | ✅ | テキスト | 水素化ナトリウムの分解 |
 | `correct_answer` | 正解 | ✅ | A/B/C/D | A |
+| `explanation` | 解説 | ⭕ | テキスト | 水の電気分解により陰極で水素が発生します。 |
 
 ---
 
@@ -56,16 +57,16 @@ chapter_id,question_text,choice_a,choice_b,choice_c,choice_d,correct_answer
 ### 基本例
 
 ```csv
-chapter_id,question_text,choice_a,choice_b,choice_c,choice_d,correct_answer
-1,水素の製法として正しいのはどれか？,水の電気分解,塩酸と硫酸の反応,酸化鉄の還元,水素化ナトリウムの分解,A
-1,水素の性質について誤っているものはどれか？,無色無臭の気体,最も軽い元素,水に溶けやすい,還元性を持つ,C
+chapter_id,question_text,choice_a,choice_b,choice_c,choice_d,correct_answer,explanation
+1,水素の製法として正しいのはどれか？,水の電気分解,塩酸と硫酸の反応,酸化鉄の還元,水素化ナトリウムの分解,A,水の電気分解により陰極で水素が発生します。
+1,水素の性質について誤っているものはどれか？,無色無臭の気体,最も軽い元素,水に溶けやすい,還元性を持つ,C,水素は水にほとんど溶けません。
 ```
 
 ### カンマを含む例
 
 ```csv
-chapter_id,question_text,choice_a,choice_b,choice_c,choice_d,correct_answer
-1,"水素は、最も軽い元素である。正しいか？",正しい,誤り,どちらでもない,不明,A
+chapter_id,question_text,choice_a,choice_b,choice_c,choice_d,correct_answer,explanation
+1,"水素は、最も軽い元素である。正しいか？",正しい,誤り,どちらでもない,不明,A,"水素は原子番号1で、最も軽い元素です。"
 ```
 
 ---

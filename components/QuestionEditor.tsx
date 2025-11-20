@@ -23,6 +23,7 @@ export default function QuestionEditor({
     choice_c: question?.choice_c || '',
     choice_d: question?.choice_d || '',
     correct_answer: question?.correct_answer || ('A' as Answer),
+    explanation: question?.explanation || '',
   })
   const [isSaving, setIsSaving] = useState(false)
 
@@ -136,6 +137,18 @@ export default function QuestionEditor({
                 <option value="C">C</option>
                 <option value="D">D</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-2">解説（任意）</label>
+              <textarea
+                name="explanation"
+                value={formData.explanation}
+                onChange={handleChange}
+                rows={3}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="解答の解説を入力してください（省略可）"
+              />
             </div>
 
             <div className="flex justify-end gap-3 pt-4">

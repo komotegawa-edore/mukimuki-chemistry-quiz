@@ -20,12 +20,20 @@ export default function QuizRunner({
   const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null)
   const [answers, setAnswers] = useState<Record<number, Answer>>({})
   const [isCompleted, setIsCompleted] = useState(false)
+  const [showAnswer, setShowAnswer] = useState(false)
 
   const currentQuestion = questions[currentIndex]
   const isLastQuestion = currentIndex === questions.length - 1
 
   const handleAnswerSelect = (answer: Answer) => {
-    setSelectedAnswer(answer)
+    if (!showAnswer) {
+      setSelectedAnswer(answer)
+    }
+  }
+
+  const handleSubmitAnswer = () => {
+    if (!selectedAnswer) return
+    setShowAnswer(true)
   }
 
   const handleNext = () => {
@@ -47,6 +55,7 @@ export default function QuizRunner({
     } else {
       setCurrentIndex(currentIndex + 1)
       setSelectedAnswer(null)
+      setShowAnswer(false)
     }
   }
 
@@ -101,35 +110,80 @@ export default function QuizRunner({
           <h2 className="text-xl font-semibold mb-6">{currentQuestion.question_text}</h2>
 
           <div className="space-y-3">
-            {(['A', 'B', 'C', 'D'] as Answer[]).map((choice) => (
-              <button
-                key={choice}
-                onClick={() => handleAnswerSelect(choice)}
-                className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
-                  selectedAnswer === choice
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <span className="font-semibold mr-2">{choice}.</span>
-                {getChoiceLabel(choice)}
-              </button>
-            ))}
+            {(['A', 'B', 'C', 'D'] as Answer[]).map((choice) => {
+              const isCorrect = choice === currentQuestion.correct_answer
+              const isSelected = selectedAnswer === choice
+              let borderColor = 'border-gray-200'
+              let bgColor = ''
+
+              if (showAnswer) {
+                if (isCorrect) {
+                  borderColor = 'border-green-500'
+                  bgColor = 'bg-green-50'
+                } else if (isSelected) {
+                  borderColor = 'border-red-500'
+                  bgColor = 'bg-red-50'
+                }
+              } else if (isSelected) {
+                borderColor = 'border-blue-500'
+                bgColor = 'bg-blue-50'
+              }
+
+              return (
+                <button
+                  key={choice}
+                  onClick={() => handleAnswerSelect(choice)}
+                  disabled={showAnswer}
+                  className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${borderColor} ${bgColor} ${
+                    !showAnswer && !isSelected ? 'hover:border-gray-300' : ''
+                  } ${showAnswer ? 'cursor-default' : ''}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="font-semibold mr-2">{choice}.</span>
+                      {getChoiceLabel(choice)}
+                    </div>
+                    {showAnswer && isCorrect && (
+                      <span className="text-green-600 font-semibold">✓ 正解</span>
+                    )}
+                    {showAnswer && isSelected && !isCorrect && (
+                      <span className="text-red-600 font-semibold">✗ 不正解</span>
+                    )}
+                  </div>
+                </button>
+              )
+            })}
           </div>
         </div>
 
+        {showAnswer && currentQuestion.explanation && (
+          <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+            <h3 className="font-semibold text-blue-900 mb-2">解説</h3>
+            <p className="text-blue-800">{currentQuestion.explanation}</p>
+          </div>
+        )}
+
         <div className="flex justify-end">
-          <button
-            onClick={handleNext}
-            disabled={!selectedAnswer}
-            className={`px-6 py-3 rounded-lg font-semibold ${
-              selectedAnswer
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
-          >
-            {isLastQuestion ? '完了' : '次へ'}
-          </button>
+          {!showAnswer ? (
+            <button
+              onClick={handleSubmitAnswer}
+              disabled={!selectedAnswer}
+              className={`px-6 py-3 rounded-lg font-semibold ${
+                selectedAnswer
+                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              回答する
+            </button>
+          ) : (
+            <button
+              onClick={handleNext}
+              className="px-6 py-3 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700"
+            >
+              {isLastQuestion ? '完了' : '次へ'}
+            </button>
+          )}
         </div>
       </div>
     </div>
