@@ -1,5 +1,15 @@
 import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 import { Question } from '@/lib/types/database'
+
+// jspdf-autotableの型拡張
+declare module 'jspdf' {
+  interface jsPDF {
+    lastAutoTable: {
+      finalY: number
+    }
+  }
+}
 
 export interface ExportOptions {
   includeAnswers?: boolean
@@ -25,9 +35,6 @@ export function exportChapterToPDF(
     format: 'a4',
   })
 
-  // 日本語フォント対応のための設定（Noto Sans JPなどのフォントを使用する場合は追加設定が必要）
-  // 今回はシンプルに標準フォントを使用
-
   const pageWidth = doc.internal.pageSize.getWidth()
   const margin = 15
 
@@ -40,77 +47,88 @@ export function exportChapterToPDF(
   doc.text(`問題数: ${questions.length}`, margin, 28)
   doc.text(`作成日: ${new Date().toLocaleDateString('ja-JP')}`, margin, 33)
 
-  let yPosition = 45
+  let startY = 40
 
   // 各問題を出力
   questions.forEach((question, index) => {
-    // ページの残りスペースをチェック
-    if (yPosition > 250) {
-      doc.addPage()
-      yPosition = 20
-    }
+    // 問題番号と問題文をテーブルで表示
+    ;(doc as any).autoTable({
+      startY,
+      head: [[`問題 ${index + 1}`]],
+      body: [[question.question_text]],
+      theme: 'plain',
+      headStyles: {
+        fillColor: [66, 139, 202],
+        textColor: [255, 255, 255],
+        fontSize: 12,
+        fontStyle: 'bold',
+      },
+      bodyStyles: {
+        fontSize: fontSize,
+        cellPadding: 5,
+      },
+      margin: { left: margin, right: margin },
+      tableWidth: pageWidth - margin * 2,
+    })
 
-    // 問題番号と問題文
-    doc.setFontSize(fontSize)
-    doc.setFont('helvetica', 'bold')
-    const questionNumber = `問題 ${index + 1}`
-    doc.text(questionNumber, margin, yPosition)
-
-    doc.setFont('helvetica', 'normal')
-    const questionTextLines = doc.splitTextToSize(
-      question.question_text,
-      pageWidth - margin * 2 - 20
-    )
-    doc.text(questionTextLines, margin + 20, yPosition)
-    yPosition += questionTextLines.length * 5 + 3
-
-    // 選択肢
-    const choices = [
-      { label: 'A', text: question.choice_a },
-      { label: 'B', text: question.choice_b },
-      { label: 'C', text: question.choice_c },
-      { label: 'D', text: question.choice_d },
+    // 選択肢をテーブルで表示
+    const choicesData = [
+      ['A', question.choice_a, question.correct_answer === 'A' ? '●' : ''],
+      ['B', question.choice_b, question.correct_answer === 'B' ? '●' : ''],
+      ['C', question.choice_c, question.correct_answer === 'C' ? '●' : ''],
+      ['D', question.choice_d, question.correct_answer === 'D' ? '●' : ''],
     ]
 
-    choices.forEach((choice) => {
-      if (yPosition > 270) {
-        doc.addPage()
-        yPosition = 20
-      }
+    const columns = includeAnswers
+      ? ['選択肢', '内容', '正解']
+      : ['選択肢', '内容']
 
-      const isCorrect = includeAnswers && choice.label === question.correct_answer
+    const bodyData = includeAnswers
+      ? choicesData
+      : choicesData.map((row) => [row[0], row[1]])
 
-      if (isCorrect) {
-        doc.setFont('helvetica', 'bold')
-        doc.setTextColor(0, 128, 0) // 緑色
-      }
-
-      const choiceLines = doc.splitTextToSize(
-        `${choice.label}. ${choice.text}`,
-        pageWidth - margin * 2 - 25
-      )
-      doc.text(choiceLines, margin + 25, yPosition)
-
-      if (isCorrect) {
-        doc.setFont('helvetica', 'normal')
-        doc.setTextColor(0, 0, 0) // 黒色に戻す
-      }
-
-      yPosition += choiceLines.length * 5
+    ;(doc as any).autoTable({
+      startY: doc.lastAutoTable.finalY + 2,
+      head: [columns],
+      body: bodyData,
+      theme: 'grid',
+      headStyles: {
+        fillColor: [240, 240, 240],
+        textColor: [0, 0, 0],
+        fontSize: fontSize,
+        fontStyle: 'bold',
+      },
+      bodyStyles: {
+        fontSize: fontSize,
+        cellPadding: 4,
+      },
+      columnStyles: {
+        0: { cellWidth: 20, halign: 'center', fontStyle: 'bold' },
+        1: { cellWidth: includeAnswers ? 130 : 155 },
+        ...(includeAnswers && {
+          2: {
+            cellWidth: 20,
+            halign: 'center',
+            fontStyle: 'bold',
+            textColor: [0, 128, 0],
+          },
+        }),
+      },
+      margin: { left: margin, right: margin },
+      tableWidth: pageWidth - margin * 2,
     })
 
     // 解答欄（解答を含めない場合）
     if (!includeAnswers) {
-      yPosition += 2
-      doc.setDrawColor(200)
-      doc.line(margin + 25, yPosition, margin + 60, yPosition)
-      doc.setFontSize(8)
-      doc.text('解答:', margin + 25, yPosition - 1)
+      const currentY = doc.lastAutoTable.finalY
       doc.setFontSize(fontSize)
-      yPosition += 3
+      doc.text('解答:', margin, currentY + 8)
+      doc.setDrawColor(0, 0, 0)
+      doc.line(margin + 15, currentY + 8, margin + 40, currentY + 8)
+      startY = currentY + 15
+    } else {
+      startY = doc.lastAutoTable.finalY + 10
     }
-
-    yPosition += 8 // 問題間のスペース
   })
 
   // PDFを保存
