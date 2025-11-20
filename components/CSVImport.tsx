@@ -40,6 +40,7 @@ export default function CSVImport() {
       const csvText = event.target?.result as string
       const parseResult = Papa.parse<CSVRow>(csvText, {
         header: true,
+        delimiter: ',',
         skipEmptyLines: true,
         transformHeader: (header) => header.trim(),
       })
@@ -105,7 +106,7 @@ export default function CSVImport() {
       <h3 className="text-lg font-semibold mb-4">CSV一括インポート</h3>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-black mb-2">
           CSVファイルを選択
         </label>
         <input
@@ -209,7 +210,7 @@ export default function CSVImport() {
               setError(null)
             }}
             disabled={isImporting}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+            className="px-4 py-2 bg-gray-200 text-black rounded-lg hover:bg-gray-300 disabled:opacity-50"
           >
             キャンセル
           </button>

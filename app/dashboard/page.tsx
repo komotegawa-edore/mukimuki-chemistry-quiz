@@ -60,7 +60,7 @@ export default async function DashboardPage() {
     <div className="min-h-screen">
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl md:text-2xl font-bold text-gray-900">講師ダッシュボード</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-black">講師ダッシュボード</h1>
           <form action={handleLogout}>
             <button
               type="submit"
@@ -89,7 +89,7 @@ export default async function DashboardPage() {
                 >
                   <div className="flex justify-between items-start">
                     <h3 className="font-semibold">{chapter.title}</h3>
-                    <span className="text-sm text-gray-500">#{chapter.order_num}</span>
+                    <span className="text-sm text-black">#{chapter.order_num}</span>
                   </div>
                   <p className="text-sm text-blue-600 mt-2">問題を管理 →</p>
                 </Link>
@@ -104,13 +104,13 @@ export default async function DashboardPage() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-600 sticky left-0 bg-gray-50">
+                  <th className="px-4 py-3 text-left font-semibold text-black sticky left-0 bg-gray-50">
                     生徒名
                   </th>
                   {chapters?.slice(0, 10).map((chapter) => (
                     <th
                       key={chapter.id}
-                      className="px-2 py-3 text-center font-semibold text-gray-600"
+                      className="px-2 py-3 text-center font-semibold text-black"
                     >
                       {chapter.order_num}
                     </th>
@@ -158,7 +158,7 @@ export default async function DashboardPage() {
             </table>
           </div>
           {chapters && chapters.length > 10 && (
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-black mt-2">
               ※ 表示されているのは最初の10章です
             </p>
           )}

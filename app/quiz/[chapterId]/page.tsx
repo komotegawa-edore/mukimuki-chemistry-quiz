@@ -84,7 +84,7 @@ export default function QuizPage({
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-600">読み込み中...</p>
+        <p className="text-black">読み込み中...</p>
       </div>
     )
   }

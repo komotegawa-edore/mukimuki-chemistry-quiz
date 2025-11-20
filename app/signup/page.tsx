@@ -65,7 +65,7 @@ export default function SignupPage() {
           <h1 className="text-3xl font-bold text-center mb-2">
             アカウント作成
           </h1>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-black mb-8">
             無機化学小テストアプリ
           </p>
 
@@ -155,7 +155,7 @@ export default function SignupPage() {
           </form>
 
           <div className="mt-6 text-center text-sm">
-            <span className="text-gray-600">すでにアカウントをお持ちですか？</span>
+            <span className="text-black">すでにアカウントをお持ちですか？</span>
             <Link href="/login" className="text-blue-600 hover:underline ml-2">
               ログイン
             </Link>

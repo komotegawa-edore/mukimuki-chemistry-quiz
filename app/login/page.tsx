@@ -93,13 +93,13 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center text-sm">
-            <span className="text-gray-600">アカウントをお持ちでないですか？</span>
+            <span className="text-black">アカウントをお持ちでないですか？</span>
             <Link href="/signup" className="text-blue-600 hover:underline ml-2">
               新規登録
             </Link>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-gray-200 text-center text-sm text-gray-600">
+          <div className="mt-6 pt-6 border-t border-gray-200 text-center text-sm text-black">
             <p className="font-semibold mb-2">テストアカウント：</p>
             <p>生徒: student@example.com / password</p>
             <p>講師: teacher@example.com / password</p>

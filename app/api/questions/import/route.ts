@@ -52,6 +52,7 @@ export async function POST(request: NextRequest) {
     // CSVをパース
     const parseResult = Papa.parse<CSVRow>(csvText, {
       header: true,
+      delimiter: ',',
       skipEmptyLines: true,
       transformHeader: (header) => header.trim(),
     })

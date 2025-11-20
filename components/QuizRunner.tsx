@@ -86,7 +86,7 @@ export default function QuizRunner({
     return (
       <div className="max-w-2xl mx-auto p-6">
         <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <p className="text-gray-700">この章にはまだ問題がありません。</p>
+          <p className="text-black">この章にはまだ問題がありません。</p>
         </div>
       </div>
     )
@@ -96,8 +96,8 @@ export default function QuizRunner({
     return (
       <div className="max-w-2xl mx-auto p-6">
         <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4 text-gray-900">クイズ完了！</h2>
-          <p className="text-gray-700 mb-6">結果を保存しています...</p>
+          <h2 className="text-2xl font-bold mb-4 text-black">クイズ完了！</h2>
+          <p className="text-black mb-6">結果を保存しています...</p>
         </div>
       </div>
     )
@@ -107,7 +107,7 @@ export default function QuizRunner({
     <div className="max-w-2xl mx-auto p-6">
       <div className="mb-6">
         <div className="flex justify-between items-start mb-2">
-          <h1 className="text-2xl font-bold text-gray-900">{chapterTitle}</h1>
+          <h1 className="text-2xl font-bold text-black">{chapterTitle}</h1>
           {onQuit && (
             <button
               onClick={handleQuit}
@@ -117,7 +117,7 @@ export default function QuizRunner({
             </button>
           )}
         </div>
-        <div className="flex justify-between text-sm text-gray-700">
+        <div className="flex justify-between text-sm text-black">
           <span>
             問題 {currentIndex + 1} / {questions.length}
           </span>
@@ -126,7 +126,7 @@ export default function QuizRunner({
 
       <div className="bg-white rounded-lg shadow-md p-8">
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-6 text-gray-900">{currentQuestion.question_text}</h2>
+          <h2 className="text-xl font-semibold mb-6 text-black">{currentQuestion.question_text}</h2>
 
           <div className="space-y-3">
             {(['A', 'B', 'C', 'D'] as Answer[]).map((choice) => {
@@ -153,7 +153,7 @@ export default function QuizRunner({
                   key={choice}
                   onClick={() => handleAnswerSelect(choice)}
                   disabled={showAnswer}
-                  className={`w-full text-left p-4 rounded-lg border-2 transition-colors text-gray-900 ${borderColor} ${bgColor} ${
+                  className={`w-full text-left p-4 rounded-lg border-2 transition-colors text-black ${borderColor} ${bgColor} ${
                     !showAnswer && !isSelected ? 'hover:border-gray-300' : ''
                   } ${showAnswer ? 'cursor-default' : ''}`}
                 >

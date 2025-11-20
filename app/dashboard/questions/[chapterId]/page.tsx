@@ -95,7 +95,7 @@ export default function QuestionsManagePage({
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-600">読み込み中...</p>
+        <p className="text-black">読み込み中...</p>
       </div>
     )
   }
@@ -208,7 +208,7 @@ export default function QuestionsManagePage({
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center text-gray-600">
+          <div className="bg-white rounded-lg shadow-md p-8 text-center text-black">
             この章にはまだ問題がありません。
             <br />
             「新規問題を追加」ボタンから問題を作成してください。

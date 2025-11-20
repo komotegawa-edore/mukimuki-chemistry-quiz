@@ -33,7 +33,7 @@ export default function ResultPage({
             >
               {percentage}%
             </div>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-black">
               {score} / {total} 問正解
             </p>
           </div>
