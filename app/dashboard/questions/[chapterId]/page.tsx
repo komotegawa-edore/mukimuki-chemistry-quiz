@@ -136,14 +136,14 @@ export default function QuestionsManagePage({
                 className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
                 disabled={questions.length === 0}
               >
-                テスト用PDF
+                テスト用印刷
               </button>
               <button
                 onClick={handleExportAnswerPDF}
                 className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm"
                 disabled={questions.length === 0}
               >
-                解答付きPDF
+                解答付き印刷
               </button>
               <button
                 onClick={() => setIsCreating(true)}

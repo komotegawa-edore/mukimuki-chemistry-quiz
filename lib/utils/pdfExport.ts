@@ -1,4 +1,3 @@
-import html2pdf from 'html2pdf.js'
 import { Question } from '@/lib/types/database'
 
 export interface ExportOptions {
@@ -12,22 +11,22 @@ export function exportChapterToPDF(
   questions: Question[],
   options: ExportOptions = {}
 ) {
-  const { includeAnswers = true, orientation = 'portrait' } = options
+  const { includeAnswers = true } = options
 
   // HTMLコンテンツを生成
   const htmlContent = generateHTMLContent(chapterTitle, questions, includeAnswers)
 
-  // html2pdfのオプション
-  const opt = {
-    margin: [8, 8, 8, 8] as [number, number, number, number],
-    filename: `${chapterTitle.replace(/[\/\\?%*:|"<>]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`,
-    image: { type: 'jpeg' as const, quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation },
-  }
+  // 新しいウィンドウで開いて印刷画面を表示
+  const printWindow = window.open('', '_blank')
+  if (printWindow) {
+    printWindow.document.write(htmlContent)
+    printWindow.document.close()
 
-  // HTMLをPDFに変換してダウンロード
-  html2pdf().set(opt).from(htmlContent).save()
+    // ページが完全にロードされてから印刷ダイアログを表示
+    printWindow.onload = () => {
+      printWindow.print()
+    }
+  }
 }
 
 function generateHTMLContent(
@@ -88,18 +87,18 @@ function generateHTMLContent(
         }
         body {
           font-family: 'Noto Sans JP', 'Yu Gothic', 'Meiryo', sans-serif;
-          font-size: 9.5pt;
+          font-size: 10pt;
           line-height: 1.5;
           color: #1f2937;
-          padding: 12px;
+          padding: 20px;
         }
         .header {
-          margin-bottom: 14px;
+          margin-bottom: 16px;
           border-bottom: 2px solid #428bca;
-          padding-bottom: 8px;
+          padding-bottom: 10px;
         }
         .title {
-          font-size: 15pt;
+          font-size: 16pt;
           font-weight: bold;
           margin-bottom: 4px;
           color: #1f2937;
@@ -107,6 +106,15 @@ function generateHTMLContent(
         .meta {
           font-size: 9pt;
           color: #6b7280;
+        }
+        @media print {
+          body {
+            padding: 10mm;
+          }
+          @page {
+            margin: 10mm;
+            size: A4;
+          }
         }
       </style>
     </head>
