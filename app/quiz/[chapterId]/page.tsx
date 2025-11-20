@@ -77,6 +77,10 @@ export default function QuizPage({
     }
   }
 
+  const handleQuit = () => {
+    router.push('/')
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -107,6 +111,7 @@ export default function QuizPage({
       chapterId={parseInt(params.chapterId)}
       chapterTitle={chapterTitle || `第${params.chapterId}章`}
       onComplete={handleComplete}
+      onQuit={handleQuit}
     />
   )
 }

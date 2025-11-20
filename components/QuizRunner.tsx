@@ -8,6 +8,7 @@ interface QuizRunnerProps {
   chapterId: number
   chapterTitle: string
   onComplete: (score: number, total: number, answers: Record<number, Answer>) => void
+  onQuit?: () => void
 }
 
 export default function QuizRunner({
@@ -15,6 +16,7 @@ export default function QuizRunner({
   chapterId,
   chapterTitle,
   onComplete,
+  onQuit,
 }: QuizRunnerProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null)
@@ -59,6 +61,14 @@ export default function QuizRunner({
     }
   }
 
+  const handleQuit = () => {
+    if (confirm('クイズを途中で終了しますか？進捗は保存されません。')) {
+      if (onQuit) {
+        onQuit()
+      }
+    }
+  }
+
   const getChoiceLabel = (choice: Answer): string => {
     switch (choice) {
       case 'A':
@@ -96,7 +106,17 @@ export default function QuizRunner({
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">{chapterTitle}</h1>
+        <div className="flex justify-between items-start mb-2">
+          <h1 className="text-2xl font-bold">{chapterTitle}</h1>
+          {onQuit && (
+            <button
+              onClick={handleQuit}
+              className="px-4 py-2 text-sm text-red-600 border border-red-600 rounded-lg hover:bg-red-50"
+            >
+              終了
+            </button>
+          )}
+        </div>
         <div className="flex justify-between text-sm text-gray-600">
           <span>
             問題 {currentIndex + 1} / {questions.length}
