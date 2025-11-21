@@ -20,6 +20,11 @@ export async function GET() {
       { target_user_id: user.id }
     )
 
+    console.log('=== DEBUG: get_user_rank ===')
+    console.log('User ID:', user.id)
+    console.log('Raw rankData:', JSON.stringify(rankData, null, 2))
+    console.log('rankError:', rankError)
+
     if (rankError) {
       console.error('Failed to get user rank:', rankError)
       return NextResponse.json(
