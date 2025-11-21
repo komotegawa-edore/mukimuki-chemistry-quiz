@@ -98,6 +98,24 @@ export default async function DashboardPage() {
           </div>
         </div>
 
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-black">分析</h2>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <Link
+              href="/dashboard/analytics"
+              className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all"
+            >
+              <div>
+                <h3 className="font-semibold text-black mb-1">問題別定着率</h3>
+                <p className="text-sm text-gray-600">
+                  全ての問題について、生徒ごとの正答率を確認できます
+                </p>
+              </div>
+              <span className="text-blue-600 font-semibold">→</span>
+            </Link>
+          </div>
+        </div>
+
         <div>
           <h2 className="text-xl font-semibold mb-4 text-black">生徒の定着率</h2>
           <div className="bg-white rounded-lg shadow-md overflow-x-auto">
