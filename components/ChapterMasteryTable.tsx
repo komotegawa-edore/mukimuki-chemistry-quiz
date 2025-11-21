@@ -81,46 +81,42 @@ export default function ChapterMasteryTable() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 sticky top-0">
             <tr>
-              <th className="px-4 py-3 text-left font-semibold text-black border-r border-gray-200 sticky left-0 bg-gray-50 z-10 min-w-[80px]">
-                章番号
+              <th className="px-4 py-3 text-left font-semibold text-black border-r border-gray-200 sticky left-0 bg-gray-50 z-10 min-w-[150px]">
+                生徒名
               </th>
-              <th className="px-4 py-3 text-left font-semibold text-black border-r border-gray-200 min-w-[250px]">
-                章タイトル
-              </th>
-              {data.students.map((student) => (
+              {data.chapters.map((chapter) => (
                 <th
-                  key={student.id}
-                  className="px-3 py-3 text-center font-semibold text-black border-l border-gray-200 min-w-[120px]"
+                  key={chapter.chapterId}
+                  className="px-3 py-3 text-center font-semibold text-black border-l border-gray-200 min-w-[100px]"
                 >
-                  {student.name}
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-xs text-gray-500">第{chapter.chapterOrderNum}章</span>
+                  </div>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {data.chapters.length === 0 ? (
+            {data.students.length === 0 ? (
               <tr>
                 <td
-                  colSpan={2 + data.students.length}
+                  colSpan={1 + data.chapters.length}
                   className="px-4 py-8 text-center text-gray-500"
                 >
-                  章がありません
+                  生徒がいません
                 </td>
               </tr>
             ) : (
-              data.chapters.map((chapter) => (
-                <tr key={chapter.chapterId} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm text-black border-r border-gray-200 sticky left-0 bg-white font-medium text-center">
-                    第{chapter.chapterOrderNum}章
+              data.students.map((student) => (
+                <tr key={student.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 text-sm text-black border-r border-gray-200 sticky left-0 bg-white font-medium">
+                    {student.name}
                   </td>
-                  <td className="px-4 py-3 text-sm text-black border-r border-gray-200 font-medium">
-                    {chapter.chapterTitle}
-                  </td>
-                  {data.students.map((student) => {
+                  {data.chapters.map((chapter) => {
                     const result = chapter.studentResults[student.id]
                     return (
                       <td
-                        key={student.id}
+                        key={chapter.chapterId}
                         className="px-3 py-3 text-center border-l border-gray-200"
                       >
                         {result.attempts > 0 ? (
@@ -172,6 +168,7 @@ export default function ChapterMasteryTable() {
 
       <div className="text-sm text-gray-600">
         <p>※ 複数回受験している場合、全受験回数の合計正答率を表示しています。</p>
+        <p>※ 横にスクロールして全ての章を確認できます。</p>
       </div>
     </div>
   )

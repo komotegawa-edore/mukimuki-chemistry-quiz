@@ -44,8 +44,9 @@ export default function AnalyticsTabView() {
         {activeTab === 'chapter' ? (
           <div>
             <div className="mb-4">
+              <h3 className="text-lg font-semibold text-black mb-2">章別定着率</h3>
               <p className="text-sm text-gray-600">
-                各章について、生徒ごとの正答率を確認できます。
+                各生徒の全ての章における正答率を確認できます。横スクロールで全章を閲覧できます。
                 <br />
                 複数回受験している場合は、全受験回数の合計正答率が表示されます。
               </p>
@@ -55,8 +56,9 @@ export default function AnalyticsTabView() {
         ) : (
           <div>
             <div className="mb-4">
+              <h3 className="text-lg font-semibold text-black mb-2">問題別定着率</h3>
               <p className="text-sm text-gray-600">
-                各問題について、生徒ごとの正答率を確認できます。
+                各問題について、生徒ごとの正答率を確認できます。章でフィルタリングも可能です。
                 <br />
                 複数回受験している場合は、全受験回数における正答率が表示されます。
               </p>

@@ -17,37 +17,11 @@ export default async function DashboardPage() {
 
   const supabase = await createClient()
 
-  // 全生徒を取得
-  const { data: students } = await supabase
-    .from('mukimuki_profiles')
-    .select('*')
-    .eq('role', 'student')
-    .order('name')
-
   // 全章を取得
   const { data: chapters } = await supabase
     .from('mukimuki_chapters')
     .select('*')
     .order('order_num')
-
-  // 全結果を取得
-  const { data: results } = await supabase
-    .from('mukimuki_test_results')
-    .select('user_id, chapter_id, score, total, created_at')
-    .order('created_at', { ascending: false })
-
-  // 生徒×章のマトリックスを作成
-  const studentResults = new Map<string, Map<number, { score: number; total: number }>>()
-
-  results?.forEach((result) => {
-    if (!studentResults.has(result.user_id)) {
-      studentResults.set(result.user_id, new Map())
-    }
-    const userMap = studentResults.get(result.user_id)!
-    if (!userMap.has(result.chapter_id)) {
-      userMap.set(result.chapter_id, { score: result.score, total: result.total })
-    }
-  })
 
   const handleLogout = async () => {
     'use server'
@@ -106,80 +80,14 @@ export default async function DashboardPage() {
               className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all"
             >
               <div>
-                <h3 className="font-semibold text-black mb-1">問題別定着率</h3>
+                <h3 className="font-semibold text-black mb-1">生徒の定着率</h3>
                 <p className="text-sm text-gray-600">
-                  全ての問題について、生徒ごとの正答率を確認できます
+                  章別・問題別の定着率を確認できます
                 </p>
               </div>
               <span className="text-blue-600 font-semibold">→</span>
             </Link>
           </div>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-4 text-black">生徒の定着率</h2>
-          <div className="bg-white rounded-lg shadow-md overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left font-semibold text-black sticky left-0 bg-gray-50">
-                    生徒名
-                  </th>
-                  {chapters?.slice(0, 10).map((chapter) => (
-                    <th
-                      key={chapter.id}
-                      className="px-2 py-3 text-center font-semibold text-black"
-                    >
-                      {chapter.order_num}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {students?.map((student) => {
-                  const userResults = studentResults.get(student.id)
-                  return (
-                    <tr key={student.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 font-medium sticky left-0 bg-white text-black">
-                        {student.name}
-                      </td>
-                      {chapters?.slice(0, 10).map((chapter) => {
-                        const result = userResults?.get(chapter.id)
-                        if (!result) {
-                          return (
-                            <td key={chapter.id} className="px-2 py-3 text-center">
-                              <span className="text-black">-</span>
-                            </td>
-                          )
-                        }
-                        const percentage = Math.round((result.score / result.total) * 100)
-                        return (
-                          <td key={chapter.id} className="px-2 py-3 text-center">
-                            <span
-                              className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
-                                percentage >= 80
-                                  ? 'bg-green-100 text-green-700'
-                                  : percentage >= 60
-                                    ? 'bg-yellow-100 text-yellow-700'
-                                    : 'bg-red-100 text-red-700'
-                              }`}
-                            >
-                              {percentage}%
-                            </span>
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-          {chapters && chapters.length > 10 && (
-            <p className="text-sm text-black mt-2">
-              ※ 表示されているのは最初の10章です
-            </p>
-          )}
         </div>
       </main>
     </div>
