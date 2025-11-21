@@ -72,6 +72,40 @@ export default async function HomePage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8">
+        {/* 復習モードカード */}
+        <div className="mb-8">
+          <Link
+            href="/review"
+            className="block bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-md p-6 hover:shadow-lg transition-all hover:from-blue-600 hover:to-blue-700"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-white mb-2">
+                  復習モード
+                </h2>
+                <p className="text-blue-100 text-sm">
+                  過去に間違えた問題を復習しましょう
+                </p>
+              </div>
+              <div className="text-white">
+                <svg
+                  className="w-8 h-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </Link>
+        </div>
+
         <h2 className="text-xl font-semibold mb-6 text-black">章一覧</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
