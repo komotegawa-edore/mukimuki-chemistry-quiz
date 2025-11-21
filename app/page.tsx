@@ -51,7 +51,7 @@ export default async function HomePage() {
     <div className="min-h-screen">
       <header className="bg-white shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-black">mukimuki</h1>
+          <h1 className="text-2xl font-bold text-black">MUKIMUKI</h1>
           <div className="flex items-center gap-2">
             <Link
               href="/history"
@@ -106,7 +106,7 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <h2 className="text-xl font-semibold mb-6 text-black">章一覧</h2>
+        <h2 className="text-xl font-semibold mb-6 text-black">無機化学</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {chapters?.map((chapter) => {
