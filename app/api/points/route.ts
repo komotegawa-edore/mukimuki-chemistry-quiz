@@ -14,7 +14,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // ユーザーの順位情報を取得（カスタム関数を使用）
+    // 全期間のランキング情報を取得
     const { data: rankData, error: rankError } = await supabase.rpc(
       'get_user_rank',
       { target_user_id: user.id }
@@ -28,14 +28,29 @@ export async function GET() {
       )
     }
 
-    // rankDataは配列で返ってくるので最初の要素を取得
+    // 週間ランキング情報を取得
+    const { data: weeklyRankData, error: weeklyRankError } = await supabase.rpc(
+      'get_user_weekly_rank',
+      { target_user_id: user.id }
+    )
+
+    if (weeklyRankError) {
+      console.error('Failed to get weekly rank:', weeklyRankError)
+    }
+
     const userRankInfo = rankData?.[0] || {
       rank: null,
       total_points: 0,
       next_rank_points: 1,
     }
 
+    const weeklyRankInfo = weeklyRankData?.[0] || {
+      rank: null,
+      weekly_points: 0,
+    }
+
     return NextResponse.json({
+      // 全期間
       totalPoints: userRankInfo.total_points,
       rank: userRankInfo.rank,
       nextRankPoints: userRankInfo.next_rank_points,
@@ -43,6 +58,9 @@ export async function GET() {
         0,
         userRankInfo.next_rank_points - userRankInfo.total_points
       ),
+      // 週間
+      weeklyPoints: weeklyRankInfo.weekly_points,
+      weeklyRank: weeklyRankInfo.rank,
     })
   } catch (error) {
     console.error('Failed to fetch points:', error)
