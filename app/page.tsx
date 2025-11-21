@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
+import PointsDisplay from '@/components/PointsDisplay'
+import LoginBonus from '@/components/LoginBonus'
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -49,6 +51,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen">
+      <LoginBonus />
       <header className="bg-white shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-black">MUKIMUKI</h1>
@@ -72,6 +75,11 @@ export default async function HomePage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8">
+        {/* ポイント表示 */}
+        <div className="mb-6">
+          <PointsDisplay />
+        </div>
+
         {/* 復習モードカード */}
         <div className="mb-8">
           <Link

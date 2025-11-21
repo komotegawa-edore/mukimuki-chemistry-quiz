@@ -54,7 +54,7 @@ export default function QuizPage({
     answers: Record<number, Answer>
   ) => {
     try {
-      await fetch('/api/results', {
+      const response = await fetch('/api/results', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,9 +67,12 @@ export default function QuizPage({
         }),
       })
 
-      // 結果ページへ
+      const data = await response.json()
+
+      // 結果ページへ（ポイント獲得情報も渡す）
+      const pointsParam = data.pointsAwarded ? '&points=1' : ''
       router.push(
-        `/quiz/${params.chapterId}/result?score=${score}&total=${total}`
+        `/quiz/${params.chapterId}/result?score=${score}&total=${total}${pointsParam}`
       )
     } catch (err) {
       console.error('Failed to save result:', err)
