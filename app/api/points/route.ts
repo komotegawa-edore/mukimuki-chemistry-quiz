@@ -20,11 +20,6 @@ export async function GET() {
       { target_user_id: user.id }
     )
 
-    console.log('=== DEBUG: get_user_rank ===')
-    console.log('User ID:', user.id)
-    console.log('Raw rankData:', JSON.stringify(rankData, null, 2))
-    console.log('rankError:', rankError)
-
     if (rankError) {
       console.error('Failed to get user rank:', rankError)
       return NextResponse.json(
@@ -43,16 +38,14 @@ export async function GET() {
       console.error('Failed to get weekly rank:', weeklyRankError)
     }
 
-    const userRankInfo = rankData?.[0] || {
-      rank: null,
-      total_points: 0,
-      next_rank_points: 1,
-    }
+    // RPCは配列を返すので、最初の要素を取得
+    const userRankInfo = Array.isArray(rankData) && rankData.length > 0
+      ? rankData[0]
+      : { rank: null, total_points: 0, next_rank_points: 1 }
 
-    const weeklyRankInfo = weeklyRankData?.[0] || {
-      rank: null,
-      weekly_points: 0,
-    }
+    const weeklyRankInfo = Array.isArray(weeklyRankData) && weeklyRankData.length > 0
+      ? weeklyRankData[0]
+      : { rank: null, weekly_points: 0 }
 
     return NextResponse.json({
       // 全期間

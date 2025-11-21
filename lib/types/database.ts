@@ -130,7 +130,40 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_rank: {
+        Args: {
+          target_user_id: string
+        }
+        Returns: {
+          rank: number
+          total_points: number
+          next_rank_points: number
+        }[]
+      }
+      get_user_weekly_rank: {
+        Args: {
+          target_user_id: string
+        }
+        Returns: {
+          rank: number
+          weekly_points: number
+        }[]
+      }
+      get_weekly_ranking: {
+        Args: Record<string, never>
+        Returns: {
+          user_id: string
+          user_name: string
+          weekly_points: number
+          rank: number
+        }[]
+      }
+      get_user_total_points: {
+        Args: {
+          target_user_id: string
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
