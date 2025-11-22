@@ -25,10 +25,10 @@ export async function GET() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // 全ての章を取得
+    // 全ての章を取得（教科情報も含む）
     const { data: chapters } = await supabase
       .from('mukimuki_chapters')
-      .select('id, title, order_num')
+      .select('id, title, order_num, subject_id, subject:mukimuki_subjects(id, name, display_order)')
       .order('order_num')
 
     // 全ての生徒を取得
@@ -103,10 +103,14 @@ export async function GET() {
         }
       })
 
+      const subjectData = chapter.subject as { id: number; name: string; display_order: number } | null
       return {
         chapterId: chapter.id,
         chapterTitle: chapter.title,
         chapterOrderNum: chapter.order_num,
+        subjectId: chapter.subject_id,
+        subjectName: subjectData?.name || '',
+        subjectDisplayOrder: subjectData?.display_order || 0,
         studentResults,
       }
     })

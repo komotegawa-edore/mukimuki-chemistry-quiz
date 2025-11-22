@@ -12,6 +12,12 @@ interface QuestionWithChapter {
     id: number
     title: string
     order_num: number
+    subject_id: number
+    subject: {
+      id: number
+      name: string
+      display_order: number
+    } | null
   } | null
 }
 
@@ -37,10 +43,10 @@ export async function GET() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // 全ての問題を取得
+    // 全ての問題を取得（教科情報も含む）
     const { data: rawQuestions } = await supabase
       .from('mukimuki_questions')
-      .select('id, question_text, chapter_id, correct_answer, mukimuki_chapters(id, title, order_num)')
+      .select('id, question_text, chapter_id, correct_answer, mukimuki_chapters(id, title, order_num, subject_id, subject:mukimuki_subjects(id, name, display_order))')
       .order('chapter_id')
 
     const questions = rawQuestions as QuestionWithChapter[] | null
@@ -114,12 +120,16 @@ export async function GET() {
         }
       })
 
+      const subjectData = question.mukimuki_chapters?.subject
       return {
         questionId: question.id,
         questionText: question.question_text,
         chapterId: question.chapter_id,
         chapterTitle: question.mukimuki_chapters?.title || '',
         chapterOrderNum: question.mukimuki_chapters?.order_num || 0,
+        subjectId: question.mukimuki_chapters?.subject_id || 0,
+        subjectName: subjectData?.name || '',
+        subjectDisplayOrder: subjectData?.display_order || 0,
         studentResults,
       }
     })

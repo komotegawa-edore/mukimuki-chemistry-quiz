@@ -14,6 +14,9 @@ interface QuestionMasteryData {
   chapterId: number
   chapterTitle: string
   chapterOrderNum: number
+  subjectId: number
+  subjectName: string
+  subjectDisplayOrder: number
   studentResults: Record<string, StudentResult>
 }
 
@@ -31,6 +34,7 @@ export default function QuestionMasteryTable() {
   const [data, setData] = useState<MasteryResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedSubject, setSelectedSubject] = useState<number | 'all'>('all')
   const [selectedChapter, setSelectedChapter] = useState<number | 'all'>('all')
 
   useEffect(() => {
@@ -69,16 +73,37 @@ export default function QuestionMasteryTable() {
     )
   }
 
-  // 章でフィルタリング
+  // 教科でフィルタリング
+  let filteredBySubject = data.questions
+  if (selectedSubject !== 'all') {
+    filteredBySubject = data.questions.filter((q) => q.subjectId === selectedSubject)
+  }
+
+  // 章でさらにフィルタリング
   const filteredQuestions =
     selectedChapter === 'all'
-      ? data.questions
-      : data.questions.filter((q) => q.chapterId === selectedChapter)
+      ? filteredBySubject
+      : filteredBySubject.filter((q) => q.chapterId === selectedChapter)
 
-  // 章の一覧を取得（重複排除）
-  const chapters = Array.from(
+  // 教科の一覧を取得（重複排除）
+  const subjects = Array.from(
     new Map(
       data.questions.map((q) => [
+        q.subjectId,
+        {
+          id: q.subjectId,
+          name: q.subjectName,
+          displayOrder: q.subjectDisplayOrder,
+        },
+      ])
+    ).values()
+  ).sort((a, b) => a.displayOrder - b.displayOrder)
+
+  // 章の一覧を取得（選択された教科でフィルタリング）
+  const chaptersToShow = selectedSubject === 'all' ? data.questions : filteredBySubject
+  const chapters = Array.from(
+    new Map(
+      chaptersToShow.map((q) => [
         q.chapterId,
         {
           id: q.chapterId,
@@ -98,28 +123,53 @@ export default function QuestionMasteryTable() {
 
   return (
     <div className="space-y-4">
-      {/* 章選択フィルター */}
-      <div className="flex items-center gap-4">
-        <label htmlFor="chapter-filter" className="font-semibold text-black">
-          章でフィルター:
-        </label>
-        <select
-          id="chapter-filter"
-          value={selectedChapter}
-          onChange={(e) =>
-            setSelectedChapter(
-              e.target.value === 'all' ? 'all' : parseInt(e.target.value)
-            )
-          }
-          className="px-3 py-2 border border-gray-300 rounded-lg text-black bg-white"
-        >
-          <option value="all">すべての章</option>
-          {chapters.map((chapter) => (
-            <option key={chapter.id} value={chapter.id}>
-              {chapter.title}
-            </option>
-          ))}
-        </select>
+      {/* フィルター */}
+      <div className="flex flex-wrap items-center gap-4">
+        <div className="flex items-center gap-2">
+          <label htmlFor="subject-filter" className="font-semibold text-black">
+            教科:
+          </label>
+          <select
+            id="subject-filter"
+            value={selectedSubject}
+            onChange={(e) => {
+              setSelectedSubject(
+                e.target.value === 'all' ? 'all' : parseInt(e.target.value)
+              )
+              setSelectedChapter('all') // 教科を変更したら章フィルタをリセット
+            }}
+            className="px-3 py-2 border border-gray-300 rounded-lg text-black bg-white"
+          >
+            <option value="all">すべて</option>
+            {subjects.map((subject) => (
+              <option key={subject.id} value={subject.id}>
+                {subject.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="chapter-filter" className="font-semibold text-black">
+            章:
+          </label>
+          <select
+            id="chapter-filter"
+            value={selectedChapter}
+            onChange={(e) =>
+              setSelectedChapter(
+                e.target.value === 'all' ? 'all' : parseInt(e.target.value)
+              )
+            }
+            className="px-3 py-2 border border-gray-300 rounded-lg text-black bg-white"
+          >
+            <option value="all">すべて</option>
+            {chapters.map((chapter) => (
+              <option key={chapter.id} value={chapter.id}>
+                {chapter.title}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* テーブル */}

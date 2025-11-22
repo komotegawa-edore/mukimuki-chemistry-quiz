@@ -13,6 +13,9 @@ interface ChapterMasteryData {
   chapterId: number
   chapterTitle: string
   chapterOrderNum: number
+  subjectId: number
+  subjectName: string
+  subjectDisplayOrder: number
   studentResults: Record<string, StudentResult>
 }
 
@@ -30,6 +33,7 @@ export default function ChapterMasteryTable() {
   const [data, setData] = useState<MasteryResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedSubject, setSelectedSubject] = useState<number | 'all'>('all')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,6 +71,26 @@ export default function ChapterMasteryTable() {
     )
   }
 
+  // 教科でフィルタリング
+  const filteredChapters =
+    selectedSubject === 'all'
+      ? data.chapters
+      : data.chapters.filter((ch) => ch.subjectId === selectedSubject)
+
+  // 教科の一覧を取得（重複排除）
+  const subjects = Array.from(
+    new Map(
+      data.chapters.map((ch) => [
+        ch.subjectId,
+        {
+          id: ch.subjectId,
+          name: ch.subjectName,
+          displayOrder: ch.subjectDisplayOrder,
+        },
+      ])
+    ).values()
+  ).sort((a, b) => a.displayOrder - b.displayOrder)
+
   const getPercentageColor = (percentage: number, attempts: number) => {
     if (attempts === 0) return 'bg-gray-100 text-gray-400'
     if (percentage >= 80) return 'bg-green-100 text-green-700'
@@ -76,6 +100,30 @@ export default function ChapterMasteryTable() {
 
   return (
     <div className="space-y-4">
+      {/* 教科選択フィルター */}
+      <div className="flex items-center gap-4">
+        <label htmlFor="subject-filter" className="font-semibold text-black">
+          教科でフィルター:
+        </label>
+        <select
+          id="subject-filter"
+          value={selectedSubject}
+          onChange={(e) =>
+            setSelectedSubject(
+              e.target.value === 'all' ? 'all' : parseInt(e.target.value)
+            )
+          }
+          className="px-3 py-2 border border-gray-300 rounded-lg text-black bg-white"
+        >
+          <option value="all">すべての教科</option>
+          {subjects.map((subject) => (
+            <option key={subject.id} value={subject.id}>
+              {subject.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {/* テーブル */}
       <div className="overflow-x-auto border border-gray-200 rounded-lg">
         <table className="w-full text-sm">
@@ -84,7 +132,7 @@ export default function ChapterMasteryTable() {
               <th className="px-4 py-3 text-left font-semibold text-black border-r border-gray-200 sticky left-0 bg-gray-50 z-10 min-w-[150px]">
                 生徒名
               </th>
-              {data.chapters.map((chapter) => (
+              {filteredChapters.map((chapter) => (
                 <th
                   key={chapter.chapterId}
                   className="px-3 py-3 text-center font-semibold text-black border-l border-gray-200 min-w-[100px]"
@@ -100,7 +148,7 @@ export default function ChapterMasteryTable() {
             {data.students.length === 0 ? (
               <tr>
                 <td
-                  colSpan={1 + data.chapters.length}
+                  colSpan={1 + filteredChapters.length}
                   className="px-4 py-8 text-center text-gray-500"
                 >
                   生徒がいません
@@ -112,7 +160,7 @@ export default function ChapterMasteryTable() {
                   <td className="px-4 py-3 text-sm text-black border-r border-gray-200 sticky left-0 bg-white font-medium">
                     {student.name}
                   </td>
-                  {data.chapters.map((chapter) => {
+                  {filteredChapters.map((chapter) => {
                     const result = chapter.studentResults[student.id]
                     return (
                       <td

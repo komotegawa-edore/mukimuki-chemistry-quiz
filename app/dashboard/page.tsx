@@ -54,6 +54,27 @@ export default async function DashboardPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* ガイドへのリンク */}
+        <div className="mb-8">
+          <Link
+            href="/dashboard/guide"
+            className="block bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                  <span>📚</span>
+                  問題管理ガイド
+                </h2>
+                <p className="text-green-50 text-sm">
+                  CSV一括インポート、問題の管理方法、定着率の見方などを解説
+                </p>
+              </div>
+              <span className="text-white text-2xl">→</span>
+            </div>
+          </Link>
+        </div>
+
         <div className="mb-8">
           <CSVImport />
         </div>
