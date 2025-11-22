@@ -28,11 +28,12 @@ export default function SubjectChaptersPage() {
         if (subjectError) throw subjectError
         setSubject(subjectData)
 
-        // 章一覧を取得
+        // 章一覧を取得（公開済みのみ）
         const { data: chaptersData, error: chaptersError } = await supabase
           .from('mukimuki_chapters')
           .select('*')
           .eq('subject_id', subjectId)
+          .eq('is_published', true)
           .order('order_num')
 
         if (chaptersError) throw chaptersError

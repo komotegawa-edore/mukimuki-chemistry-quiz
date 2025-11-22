@@ -28,6 +28,7 @@ export default async function HomePage() {
   const { data: chapters } = await supabase
     .from('mukimuki_chapters')
     .select('*, subject:mukimuki_subjects(*)')
+    .eq('is_published', true)
     .order('order_num', { ascending: true })
 
   // 生徒の結果を取得

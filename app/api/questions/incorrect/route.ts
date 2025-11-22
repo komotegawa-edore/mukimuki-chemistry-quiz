@@ -53,6 +53,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json([])
     }
 
+    // 公開済みの章IDを取得
+    const { data: publishedChapters } = await supabase
+      .from('mukimuki_chapters')
+      .select('id')
+      .eq('is_published', true)
+
+    const publishedChapterIds = new Set(
+      publishedChapters?.map((ch) => ch.id) || []
+    )
+
     // 問題の詳細を取得（章と科目の情報も含む）
     const { data: questions, error: questionsError } = await supabase
       .from('mukimuki_questions')
@@ -68,6 +78,12 @@ export async function GET(request: NextRequest) {
 
     // 各問題について、ユーザーが間違えたかどうかをチェック
     const actualIncorrectQuestions = questions?.filter((question) => {
+      // 章が公開されているかチェック
+      const chapterData = question.mukimuki_chapters as { id: number } | null
+      if (!chapterData || !publishedChapterIds.has(chapterData.id)) {
+        return false
+      }
+
       let hasIncorrect = false
 
       results?.forEach((result) => {
