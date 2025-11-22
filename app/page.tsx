@@ -31,6 +31,17 @@ export default async function HomePage() {
     .eq('user_id', profile.id)
     .order('created_at', { ascending: false })
 
+  // 今日クリアした章を取得
+  const { data: clearedToday } = await supabase
+    .from('mukimuki_chapter_clears')
+    .select('chapter_id')
+    .eq('user_id', profile.id)
+    .eq('cleared_date', new Date().toISOString().split('T')[0])
+
+  const clearedTodayIds = new Set(
+    clearedToday?.map((c) => c.chapter_id) || []
+  )
+
   // 章ごとの最新結果を取得
   const latestResults = new Map<number, { score: number; total: number }>()
   results?.forEach((result) => {
@@ -122,13 +133,21 @@ export default async function HomePage() {
             const percentage = result
               ? Math.round((result.score / result.total) * 100)
               : null
+            const canEarnPoints = !clearedTodayIds.has(chapter.id)
 
             return (
               <Link
                 key={chapter.id}
                 href={`/quiz/${chapter.id}`}
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                className="relative bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow overflow-hidden"
               >
+                {/* ポイント獲得可能バッジ */}
+                {canEarnPoints && (
+                  <div className="absolute top-0 right-0 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg shadow-md">
+                    +1pt獲得可能
+                  </div>
+                )}
+
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-semibold text-lg text-black">{chapter.title}</h3>
                   <span className="text-sm text-black">

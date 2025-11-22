@@ -21,6 +21,12 @@ const config: Config = {
       animation: {
         'slide-in-right': 'slide-in-right 0.5s ease-out',
       },
+      transformStyle: {
+        '3d': 'preserve-3d',
+      },
+      backfaceVisibility: {
+        hidden: 'hidden',
+      },
     },
   },
   plugins: [],
