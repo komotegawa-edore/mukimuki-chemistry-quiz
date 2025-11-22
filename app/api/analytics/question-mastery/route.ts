@@ -120,7 +120,11 @@ export async function GET() {
         }
       })
 
-      const subjectData = question.mukimuki_chapters?.subject
+      const rawSubject = question.mukimuki_chapters?.subject
+      const subjectData = Array.isArray(rawSubject)
+        ? rawSubject[0]
+        : rawSubject
+
       return {
         questionId: question.id,
         questionText: question.question_text,

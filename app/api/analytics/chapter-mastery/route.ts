@@ -103,7 +103,10 @@ export async function GET() {
         }
       })
 
-      const subjectData = chapter.subject as { id: number; name: string; display_order: number } | null
+      const subjectData = Array.isArray(chapter.subject)
+        ? chapter.subject[0]
+        : chapter.subject as { id: number; name: string; display_order: number } | null
+
       return {
         chapterId: chapter.id,
         chapterTitle: chapter.title,
