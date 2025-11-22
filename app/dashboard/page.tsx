@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
 import CSVImport from '@/components/CSVImport'
+import DashboardContent from '@/components/DashboardContent'
 
 export default async function DashboardPage() {
   const profile = await getCurrentProfile()
@@ -17,10 +18,16 @@ export default async function DashboardPage() {
 
   const supabase = await createClient()
 
-  // 全章を取得
+  // 教科一覧を取得
+  const { data: subjects } = await supabase
+    .from('mukimuki_subjects')
+    .select('*')
+    .order('display_order')
+
+  // 全章を取得（教科情報も含む）
   const { data: chapters } = await supabase
     .from('mukimuki_chapters')
-    .select('*')
+    .select('*, subject:mukimuki_subjects(*)')
     .order('order_num')
 
   const handleLogout = async () => {
@@ -53,23 +60,10 @@ export default async function DashboardPage() {
 
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 text-black">章管理</h2>
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {chapters?.map((chapter) => (
-                <Link
-                  key={chapter.id}
-                  href={`/dashboard/questions/${chapter.id}`}
-                  className="p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all"
-                >
-                  <div className="flex justify-between items-start">
-                    <h3 className="font-semibold text-black">{chapter.title}</h3>
-                    <span className="text-sm text-black">#{chapter.order_num}</span>
-                  </div>
-                  <p className="text-sm text-blue-600 mt-2">問題を管理 →</p>
-                </Link>
-              ))}
-            </div>
-          </div>
+          <DashboardContent
+            subjects={subjects || []}
+            chapters={chapters || []}
+          />
         </div>
 
         <div className="mb-8">

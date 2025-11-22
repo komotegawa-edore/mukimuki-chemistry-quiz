@@ -103,6 +103,7 @@ export interface Database {
           choice_d_image_url: string | null
           explanation_image_url: string | null
           media_type: 'text' | 'image' | 'audio' | 'mixed'
+          is_published: boolean
           updated_by: string | null
           created_at: string
           updated_at: string
@@ -125,6 +126,7 @@ export interface Database {
           choice_d_image_url?: string | null
           explanation_image_url?: string | null
           media_type?: 'text' | 'image' | 'audio' | 'mixed'
+          is_published?: boolean
           updated_by?: string | null
           created_at?: string
           updated_at?: string
@@ -147,6 +149,7 @@ export interface Database {
           choice_d_image_url?: string | null
           explanation_image_url?: string | null
           media_type?: 'text' | 'image' | 'audio' | 'mixed'
+          is_published?: boolean
           updated_by?: string | null
           created_at?: string
           updated_at?: string

@@ -7,10 +7,31 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const chapterId = searchParams.get('chapterId')
 
+    // ユーザー情報を取得
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    // プロフィール情報を取得してロールを確認
+    let isTeacher = false
+    if (user) {
+      const { data: profile } = await supabase
+        .from('mukimuki_profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+      isTeacher = profile?.role === 'teacher'
+    }
+
     let query = supabase.from('mukimuki_questions').select('*').order('id', { ascending: true })
 
     if (chapterId) {
       query = query.eq('chapter_id', parseInt(chapterId))
+    }
+
+    // 生徒の場合は公開済み問題のみ取得
+    if (!isTeacher) {
+      query = query.eq('is_published', true)
     }
 
     const { data, error } = await query

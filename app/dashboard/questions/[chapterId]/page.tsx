@@ -92,6 +92,23 @@ export default function QuestionsManagePage({
     }
   }
 
+  const handleTogglePublish = async (question: Question) => {
+    try {
+      const response = await fetch(`/api/questions/${question.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          is_published: !question.is_published,
+        }),
+      })
+      if (!response.ok) throw new Error('Failed to toggle publish status')
+      fetchQuestions()
+    } catch (err) {
+      alert('公開状態の切り替えに失敗しました')
+      console.error(err)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -162,10 +179,33 @@ export default function QuestionsManagePage({
             {questions.map((question, index) => (
               <div key={question.id} className="bg-white rounded-lg shadow-md p-6">
                 <div className="flex justify-between items-start mb-4">
-                  <h3 className="font-semibold text-lg text-black">
-                    問題 {index + 1}: {question.question_text}
-                  </h3>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="font-semibold text-lg text-black">
+                        問題 {index + 1}: {question.question_text}
+                      </h3>
+                      {question.is_published ? (
+                        <span className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                          公開中
+                        </span>
+                      ) : (
+                        <span className="inline-block px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">
+                          非公開
+                        </span>
+                      )}
+                    </div>
+                  </div>
                   <div className="flex gap-2">
+                    <button
+                      onClick={() => handleTogglePublish(question)}
+                      className={`px-3 py-1 rounded text-sm font-medium ${
+                        question.is_published
+                          ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          : 'bg-green-100 text-green-700 hover:bg-green-200'
+                      }`}
+                    >
+                      {question.is_published ? '非公開にする' : '公開する'}
+                    </button>
                     <button
                       onClick={() => setEditingQuestion(question)}
                       className="px-3 py-1 text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
