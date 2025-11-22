@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Question, Answer } from '@/lib/types/database'
+import { Question, Answer, MediaType } from '@/lib/types/database'
+import MediaUploadField from './MediaUploadField'
 
 interface QuestionEditorProps {
   question?: Question
@@ -24,6 +25,14 @@ export default function QuestionEditor({
     choice_d: question?.choice_d || '',
     correct_answer: question?.correct_answer || ('A' as Answer),
     explanation: question?.explanation || '',
+    media_type: question?.media_type || ('text' as MediaType),
+    question_image_url: question?.question_image_url || null,
+    question_audio_url: question?.question_audio_url || null,
+    choice_a_image_url: question?.choice_a_image_url || null,
+    choice_b_image_url: question?.choice_b_image_url || null,
+    choice_c_image_url: question?.choice_c_image_url || null,
+    choice_d_image_url: question?.choice_d_image_url || null,
+    explanation_image_url: question?.explanation_image_url || null,
   })
   const [isSaving, setIsSaving] = useState(false)
 
@@ -59,6 +68,21 @@ export default function QuestionEditor({
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
+              <label className="block text-sm font-semibold mb-2 text-black">問題タイプ</label>
+              <select
+                name="media_type"
+                value={formData.media_type}
+                onChange={handleChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="text">テキストのみ</option>
+                <option value="image">画像あり（有機化学など）</option>
+                <option value="audio">音声あり（リスニング）</option>
+                <option value="mixed">複合（画像+音声）</option>
+              </select>
+            </div>
+
+            <div>
               <label className="block text-sm font-semibold mb-2 text-black">問題文</label>
               <textarea
                 name="question_text"
@@ -71,7 +95,33 @@ export default function QuestionEditor({
               />
             </div>
 
-            <div>
+            {/* 問題文の画像 */}
+            {(formData.media_type === 'image' || formData.media_type === 'mixed') && (
+              <MediaUploadField
+                label="問題文の画像（構造式など）"
+                mediaType="image"
+                currentUrl={formData.question_image_url}
+                onUpload={(url) => setFormData({ ...formData, question_image_url: url })}
+                onDelete={() => setFormData({ ...formData, question_image_url: null })}
+                questionId={question?.id || null}
+                fieldName="question_image"
+              />
+            )}
+
+            {/* 問題文の音声 */}
+            {(formData.media_type === 'audio' || formData.media_type === 'mixed') && (
+              <MediaUploadField
+                label="問題文の音声"
+                mediaType="audio"
+                currentUrl={formData.question_audio_url}
+                onUpload={(url) => setFormData({ ...formData, question_audio_url: url })}
+                onDelete={() => setFormData({ ...formData, question_audio_url: null })}
+                questionId={question?.id || null}
+                fieldName="question_audio"
+              />
+            )}
+
+            <div className="space-y-3">
               <label className="block text-sm font-semibold mb-2 text-black">選択肢 A</label>
               <input
                 type="text"
@@ -82,9 +132,20 @@ export default function QuestionEditor({
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="選択肢Aを入力"
               />
+              {formData.media_type === 'image' && (
+                <MediaUploadField
+                  label="選択肢Aの画像"
+                  mediaType="image"
+                  currentUrl={formData.choice_a_image_url}
+                  onUpload={(url) => setFormData({ ...formData, choice_a_image_url: url })}
+                  onDelete={() => setFormData({ ...formData, choice_a_image_url: null })}
+                  questionId={question?.id || null}
+                  fieldName="choice_a_image"
+                />
+              )}
             </div>
 
-            <div>
+            <div className="space-y-3">
               <label className="block text-sm font-semibold mb-2 text-black">選択肢 B</label>
               <input
                 type="text"
@@ -95,9 +156,20 @@ export default function QuestionEditor({
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="選択肢Bを入力"
               />
+              {formData.media_type === 'image' && (
+                <MediaUploadField
+                  label="選択肢Bの画像"
+                  mediaType="image"
+                  currentUrl={formData.choice_b_image_url}
+                  onUpload={(url) => setFormData({ ...formData, choice_b_image_url: url })}
+                  onDelete={() => setFormData({ ...formData, choice_b_image_url: null })}
+                  questionId={question?.id || null}
+                  fieldName="choice_b_image"
+                />
+              )}
             </div>
 
-            <div>
+            <div className="space-y-3">
               <label className="block text-sm font-semibold mb-2 text-black">選択肢 C</label>
               <input
                 type="text"
@@ -108,9 +180,20 @@ export default function QuestionEditor({
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="選択肢Cを入力"
               />
+              {formData.media_type === 'image' && (
+                <MediaUploadField
+                  label="選択肢Cの画像"
+                  mediaType="image"
+                  currentUrl={formData.choice_c_image_url}
+                  onUpload={(url) => setFormData({ ...formData, choice_c_image_url: url })}
+                  onDelete={() => setFormData({ ...formData, choice_c_image_url: null })}
+                  questionId={question?.id || null}
+                  fieldName="choice_c_image"
+                />
+              )}
             </div>
 
-            <div>
+            <div className="space-y-3">
               <label className="block text-sm font-semibold mb-2 text-black">選択肢 D</label>
               <input
                 type="text"
@@ -121,6 +204,17 @@ export default function QuestionEditor({
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="選択肢Dを入力"
               />
+              {formData.media_type === 'image' && (
+                <MediaUploadField
+                  label="選択肢Dの画像"
+                  mediaType="image"
+                  currentUrl={formData.choice_d_image_url}
+                  onUpload={(url) => setFormData({ ...formData, choice_d_image_url: url })}
+                  onDelete={() => setFormData({ ...formData, choice_d_image_url: null })}
+                  questionId={question?.id || null}
+                  fieldName="choice_d_image"
+                />
+              )}
             </div>
 
             <div>
@@ -139,7 +233,7 @@ export default function QuestionEditor({
               </select>
             </div>
 
-            <div>
+            <div className="space-y-3">
               <label className="block text-sm font-semibold mb-2 text-black">解説（任意）</label>
               <textarea
                 name="explanation"
@@ -148,6 +242,15 @@ export default function QuestionEditor({
                 rows={3}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="解答の解説を入力してください（省略可）"
+              />
+              <MediaUploadField
+                label="解説の画像"
+                mediaType="image"
+                currentUrl={formData.explanation_image_url}
+                onUpload={(url) => setFormData({ ...formData, explanation_image_url: url })}
+                onDelete={() => setFormData({ ...formData, explanation_image_url: null })}
+                questionId={question?.id || null}
+                fieldName="explanation_image"
               />
             </div>
 

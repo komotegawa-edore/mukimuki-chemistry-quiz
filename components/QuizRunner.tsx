@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Question, Answer } from '@/lib/types/database'
 
 interface QuizRunnerProps {
@@ -27,9 +28,30 @@ export default function QuizRunner({
   const currentQuestion = questions[currentIndex]
   const isLastQuestion = currentIndex === questions.length - 1
 
+  // 音声のプリロード
+  useEffect(() => {
+    if (currentQuestion.question_audio_url) {
+      const audio = new Audio(currentQuestion.question_audio_url)
+      audio.preload = 'auto'
+    }
+  }, [currentQuestion])
+
   const handleAnswerSelect = (answer: Answer) => {
     if (!showAnswer) {
       setSelectedAnswer(answer)
+    }
+  }
+
+  const getChoiceImageUrl = (choice: Answer): string | null => {
+    switch (choice) {
+      case 'A':
+        return currentQuestion.choice_a_image_url
+      case 'B':
+        return currentQuestion.choice_b_image_url
+      case 'C':
+        return currentQuestion.choice_c_image_url
+      case 'D':
+        return currentQuestion.choice_d_image_url
     }
   }
 
@@ -126,7 +148,26 @@ export default function QuizRunner({
 
       <div className="bg-white rounded-lg shadow-md p-8">
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-6 text-black">{currentQuestion.question_text}</h2>
+          <h2 className="text-xl font-semibold mb-4 text-black">{currentQuestion.question_text}</h2>
+
+          {/* 問題文の画像 */}
+          {currentQuestion.question_image_url && (
+            <div className="mb-6 relative w-full bg-gray-50 rounded-lg border border-gray-200 overflow-hidden" style={{ minHeight: '300px' }}>
+              <Image
+                src={currentQuestion.question_image_url}
+                alt="問題の画像"
+                fill
+                className="object-contain p-4"
+              />
+            </div>
+          )}
+
+          {/* 問題文の音声 */}
+          {currentQuestion.question_audio_url && (
+            <div className="mb-6">
+              <audio src={currentQuestion.question_audio_url} controls className="w-full" />
+            </div>
+          )}
 
           <div className="space-y-3">
             {(['A', 'B', 'C', 'D'] as Answer[]).map((choice) => {
@@ -148,6 +189,8 @@ export default function QuizRunner({
                 bgColor = 'bg-blue-50'
               }
 
+              const choiceImageUrl = getChoiceImageUrl(choice)
+
               return (
                 <button
                   key={choice}
@@ -157,17 +200,33 @@ export default function QuizRunner({
                     !showAnswer && !isSelected ? 'hover:border-gray-300' : ''
                   } ${showAnswer ? 'cursor-default' : ''}`}
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="font-semibold mr-2">{choice}.</span>
-                      {getChoiceLabel(choice)}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <div className="mb-2">
+                        <span className="font-semibold mr-2">{choice}.</span>
+                        {getChoiceLabel(choice)}
+                      </div>
+
+                      {/* 選択肢の画像 */}
+                      {choiceImageUrl && (
+                        <div className="relative w-full bg-white rounded border border-gray-200 overflow-hidden" style={{ height: '150px' }}>
+                          <Image
+                            src={choiceImageUrl}
+                            alt={`選択肢${choice}の画像`}
+                            fill
+                            className="object-contain p-2"
+                          />
+                        </div>
+                      )}
                     </div>
-                    {showAnswer && isCorrect && (
-                      <span className="text-green-600 font-semibold">✓ 正解</span>
-                    )}
-                    {showAnswer && isSelected && !isCorrect && (
-                      <span className="text-red-600 font-semibold">✗ 不正解</span>
-                    )}
+                    <div className="flex-shrink-0">
+                      {showAnswer && isCorrect && (
+                        <span className="text-green-600 font-semibold">✓ 正解</span>
+                      )}
+                      {showAnswer && isSelected && !isCorrect && (
+                        <span className="text-red-600 font-semibold">✗ 不正解</span>
+                      )}
+                    </div>
                   </div>
                 </button>
               )
@@ -175,10 +234,22 @@ export default function QuizRunner({
           </div>
         </div>
 
-        {showAnswer && currentQuestion.explanation && (
+        {showAnswer && (currentQuestion.explanation || currentQuestion.explanation_image_url) && (
           <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
             <h3 className="font-semibold text-blue-900 mb-2">解説</h3>
-            <p className="text-blue-800">{currentQuestion.explanation}</p>
+            {currentQuestion.explanation && (
+              <p className="text-blue-800 mb-3">{currentQuestion.explanation}</p>
+            )}
+            {currentQuestion.explanation_image_url && (
+              <div className="relative w-full bg-white rounded border border-blue-200 overflow-hidden" style={{ minHeight: '200px' }}>
+                <Image
+                  src={currentQuestion.explanation_image_url}
+                  alt="解説の画像"
+                  fill
+                  className="object-contain p-2"
+                />
+              </div>
+            )}
           </div>
         )}
 
