@@ -28,6 +28,21 @@ export async function POST() {
       )
     }
 
+    // 連続ログイン日数を更新
+    const { data: streakData, error: streakError } = await supabase.rpc(
+      'update_login_streak',
+      {
+        target_user_id: user.id,
+      }
+    )
+
+    if (streakError) {
+      console.error('Failed to update login streak:', streakError)
+    }
+
+    const currentStreak = streakData?.[0]?.current_streak || 0
+    const isNewRecord = streakData?.[0]?.is_new_record || false
+
     // ログインボーナスを付与（1日1回のみ）
     const { error: bonusError } = await supabase
       .from('mukimuki_login_bonuses')
@@ -38,15 +53,29 @@ export async function POST() {
 
     // UNIQUE制約違反（すでに今日獲得済み）の場合はエラーを無視
     if (!bonusError) {
+      // バッジ獲得判定
+      const { data: newBadges } = await supabase.rpc('check_and_award_badges', {
+        target_user_id: user.id,
+      })
+
       return NextResponse.json({
         awarded: true,
         points: 3,
         message: 'Login bonus awarded!',
+        newBadges: newBadges || [],
+        streak: {
+          current: currentStreak,
+          isNewRecord: isNewRecord,
+        },
       })
     } else if (bonusError.code === '23505') {
       return NextResponse.json({
         awarded: false,
         message: 'Already received today',
+        streak: {
+          current: currentStreak,
+          isNewRecord: false,
+        },
       })
     } else {
       console.error('Failed to award login bonus:', bonusError)

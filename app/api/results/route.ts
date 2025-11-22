@@ -69,6 +69,7 @@ export async function POST(request: NextRequest) {
 
     // 100%達成の場合、ポイントを付与（1日1回のみ）
     let pointsAwarded = false
+    let newBadges: any[] = []
     if (score === total && score > 0) {
       const { error: pointError } = await supabase
         .from('mukimuki_chapter_clears')
@@ -81,10 +82,21 @@ export async function POST(request: NextRequest) {
       // UNIQUE制約違反（すでに今日獲得済み）の場合はエラーを無視
       if (!pointError || pointError.code === '23505') {
         pointsAwarded = !pointError
+
+        // ポイントを獲得した場合、バッジチェック
+        if (pointsAwarded) {
+          const { data: badges } = await supabase.rpc('check_and_award_badges', {
+            target_user_id: user.id,
+          })
+          newBadges = badges || []
+        }
       }
     }
 
-    return NextResponse.json({ ...data, pointsAwarded }, { status: 201 })
+    return NextResponse.json(
+      { ...data, pointsAwarded, newBadges },
+      { status: 201 }
+    )
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to create result' },
