@@ -53,10 +53,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json([])
     }
 
-    // 問題の詳細を取得
+    // 問題の詳細を取得（章と科目の情報も含む）
     const { data: questions, error: questionsError } = await supabase
       .from('mukimuki_questions')
-      .select('*, mukimuki_chapters(id, title, order_num)')
+      .select('*, mukimuki_chapters(id, title, order_num, subject_id, subject:mukimuki_subjects(*))')
       .in('id', Array.from(incorrectQuestionIds))
 
     if (questionsError) {

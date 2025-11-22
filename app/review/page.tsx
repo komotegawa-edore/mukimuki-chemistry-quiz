@@ -11,6 +11,12 @@ interface QuestionWithChapter extends Question {
     id: number
     title: string
     order_num: number
+    subject_id: number
+    subject?: {
+      id: number
+      name: string
+      media_type: 'text' | 'image' | 'audio' | 'mixed'
+    }
   }
 }
 
@@ -205,44 +211,73 @@ export default function ReviewPage() {
                 </ul>
               </div>
 
-              {/* 章ごとの内訳（選択された問題のみ） */}
+              {/* 科目・章ごとの内訳（選択された問題のみ） */}
               <div className="mb-6">
                 <h3 className="font-semibold text-black mb-3">
                   選択された問題の内訳（{selectedQuestions.length}問）
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-4">
                   {Object.entries(
                     selectedQuestions.reduce(
                       (acc, q) => {
-                        if (q.mukimuki_chapters) {
-                          const key = q.mukimuki_chapters.id
-                          if (!acc[key]) {
-                            acc[key] = {
+                        if (q.mukimuki_chapters?.subject) {
+                          const subjectId = q.mukimuki_chapters.subject.id
+                          const chapterId = q.mukimuki_chapters.id
+
+                          if (!acc[subjectId]) {
+                            acc[subjectId] = {
+                              name: q.mukimuki_chapters.subject.name,
+                              displayOrder: subjectId,
+                              chapters: {},
+                            }
+                          }
+
+                          if (!acc[subjectId].chapters[chapterId]) {
+                            acc[subjectId].chapters[chapterId] = {
                               title: q.mukimuki_chapters.title,
                               count: 0,
                               orderNum: q.mukimuki_chapters.order_num,
                             }
                           }
-                          acc[key].count++
+
+                          acc[subjectId].chapters[chapterId].count++
                         }
                         return acc
                       },
                       {} as Record<
                         number,
-                        { title: string; count: number; orderNum: number }
+                        {
+                          name: string
+                          displayOrder: number
+                          chapters: Record<
+                            number,
+                            { title: string; count: number; orderNum: number }
+                          >
+                        }
                       >
                     )
                   )
-                    .sort(([, a], [, b]) => a.orderNum - b.orderNum)
-                    .map(([id, { title, count }]) => (
-                      <div
-                        key={id}
-                        className="flex justify-between items-center p-3 bg-gray-50 rounded border border-gray-200"
-                      >
-                        <span className="text-sm text-black">{title}</span>
-                        <span className="text-sm font-semibold text-blue-600">
-                          {count}問
-                        </span>
+                    .sort(([, a], [, b]) => a.displayOrder - b.displayOrder)
+                    .map(([subjectId, { name, chapters }]) => (
+                      <div key={subjectId} className="border border-gray-200 rounded-lg overflow-hidden">
+                        <div className="bg-gray-100 px-4 py-2">
+                          <h4 className="font-semibold text-black">{name}</h4>
+                        </div>
+                        <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {Object.entries(chapters)
+                            .sort(([, a], [, b]) => a.orderNum - b.orderNum)
+                            .map(([chapterId, { title, count }]) => (
+                              <div
+                                key={chapterId}
+                                className="flex justify-between items-center p-3 bg-gray-50 rounded border border-gray-200"
+                              >
+                                <span className="text-sm text-black">{title}</span>
+                                <span className="text-sm font-semibold text-blue-600">
+                                  {count}問
+                                </span>
+                              </div>
+                            ))}
+                        </div>
                       </div>
                     ))}
                 </div>

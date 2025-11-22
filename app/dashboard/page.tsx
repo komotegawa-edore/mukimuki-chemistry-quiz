@@ -59,7 +59,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-black">章管理</h2>
+          <h2 className="text-xl font-semibold mb-4 text-black">問題管理</h2>
           <DashboardContent
             subjects={subjects || []}
             chapters={chapters || []}
