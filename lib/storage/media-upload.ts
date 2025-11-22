@@ -3,7 +3,7 @@
  * 画像・音声ファイルのアップロード・削除を管理
  */
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import type { Database } from '@/lib/types/database'
 
 export const STORAGE_BUCKET = 'question-media'
@@ -28,7 +28,7 @@ export async function uploadMediaFile(
   mediaType: MediaFileType,
   fieldName: string
 ): Promise<UploadResult> {
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClient()
 
   // ファイル拡張子を取得
   const fileExt = file.name.split('.').pop()
@@ -69,7 +69,7 @@ export async function uploadMediaFile(
 export async function deleteMediaFile(url: string): Promise<void> {
   if (!url) return
 
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClient()
 
   // URLからパスを抽出
   const path = extractPathFromUrl(url)
@@ -136,7 +136,7 @@ export async function moveTempFilesToPermanent(
   tempUrls: (string | null)[],
   questionId: number
 ): Promise<Record<string, string>> {
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClient()
   const urlMap: Record<string, string> = {}
 
   for (const url of tempUrls) {

@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { Database, Subject } from '@/lib/types/database'
+import { createClient } from '@/lib/supabase/client'
+import type { Subject } from '@/lib/types/database'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -10,7 +10,7 @@ export default function SubjectsPage() {
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [loading, setLoading] = useState(true)
   const router = useRouter()
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClient()
 
   useEffect(() => {
     async function fetchSubjects() {
