@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: '無機化学小テストアプリ',
-  description: '大学受験向け無機化学知識確認アプリ',
+  title: 'MUKIMUKI',
+  description: '大学受験向け学習アプリ',
 }
 
 export default function RootLayout({

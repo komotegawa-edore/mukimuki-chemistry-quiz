@@ -69,6 +69,16 @@ export async function POST(request: NextRequest) {
       choice_c,
       choice_d,
       correct_answer,
+      explanation,
+      media_type,
+      question_image_url,
+      question_audio_url,
+      choice_a_image_url,
+      choice_b_image_url,
+      choice_c_image_url,
+      choice_d_image_url,
+      explanation_image_url,
+      is_published,
     } = body
 
     const { data, error } = await supabase
@@ -81,6 +91,16 @@ export async function POST(request: NextRequest) {
         choice_c,
         choice_d,
         correct_answer,
+        explanation,
+        media_type: media_type || 'text',
+        question_image_url,
+        question_audio_url,
+        choice_a_image_url,
+        choice_b_image_url,
+        choice_c_image_url,
+        choice_d_image_url,
+        explanation_image_url,
+        is_published: is_published ?? true,
         updated_by: user.id,
       })
       .select()
