@@ -6,10 +6,20 @@ import PointsDisplay from './PointsDisplay'
 import BadgeDisplay from './BadgeDisplay'
 import StreakDisplay from './StreakDisplay'
 
+interface Subject {
+  id: number
+  name: string
+  description: string | null
+  media_type: 'text' | 'image' | 'audio' | 'mixed'
+  display_order: number
+}
+
 interface Chapter {
   id: number
   title: string
   order_num: number
+  subject_id: number
+  subject?: Subject
 }
 
 interface ChapterResult {
@@ -18,17 +28,46 @@ interface ChapterResult {
 }
 
 interface HomeContentProps {
+  subjects: Subject[]
   chapters: Chapter[]
   latestResults: Map<number, ChapterResult>
   clearedTodayIds: Set<number>
 }
 
 export default function HomeContent({
+  subjects,
   chapters,
   latestResults,
   clearedTodayIds,
 }: HomeContentProps) {
   const [activeTab, setActiveTab] = useState<'home' | 'quest'>('quest')
+  const [expandedSubjects, setExpandedSubjects] = useState<Set<number>>(
+    new Set([1]) // デフォルトで無機化学（id=1）を展開
+  )
+
+  const toggleSubject = (subjectId: number) => {
+    setExpandedSubjects((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(subjectId)) {
+        newSet.delete(subjectId)
+      } else {
+        newSet.add(subjectId)
+      }
+      return newSet
+    })
+  }
+
+  // 教科ごとに章をグループ化
+  const chaptersBySubject = chapters.reduce(
+    (acc, chapter) => {
+      if (!acc[chapter.subject_id]) {
+        acc[chapter.subject_id] = []
+      }
+      acc[chapter.subject_id].push(chapter)
+      return acc
+    },
+    {} as Record<number, Chapter[]>
+  )
 
   return (
     <>
@@ -83,73 +122,139 @@ export default function HomeContent({
               </Link>
             </div>
 
-            <h2 className="text-xl font-semibold mb-6 text-black">無機化学</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {chapters?.map((chapter) => {
-                const result = latestResults.get(chapter.id)
-                const percentage = result
-                  ? Math.round((result.score / result.total) * 100)
-                  : null
-                const canEarnPoints = !clearedTodayIds.has(chapter.id)
+            {/* 教科セクション */}
+            <div className="space-y-6">
+              {subjects.map((subject) => {
+                const subjectChapters = chaptersBySubject[subject.id] || []
+                const isExpanded = expandedSubjects.has(subject.id)
+                const isComingSoon = subject.id !== 1 // 無機化学以外は実装中
 
                 return (
-                  <Link
-                    key={chapter.id}
-                    href={`/quiz/${chapter.id}`}
-                    className="relative bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow overflow-hidden"
-                  >
-                    {/* ポイント獲得可能バッジ */}
-                    {canEarnPoints && (
-                      <div className="absolute top-0 right-0 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg shadow-md">
-                        +1pt獲得可能
-                      </div>
-                    )}
-
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-semibold text-lg text-black">
-                        {chapter.title}
-                      </h3>
-                      <span className="text-sm text-black">
-                        #{chapter.order_num}
-                      </span>
-                    </div>
-
-                    {percentage !== null && (
-                      <div className="mt-4">
-                        <div className="flex justify-between text-sm mb-1">
-                          <span className="text-black">前回の結果</span>
-                          <span
-                            className={`font-semibold ${
-                              percentage >= 80
-                                ? 'text-green-600'
-                                : percentage >= 60
-                                  ? 'text-yellow-600'
-                                  : 'text-red-600'
-                            }`}
-                          >
-                            {percentage}%
-                          </span>
+                  <div key={subject.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                    {/* 教科ヘッダー（トグル） */}
+                    <button
+                      onClick={() => toggleSubject(subject.id)}
+                      className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          <h2 className="text-xl font-semibold text-black">
+                            {subject.name}
+                          </h2>
+                          {isComingSoon && (
+                            <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">
+                              実装中
+                            </span>
+                          )}
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div
-                            className={`h-2 rounded-full ${
-                              percentage >= 80
-                                ? 'bg-green-500'
-                                : percentage >= 60
-                                  ? 'bg-yellow-500'
-                                  : 'bg-red-500'
-                            }`}
-                            style={{ width: `${percentage}%` }}
+                        {subject.description && (
+                          <p className="text-sm text-gray-600 hidden md:block">
+                            {subject.description}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm text-gray-600">
+                          {subjectChapters.length}章
+                        </span>
+                        <svg
+                          className={`w-5 h-5 text-gray-400 transition-transform ${
+                            isExpanded ? 'rotate-180' : ''
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
                           />
-                        </div>
+                        </svg>
+                      </div>
+                    </button>
+
+                    {/* 章一覧（展開時） */}
+                    {isExpanded && (
+                      <div className="px-6 pb-6">
+                        {subjectChapters.length === 0 ? (
+                          <div className="text-center py-8 text-gray-500">
+                            準備中です
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {subjectChapters.map((chapter) => {
+                              const result = latestResults.get(chapter.id)
+                              const percentage = result
+                                ? Math.round((result.score / result.total) * 100)
+                                : null
+                              const canEarnPoints = !clearedTodayIds.has(chapter.id)
+
+                              return (
+                                <Link
+                                  key={chapter.id}
+                                  href={`/quiz/${chapter.id}`}
+                                  className="relative bg-gray-50 rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow overflow-hidden border border-gray-200"
+                                >
+                                  {/* ポイント獲得可能バッジ */}
+                                  {canEarnPoints && (
+                                    <div className="absolute top-0 right-0 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg shadow-md">
+                                      +1pt獲得可能
+                                    </div>
+                                  )}
+
+                                  <div className="flex justify-between items-start mb-2">
+                                    <h3 className="font-semibold text-lg text-black">
+                                      {chapter.title}
+                                    </h3>
+                                    <span className="text-sm text-black">
+                                      #{chapter.order_num}
+                                    </span>
+                                  </div>
+
+                                  {percentage !== null && (
+                                    <div className="mt-4">
+                                      <div className="flex justify-between text-sm mb-1">
+                                        <span className="text-black">前回の結果</span>
+                                        <span
+                                          className={`font-semibold ${
+                                            percentage >= 80
+                                              ? 'text-green-600'
+                                              : percentage >= 60
+                                                ? 'text-yellow-600'
+                                                : 'text-red-600'
+                                          }`}
+                                        >
+                                          {percentage}%
+                                        </span>
+                                      </div>
+                                      <div className="w-full bg-gray-200 rounded-full h-2">
+                                        <div
+                                          className={`h-2 rounded-full ${
+                                            percentage >= 80
+                                              ? 'bg-green-500'
+                                              : percentage >= 60
+                                                ? 'bg-yellow-500'
+                                                : 'bg-red-500'
+                                          }`}
+                                          style={{ width: `${percentage}%` }}
+                                        />
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {percentage === null && (
+                                    <p className="text-sm text-black mt-4">未挑戦</p>
+                                  )}
+                                </Link>
+                              )
+                            })}
+                          </div>
+                        )}
                       </div>
                     )}
-
-                    {percentage === null && (
-                      <p className="text-sm text-black mt-4">未挑戦</p>
-                    )}
-                  </Link>
+                  </div>
                 )
               })}
             </div>

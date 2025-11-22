@@ -18,10 +18,16 @@ export default async function HomePage() {
     redirect('/dashboard')
   }
 
-  // 章一覧を取得
+  // 教科一覧を取得
+  const { data: subjects } = await supabase
+    .from('mukimuki_subjects')
+    .select('*')
+    .order('display_order', { ascending: true })
+
+  // 章一覧を取得（教科情報も含む）
   const { data: chapters } = await supabase
     .from('mukimuki_chapters')
-    .select('*')
+    .select('*, subject:mukimuki_subjects(*)')
     .order('order_num', { ascending: true })
 
   // 生徒の結果を取得
@@ -86,6 +92,7 @@ export default async function HomePage() {
       </header>
 
       <HomeContent
+        subjects={subjects || []}
         chapters={chapters || []}
         latestResults={latestResults}
         clearedTodayIds={clearedTodayIds}
