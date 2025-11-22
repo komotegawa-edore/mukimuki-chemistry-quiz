@@ -19,6 +19,7 @@ interface Chapter {
   title: string
   order_num: number
   subject_id: number
+  is_published: boolean
   subject?: Subject
 }
 

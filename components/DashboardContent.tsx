@@ -16,6 +16,7 @@ interface Chapter {
   title: string
   order_num: number
   subject_id: number
+  is_published: boolean
   subject?: Subject
 }
 
@@ -31,6 +32,7 @@ export default function DashboardContent({
   const [expandedSubjects, setExpandedSubjects] = useState<Set<number>>(
     new Set([1]) // デフォルトで無機化学を展開
   )
+  const [localChapters, setLocalChapters] = useState<Chapter[]>(chapters)
 
   const toggleSubject = (subjectId: number) => {
     setExpandedSubjects((prev) => {
@@ -44,8 +46,33 @@ export default function DashboardContent({
     })
   }
 
+  const handleToggleChapterPublish = async (chapter: Chapter) => {
+    try {
+      const response = await fetch(`/api/chapters/${chapter.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          is_published: !chapter.is_published,
+        }),
+      })
+      if (!response.ok) throw new Error('Failed to toggle publish status')
+
+      // ローカルステートを更新
+      setLocalChapters((prev) =>
+        prev.map((ch) =>
+          ch.id === chapter.id
+            ? { ...ch, is_published: !ch.is_published }
+            : ch
+        )
+      )
+    } catch (err) {
+      alert('公開状態の切り替えに失敗しました')
+      console.error(err)
+    }
+  }
+
   // 教科ごとに章をグループ化
-  const chaptersBySubject = chapters.reduce(
+  const chaptersBySubject = localChapters.reduce(
     (acc, chapter) => {
       if (!acc[chapter.subject_id]) {
         acc[chapter.subject_id] = []
@@ -119,17 +146,44 @@ export default function DashboardContent({
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {subjectChapters.map((chapter) => (
-                      <Link
+                      <div
                         key={chapter.id}
-                        href={`/dashboard/questions/${chapter.id}`}
-                        className="p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all bg-gray-50"
+                        className="p-4 border border-gray-200 rounded-lg bg-gray-50"
                       >
                         <div className="flex justify-between items-start mb-2">
-                          <h3 className="font-semibold text-black">{chapter.title}</h3>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold text-black">{chapter.title}</h3>
+                            {chapter.is_published ? (
+                              <span className="inline-block px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                公開中
+                              </span>
+                            ) : (
+                              <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-800 text-xs font-semibold rounded">
+                                非公開
+                              </span>
+                            )}
+                          </div>
                           <span className="text-sm text-gray-600">#{chapter.order_num}</span>
                         </div>
-                        <p className="text-sm text-blue-600 mt-2">問題を管理 →</p>
-                      </Link>
+                        <div className="flex gap-2 mt-3">
+                          <button
+                            onClick={() => handleToggleChapterPublish(chapter)}
+                            className={`flex-1 px-3 py-1.5 rounded text-xs font-medium ${
+                              chapter.is_published
+                                ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                : 'bg-green-100 text-green-700 hover:bg-green-200'
+                            }`}
+                          >
+                            {chapter.is_published ? '非公開にする' : '公開する'}
+                          </button>
+                          <Link
+                            href={`/dashboard/questions/${chapter.id}`}
+                            className="flex-1 px-3 py-1.5 bg-blue-600 text-white rounded text-xs font-medium hover:bg-blue-700 text-center"
+                          >
+                            問題を管理
+                          </Link>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 )}

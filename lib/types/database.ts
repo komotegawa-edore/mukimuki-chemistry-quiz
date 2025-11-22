@@ -67,6 +67,7 @@ export interface Database {
           subject_id: number
           title: string
           order_num: number
+          is_published: boolean
           created_at: string
         }
         Insert: {
@@ -74,6 +75,7 @@ export interface Database {
           subject_id: number
           title: string
           order_num: number
+          is_published?: boolean
           created_at?: string
         }
         Update: {
@@ -81,6 +83,7 @@ export interface Database {
           subject_id?: number
           title?: string
           order_num?: number
+          is_published?: boolean
           created_at?: string
         }
       }
