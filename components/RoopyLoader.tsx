@@ -1,20 +1,24 @@
 'use client'
 
+import Image from 'next/image'
+
 interface RoopyLoaderProps {
   message?: string
   size?: 'small' | 'medium' | 'large'
   fullScreen?: boolean
+  useVideo?: boolean
 }
 
 export default function RoopyLoader({
   message = '読み込み中...',
   size = 'medium',
   fullScreen = false,
+  useVideo = false,
 }: RoopyLoaderProps) {
   const sizeMap = {
-    small: 'w-24 h-24',
-    medium: 'w-32 h-32',
-    large: 'w-48 h-48',
+    small: { container: 'w-24 h-24', image: 96 },
+    medium: { container: 'w-32 h-32', image: 128 },
+    large: { container: 'w-48 h-48', image: 192 },
   }
 
   const containerClass = fullScreen
@@ -24,17 +28,27 @@ export default function RoopyLoader({
   return (
     <div className={containerClass}>
       <div className="flex flex-col items-center gap-4">
-        {/* Roopy動画 */}
-        <div className={`${sizeMap[size]} rounded-full overflow-hidden bg-white shadow-lg`}>
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-          >
-            <source src="/Roopy.mp4" type="video/mp4" />
-          </video>
+        {/* Roopy画像/動画 */}
+        <div className={`${sizeMap[size].container} rounded-full overflow-hidden bg-white shadow-lg animate-pulse`}>
+          {useVideo ? (
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source src="/Roopy.mp4" type="video/mp4" />
+            </video>
+          ) : (
+            <Image
+              src="/Roopy.png"
+              alt="Roopy"
+              width={sizeMap[size].image}
+              height={sizeMap[size].image}
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
 
         {/* ローディングメッセージ */}
