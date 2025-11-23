@@ -102,25 +102,25 @@ export default function CSVImport() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-lg font-semibold mb-4 text-black">CSV一括インポート</h3>
+    <div className="bg-white rounded-lg shadow-md p-6 border-2 border-[#E0F7F1]">
+      <h3 className="text-lg font-semibold mb-4 text-[#3A405A]">CSV一括インポート</h3>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-black mb-2">
+        <label className="block text-sm font-medium text-[#3A405A] mb-2">
           CSVファイルを選択
         </label>
         <input
           type="file"
           accept=".csv"
           onChange={handleFileChange}
-          className="block w-full text-sm text-black file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          className="block w-full text-sm text-[#3A405A] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#E0F7F1] file:text-[#5DDFC3] hover:file:bg-[#5DDFC3] hover:file:text-white transition-colors"
         />
-        <p className="text-xs text-black mt-1">
+        <p className="text-xs text-[#3A405A] opacity-70 mt-1">
           形式: UTF-8, カンマ区切り |{' '}
           <a
             href="/sample_questions.csv"
             download
-            className="text-blue-600 hover:underline"
+            className="text-[#5DDFC3] hover:underline font-medium"
           >
             サンプルをダウンロード
           </a>
@@ -129,24 +129,24 @@ export default function CSVImport() {
 
       {preview.length > 0 && (
         <div className="mb-4">
-          <h4 className="text-sm font-semibold mb-2 text-black">プレビュー（最初の5行）</h4>
-          <div className="overflow-x-auto border border-gray-200 rounded-lg">
-            <table className="min-w-full text-xs text-black">
-              <thead className="bg-gray-50">
+          <h4 className="text-sm font-semibold mb-2 text-[#3A405A]">プレビュー（最初の5行）</h4>
+          <div className="overflow-x-auto border-2 border-[#E0F7F1] rounded-lg">
+            <table className="min-w-full text-xs text-[#3A405A]">
+              <thead className="bg-[#F4F9F7]">
                 <tr>
-                  <th className="px-2 py-2 text-left text-black">章ID</th>
-                  <th className="px-2 py-2 text-left text-black">問題文</th>
-                  <th className="px-2 py-2 text-left text-black">選択肢A</th>
-                  <th className="px-2 py-2 text-left text-black">選択肢B</th>
-                  <th className="px-2 py-2 text-left text-black">選択肢C</th>
-                  <th className="px-2 py-2 text-left text-black">選択肢D</th>
-                  <th className="px-2 py-2 text-left text-black">正解</th>
-                  <th className="px-2 py-2 text-left text-black">解説</th>
+                  <th className="px-2 py-2 text-left text-[#3A405A]">章ID</th>
+                  <th className="px-2 py-2 text-left text-[#3A405A]">問題文</th>
+                  <th className="px-2 py-2 text-left text-[#3A405A]">選択肢A</th>
+                  <th className="px-2 py-2 text-left text-[#3A405A]">選択肢B</th>
+                  <th className="px-2 py-2 text-left text-[#3A405A]">選択肢C</th>
+                  <th className="px-2 py-2 text-left text-[#3A405A]">選択肢D</th>
+                  <th className="px-2 py-2 text-left text-[#3A405A]">正解</th>
+                  <th className="px-2 py-2 text-left text-[#3A405A]">解説</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-[#E0F7F1]">
                 {preview.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50">
+                  <tr key={idx} className="hover:bg-[#F4F9F7] transition-colors">
                     <td className="px-2 py-2">{row.chapter_id}</td>
                     <td className="px-2 py-2 max-w-xs truncate">{row.question_text}</td>
                     <td className="px-2 py-2 max-w-xs truncate">{row.choice_a}</td>
@@ -197,7 +197,7 @@ export default function CSVImport() {
         <button
           onClick={handleImport}
           disabled={!file || isImporting}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 bg-[#5DDFC3] text-white rounded-lg font-semibold hover:bg-[#4ECFB3] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isImporting ? 'インポート中...' : 'インポート'}
         </button>
@@ -210,7 +210,7 @@ export default function CSVImport() {
               setError(null)
             }}
             disabled={isImporting}
-            className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50 text-black"
+            className="px-4 py-2 bg-gray-200 text-[#3A405A] rounded-lg hover:bg-gray-300 disabled:opacity-50 transition-colors"
           >
             キャンセル
           </button>
