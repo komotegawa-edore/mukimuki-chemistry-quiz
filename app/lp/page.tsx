@@ -43,210 +43,187 @@ export default function LandingPage() {
             <span className="absolute -bottom-10 text-sm opacity-60">[ロゴ＋るーぴーのビジュアル]</span>
           </div>
 
-          <h2 className="text-3xl font-bold mt-16 mb-6 font-bold">
-            受験の森へ、ようこそ。
-          </h2>
-          <p className="mb-6 leading-relaxed">
-            志望校合格というゴールを目指す、長く険しい道のり。<br />
-            それはまるで、深く広大な森を冒険するようなものかもしれません。
-          </p>
-          <p className="mb-6 leading-relaxed">
-            Roopy（るーぴー）は、そんな「受験の森」を旅するあなたのためのナビゲーター。<br />
-            日々の学習を、少しのワクワクと、確かな達成感に変えていく。<br />
-            一人きりの孤独な戦いを、Roopyと一緒に「続けられる冒険」にしませんか？
-          </p>
-        </div>
-      </header>
-
-      {/* Why Section */}
-      <section className="max-w-[860px] mx-auto my-10 px-4">
-        <div className="bg-white rounded-2xl shadow-sm p-8 md:p-16">
-          <h2 className="text-3xl font-bold text-center mb-8 font-bold">
-            なぜ、受験勉強は続かないのでしょうか？
-          </h2>
-          <p className="mb-6 leading-relaxed">
-            「やらなきゃいけないのは分かっているけれど、やる気が出ない」<br />
-            「机に向かっても、集中が続かない」<br />
-            「昨日は頑張れたのに、今日はサボってしまった」
-          </p>
-          <p className="mb-6 leading-relaxed">
-            受験生なら誰もが抱える、継続の難しさ。<br />
-            それは決して、あなたの意志が弱いからではありません。<br />
-            成果が見えづらく、孤独で、単調な作業の繰り返しになりがちだからです。
-          </p>
-
-          <div className="bg-[#E0F7F1] p-8 rounded-2xl text-center font-bold text-xl my-10">
-            Roopyは、そんな「続かない」悩みを解決するために生まれました。
-          </div>
-
-          <p className="mb-6 leading-relaxed">
-            学習をゲームのように直感的に、テンポよく。<br />
-            毎日の小さな積み重ねを、目に見える成果として記録する。<br />
-            Roopyは、あなたの「今日も勉強できた！」という達成感を何よりも大切にする、新しい学習アプリです。
-          </p>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="max-w-[860px] mx-auto my-10 px-4">
-        <div className="bg-white rounded-2xl shadow-sm p-8 md:p-16">
-          <h2 className="text-3xl font-bold text-center mb-8 font-bold">
-            まずは、ここから。確実な一歩を。
-          </h2>
-          <p className="text-center mb-12 leading-relaxed">
-            Roopyはまだ生まれたばかり。<br />
-            まずは、受験生がつまずきやすい分野から、しっかりとサポートします。
-          </p>
-
-          <h3 className="text-2xl font-bold text-[#5DDFC3] mt-12 mb-4 font-bold">
-            🧪 無機化学テスト
-          </h3>
-          <p className="mb-6 leading-relaxed">
-            暗記量が多く、後回しにしがちな無機化学。<br />
-            Roopyなら、1問1答のクイズ形式で、ゲーム感覚でサクサク進められます。
-          </p>
-
-          <div className="space-y-5">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-[#F4F9F7] rounded-full flex items-center justify-center text-2xl flex-shrink-0">
-                🎮
-              </div>
-              <div>
-                <strong className="block text-lg mb-1">テンポの良いUI</strong>
-                <p>ストレスなく、次々と問題を解いていける心地よい操作感。</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-[#F4F9F7] rounded-full flex items-center justify-center text-2xl flex-shrink-0">
-                🔄
-              </div>
-              <div>
-                <strong className="block text-lg mb-1">復習・履歴管理</strong>
-                <p>間違えた問題だけを効率よく解き直せるので、知識が確実に定着します。</p>
-              </div>
-            </div>
-          </div>
-
-          <h3 className="text-2xl font-bold text-[#5DDFC3] mt-12 mb-4 font-bold">
-            📈 記録 × モチベーション
-          </h3>
-          <p className="mb-6 leading-relaxed">
-            「今日も頑張った」という証を、Roopyは逃しません。
-          </p>
-
-          <div className="space-y-5">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-[#F4F9F7] rounded-full flex items-center justify-center text-2xl flex-shrink-0">
-                💰
-              </div>
-              <div>
-                <strong className="block text-lg mb-1">ポイント機能</strong>
-                <p>学習するたびにポイントが貯まる。日々の努力が数字で見える楽しさを。</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-[#F4F9F7] rounded-full flex items-center justify-center text-2xl flex-shrink-0">
-                🏆
-              </div>
-              <div>
-                <strong className="block text-lg mb-1">ランキング機能</strong>
-                <p>同じ志を持つライバルたちと、切磋琢磨できる（※匿名で参加できます）。</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-[#F4F9F7] rounded-full flex items-center justify-center text-2xl flex-shrink-0">
-                🎁
-              </div>
-              <div>
-                <strong className="block text-lg mb-1">ログインボーナス</strong>
-                <p>アプリを開くだけで、小さなご褒美が。毎日の習慣化を後押しします。</p>
-              </div>
-            </div>
-          </div>
-
-          <p className="text-center mt-12 leading-relaxed">
-            これだけでも、苦手な分野の克服と、学習習慣の定着が確実に前進します。
-          </p>
-        </div>
-      </section>
-
-      {/* Coming Soon Sections */}
-      <section className="max-w-[860px] mx-auto my-10 px-4">
-        <h2 className="text-3xl font-bold text-center mb-8 font-bold">
-          冒険の世界は、まもなく広がります。
-        </h2>
-        <p className="text-center mb-12 leading-relaxed">
-          Roopyは、あなたと一緒に成長していくアプリです。<br />
-          近日中に、以下の機能が解放される予定です。
-        </p>
-
-        <div className="grid md:grid-cols-2 gap-5">
-          <div className="bg-white p-8 rounded-2xl shadow-sm">
-            <h3 className="text-2xl font-bold text-[#5DDFC3] mb-4 font-bold">
-              ⚗️ 有機化学
-            </h3>
-            <p className="leading-relaxed">
-              無機化学に続き、化学の重要分野である「有機化学」も登場。構造式や反応系統図も、Roopyらしい分かりやすいインターフェースで学習できるようになります。
-            </p>
-          </div>
-
-          <div className="bg-white p-8 rounded-2xl shadow-sm">
-            <h3 className="text-2xl font-bold text-[#5DDFC3] mb-4 font-bold">
-              🎧 英語リスニング
-            </h3>
-            <p className="leading-relaxed">
-              毎日の継続がカギとなるリスニング。通学時間やスキマ時間に、手軽に取り組めるトレーニング機能を追加予定です。
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Dark Coming Soon Section */}
-      <section className="max-w-[860px] mx-auto my-10 px-4">
-        <div className="bg-[#3A405A] text-white rounded-2xl p-12 text-center">
-          <h2 className="text-3xl font-bold text-[#5DDFC3] mb-6 font-bold">
-            Coming Soon
-          </h2>
-          <p className="mb-8 leading-relaxed">
-            Roopyとの冒険は、まだ始まったばかり。<br />
-            これからのアップデートにも、どうぞご期待ください。
-          </p>
-          <ul className="inline-block text-left space-y-4">
-            <li className="font-bold">✨ 教科の拡張（化学以外の科目も順次追加）</li>
-            <li className="font-bold">✨ 学習計画（Roopyと一緒に「森を旅する」プランニング）</li>
-            <li className="font-bold">✨ ミッション（クエストや継続チャレンジなどのゲーム要素）</li>
-          </ul>
-        </div>
-      </section>
-
-      {/* Footer CTA */}
-      <footer className="bg-gradient-to-b from-[#F4F9F7] to-white rounded-t-[40px] py-20 px-4 text-center mt-20">
-        <div className="max-w-[860px] mx-auto">
-          <h2 className="text-3xl font-bold mb-6 font-bold">
-            さあ、今日から始めましょう。
-          </h2>
-          <p className="mb-6 leading-relaxed">
-            Roopyは、すべての大学受験生のために作られたアプリです。<br />
-            すべての機能を、これからもずっと、完全無料でご利用いただけます。
-          </p>
-          <p className="mb-6 leading-relaxed">
-            面倒な手続きは必要ありません。<br />
-            GoogleアカウントやApple IDなどで、すぐに冒険を始められます。
-          </p>
-          <p className="mb-12 leading-relaxed">
-            あなたの努力が、確かな実力に変わるその日まで。<br />
-            Roopyは、一番近くであなたを応援しています。
+          <p className="text-lg mb-8 leading-relaxed">
+            受験の森を旅するあなたのナビゲーター。<br />
+            日々の学習を、少しのワクワクと、確かな達成感に変えていく。
           </p>
 
           <Link
             href="/login"
-            className="inline-block bg-[#5DDFC3] text-white text-xl font-bold py-5 px-16 rounded-full shadow-[0_8px_20px_rgba(93,223,195,0.4)] hover:shadow-[0_12px_24px_rgba(93,223,195,0.5)] hover:-translate-y-1 transition-all font-bold"
+            className="inline-block bg-[#5DDFC3] text-white text-lg font-bold py-4 px-12 rounded-full shadow-[0_8px_20px_rgba(93,223,195,0.4)] hover:shadow-[0_12px_24px_rgba(93,223,195,0.5)] hover:-translate-y-1 transition-all"
+          >
+            無料で始める
+          </Link>
+        </div>
+      </header>
+
+      {/* Screenshot Section */}
+      <section className="max-w-[1100px] mx-auto my-16 px-4">
+        <h2 className="text-3xl font-bold text-center mb-4">
+          サクサク解いて、しっかり身につく。
+        </h2>
+        <p className="text-center mb-12 text-lg opacity-80">
+          テンポの良いUIで、ゲーム感覚で学習できます
+        </p>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* クイズ画面 */}
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="aspect-[9/16] bg-gradient-to-br from-[#E0F7F1] to-[#5DDFC3]/20 flex items-center justify-center relative">
+              <div className="text-center">
+                <span className="text-6xl mb-4 block">🧪</span>
+                <p className="text-sm opacity-60">[クイズ画面]</p>
+              </div>
+            </div>
+            <div className="p-4 text-center">
+              <h3 className="font-bold text-lg mb-1">1問1答クイズ</h3>
+              <p className="text-sm opacity-70">サクサク解ける心地よさ</p>
+            </div>
+          </div>
+
+          {/* ランキング画面 */}
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="aspect-[9/16] bg-gradient-to-br from-[#FFE5B4] to-[#FFD700]/20 flex items-center justify-center relative">
+              <div className="text-center">
+                <span className="text-6xl mb-4 block">🏆</span>
+                <p className="text-sm opacity-60">[ランキング画面]</p>
+              </div>
+            </div>
+            <div className="p-4 text-center">
+              <h3 className="font-bold text-lg mb-1">ランキング</h3>
+              <p className="text-sm opacity-70">ライバルと切磋琢磨</p>
+            </div>
+          </div>
+
+          {/* 履歴画面 */}
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="aspect-[9/16] bg-gradient-to-br from-[#E8D5F2] to-[#B19CD9]/20 flex items-center justify-center relative">
+              <div className="text-center">
+                <span className="text-6xl mb-4 block">📊</span>
+                <p className="text-sm opacity-60">[履歴画面]</p>
+              </div>
+            </div>
+            <div className="p-4 text-center">
+              <h3 className="font-bold text-lg mb-1">学習履歴</h3>
+              <p className="text-sm opacity-70">成長を可視化</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Section */}
+      <section className="max-w-[860px] mx-auto my-16 px-4">
+        <div className="bg-white rounded-2xl shadow-sm p-8 md:p-12 text-center">
+          <h2 className="text-3xl font-bold mb-6">
+            「続かない」を、「続けられる」に。
+          </h2>
+          <p className="text-lg mb-8 leading-relaxed opacity-80">
+            受験勉強が続かないのは、あなたの意志が弱いからではありません。<br />
+            成果が見えづらく、孤独で、単調になりがちだから。
+          </p>
+
+          <div className="bg-[#E0F7F1] p-6 rounded-2xl font-bold text-xl">
+            Roopyは、学習をゲームのように楽しく、<br className="hidden md:block" />
+            毎日の積み重ねを目に見える成果に変えます。
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="max-w-[900px] mx-auto my-16 px-4">
+        <h2 className="text-3xl font-bold text-center mb-12">
+          Roopyの特徴
+        </h2>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
+            <div className="text-5xl mb-4">🧪</div>
+            <h3 className="text-xl font-bold mb-2">無機化学テスト</h3>
+            <p className="opacity-70">1問1答形式でサクサク進む</p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
+            <div className="text-5xl mb-4">🔄</div>
+            <h3 className="text-xl font-bold mb-2">復習・履歴管理</h3>
+            <p className="opacity-70">間違えた問題を効率的に復習</p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
+            <div className="text-5xl mb-4">💰</div>
+            <h3 className="text-xl font-bold mb-2">ポイント機能</h3>
+            <p className="opacity-70">学習するたび努力が数値化</p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
+            <div className="text-5xl mb-4">🏆</div>
+            <h3 className="text-xl font-bold mb-2">ランキング</h3>
+            <p className="opacity-70">ライバルと切磋琢磨（匿名OK）</p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
+            <div className="text-5xl mb-4">🎁</div>
+            <h3 className="text-xl font-bold mb-2">ログインボーナス</h3>
+            <p className="opacity-70">毎日の習慣化をサポート</p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
+            <div className="text-5xl mb-4">📊</div>
+            <h3 className="text-xl font-bold mb-2">学習記録</h3>
+            <p className="opacity-70">成長の過程を可視化</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Coming Soon Section */}
+      <section className="max-w-[860px] mx-auto my-16 px-4">
+        <div className="bg-[#3A405A] text-white rounded-2xl p-10 md:p-12 text-center">
+          <h2 className="text-3xl font-bold text-[#5DDFC3] mb-6">
+            Coming Soon
+          </h2>
+          <p className="mb-8 text-lg opacity-90">
+            Roopyは、これからも進化していきます。
+          </p>
+          <div className="grid md:grid-cols-3 gap-6 text-left">
+            <div>
+              <div className="text-3xl mb-2">⚗️</div>
+              <h3 className="font-bold mb-1">有機化学</h3>
+              <p className="text-sm opacity-80">構造式・反応系統図</p>
+            </div>
+            <div>
+              <div className="text-3xl mb-2">🎧</div>
+              <h3 className="font-bold mb-1">英語リスニング</h3>
+              <p className="text-sm opacity-80">スキマ時間で学習</p>
+            </div>
+            <div>
+              <div className="text-3xl mb-2">✨</div>
+              <h3 className="font-bold mb-1">学習計画・ミッション</h3>
+              <p className="text-sm opacity-80">ゲーム要素で継続</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer CTA */}
+      <footer className="bg-gradient-to-b from-[#F4F9F7] to-white rounded-t-[40px] py-16 px-4 text-center mt-20">
+        <div className="max-w-[700px] mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            さあ、今日から始めましょう。
+          </h2>
+          <p className="text-lg mb-10 opacity-80">
+            すべての機能が完全無料。<br />
+            面倒な手続きなし、すぐに始められます。
+          </p>
+
+          <Link
+            href="/login"
+            className="inline-block bg-[#5DDFC3] text-white text-xl font-bold py-5 px-16 rounded-full shadow-[0_8px_20px_rgba(93,223,195,0.4)] hover:shadow-[0_12px_24px_rgba(93,223,195,0.5)] hover:-translate-y-1 transition-all"
           >
             無料で利用を開始する
           </Link>
+
+          <p className="mt-8 text-sm opacity-60">
+            GoogleアカウントやApple IDで簡単ログイン
+          </p>
         </div>
       </footer>
     </div>
