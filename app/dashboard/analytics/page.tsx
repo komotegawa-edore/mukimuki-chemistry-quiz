@@ -16,13 +16,13 @@ export default async function AnalyticsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F4F9F7]">
       <Header
         title="定着率分析"
         rightContent={
           <Link
             href="/dashboard"
-            className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+            className="text-[#5DDFC3] hover:text-[#4ECFB3] font-medium text-sm transition-colors"
           >
             ← ダッシュボードに戻る
           </Link>
