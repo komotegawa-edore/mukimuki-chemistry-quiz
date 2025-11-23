@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -12,6 +12,24 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // URLパラメータからエラーメッセージを取得
+  useEffect(() => {
+    const errorParam = searchParams.get('error')
+    if (errorParam) {
+      const errorMessages: Record<string, string> = {
+        line_not_configured: 'LINE ログインが設定されていません。管理者にお問い合わせください。',
+        line_auth_no_code: 'LINE 認証に失敗しました（コードが取得できませんでした）',
+        line_auth_invalid_state: 'LINE 認証に失敗しました（不正なリクエストです）',
+        line_token_failed: 'LINE トークンの取得に失敗しました',
+        line_profile_failed: 'LINE プロフィールの取得に失敗しました',
+        signup_failed: 'アカウントの作成に失敗しました',
+        line_auth_failed: 'LINE ログインに失敗しました',
+      }
+      setError(errorMessages[errorParam] || 'ログインに失敗しました')
+    }
+  }, [searchParams])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()

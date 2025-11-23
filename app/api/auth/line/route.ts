@@ -13,15 +13,12 @@ export async function GET(request: NextRequest) {
 
   if (!channelId || !channelSecret) {
     console.error('LINE環境変数が設定されていません')
-    return NextResponse.json(
-      {
-        error: 'LINE設定が不完全です',
-        details: {
-          channelId: !channelId ? '未設定' : '設定済み',
-          channelSecret: !channelSecret ? '未設定' : '設定済み',
-        }
-      },
-      { status: 500 }
+    console.error('Channel ID:', channelId ? 'Set' : 'Not Set')
+    console.error('Channel Secret:', channelSecret ? 'Set' : 'Not Set')
+
+    // ユーザーにわかりやすいエラーメッセージを表示するためログインページへリダイレクト
+    return NextResponse.redirect(
+      `${siteUrl || 'http://localhost:3000'}/login?error=line_not_configured`
     )
   }
 
