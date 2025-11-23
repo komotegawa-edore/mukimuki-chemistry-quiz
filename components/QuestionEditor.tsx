@@ -60,20 +60,20 @@ export default function QuestionEditor({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-[#E0F7F1]">
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6 text-black">
+          <h2 className="text-2xl font-bold mb-6 text-[#3A405A]">
             {question ? '問題を編集' : '新しい問題を追加'}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold mb-2 text-black">問題タイプ</label>
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">問題タイプ</label>
               <select
                 name="media_type"
                 value={formData.media_type}
                 onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
               >
                 <option value="text">テキストのみ</option>
                 <option value="image">画像あり（有機化学など）</option>
@@ -83,14 +83,14 @@ export default function QuestionEditor({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2 text-black">問題文</label>
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">問題文</label>
               <textarea
                 name="question_text"
                 value={formData.question_text}
                 onChange={handleChange}
                 required
                 rows={3}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
                 placeholder="問題文を入力してください"
               />
             </div>
@@ -122,14 +122,14 @@ export default function QuestionEditor({
             )}
 
             <div className="space-y-3">
-              <label className="block text-sm font-semibold mb-2 text-black">選択肢 A</label>
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">選択肢 A</label>
               <input
                 type="text"
                 name="choice_a"
                 value={formData.choice_a}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
                 placeholder="選択肢Aを入力"
               />
               {formData.media_type === 'image' && (
@@ -146,14 +146,14 @@ export default function QuestionEditor({
             </div>
 
             <div className="space-y-3">
-              <label className="block text-sm font-semibold mb-2 text-black">選択肢 B</label>
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">選択肢 B</label>
               <input
                 type="text"
                 name="choice_b"
                 value={formData.choice_b}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
                 placeholder="選択肢Bを入力"
               />
               {formData.media_type === 'image' && (
@@ -170,14 +170,14 @@ export default function QuestionEditor({
             </div>
 
             <div className="space-y-3">
-              <label className="block text-sm font-semibold mb-2 text-black">選択肢 C</label>
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">選択肢 C</label>
               <input
                 type="text"
                 name="choice_c"
                 value={formData.choice_c}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
                 placeholder="選択肢Cを入力"
               />
               {formData.media_type === 'image' && (
@@ -194,14 +194,14 @@ export default function QuestionEditor({
             </div>
 
             <div className="space-y-3">
-              <label className="block text-sm font-semibold mb-2 text-black">選択肢 D</label>
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">選択肢 D</label>
               <input
                 type="text"
                 name="choice_d"
                 value={formData.choice_d}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
                 placeholder="選択肢Dを入力"
               />
               {formData.media_type === 'image' && (
@@ -218,13 +218,13 @@ export default function QuestionEditor({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2 text-black">正解</label>
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">正解</label>
               <select
                 name="correct_answer"
                 value={formData.correct_answer}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
               >
                 <option value="A">A</option>
                 <option value="B">B</option>
@@ -234,13 +234,13 @@ export default function QuestionEditor({
             </div>
 
             <div className="space-y-3">
-              <label className="block text-sm font-semibold mb-2 text-black">解説（任意）</label>
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">解説（任意）</label>
               <textarea
                 name="explanation"
                 value={formData.explanation}
                 onChange={handleChange}
                 rows={3}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
                 placeholder="解答の解説を入力してください（省略可）"
               />
               <MediaUploadField
@@ -259,14 +259,14 @@ export default function QuestionEditor({
                 type="button"
                 onClick={onCancel}
                 disabled={isSaving}
-                className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-black"
+                className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-[#3A405A] transition-colors"
               >
                 キャンセル
               </button>
               <button
                 type="submit"
                 disabled={isSaving}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="px-6 py-2 bg-[#5DDFC3] text-white rounded-lg hover:bg-[#4ECFB3] disabled:opacity-50 transition-colors"
               >
                 {isSaving ? '保存中...' : '保存'}
               </button>

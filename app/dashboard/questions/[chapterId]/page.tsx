@@ -112,8 +112,8 @@ export default function QuestionsManagePage({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-black">読み込み中...</p>
+      <div className="min-h-screen flex items-center justify-center bg-[#F4F9F7]">
+        <p className="text-[#3A405A]">読み込み中...</p>
       </div>
     )
   }
@@ -135,13 +135,13 @@ export default function QuestionsManagePage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F4F9F7]">
       <Header
         title={chapterTitle}
         rightContent={
           <button
             onClick={() => router.push('/dashboard')}
-            className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+            className="text-[#5DDFC3] hover:text-[#4ECFB3] font-medium text-sm transition-colors"
           >
             ← ダッシュボードに戻る
           </button>
@@ -152,21 +152,21 @@ export default function QuestionsManagePage({
         <div className="flex gap-2 justify-end mb-4">
           <button
             onClick={handleExportTestPDF}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm transition-colors disabled:opacity-50"
             disabled={questions.length === 0}
           >
             テスト用印刷
           </button>
           <button
             onClick={handleExportAnswerPDF}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm"
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm transition-colors disabled:opacity-50"
             disabled={questions.length === 0}
           >
             解答付き印刷
           </button>
           <button
             onClick={() => setIsCreating(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-4 py-2 bg-[#5DDFC3] text-white rounded-lg hover:bg-[#4ECFB3] transition-colors"
           >
             新規問題を追加
           </button>
@@ -177,19 +177,19 @@ export default function QuestionsManagePage({
         {questions.length > 0 ? (
           <div className="space-y-4">
             {questions.map((question, index) => (
-              <div key={question.id} className="bg-white rounded-lg shadow-md p-6">
+              <div key={question.id} className="bg-white rounded-lg shadow-md p-6 border-2 border-[#E0F7F1]">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold text-lg text-black">
+                      <h3 className="font-semibold text-lg text-[#3A405A]">
                         問題 {index + 1}: {question.question_text}
                       </h3>
                       {question.is_published ? (
-                        <span className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                        <span className="inline-block px-2 py-1 bg-[#E0F7F1] text-[#5DDFC3] text-xs font-semibold rounded">
                           公開中
                         </span>
                       ) : (
-                        <span className="inline-block px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">
+                        <span className="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded">
                           非公開
                         </span>
                       )}
@@ -198,30 +198,30 @@ export default function QuestionsManagePage({
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleTogglePublish(question)}
-                      className={`px-3 py-1 rounded text-sm font-medium ${
+                      className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                         question.is_published
                           ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                          : 'bg-green-100 text-green-700 hover:bg-green-200'
+                          : 'bg-[#E0F7F1] text-[#5DDFC3] hover:bg-[#5DDFC3] hover:text-white'
                       }`}
                     >
                       {question.is_published ? '非公開にする' : '公開する'}
                     </button>
                     <button
                       onClick={() => setEditingQuestion(question)}
-                      className="px-3 py-1 text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
+                      className="px-3 py-1 text-[#5DDFC3] border border-[#5DDFC3] rounded hover:bg-[#F4F9F7] transition-colors"
                     >
                       編集
                     </button>
                     <button
                       onClick={() => handleDelete(question.id)}
-                      className="px-3 py-1 text-red-600 border border-red-600 rounded hover:bg-red-50"
+                      className="px-3 py-1 text-red-600 border border-red-600 rounded hover:bg-red-50 transition-colors"
                     >
                       削除
                     </button>
                   </div>
                 </div>
 
-                <div className="space-y-2 text-sm text-black">
+                <div className="space-y-2 text-sm text-[#3A405A]">
                   <div className="flex gap-2">
                     <span className="font-semibold">A:</span>
                     <span>{question.choice_a}</span>
@@ -238,8 +238,8 @@ export default function QuestionsManagePage({
                     <span className="font-semibold">D:</span>
                     <span>{question.choice_d}</span>
                   </div>
-                  <div className="mt-4 pt-4 border-t">
-                    <span className="font-semibold text-green-600">
+                  <div className="mt-4 pt-4 border-t border-[#E0F7F1]">
+                    <span className="font-semibold text-[#5DDFC3]">
                       正解: {question.correct_answer}
                     </span>
                   </div>
@@ -248,7 +248,7 @@ export default function QuestionsManagePage({
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center text-black">
+          <div className="bg-white rounded-lg shadow-md p-8 text-center text-[#3A405A] border-2 border-[#E0F7F1]">
             この章にはまだ問題がありません。
             <br />
             「新規問題を追加」ボタンから問題を作成してください。
