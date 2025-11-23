@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
+import Header from '@/components/Header'
 
 export default async function GuidePage() {
   const profile = await getCurrentProfile()
@@ -15,21 +16,17 @@ export default async function GuidePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/dashboard"
-              className="text-blue-600 hover:text-blue-700 font-medium"
-            >
-              ← ダッシュボードに戻る
-            </Link>
-            <h1 className="text-xl md:text-2xl font-bold text-black">
-              問題管理ガイド
-            </h1>
-          </div>
-        </div>
-      </header>
+      <Header
+        title="問題管理ガイド"
+        rightContent={
+          <Link
+            href="/dashboard"
+            className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+          >
+            ← ダッシュボードに戻る
+          </Link>
+        }
+      />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="space-y-8">
@@ -37,7 +34,7 @@ export default async function GuidePage() {
           <section className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-2xl font-bold text-black mb-4">概要</h2>
             <p className="text-gray-700 leading-relaxed">
-              このガイドでは、MUKIMUKIアプリでの問題管理方法を説明します。
+              このガイドでは、Roopyアプリでの問題管理方法を説明します。
               問題の追加、編集、削除、CSV一括インポート、章の公開/非公開設定などの機能について学べます。
             </p>
           </section>

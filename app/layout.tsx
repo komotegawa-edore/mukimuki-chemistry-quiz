@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'MUKIMUKI',
-  description: '大学受験向け学習アプリ',
+  title: 'Roopy（るーぴー）',
+  description: '大学受験を"毎日つづけられる"ゲームにする',
 }
 
 export default function RootLayout({

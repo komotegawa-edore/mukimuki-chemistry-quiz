@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 
@@ -31,17 +32,19 @@ export default function LandingPage() {
       {/* Hero Section */}
       <header className="bg-gradient-to-b from-white to-[#F4F9F7] rounded-b-[40px] shadow-[0_4px_20px_rgba(93,223,195,0.1)] py-16 px-4 text-center">
         <div className="max-w-[860px] mx-auto">
-          <div className="text-[#5DDFC3] text-xl mb-2 font-bold">
-            Roopy（るーぴー）
+          <div className="mb-8">
+            <Image
+              src="/Roopy-full-1.png"
+              alt="Roopy（るーぴー）"
+              width={300}
+              height={100}
+              className="mx-auto"
+              priority
+            />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
             大学受験を<br className="md:hidden" />"毎日つづけられる"ゲームにする
           </h1>
-
-          <div className="w-44 h-44 bg-[#E0F7F1] rounded-full flex items-center justify-center mx-auto mb-8 border-4 border-white shadow-lg relative">
-            <span className="text-8xl">🌱</span>
-            <span className="absolute -bottom-10 text-sm opacity-60">[ロゴ＋るーぴーのビジュアル]</span>
-          </div>
 
           <p className="text-lg mb-8 leading-relaxed">
             受験の森を旅するあなたのナビゲーター。<br />

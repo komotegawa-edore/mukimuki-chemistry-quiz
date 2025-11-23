@@ -4,6 +4,7 @@ import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
 import CSVImport from '@/components/CSVImport'
 import DashboardContent from '@/components/DashboardContent'
+import Header from '@/components/Header'
 
 export default async function DashboardPage() {
   const profile = await getCurrentProfile()
@@ -39,9 +40,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl md:text-2xl font-bold text-black">講師ダッシュボード</h1>
+      <Header
+        title="講師ダッシュボード"
+        rightContent={
           <form action={handleLogout}>
             <button
               type="submit"
@@ -50,8 +51,8 @@ export default async function DashboardPage() {
               ログアウト
             </button>
           </form>
-        </div>
-      </header>
+        }
+      />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* ガイドへのリンク */}

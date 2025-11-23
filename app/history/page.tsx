@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
+import Header from '@/components/Header'
 
 export default async function HistoryPage() {
   const profile = await getCurrentProfile()
@@ -21,17 +22,17 @@ export default async function HistoryPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl md:text-2xl font-bold text-black">テスト履歴</h1>
+      <Header
+        title="テスト履歴"
+        rightContent={
           <Link
             href="/"
             className="px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 whitespace-nowrap"
           >
             ホームに戻る
           </Link>
-        </div>
-      </header>
+        }
+      />
 
       <main className="max-w-6xl mx-auto px-4 py-8">
         {results && results.length > 0 ? (

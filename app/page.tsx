@@ -4,6 +4,7 @@ import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
 import LoginBonus from '@/components/LoginBonus'
 import HomeContent from '@/components/HomeContent'
+import Header from '@/components/Header'
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -70,10 +71,9 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen">
       <LoginBonus />
-      <header className="bg-white shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-black">MUKIMUKI</h1>
-          <div className="flex items-center gap-2">
+      <Header
+        rightContent={
+          <>
             <Link
               href="/history"
               className="px-3 py-2 text-sm text-blue-700 hover:bg-blue-50 rounded"
@@ -88,9 +88,9 @@ export default async function HomePage() {
                 ログアウト
               </button>
             </form>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+      />
 
       <HomeContent
         subjects={subjects || []}
