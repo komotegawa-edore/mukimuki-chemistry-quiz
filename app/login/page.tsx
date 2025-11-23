@@ -21,6 +21,7 @@ function ErrorDisplay({ onError }: { onError: (error: string | null) => void }) 
         line_profile_failed: 'LINE プロフィールの取得に失敗しました',
         signup_failed: 'アカウントの作成に失敗しました',
         line_auth_failed: 'LINE ログインに失敗しました',
+        rate_limit: '短時間に複数回の試行が行われたため、一時的にブロックされています。しばらく待ってから再度お試しください。',
       }
       onError(errorMessages[errorParam] || 'ログインに失敗しました')
     }

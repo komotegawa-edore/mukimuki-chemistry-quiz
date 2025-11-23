@@ -85,30 +85,49 @@ export async function GET(request: NextRequest) {
     })
 
     if (signInError) {
-      // ユーザーが存在しない場合は新規作成
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name: profile.displayName,
-            role: 'student', // LINEログインは生徒アカウントのみ
-            avatar_url: profile.pictureUrl,
-            line_user_id: profile.userId,
-            provider: 'line',
-          },
-        },
-      })
+      // ログインに失敗した場合、原因を確認
+      // "Invalid login credentials" の場合のみ新規作成を試みる
+      if (signInError.message?.includes('Invalid login credentials') ||
+          signInError.message?.includes('User not found')) {
 
-      if (signUpError) {
-        console.error('Supabase signup error:', signUpError)
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              name: profile.displayName,
+              role: 'student', // LINEログインは生徒アカウントのみ
+              avatar_url: profile.pictureUrl,
+              line_user_id: profile.userId,
+              provider: 'line',
+            },
+          },
+        })
+
+        if (signUpError) {
+          console.error('Supabase signup error:', signUpError)
+
+          // レート制限エラーの場合は専用メッセージ
+          if (signUpError.status === 429) {
+            return NextResponse.redirect(
+              `${process.env.NEXT_PUBLIC_SITE_URL}/login?error=rate_limit`
+            )
+          }
+
+          return NextResponse.redirect(
+            `${process.env.NEXT_PUBLIC_SITE_URL}/login?error=signup_failed`
+          )
+        }
+
+        // 新規ユーザー作成成功
+        console.log('New LINE user created:', signUpData.user?.id)
+      } else {
+        // その他のエラー（パスワード間違いなど）
+        console.error('Login error:', signInError)
         return NextResponse.redirect(
-          `${process.env.NEXT_PUBLIC_SITE_URL}/login?error=signup_failed`
+          `${process.env.NEXT_PUBLIC_SITE_URL}/login?error=line_auth_failed`
         )
       }
-
-      // 新規ユーザー作成成功
-      console.log('New LINE user created:', signUpData.user?.id)
     } else {
       // 既存ユーザーでログイン成功
       console.log('Existing LINE user logged in:', signInData.user?.id)
