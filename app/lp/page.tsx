@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
+import { Beaker, RotateCcw, Coins, Trophy, Gift, BarChart3, Sparkles, Headphones, FlaskConical } from 'lucide-react'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -74,7 +75,7 @@ export default function LandingPage() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <div className="aspect-[9/16] bg-gradient-to-br from-[#E0F7F1] to-[#5DDFC3]/20 flex items-center justify-center relative">
               <div className="text-center">
-                <span className="text-6xl mb-4 block">🧪</span>
+                <Beaker className="w-16 h-16 mx-auto mb-4 text-[#5DDFC3]" />
                 <p className="text-sm opacity-60">[クイズ画面]</p>
               </div>
             </div>
@@ -88,7 +89,7 @@ export default function LandingPage() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <div className="aspect-[9/16] bg-gradient-to-br from-[#FFE5B4] to-[#FFD700]/20 flex items-center justify-center relative">
               <div className="text-center">
-                <span className="text-6xl mb-4 block">🏆</span>
+                <Trophy className="w-16 h-16 mx-auto mb-4 text-[#FFD700]" />
                 <p className="text-sm opacity-60">[ランキング画面]</p>
               </div>
             </div>
@@ -102,7 +103,7 @@ export default function LandingPage() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <div className="aspect-[9/16] bg-gradient-to-br from-[#E8D5F2] to-[#B19CD9]/20 flex items-center justify-center relative">
               <div className="text-center">
-                <span className="text-6xl mb-4 block">📊</span>
+                <BarChart3 className="w-16 h-16 mx-auto mb-4 text-[#B19CD9]" />
                 <p className="text-sm opacity-60">[履歴画面]</p>
               </div>
             </div>
@@ -139,40 +140,40 @@ export default function LandingPage() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-            <div className="text-5xl mb-4">🧪</div>
-            <h3 className="text-xl font-bold mb-2">無機化学テスト</h3>
-            <p className="opacity-70">1問1答形式でサクサク進む</p>
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center hover:shadow-md transition-shadow">
+            <Beaker className="w-12 h-12 mx-auto mb-4 text-[#5DDFC3]" />
+            <h3 className="text-xl font-bold mb-2 text-[#3A405A]">無機化学テスト</h3>
+            <p className="opacity-70 text-[#3A405A]">1問1答形式でサクサク進む</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-            <div className="text-5xl mb-4">🔄</div>
-            <h3 className="text-xl font-bold mb-2">復習・履歴管理</h3>
-            <p className="opacity-70">間違えた問題を効率的に復習</p>
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center hover:shadow-md transition-shadow">
+            <RotateCcw className="w-12 h-12 mx-auto mb-4 text-[#5DDFC3]" />
+            <h3 className="text-xl font-bold mb-2 text-[#3A405A]">復習・履歴管理</h3>
+            <p className="opacity-70 text-[#3A405A]">間違えた問題を効率的に復習</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-            <div className="text-5xl mb-4">💰</div>
-            <h3 className="text-xl font-bold mb-2">ポイント機能</h3>
-            <p className="opacity-70">学習するたび努力が数値化</p>
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center hover:shadow-md transition-shadow">
+            <Coins className="w-12 h-12 mx-auto mb-4 text-[#5DDFC3]" />
+            <h3 className="text-xl font-bold mb-2 text-[#3A405A]">ポイント機能</h3>
+            <p className="opacity-70 text-[#3A405A]">学習するたび努力が数値化</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-            <div className="text-5xl mb-4">🏆</div>
-            <h3 className="text-xl font-bold mb-2">ランキング</h3>
-            <p className="opacity-70">ライバルと切磋琢磨（匿名OK）</p>
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center hover:shadow-md transition-shadow">
+            <Trophy className="w-12 h-12 mx-auto mb-4 text-[#5DDFC3]" />
+            <h3 className="text-xl font-bold mb-2 text-[#3A405A]">ランキング</h3>
+            <p className="opacity-70 text-[#3A405A]">ライバルと切磋琢磨（匿名OK）</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-            <div className="text-5xl mb-4">🎁</div>
-            <h3 className="text-xl font-bold mb-2">ログインボーナス</h3>
-            <p className="opacity-70">毎日の習慣化をサポート</p>
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center hover:shadow-md transition-shadow">
+            <Gift className="w-12 h-12 mx-auto mb-4 text-[#5DDFC3]" />
+            <h3 className="text-xl font-bold mb-2 text-[#3A405A]">ログインボーナス</h3>
+            <p className="opacity-70 text-[#3A405A]">毎日の習慣化をサポート</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-            <div className="text-5xl mb-4">📊</div>
-            <h3 className="text-xl font-bold mb-2">学習記録</h3>
-            <p className="opacity-70">成長の過程を可視化</p>
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center hover:shadow-md transition-shadow">
+            <BarChart3 className="w-12 h-12 mx-auto mb-4 text-[#5DDFC3]" />
+            <h3 className="text-xl font-bold mb-2 text-[#3A405A]">学習記録</h3>
+            <p className="opacity-70 text-[#3A405A]">成長の過程を可視化</p>
           </div>
         </div>
       </section>
@@ -188,17 +189,17 @@ export default function LandingPage() {
           </p>
           <div className="grid md:grid-cols-3 gap-6 text-left">
             <div>
-              <div className="text-3xl mb-2">⚗️</div>
+              <FlaskConical className="w-8 h-8 mb-2 text-[#5DDFC3]" />
               <h3 className="font-bold mb-1">有機化学</h3>
               <p className="text-sm opacity-80">構造式・反応系統図</p>
             </div>
             <div>
-              <div className="text-3xl mb-2">🎧</div>
+              <Headphones className="w-8 h-8 mb-2 text-[#5DDFC3]" />
               <h3 className="font-bold mb-1">英語リスニング</h3>
               <p className="text-sm opacity-80">スキマ時間で学習</p>
             </div>
             <div>
-              <div className="text-3xl mb-2">✨</div>
+              <Sparkles className="w-8 h-8 mb-2 text-[#5DDFC3]" />
               <h3 className="font-bold mb-1">学習計画・ミッション</h3>
               <p className="text-sm opacity-80">ゲーム要素で継続</p>
             </div>

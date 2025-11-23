@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function SignupPage() {
   const [name, setName] = useState('')
@@ -75,31 +76,41 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#F4F9F7] px-4 py-12">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-center mb-2 text-black">
-            アカウント作成
-          </h1>
-          <p className="text-center text-black mb-8">
-            無機化学小テストアプリ
-          </p>
+        <div className="bg-white rounded-2xl shadow-lg p-8">
+          <div className="mb-8 text-center">
+            <Image
+              src="/Roopy-full-1.png"
+              alt="Roopy（るーぴー）"
+              width={200}
+              height={67}
+              className="mx-auto mb-2"
+              priority
+            />
+            <h1 className="text-2xl font-bold text-[#3A405A] mb-1">
+              アカウント作成
+            </h1>
+            <p className="text-[#3A405A] text-sm">
+              大学受験学習アプリ
+            </p>
+          </div>
 
-          <form onSubmit={handleSignup} className="space-y-6">
+          <form onSubmit={handleSignup} className="space-y-5">
             <div>
-              <label className="block text-sm font-semibold mb-2 text-black">名前</label>
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">名前</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
                 placeholder="山田太郎"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2 text-black">
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">
                 メールアドレス
               </label>
               <input
@@ -107,13 +118,13 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
                 placeholder="your@email.com"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2 text-black">
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">
                 パスワード
               </label>
               <input
@@ -122,33 +133,33 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
                 placeholder="6文字以上"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2 text-black">役割</label>
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">役割</label>
               <div className="flex gap-4">
-                <label className="flex items-center text-black">
+                <label className="flex items-center text-[#3A405A]">
                   <input
                     type="radio"
                     name="role"
                     value="student"
                     checked={role === 'student'}
                     onChange={() => setRole('student')}
-                    className="mr-2"
+                    className="mr-2 accent-[#5DDFC3]"
                   />
                   生徒
                 </label>
-                <label className="flex items-center text-black">
+                <label className="flex items-center text-[#3A405A]">
                   <input
                     type="radio"
                     name="role"
                     value="teacher"
                     checked={role === 'teacher'}
                     onChange={() => setRole('teacher')}
-                    className="mr-2"
+                    className="mr-2 accent-[#5DDFC3]"
                   />
                   講師
                 </label>
@@ -157,7 +168,7 @@ export default function SignupPage() {
 
             {role === 'teacher' && (
               <div>
-                <label className="block text-sm font-semibold mb-2 text-black">
+                <label className="block text-sm font-semibold mb-2 text-[#3A405A]">
                   講師用認証キー
                 </label>
                 <input
@@ -165,10 +176,10 @@ export default function SignupPage() {
                   value={teacherKey}
                   onChange={(e) => setTeacherKey(e.target.value)}
                   required
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
                   placeholder="講師用キーを入力"
                 />
-                <p className="text-xs text-black mt-1">
+                <p className="text-xs text-[#3A405A] opacity-70 mt-1">
                   ※講師アカウント作成には認証キーが必要です
                 </p>
               </div>
@@ -183,7 +194,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-[#5DDFC3] text-white rounded-lg font-semibold hover:bg-[#4ECFB3] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isLoading ? 'アカウント作成中...' : 'アカウントを作成'}
             </button>
@@ -195,7 +206,7 @@ export default function SignupPage() {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-black">または</span>
+                <span className="px-2 bg-white text-[#3A405A]">または</span>
               </div>
             </div>
 
@@ -205,21 +216,21 @@ export default function SignupPage() {
                 window.location.href = '/api/auth/line'
               }}
               disabled={isLoading}
-              className="mt-4 w-full py-3 bg-[#06C755] text-white rounded-lg font-semibold hover:bg-[#05b34b] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="mt-4 w-full py-3 bg-[#06C755] text-white rounded-lg font-semibold hover:bg-[#05b34b] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
               </svg>
               LINEで登録
             </button>
-            <p className="text-xs text-center text-black mt-2">
+            <p className="text-xs text-center text-[#3A405A] opacity-70 mt-2">
               ※LINEで登録すると自動的に生徒アカウントが作成されます
             </p>
           </div>
 
           <div className="mt-6 text-center text-sm">
-            <span className="text-black">すでにアカウントをお持ちですか？</span>
-            <Link href="/login" className="text-blue-600 hover:underline ml-2">
+            <span className="text-[#3A405A]">すでにアカウントをお持ちですか？</span>
+            <Link href="/login" className="text-[#5DDFC3] hover:text-[#4ECFB3] font-semibold ml-2">
               ログイン
             </Link>
           </div>
