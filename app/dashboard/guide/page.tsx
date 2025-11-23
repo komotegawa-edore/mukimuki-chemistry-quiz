@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
 import Header from '@/components/Header'
+import { BarChart3, RotateCcw, PenTool } from 'lucide-react'
 
 export default async function GuidePage() {
   const profile = await getCurrentProfile()
@@ -347,7 +348,7 @@ export default async function GuidePage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <span className="text-2xl">📊</span>
+                <BarChart3 className="w-8 h-8 text-[#5DDFC3] flex-shrink-0" />
                 <div>
                   <h4 className="font-semibold text-black">
                     定期的に定着率を確認
@@ -358,7 +359,7 @@ export default async function GuidePage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <span className="text-2xl">✏️</span>
+                <PenTool className="w-8 h-8 text-[#5DDFC3] flex-shrink-0" />
                 <div>
                   <h4 className="font-semibold text-black">
                     解説を充実させる
@@ -369,7 +370,7 @@ export default async function GuidePage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <span className="text-2xl">🔄</span>
+                <RotateCcw className="w-8 h-8 text-[#5DDFC3] flex-shrink-0" />
                 <div>
                   <h4 className="font-semibold text-black">
                     問題をこまめに見直す
