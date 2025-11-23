@@ -56,8 +56,8 @@ export default function BadgeDisplay() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h2 className="text-xl font-bold text-black mb-4">バッジコレクション</h2>
+    <div className="bg-white rounded-lg shadow-md p-6 mb-6 border-2 border-[#E0F7F1]">
+      <h2 className="text-xl font-bold text-[#3A405A] mb-4">バッジコレクション</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {badges.map((badge) => (
           <div
@@ -108,14 +108,14 @@ export default function BadgeDisplay() {
             {!badge.earned && (
               <div className="mt-2">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-xs text-gray-600">進捗</span>
-                  <span className="text-xs font-bold text-gray-700">
+                  <span className="text-xs text-[#3A405A] opacity-70">進捗</span>
+                  <span className="text-xs font-bold text-[#3A405A]">
                     {badge.progress}%
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-[#E0F7F1] rounded-full h-2 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                    className="bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] h-2 rounded-full transition-all duration-500"
                     style={{ width: `${badge.progress}%` }}
                   />
                 </div>
@@ -124,7 +124,7 @@ export default function BadgeDisplay() {
 
             {/* 獲得日時（獲得済みの場合のみ） */}
             {badge.earned && badge.earned_at && (
-              <p className="text-xs text-gray-500 mt-2 text-center">
+              <p className="text-xs text-[#3A405A] opacity-70 mt-2 text-center">
                 獲得: {new Date(badge.earned_at).toLocaleDateString('ja-JP')}
               </p>
             )}

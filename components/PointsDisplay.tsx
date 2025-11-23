@@ -58,7 +58,7 @@ export default function PointsDisplay() {
 
   if (isLoading) {
     return (
-      <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg shadow-md p-4">
+      <div className="bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] rounded-lg shadow-md p-4">
         <div className="flex items-center justify-between">
           <div className="text-white">
             <p className="text-sm opacity-90">読み込み中...</p>
@@ -88,7 +88,7 @@ export default function PointsDisplay() {
       >
         {/* 表面：ポイント表示 */}
         <div
-          className="col-start-1 row-start-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg shadow-md p-8 backface-hidden relative flex flex-col"
+          className="col-start-1 row-start-1 bg-gradient-to-r from-[#FFD700] to-[#FFA500] rounded-lg shadow-md p-8 backface-hidden relative flex flex-col"
           style={{ backfaceVisibility: 'hidden' }}
         >
       {/* タブ切り替え - 左上固定 */}
@@ -100,7 +100,7 @@ export default function PointsDisplay() {
           }}
           className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${
             !showWeekly
-              ? 'bg-white text-orange-600'
+              ? 'bg-white text-[#FFA500]'
               : 'bg-white/20 text-white hover:bg-white/30'
           }`}
         >
@@ -113,7 +113,7 @@ export default function PointsDisplay() {
           }}
           className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${
             showWeekly
-              ? 'bg-white text-orange-600'
+              ? 'bg-white text-[#FFA500]'
               : 'bg-white/20 text-white hover:bg-white/30'
           }`}
         >
@@ -178,7 +178,7 @@ export default function PointsDisplay() {
 
         {/* 裏面：ポイントシステムの説明 */}
         <div
-          className="col-start-1 row-start-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg shadow-md p-8 backface-hidden rotate-y-180"
+          className="col-start-1 row-start-1 bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] rounded-lg shadow-md p-8 backface-hidden rotate-y-180"
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
           <div className="flex flex-col text-white py-6">
