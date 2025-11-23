@@ -62,7 +62,7 @@ export default function LandingPage() {
       </header>
 
       {/* Screenshot Section */}
-      <section className="max-w-[1100px] mx-auto my-16 px-4">
+      <section className="max-w-[900px] mx-auto my-16 px-4">
         <h2 className="text-3xl font-bold text-center mb-4">
           サクサク解いて、しっかり身につく。
         </h2>
@@ -70,14 +70,16 @@ export default function LandingPage() {
           テンポの良いUIで、ゲーム感覚で学習できます
         </p>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-8 max-w-[700px] mx-auto">
           {/* クイズ画面 */}
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <div className="aspect-[9/16] bg-gradient-to-br from-[#E0F7F1] to-[#5DDFC3]/20 flex items-center justify-center relative">
-              <div className="text-center">
-                <Beaker className="w-16 h-16 mx-auto mb-4 text-[#5DDFC3]" />
-                <p className="text-sm opacity-60">[クイズ画面]</p>
-              </div>
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div className="aspect-[9/16] relative">
+              <Image
+                src="/1.png"
+                alt="クイズ画面 - 1問1答形式で学習"
+                fill
+                className="object-cover"
+              />
             </div>
             <div className="p-4 text-center">
               <h3 className="font-bold text-lg mb-1">1問1答クイズ</h3>
@@ -85,31 +87,19 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* ランキング画面 */}
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <div className="aspect-[9/16] bg-gradient-to-br from-[#FFE5B4] to-[#FFD700]/20 flex items-center justify-center relative">
-              <div className="text-center">
-                <Trophy className="w-16 h-16 mx-auto mb-4 text-[#FFD700]" />
-                <p className="text-sm opacity-60">[ランキング画面]</p>
-              </div>
+          {/* ホーム画面 */}
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div className="aspect-[9/16] relative">
+              <Image
+                src="/2.png"
+                alt="ホーム画面 - 章一覧とポイント表示"
+                fill
+                className="object-cover"
+              />
             </div>
             <div className="p-4 text-center">
-              <h3 className="font-bold text-lg mb-1">ランキング</h3>
-              <p className="text-sm opacity-70">ライバルと切磋琢磨</p>
-            </div>
-          </div>
-
-          {/* 履歴画面 */}
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <div className="aspect-[9/16] bg-gradient-to-br from-[#E8D5F2] to-[#B19CD9]/20 flex items-center justify-center relative">
-              <div className="text-center">
-                <BarChart3 className="w-16 h-16 mx-auto mb-4 text-[#B19CD9]" />
-                <p className="text-sm opacity-60">[履歴画面]</p>
-              </div>
-            </div>
-            <div className="p-4 text-center">
-              <h3 className="font-bold text-lg mb-1">学習履歴</h3>
-              <p className="text-sm opacity-70">成長を可視化</p>
+              <h3 className="font-bold text-lg mb-1">学習ホーム</h3>
+              <p className="text-sm opacity-70">成長を実感できる</p>
             </div>
           </div>
         </div>
