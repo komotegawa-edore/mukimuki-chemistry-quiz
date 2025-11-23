@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { BookOpen, Gift, Trophy } from 'lucide-react'
 
 interface PointsInfo {
   totalPoints: number
@@ -184,7 +185,7 @@ export default function PointsDisplay() {
             <h3 className="text-2xl font-bold mb-8 text-center">ポイントシステム</h3>
             <div className="space-y-6 text-base">
               <div className="flex items-start gap-4">
-                <span className="text-3xl">📚</span>
+                <BookOpen className="w-8 h-8 flex-shrink-0 mt-1" />
                 <div>
                   <p className="font-semibold text-lg mb-1">章クリアボーナス</p>
                   <p className="text-sm opacity-90">100%正解で1ポイント獲得</p>
@@ -192,7 +193,7 @@ export default function PointsDisplay() {
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <span className="text-3xl">🎁</span>
+                <Gift className="w-8 h-8 flex-shrink-0 mt-1" />
                 <div>
                   <p className="font-semibold text-lg mb-1">ログインボーナス</p>
                   <p className="text-sm opacity-90">毎日ログインで3ポイント</p>
@@ -200,7 +201,7 @@ export default function PointsDisplay() {
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <span className="text-3xl">🏆</span>
+                <Trophy className="w-8 h-8 flex-shrink-0 mt-1" />
                 <div>
                   <p className="font-semibold text-lg mb-1">ランキング</p>
                   <p className="text-sm opacity-90">総合順位と週間順位で競おう</p>

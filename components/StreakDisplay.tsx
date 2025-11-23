@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Trophy } from 'lucide-react'
 
 export default function StreakDisplay() {
   const [currentStreak, setCurrentStreak] = useState(0)
@@ -51,7 +52,7 @@ export default function StreakDisplay() {
         <div className="text-right text-white">
           <p className="text-xs opacity-75 mb-1">最長記録</p>
           <div className="flex items-center gap-2">
-            <span className="text-2xl">🏆</span>
+            <Trophy className="w-6 h-6" />
             <span className="text-2xl font-bold">{longestStreak}</span>
           </div>
           <p className="text-xs opacity-75">日間</p>

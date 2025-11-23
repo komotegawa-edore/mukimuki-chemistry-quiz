@@ -5,6 +5,7 @@ import Link from 'next/link'
 import CSVImport from '@/components/CSVImport'
 import DashboardContent from '@/components/DashboardContent'
 import Header from '@/components/Header'
+import { BookOpen, ArrowRight } from 'lucide-react'
 
 export default async function DashboardPage() {
   const profile = await getCurrentProfile()
@@ -59,19 +60,19 @@ export default async function DashboardPage() {
         <div className="mb-8">
           <Link
             href="/dashboard/guide"
-            className="block bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
+            className="block bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
           >
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
-                  <span>📚</span>
+                  <BookOpen className="w-5 h-5" />
                   問題管理ガイド
                 </h2>
-                <p className="text-green-50 text-sm">
+                <p className="text-white opacity-90 text-sm">
                   CSV一括インポート、問題の管理方法、定着率の見方などを解説
                 </p>
               </div>
-              <span className="text-white text-2xl">→</span>
+              <ArrowRight className="w-6 h-6 text-white" />
             </div>
           </Link>
         </div>

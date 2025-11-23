@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import type { Subject } from '@/lib/types/database'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { FileText, Image as ImageIcon, Headphones, Film } from 'lucide-react'
 
 export default function SubjectsPage() {
   const [subjects, setSubjects] = useState<Subject[]>([])
@@ -49,15 +50,15 @@ export default function SubjectsPage() {
   const getMediaTypeIcon = (mediaType: string) => {
     switch (mediaType) {
       case 'text':
-        return '📝'
+        return <FileText className="w-6 h-6" />
       case 'image':
-        return '🖼️'
+        return <ImageIcon className="w-6 h-6" />
       case 'audio':
-        return '🎧'
+        return <Headphones className="w-6 h-6" />
       case 'mixed':
-        return '🎬'
+        return <Film className="w-6 h-6" />
       default:
-        return '📝'
+        return <FileText className="w-6 h-6" />
     }
   }
 
