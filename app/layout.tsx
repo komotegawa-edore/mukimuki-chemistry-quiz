@@ -4,6 +4,10 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Roopy（るーぴー）',
   description: '大学受験を"毎日つづけられる"ゲームにする',
+  icons: {
+    icon: '/Roopy-icon.png',
+    apple: '/Roopy-icon.png',
+  },
 }
 
 export default function RootLayout({

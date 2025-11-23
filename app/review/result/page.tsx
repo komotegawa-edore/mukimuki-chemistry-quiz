@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Suspense } from 'react'
+import Image from 'next/image'
 
 function ResultContent() {
   const searchParams = useSearchParams()
@@ -35,37 +36,46 @@ function ResultContent() {
   const result = getMessage()
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen bg-[#F4F9F7]">
+      <header className="bg-white shadow-sm border-b-2 border-[#E0F7F1]">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <h1 className="text-xl md:text-2xl font-bold text-black">
+          <h1 className="text-xl md:text-2xl font-bold text-[#3A405A]">
             復習結果
           </h1>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="bg-white rounded-lg shadow-md p-8 border-2 border-[#E0F7F1]">
+          {/* Roopyキャラクター */}
+          <Image
+            src="/Roopy.png"
+            alt="Roopy"
+            width={100}
+            height={100}
+            className="mx-auto mb-4"
+          />
+
           <div className="text-center mb-8">
-            <h2 className={`text-3xl font-bold mb-2 ${result.color}`}>
+            <h2 className={`text-3xl font-bold mb-2 ${percentage >= 80 ? 'text-[#5DDFC3]' : percentage >= 60 ? 'text-yellow-600' : 'text-[#5DDFC3]'}`}>
               {result.title}
             </h2>
-            <p className="text-gray-600">{result.message}</p>
+            <p className="text-[#3A405A] opacity-70">{result.message}</p>
           </div>
 
-          <div className="mb-8 p-6 bg-gray-50 rounded-lg">
+          <div className="mb-8 p-6 bg-[#F4F9F7] rounded-lg">
             <div className="text-center">
-              <div className="text-5xl font-bold text-black mb-2">
+              <div className={`text-5xl font-bold mb-2 ${percentage >= 80 ? 'text-[#5DDFC3]' : percentage >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
                 {percentage}%
               </div>
-              <div className="text-gray-600">
+              <div className="text-[#3A405A] opacity-70">
                 {score} / {total} 問正解
               </div>
             </div>
           </div>
 
-          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-6">
-            <p className="text-sm text-blue-800">
+          <div className="bg-[#F4F9F7] border-l-4 border-[#5DDFC3] p-4 rounded mb-6">
+            <p className="text-sm text-[#3A405A] opacity-70">
               ※ 復習モードの結果は記録されません。何度でも挑戦できます！
             </p>
           </div>
@@ -73,13 +83,13 @@ function ResultContent() {
           <div className="space-y-3">
             <Link
               href="/review"
-              className="block w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold text-center"
+              className="block w-full px-6 py-3 bg-[#5DDFC3] text-white rounded-lg hover:bg-[#4ECFB3] font-semibold text-center transition-colors"
             >
               もう一度復習する
             </Link>
             <Link
               href="/"
-              className="block w-full px-6 py-3 bg-gray-200 text-black rounded-lg hover:bg-gray-300 font-semibold text-center"
+              className="block w-full px-6 py-3 bg-[#E0F7F1] text-[#3A405A] rounded-lg hover:bg-[#F4F9F7] font-semibold text-center transition-colors"
             >
               ホームに戻る
             </Link>
@@ -94,8 +104,8 @@ export default function ReviewResultPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center">
-          <p className="text-black">読み込み中...</p>
+        <div className="min-h-screen bg-[#F4F9F7] flex items-center justify-center">
+          <p className="text-[#3A405A]">読み込み中...</p>
         </div>
       }
     >
