@@ -53,7 +53,7 @@ export default function LandingPage() {
           </p>
 
           <Link
-            href="/login"
+            href="/signup"
             className="inline-block bg-[#5DDFC3] text-white text-lg font-bold py-4 px-12 rounded-full shadow-[0_8px_20px_rgba(93,223,195,0.4)] hover:shadow-[0_12px_24px_rgba(93,223,195,0.5)] hover:-translate-y-1 transition-all"
           >
             無料で始める
@@ -219,7 +219,7 @@ export default function LandingPage() {
           </p>
 
           <Link
-            href="/login"
+            href="/signup"
             className="inline-block bg-[#5DDFC3] text-white text-xl font-bold py-5 px-16 rounded-full shadow-[0_8px_20px_rgba(93,223,195,0.4)] hover:shadow-[0_12px_24px_rgba(93,223,195,0.5)] hover:-translate-y-1 transition-all"
           >
             無料で利用を開始する
