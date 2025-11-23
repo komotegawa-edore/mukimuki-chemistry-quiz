@@ -76,14 +76,14 @@ export default async function HomePage() {
           <>
             <Link
               href="/history"
-              className="px-3 py-2 text-sm text-blue-700 hover:bg-blue-50 rounded"
+              className="px-3 py-2 text-sm text-[#5DDFC3] hover:bg-[#F4F9F7] rounded font-medium"
             >
               履歴
             </Link>
             <form action={handleLogout}>
               <button
                 type="submit"
-                className="px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap text-black"
+                className="px-3 py-2 text-sm bg-[#E0F7F1] rounded hover:bg-[#5DDFC3] hover:text-white whitespace-nowrap text-[#3A405A] font-medium transition-colors"
               >
                 ログアウト
               </button>

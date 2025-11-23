@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import QuizRunner from '@/components/QuizRunner'
 import { Question, Answer } from '@/lib/types/database'
 import Link from 'next/link'
+import { CheckCircle2, RefreshCw, ArrowLeft } from 'lucide-react'
 
 interface QuestionWithChapter extends Question {
   mukimuki_chapters?: {
@@ -96,20 +97,20 @@ export default function ReviewPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-black">読み込み中...</p>
+      <div className="min-h-screen bg-[#F4F9F7] flex items-center justify-center">
+        <p className="text-[#3A405A]">読み込み中...</p>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-[#F4F9F7] flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error}</p>
           <Link
             href="/"
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-6 py-2 bg-[#5DDFC3] text-white rounded-lg hover:bg-[#4ECFB3] font-medium transition-colors"
           >
             ホームに戻る
           </Link>
@@ -131,17 +132,18 @@ export default function ReviewPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen bg-[#F4F9F7]">
+      <header className="bg-white shadow-sm border-b-2 border-[#E0F7F1]">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <Link
               href="/"
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="text-[#5DDFC3] hover:text-[#4ECFB3] font-medium flex items-center gap-2"
             >
-              ← ホームに戻る
+              <ArrowLeft className="w-4 h-4" />
+              ホームに戻る
             </Link>
-            <h1 className="text-xl md:text-2xl font-bold text-black">
+            <h1 className="text-xl md:text-2xl font-bold text-[#3A405A]">
               復習モード
             </h1>
           </div>
@@ -149,35 +151,23 @@ export default function ReviewPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="bg-white rounded-lg shadow-md p-8 border-2 border-[#E0F7F1]">
           {allQuestions.length === 0 ? (
             <div className="text-center">
               <div className="mb-4">
-                <svg
-                  className="mx-auto h-16 w-16 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <CheckCircle2 className="mx-auto h-16 w-16 text-[#5DDFC3]" />
               </div>
-              <h2 className="text-2xl font-bold text-black mb-4">
+              <h2 className="text-2xl font-bold text-[#3A405A] mb-4">
                 素晴らしい！
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-[#3A405A] opacity-70 mb-6">
                 現在、復習が必要な問題はありません。
                 <br />
                 新しい章に挑戦してみましょう！
               </p>
               <Link
                 href="/"
-                className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
+                className="inline-block px-6 py-3 bg-[#5DDFC3] text-white rounded-lg hover:bg-[#4ECFB3] font-semibold transition-colors"
               >
                 ホームに戻る
               </Link>
@@ -185,26 +175,26 @@ export default function ReviewPage() {
           ) : (
             <div>
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-black mb-2">
+                <h2 className="text-2xl font-bold text-[#3A405A] mb-2">
                   間違えた問題を復習しましょう
                 </h2>
-                <div className="flex items-center gap-3 text-gray-600">
+                <div className="flex items-center gap-3 text-[#3A405A] opacity-70">
                   <p>
-                    過去に間違えた問題が <span className="font-bold text-black">{allQuestions.length}</span> 問あります
+                    過去に間違えた問題が <span className="font-bold text-[#3A405A] opacity-100">{allQuestions.length}</span> 問あります
                   </p>
                   {allQuestions.length > REVIEW_QUESTION_LIMIT && (
-                    <span className="px-2 py-1 bg-blue-100 text-blue-700 text-sm rounded font-semibold">
+                    <span className="px-2 py-1 bg-[#E0F7F1] text-[#5DDFC3] text-sm rounded font-semibold">
                       ランダムで{REVIEW_QUESTION_LIMIT}問を選択
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                <h3 className="font-semibold text-blue-900 mb-2">
+              <div className="mb-6 bg-[#F4F9F7] border-l-4 border-[#5DDFC3] p-4 rounded">
+                <h3 className="font-semibold text-[#3A405A] mb-2">
                   復習モードについて
                 </h3>
-                <ul className="text-sm text-blue-800 space-y-1">
+                <ul className="text-sm text-[#3A405A] opacity-70 space-y-1">
                   <li>• 過去のテストで間違えた問題からランダムに{REVIEW_QUESTION_LIMIT}問を選択します</li>
                   <li>• 問題はランダムな順序で表示されます</li>
                   <li>• 復習の結果は記録されません（何度でも挑戦できます）</li>
@@ -213,7 +203,7 @@ export default function ReviewPage() {
 
               {/* 科目・章ごとの内訳（選択された問題のみ） */}
               <div className="mb-6">
-                <h3 className="font-semibold text-black mb-3">
+                <h3 className="font-semibold text-[#3A405A] mb-3">
                   選択された問題の内訳（{selectedQuestions.length}問）
                 </h3>
                 <div className="space-y-4">
@@ -259,9 +249,9 @@ export default function ReviewPage() {
                   )
                     .sort(([, a], [, b]) => a.displayOrder - b.displayOrder)
                     .map(([subjectId, { name, chapters }]) => (
-                      <div key={subjectId} className="border border-gray-200 rounded-lg overflow-hidden">
-                        <div className="bg-gray-100 px-4 py-2">
-                          <h4 className="font-semibold text-black">{name}</h4>
+                      <div key={subjectId} className="border-2 border-[#E0F7F1] rounded-lg overflow-hidden">
+                        <div className="bg-[#F4F9F7] px-4 py-2">
+                          <h4 className="font-semibold text-[#3A405A]">{name}</h4>
                         </div>
                         <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
                           {Object.entries(chapters)
@@ -269,10 +259,10 @@ export default function ReviewPage() {
                             .map(([chapterId, { title, count }]) => (
                               <div
                                 key={chapterId}
-                                className="flex justify-between items-center p-3 bg-gray-50 rounded border border-gray-200"
+                                className="flex justify-between items-center p-3 bg-white rounded border border-[#E0F7F1]"
                               >
-                                <span className="text-sm text-black">{title}</span>
-                                <span className="text-sm font-semibold text-blue-600">
+                                <span className="text-sm text-[#3A405A]">{title}</span>
+                                <span className="text-sm font-semibold text-[#5DDFC3]">
                                   {count}問
                                 </span>
                               </div>
@@ -287,27 +277,15 @@ export default function ReviewPage() {
                 {allQuestions.length > REVIEW_QUESTION_LIMIT && (
                   <button
                     onClick={handleReshuffle}
-                    className="px-6 py-4 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-semibold text-lg shadow-md flex items-center gap-2"
+                    className="px-6 py-4 bg-[#E0F7F1] text-[#3A405A] rounded-lg hover:bg-[#F4F9F7] font-semibold text-lg shadow-md flex items-center gap-2 transition-colors"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                      />
-                    </svg>
+                    <RefreshCw className="w-5 h-5" />
                     別の問題を選択
                   </button>
                 )}
                 <button
                   onClick={handleStartReview}
-                  className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold text-lg shadow-md"
+                  className="px-8 py-4 bg-[#5DDFC3] text-white rounded-lg hover:bg-[#4ECFB3] font-semibold text-lg shadow-md transition-colors"
                 >
                   復習を開始する
                 </button>

@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
+import { Home, Target, RotateCcw, ChevronDown, ChevronRight, Coins } from 'lucide-react'
 import PointsDisplay from './PointsDisplay'
 import BadgeDisplay from './BadgeDisplay'
 import StreakDisplay from './StreakDisplay'
@@ -76,6 +78,27 @@ export default function HomeContent({
       <main className="max-w-6xl mx-auto px-4 py-8 pb-24">
         {activeTab === 'home' && (
           <div className="space-y-6">
+            {/* Roopyキャラクター挨拶 */}
+            <div className="bg-gradient-to-br from-[#E0F7F1] to-white rounded-2xl shadow-md p-6">
+              <div className="flex items-center gap-4">
+                <Image
+                  src="/Roopy.png"
+                  alt="Roopy"
+                  width={80}
+                  height={80}
+                  className="flex-shrink-0"
+                />
+                <div>
+                  <h2 className="text-xl font-bold text-[#3A405A] mb-2">
+                    ようこそ、受験の森へ！
+                  </h2>
+                  <p className="text-[#3A405A] text-sm opacity-80">
+                    今日も一緒に頑張りましょう 🌱
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* ポイント表示 */}
             <PointsDisplay />
 
@@ -93,32 +116,23 @@ export default function HomeContent({
             <div className="mb-8">
               <Link
                 href="/review"
-                className="block bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-md p-6 hover:shadow-lg transition-all hover:from-blue-600 hover:to-blue-700"
+                className="block bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] rounded-xl shadow-md p-6 hover:shadow-lg transition-all"
               >
                 <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-bold text-white mb-2">
-                      復習モード
-                    </h2>
-                    <p className="text-blue-100 text-sm">
-                      過去に間違えた問題を復習しましょう
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <div className="bg-white/20 p-3 rounded-full">
+                      <RotateCcw className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white mb-1">
+                        復習モード
+                      </h2>
+                      <p className="text-white/90 text-sm">
+                        間違えた問題を復習しましょう
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-white">
-                    <svg
-                      className="w-8 h-8"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </div>
+                  <ChevronRight className="w-6 h-6 text-white" />
                 </div>
               </Link>
             </div>
@@ -131,15 +145,15 @@ export default function HomeContent({
                 const isComingSoon = subject.id !== 1 // 無機化学以外は実装中
 
                 return (
-                  <div key={subject.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <div key={subject.id} className="bg-white rounded-lg shadow-md overflow-hidden border-2 border-[#E0F7F1]">
                     {/* 教科ヘッダー（トグル） */}
                     <button
                       onClick={() => toggleSubject(subject.id)}
-                      className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                      className="w-full px-6 py-4 flex items-center justify-between hover:bg-[#F4F9F7] transition-colors"
                     >
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2">
-                          <h2 className="text-xl font-semibold text-black">
+                          <h2 className="text-xl font-semibold text-[#3A405A]">
                             {subject.name}
                           </h2>
                           {isComingSoon && (
@@ -149,30 +163,20 @@ export default function HomeContent({
                           )}
                         </div>
                         {subject.description && (
-                          <p className="text-sm text-gray-600 hidden md:block">
+                          <p className="text-sm text-[#3A405A] opacity-70 hidden md:block">
                             {subject.description}
                           </p>
                         )}
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-[#3A405A] opacity-70">
                           {subjectChapters.length}章
                         </span>
-                        <svg
-                          className={`w-5 h-5 text-gray-400 transition-transform ${
+                        <ChevronDown
+                          className={`w-5 h-5 text-[#5DDFC3] transition-transform ${
                             isExpanded ? 'rotate-180' : ''
                           }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
+                        />
                       </div>
                     </button>
 
@@ -180,7 +184,7 @@ export default function HomeContent({
                     {isExpanded && (
                       <div className="px-6 pb-6">
                         {subjectChapters.length === 0 ? (
-                          <div className="text-center py-8 text-gray-500">
+                          <div className="text-center py-8 text-[#3A405A] opacity-70">
                             準備中です
                           </div>
                         ) : (
@@ -196,20 +200,21 @@ export default function HomeContent({
                                 <Link
                                   key={chapter.id}
                                   href={`/quiz/${chapter.id}`}
-                                  className="relative bg-gray-50 rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow overflow-hidden border border-gray-200"
+                                  className="relative bg-gradient-to-br from-white to-[#F4F9F7] rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-105 transition-all overflow-hidden border-2 border-[#E0F7F1]"
                                 >
                                   {/* ポイント獲得可能バッジ */}
                                   {canEarnPoints && (
-                                    <div className="absolute top-0 right-0 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg shadow-md">
+                                    <div className="absolute top-0 right-0 bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-white text-xs font-bold px-3 py-1 rounded-bl-lg shadow-md flex items-center gap-1">
+                                      <Coins className="w-3 h-3" />
                                       +1pt獲得可能
                                     </div>
                                   )}
 
                                   <div className="flex justify-between items-start mb-2">
-                                    <h3 className="font-semibold text-lg text-black">
+                                    <h3 className="font-semibold text-lg text-[#3A405A]">
                                       {chapter.title}
                                     </h3>
-                                    <span className="text-sm text-black">
+                                    <span className="text-sm text-[#5DDFC3] font-semibold">
                                       #{chapter.order_num}
                                     </span>
                                   </div>
@@ -217,24 +222,24 @@ export default function HomeContent({
                                   {percentage !== null && (
                                     <div className="mt-4">
                                       <div className="flex justify-between text-sm mb-1">
-                                        <span className="text-black">前回の結果</span>
+                                        <span className="text-[#3A405A] opacity-70">前回の結果</span>
                                         <span
                                           className={`font-semibold ${
                                             percentage >= 80
-                                              ? 'text-green-600'
+                                              ? 'text-[#5DDFC3]'
                                               : percentage >= 60
                                                 ? 'text-yellow-600'
-                                                : 'text-red-600'
+                                                : 'text-red-500'
                                           }`}
                                         >
                                           {percentage}%
                                         </span>
                                       </div>
-                                      <div className="w-full bg-gray-200 rounded-full h-2">
+                                      <div className="w-full bg-[#E0F7F1] rounded-full h-2">
                                         <div
                                           className={`h-2 rounded-full ${
                                             percentage >= 80
-                                              ? 'bg-green-500'
+                                              ? 'bg-[#5DDFC3]'
                                               : percentage >= 60
                                                 ? 'bg-yellow-500'
                                                 : 'bg-red-500'
@@ -246,7 +251,7 @@ export default function HomeContent({
                                   )}
 
                                   {percentage === null && (
-                                    <p className="text-sm text-black mt-4">未挑戦</p>
+                                    <p className="text-sm text-[#3A405A] opacity-70 mt-4">未挑戦</p>
                                   )}
                                 </Link>
                               )
@@ -264,7 +269,7 @@ export default function HomeContent({
       </main>
 
       {/* 下部タブバー */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E0F7F1] shadow-lg z-40">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex justify-around">
             {/* ホームタブ */}
@@ -272,23 +277,14 @@ export default function HomeContent({
               onClick={() => setActiveTab('home')}
               className={`flex-1 flex flex-col items-center py-3 transition-colors ${
                 activeTab === 'home'
-                  ? 'text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'text-[#5DDFC3]'
+                  : 'text-[#3A405A] opacity-50 hover:opacity-70'
               }`}
             >
-              <svg
+              <Home
                 className="w-6 h-6 mb-1"
                 fill={activeTab === 'home' ? 'currentColor' : 'none'}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                />
-              </svg>
+              />
               <span className="text-xs font-medium">ホーム</span>
             </button>
 
@@ -297,23 +293,14 @@ export default function HomeContent({
               onClick={() => setActiveTab('quest')}
               className={`flex-1 flex flex-col items-center py-3 transition-colors ${
                 activeTab === 'quest'
-                  ? 'text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'text-[#5DDFC3]'
+                  : 'text-[#3A405A] opacity-50 hover:opacity-70'
               }`}
             >
-              <svg
+              <Target
                 className="w-6 h-6 mb-1"
                 fill={activeTab === 'quest' ? 'currentColor' : 'none'}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              />
               <span className="text-xs font-medium">クエスト</span>
             </button>
           </div>
