@@ -9,8 +9,6 @@ export default function SignupPage() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [role, setRole] = useState<'student' | 'teacher'>('student')
-  const [teacherKey, setTeacherKey] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -20,25 +18,10 @@ export default function SignupPage() {
     setError(null)
 
     try {
-      // 講師アカウントの場合、キーを検証
-      if (role === 'teacher') {
-        const verifyResponse = await fetch('/api/verify-teacher-key', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ key: teacherKey }),
-        })
-
-        if (!verifyResponse.ok) {
-          const data = await verifyResponse.json()
-          setError(data.error || '講師用キーが正しくありません')
-          setIsLoading(false)
-          return
-        }
-      }
-
       const supabase = createClient()
 
       // 1. ユーザー作成（メタデータに名前とロールを含める）
+      // 全ての新規登録ユーザーは自動的に生徒として登録されます
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -46,7 +29,7 @@ export default function SignupPage() {
           emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/`,
           data: {
             name,
-            role,
+            role: 'student',
           },
         },
       })
@@ -137,53 +120,6 @@ export default function SignupPage() {
                 placeholder="6文字以上"
               />
             </div>
-
-            <div>
-              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">役割</label>
-              <div className="flex gap-4">
-                <label className="flex items-center text-[#3A405A]">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="student"
-                    checked={role === 'student'}
-                    onChange={() => setRole('student')}
-                    className="mr-2 accent-[#5DDFC3]"
-                  />
-                  生徒
-                </label>
-                <label className="flex items-center text-[#3A405A]">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="teacher"
-                    checked={role === 'teacher'}
-                    onChange={() => setRole('teacher')}
-                    className="mr-2 accent-[#5DDFC3]"
-                  />
-                  講師
-                </label>
-              </div>
-            </div>
-
-            {role === 'teacher' && (
-              <div>
-                <label className="block text-sm font-semibold mb-2 text-[#3A405A]">
-                  講師用認証キー
-                </label>
-                <input
-                  type="password"
-                  value={teacherKey}
-                  onChange={(e) => setTeacherKey(e.target.value)}
-                  required
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent"
-                  placeholder="講師用キーを入力"
-                />
-                <p className="text-xs text-[#3A405A] opacity-70 mt-1">
-                  ※講師アカウント作成には認証キーが必要です
-                </p>
-              </div>
-            )}
 
             {error && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
