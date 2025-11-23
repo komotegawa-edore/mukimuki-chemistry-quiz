@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roopy（るーぴー）| 大学受験学習アプリ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* デザイン設定 */
+        :root {
+            --primary-color: #5DDFC3; /* ミントグリーン */
+            --accent-color: #FFD700; /* 黄色（アクセント） */
+            --text-color: #3A405A; /* ダークグレー（文字色） */
+            --bg-light: #F4F9F7; /* 薄い背景色 */
+            --white: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+            line-height: 1.8;
+            color: var(--text-color);
+            margin: 0;
+            background-color: var(--bg-light);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(93, 223, 195, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(93, 223, 195, 0.05) 0%, transparent 20%);
+        }
+
+        h1, h2, h3 {
+            font-family: 'M PLUS Rounded 1c', sans-serif; /* 丸ゴシックで見出しを柔らかく */
+            font-weight: 700;
+            margin-bottom: 1.2em;
+        }
+
+        h1 { font-size: 2.2rem; }
+        h2 { font-size: 1.8rem; text-align: center; margin-top: 3em; }
+        h3 { font-size: 1.4rem; color: var(--primary-color); margin-top: 2em;}
+
+        p { margin-bottom: 1.5em; }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header (FV) */
+        .hero-section {
+            background: linear-gradient(180deg, #FFFFFF 0%, var(--bg-light) 100%);
+            padding: 60px 0 80px;
+            text-align: center;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: 0 4px 20px rgba(93, 223, 195, 0.1);
+        }
+
+        .logo-placeholder {
+            /* ロゴ配置エリアの擬似スタイル */
+            width: 180px;
+            height: 180px;
+            background-color: #E0F7F1;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px;
+            font-weight: bold;
+            color: var(--primary-color);
+            border: 4px solid var(--white);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .logo-placeholder::after {
+            content: "🌱";
+            font-size: 80px;
+            position: absolute;
+        }
+
+        .hero-title { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 0.5em; }
+        .hero-catch { font-size: 2.5rem; margin-bottom: 1em; line-height: 1.4; }
+
+        /* Content Sections */
+        .content-section {
+            padding: 60px 0;
+            background-color: var(--white);
+            margin: 40px 0;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .content-section.transparent {
+            background-color: transparent;
+            box-shadow: none;
+        }
+
+        .emphasis-box {
+            background-color: #E0F7F1;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin: 40px 0;
+        }
+
+        /* Feature List */
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            background: var(--bg-light);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .feature-text {
+            flex: 1;
+        }
+        .feature-text strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        /* Coming Soon Area */
+        .coming-soon-section {
+            background-color: var(--text-color);
+            color: var(--white);
+            padding: 60px 0;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .coming-soon-section h2 { color: var(--primary-color); margin-top: 0; }
+        .coming-soon-list {
+            list-style: none;
+            padding: 0;
+            display: inline-block;
+            text-align: left;
+            margin-top: 30px;
+        }
+        .coming-soon-list li {
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .coming-soon-list li::before {
+            content: "✨";
+            margin-right: 10px;
+        }
+
+        /* Footer */
+        .footer-section {
+            text-align: center;
+            padding: 80px 0;
+            background: linear-gradient(180deg, var(--bg-light) 0%, #FFFFFF 100%);
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 20px 60px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 8px 20px rgba(93, 223, 195, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(93, 223, 195, 0.5);
+        }
+
+        /* レスポンシブ調整 */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .hero-catch { font-size: 1.8rem; }
+            h2 { font-size: 1.5rem; }
+            .container { padding: 0 25px; }
+            .cta-button { padding: 18px 40px; font-size: 1.1rem; width: 80%; box-sizing: border-box; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero-section">
+        <div class="container">
+            <div class="hero-title">Roopy（るーぴー）</div>
+            <h1 class="hero-catch">大学受験を<br>“毎日つづけられる”ゲームにする</h1>
+            
+            <div class="logo-placeholder">
+                <span style="position:absolute; bottom:-40px; font-size:1rem; color:var(--text-color); opacity:0.6;">[ロゴ＋るーぴーのビジュアル]</span>
+            </div>
+            
+            <h2 style="margin-top: 2em;">受験の森へ、ようこそ。</h2>
+            <p>志望校合格というゴールを目指す、長く険しい道のり。<br>それはまるで、深く広大な森を冒険するようなものかもしれません。</p>
+            <p>Roopy（るーぴー）は、そんな「受験の森」を旅するあなたのためのナビゲーター。<br>日々の学習を、少しのワクワクと、確かな達成感に変えていく。<br>一人きりの孤独な戦いを、Roopyと一緒に「続けられる冒険」にしませんか？</p>
+        </div>
+    </header>
+
+    <section class="content-section container">
+        <h2>なぜ、受験勉強は続かないのでしょうか？</h2>
+        <p>「やらなきゃいけないのは分かっているけれど、やる気が出ない」<br>「机に向かっても、集中が続かない」<br>「昨日は頑張れたのに、今日はサボってしまった」</p>
+        <p>受験生なら誰もが抱える、継続の難しさ。<br>それは決して、あなたの意志が弱いからではありません。<br>成果が見えづらく、孤独で、単調な作業の繰り返しになりがちだからです。</p>
+
+        <div class="emphasis-box">
+            Roopyは、そんな「続かない」悩みを解決するために生まれました。
+        </div>
+
+        <p>学習をゲームのように直感的に、テンポよく。<br>毎日の小さな積み重ねを、目に見える成果として記録する。<br>Roopyは、あなたの「今日も勉強できた！」という達成感を何よりも大切にする、新しい学習アプリです。</p>
+    </section>
+
+    <section class="content-section container">
+        <h2>まずは、ここから。確実な一歩を。</h2>
+        <p style="text-align: center;">Roopyはまだ生まれたばかり。<br>まずは、受験生がつまずきやすい分野から、しっかりとサポートします。</p>
+
+        <h3>🧪 無機化学テスト</h3>
+        <p>暗記量が多く、後回しにしがちな無機化学。<br>Roopyなら、1問1答のクイズ形式で、ゲーム感覚でサクサク進められます。</p>
+        <div class="feature-item">
+            <div class="feature-icon">🎮</div>
+            <div class="feature-text">
+                <strong>テンポの良いUI</strong>
+                ストレスなく、次々と問題を解いていける心地よい操作感。
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">🔄</div>
+            <div class="feature-text">
+                <strong>復習・履歴管理</strong>
+                間違えた問題だけを効率よく解き直せるので、知識が確実に定着します。
+            </div>
+        </div>
+
+        <h3>📈 記録 × モチベーション</h3>
+        <p>「今日も頑張った」という証を、Roopyは逃しません。</p>
+        <div class="feature-item">
+            <div class="feature-icon">💰</div>
+            <div class="feature-text">
+                <strong>ポイント機能</strong>
+                学習するたびにポイントが貯まる。日々の努力が数字で見える楽しさを。
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">🏆</div>
+            <div class="feature-text">
+                <strong>ランキング機能</strong>
+                同じ志を持つライバルたちと、切磋琢磨できる（※匿名で参加できます）。
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">🎁</div>
+            <div class="feature-text">
+                <strong>ログインボーナス</strong>
+                アプリを開くだけで、小さなご褒美が。毎日の習慣化を後押しします。
+            </div>
+        </div>
+        <p style="margin-top: 30px; text-align: center;">これだけでも、苦手な分野の克服と、学習習慣の定着が確実に前進します。</p>
+    </section>
+
+    <section class="content-section transparent container">
+        <h2>冒険の世界は、まもなく広がります。</h2>
+        <p style="text-align: center;">Roopyは、あなたと一緒に成長していくアプリです。<br>近日中に、以下の機能が解放される予定です。</p>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 40px;">
+            <div style="background: #fff; padding: 30px; border-radius: 16px; flex: 1 1 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                <h3 style="margin-top:0;">⚗️ 有機化学</h3>
+                <p>無機化学に続き、化学の重要分野である「有機化学」も登場。構造式や反応系統図も、Roopyらしい分かりやすいインターフェースで学習できるようになります。</p>
+            </div>
+            <div style="background: #fff; padding: 30px; border-radius: 16px; flex: 1 1 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                <h3 style="margin-top:0;">🎧 英語リスニング</h3>
+                <p>毎日の継続がカギとなるリスニング。通学時間やスキマ時間に、手軽に取り組めるトレーニング機能を追加予定です。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="coming-soon-section">
+            <h2>Coming Soon</h2>
+            <p>Roopyとの冒険は、まだ始まったばかり。<br>これからのアップデートにも、どうぞご期待ください。</p>
+            <ul class="coming-soon-list">
+                <li>教科の拡張（化学以外の科目も順次追加）</li>
+                <li>学習計画（Roopyと一緒に「森を旅する」プランニング）</li>
+                <li>ミッション（クエストや継続チャレンジなどのゲーム要素）</li>
+            </ul>
+        </div>
+    </section>
+
+    <footer class="footer-section">
+        <div class="container">
+            <h2>さあ、今日から始めましょう。</h2>
+            <p>Roopyは、すべての大学受験生のために作られたアプリです。<br>すべての機能を、これからもずっと、完全無料でご利用いただけます。</p>
+            <p>面倒な手続きは必要ありません。<br>GoogleアカウントやApple IDなどで、すぐに冒険を始められます。</p>
+            <p style="margin-bottom: 40px;">あなたの努力が、確かな実力に変わるその日まで。<br>Roopyは、一番近くであなたを応援しています。</p>
+            
+            <a href="#" class="cta-button">無料で利用を開始する</a>
+        </div>
+    </footer>
+
+</body>
+</html>
