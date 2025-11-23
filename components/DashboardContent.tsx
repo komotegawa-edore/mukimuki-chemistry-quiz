@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { ChevronDown, Eye, EyeOff, Settings } from 'lucide-react'
 
 interface Subject {
   id: number
@@ -91,15 +92,15 @@ export default function DashboardContent({
         const isComingSoon = subject.id !== 1 // 無機化学以外は実装中
 
         return (
-          <div key={subject.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div key={subject.id} className="bg-white rounded-lg shadow-md overflow-hidden border-2 border-[#E0F7F1]">
             {/* 教科ヘッダー（トグル） */}
             <button
               onClick={() => toggleSubject(subject.id)}
-              className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+              className="w-full px-6 py-4 flex items-center justify-between hover:bg-[#F4F9F7] transition-colors"
             >
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-semibold text-black">
+                  <h2 className="text-xl font-semibold text-[#3A405A]">
                     {subject.name}
                   </h2>
                   {isComingSoon && (
@@ -109,30 +110,20 @@ export default function DashboardContent({
                   )}
                 </div>
                 {subject.description && (
-                  <p className="text-sm text-gray-600 hidden md:block">
+                  <p className="text-sm text-[#3A405A] opacity-70 hidden md:block">
                     {subject.description}
                   </p>
                 )}
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-[#3A405A] opacity-70">
                   {subjectChapters.length}章
                 </span>
-                <svg
-                  className={`w-5 h-5 text-gray-400 transition-transform ${
+                <ChevronDown
+                  className={`w-5 h-5 text-[#5DDFC3] transition-transform ${
                     isExpanded ? 'rotate-180' : ''
                   }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
+                />
               </div>
             </button>
 
@@ -140,7 +131,7 @@ export default function DashboardContent({
             {isExpanded && (
               <div className="px-6 pb-6">
                 {subjectChapters.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-[#3A405A] opacity-70">
                     準備中です
                   </div>
                 ) : (
@@ -148,38 +139,51 @@ export default function DashboardContent({
                     {subjectChapters.map((chapter) => (
                       <div
                         key={chapter.id}
-                        className="p-4 border border-gray-200 rounded-lg bg-gray-50"
+                        className="p-4 border-2 border-[#E0F7F1] rounded-lg bg-gradient-to-br from-white to-[#F4F9F7] hover:shadow-md transition-all"
                       >
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-black">{chapter.title}</h3>
+                            <h3 className="font-semibold text-[#3A405A]">{chapter.title}</h3>
                             {chapter.is_published ? (
-                              <span className="inline-block px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                              <span className="inline-block px-2 py-0.5 bg-[#E0F7F1] text-[#5DDFC3] text-xs font-semibold rounded flex items-center gap-1">
+                                <Eye className="w-3 h-3" />
                                 公開中
                               </span>
                             ) : (
-                              <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-800 text-xs font-semibold rounded">
+                              <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-600 text-xs font-semibold rounded flex items-center gap-1">
+                                <EyeOff className="w-3 h-3" />
                                 非公開
                               </span>
                             )}
                           </div>
-                          <span className="text-sm text-gray-600">#{chapter.order_num}</span>
+                          <span className="text-sm text-[#5DDFC3] font-semibold">#{chapter.order_num}</span>
                         </div>
                         <div className="flex gap-2 mt-3">
                           <button
                             onClick={() => handleToggleChapterPublish(chapter)}
-                            className={`flex-1 px-3 py-1.5 rounded text-xs font-medium ${
+                            className={`flex-1 px-3 py-1.5 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1 ${
                               chapter.is_published
                                 ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                : 'bg-[#E0F7F1] text-[#5DDFC3] hover:bg-[#5DDFC3] hover:text-white'
                             }`}
                           >
-                            {chapter.is_published ? '非公開にする' : '公開する'}
+                            {chapter.is_published ? (
+                              <>
+                                <EyeOff className="w-3 h-3" />
+                                非公開にする
+                              </>
+                            ) : (
+                              <>
+                                <Eye className="w-3 h-3" />
+                                公開する
+                              </>
+                            )}
                           </button>
                           <Link
                             href={`/dashboard/questions/${chapter.id}`}
-                            className="flex-1 px-3 py-1.5 bg-blue-600 text-white rounded text-xs font-medium hover:bg-blue-700 text-center"
+                            className="flex-1 px-3 py-1.5 bg-[#5DDFC3] text-white rounded text-xs font-medium hover:bg-[#4ECFB3] text-center transition-colors flex items-center justify-center gap-1"
                           >
+                            <Settings className="w-3 h-3" />
                             問題を管理
                           </Link>
                         </div>
