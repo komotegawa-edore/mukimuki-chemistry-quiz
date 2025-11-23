@@ -293,25 +293,33 @@ export default function LandingPage() {
             <div>
               <h3 className="font-bold mb-3 text-[#3A405A]">お問い合わせ</h3>
               <p className="text-sm opacity-70 mb-3">
-                ご質問・ご要望はXのDMまで
+                ご質問・ご要望はXのDM、または下記のメールアドレスまで
               </p>
-              <a
-                href="https://x.com/edore_edu"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-[#5DDFC3] hover:text-[#4ECFB3] font-medium transition-colors"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                </svg>
-                @edore_edu
-              </a>
+              <div className="space-y-2">
+                <a
+                  href="https://x.com/Edore_handai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-[#5DDFC3] hover:text-[#4ECFB3] font-medium transition-colors"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                  @Edore_handai
+                </a>
+                <a
+                  href="mailto:k.omotegawa@edore-edu.com"
+                  className="block text-sm text-[#5DDFC3] hover:text-[#4ECFB3] font-medium transition-colors"
+                >
+                  k.omotegawa@edore-edu.com
+                </a>
+              </div>
             </div>
           </div>
 
           {/* コピーライト */}
           <div className="border-t border-[#E0F7F1] pt-6 text-center text-sm opacity-60">
-            <p>&copy; 2024 Roopy. All rights reserved.</p>
+            <p>&copy; 2025 Edore. All rights reserved.</p>
           </div>
         </div>
       </footer>
