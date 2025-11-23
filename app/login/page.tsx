@@ -1,20 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Image from 'next/image'
 
-export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
+// エラー表示用のコンポーネント（useSearchParamsを使用）
+function ErrorDisplay({ onError }: { onError: (error: string | null) => void }) {
   const searchParams = useSearchParams()
 
-  // URLパラメータからエラーメッセージを取得
   useEffect(() => {
     const errorParam = searchParams.get('error')
     if (errorParam) {
@@ -27,9 +22,19 @@ export default function LoginPage() {
         signup_failed: 'アカウントの作成に失敗しました',
         line_auth_failed: 'LINE ログインに失敗しました',
       }
-      setError(errorMessages[errorParam] || 'ログインに失敗しました')
+      onError(errorMessages[errorParam] || 'ログインに失敗しました')
     }
-  }, [searchParams])
+  }, [searchParams, onError])
+
+  return null
+}
+
+function LoginForm() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -74,6 +79,10 @@ export default function LoginPage() {
             />
             <p className="text-[#3A405A] text-sm">大学受験学習アプリ</p>
           </div>
+
+          <Suspense fallback={null}>
+            <ErrorDisplay onError={setError} />
+          </Suspense>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
@@ -154,4 +163,8 @@ export default function LoginPage() {
       </div>
     </div>
   )
+}
+
+export default function LoginPage() {
+  return <LoginForm />
 }
