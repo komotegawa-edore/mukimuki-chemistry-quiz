@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { BookOpen, Gift, Trophy } from 'lucide-react'
+import RoopyLoader from './RoopyLoader'
 
 interface PointsInfo {
   totalPoints: number
@@ -58,12 +59,8 @@ export default function PointsDisplay() {
 
   if (isLoading) {
     return (
-      <div className="bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] rounded-lg shadow-md p-4">
-        <div className="flex items-center justify-between">
-          <div className="text-white">
-            <p className="text-sm opacity-90">読み込み中...</p>
-          </div>
-        </div>
+      <div className="bg-white rounded-lg shadow-md p-8 border-2 border-[#E0F7F1]">
+        <RoopyLoader message="ポイント情報を読み込み中..." size="small" />
       </div>
     )
   }

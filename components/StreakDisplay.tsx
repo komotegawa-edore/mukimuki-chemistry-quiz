@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Trophy } from 'lucide-react'
+import RoopyLoader from './RoopyLoader'
 
 export default function StreakDisplay() {
   const [currentStreak, setCurrentStreak] = useState(0)
@@ -29,8 +30,8 @@ export default function StreakDisplay() {
 
   if (isLoading) {
     return (
-      <div className="bg-gradient-to-r from-orange-400 to-red-500 rounded-lg shadow-md p-6 animate-pulse">
-        <div className="h-20"></div>
+      <div className="bg-white rounded-lg shadow-md p-8 border-2 border-[#E0F7F1]">
+        <RoopyLoader message="連続ログイン情報を読み込み中..." size="small" />
       </div>
     )
   }

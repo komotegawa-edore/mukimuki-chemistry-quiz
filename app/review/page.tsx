@@ -6,6 +6,7 @@ import QuizRunner from '@/components/QuizRunner'
 import { Question, Answer } from '@/lib/types/database'
 import Link from 'next/link'
 import { CheckCircle2, RefreshCw, ArrowLeft } from 'lucide-react'
+import RoopyLoader from '@/components/RoopyLoader'
 
 interface QuestionWithChapter extends Question {
   mukimuki_chapters?: {
@@ -97,8 +98,8 @@ export default function ReviewPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F4F9F7] flex items-center justify-center">
-        <p className="text-[#3A405A]">読み込み中...</p>
+      <div className="min-h-screen bg-[#F4F9F7]">
+        <RoopyLoader message="復習問題を読み込み中..." fullScreen />
       </div>
     )
   }

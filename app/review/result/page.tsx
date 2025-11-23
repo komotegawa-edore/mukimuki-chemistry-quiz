@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import Image from 'next/image'
+import RoopyLoader from '@/components/RoopyLoader'
 
 function ResultContent() {
   const searchParams = useSearchParams()
@@ -104,8 +105,8 @@ export default function ReviewResultPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#F4F9F7] flex items-center justify-center">
-          <p className="text-[#3A405A]">読み込み中...</p>
+        <div className="min-h-screen bg-[#F4F9F7]">
+          <RoopyLoader message="結果を読み込み中..." fullScreen />
         </div>
       }
     >
