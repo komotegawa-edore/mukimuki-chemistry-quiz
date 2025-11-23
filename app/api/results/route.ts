@@ -59,12 +59,30 @@ export async function POST(request: NextRequest) {
       answersCount: Object.keys(answers || {}).length,
     })
 
+    // 章から教科IDを取得
+    const { data: chapter, error: chapterError } = await supabase
+      .from('mukimuki_chapters')
+      .select('subject_id')
+      .eq('id', chapter_id)
+      .single()
+
+    if (chapterError || !chapter) {
+      console.error('Failed to fetch chapter:', chapterError)
+      return NextResponse.json(
+        { error: 'Chapter not found' },
+        { status: 404 }
+      )
+    }
+
+    console.log('Chapter subject_id:', chapter.subject_id)
+
     // テスト結果を保存
     const { data, error } = await supabase
       .from('mukimuki_test_results')
       .insert({
         user_id: user.id,
         chapter_id,
+        subject_id: chapter.subject_id,
         score,
         total,
         answers,
