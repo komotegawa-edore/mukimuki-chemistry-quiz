@@ -30,6 +30,36 @@ export default function LandingPage() {
         `
       }}>
 
+      {/* Navigation Header */}
+      <nav className="bg-white border-b border-[#E0F7F1] sticky top-0 z-50">
+        <div className="max-w-[1200px] mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/Roopy-icon.png"
+              alt="Roopy"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+            <span className="font-bold text-xl text-[#3A405A]">Roopy</span>
+          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/login"
+              className="text-[#3A405A] hover:text-[#5DDFC3] font-medium transition-colors"
+            >
+              ログイン
+            </Link>
+            <Link
+              href="/signup"
+              className="bg-[#5DDFC3] text-white px-6 py-2 rounded-full font-bold hover:bg-[#4ECFB3] transition-colors"
+            >
+              無料で始める
+            </Link>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <header className="bg-gradient-to-b from-white to-[#F4F9F7] rounded-b-[40px] shadow-[0_4px_20px_rgba(93,223,195,0.1)] py-16 px-4 text-center">
         <div className="max-w-[860px] mx-auto">
@@ -198,7 +228,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer CTA */}
-      <footer className="bg-gradient-to-b from-[#F4F9F7] to-white rounded-t-[40px] py-16 px-4 text-center mt-20">
+      <section className="bg-gradient-to-b from-[#F4F9F7] to-white rounded-t-[40px] py-16 px-4 text-center mt-20">
         <div className="max-w-[700px] mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             さあ、今日から始めましょう。
@@ -218,6 +248,71 @@ export default function LandingPage() {
           <p className="mt-8 text-sm opacity-60">
             Googleで簡単ログイン
           </p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-[#E0F7F1] py-12 px-4 mt-16">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            {/* ブランド */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Image
+                  src="/Roopy-icon.png"
+                  alt="Roopy"
+                  width={32}
+                  height={32}
+                  className="rounded-full"
+                />
+                <span className="font-bold text-lg text-[#3A405A]">Roopy</span>
+              </div>
+              <p className="text-sm opacity-70">
+                大学受験を"毎日つづけられる"ゲームにする
+              </p>
+            </div>
+
+            {/* リンク */}
+            <div>
+              <h3 className="font-bold mb-3 text-[#3A405A]">サービス</h3>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <Link href="/login" className="opacity-70 hover:opacity-100 hover:text-[#5DDFC3] transition-colors">
+                    ログイン
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/signup" className="opacity-70 hover:opacity-100 hover:text-[#5DDFC3] transition-colors">
+                    新規登録
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* SNS・お問い合わせ */}
+            <div>
+              <h3 className="font-bold mb-3 text-[#3A405A]">お問い合わせ</h3>
+              <p className="text-sm opacity-70 mb-3">
+                ご質問・ご要望はXのDMまで
+              </p>
+              <a
+                href="https://x.com/edore_edu"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-[#5DDFC3] hover:text-[#4ECFB3] font-medium transition-colors"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                @edore_edu
+              </a>
+            </div>
+          </div>
+
+          {/* コピーライト */}
+          <div className="border-t border-[#E0F7F1] pt-6 text-center text-sm opacity-60">
+            <p>&copy; 2024 Roopy. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
