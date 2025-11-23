@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Sparkles } from 'lucide-react'
 
 interface Badge {
   badge_name: string
@@ -39,11 +40,14 @@ export default function BadgeNotification({ badges }: BadgeNotificationProps) {
 
   return (
     <div className="fixed top-20 right-4 z-50 animate-slide-in-right">
-      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg shadow-2xl p-6 max-w-sm">
+      <div className="bg-gradient-to-r from-[#B19CD9] to-[#9B7EBD] rounded-lg shadow-2xl p-6 max-w-sm border-2 border-white">
         <div className="flex items-center gap-4">
-          <div className="text-6xl">{currentBadge.badge_icon}</div>
+          <div className="text-6xl bg-white/20 p-3 rounded-full">{currentBadge.badge_icon}</div>
           <div className="text-white">
-            <p className="font-bold text-lg mb-1">🎉 バッジ獲得！</p>
+            <p className="font-bold text-lg mb-1 flex items-center gap-2">
+              <Sparkles className="w-5 h-5" />
+              バッジ獲得！
+            </p>
             <p className="text-xl font-bold">{currentBadge.badge_name}</p>
             <p className="text-sm opacity-90">{currentBadge.badge_description}</p>
             {badges.length > 1 && (

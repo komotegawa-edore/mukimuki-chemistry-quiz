@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Lock } from 'lucide-react'
 
 interface Badge {
   id: number
@@ -73,18 +74,8 @@ export default function BadgeDisplay() {
             >
               {/* ロックアイコン */}
               {!badge.earned && (
-                <div className="absolute top-2 right-2 bg-black/50 rounded-full p-1">
-                  <svg
-                    className="w-5 h-5 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                <div className="absolute top-2 right-2 bg-black/50 rounded-full p-1.5">
+                  <Lock className="w-4 h-4 text-white" />
                 </div>
               )}
 

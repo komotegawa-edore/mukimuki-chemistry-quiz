@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Trophy } from 'lucide-react'
+import { Trophy, Flame } from 'lucide-react'
 import RoopyLoader from './RoopyLoader'
 
 export default function StreakDisplay() {
@@ -37,11 +37,13 @@ export default function StreakDisplay() {
   }
 
   return (
-    <div className="bg-gradient-to-r from-orange-400 to-red-500 rounded-lg shadow-md p-6">
+    <div className="bg-gradient-to-r from-[#FFB84D] to-[#FF8C42] rounded-lg shadow-md p-6 border-2 border-[#FFD700]">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           {/* 炎アイコン */}
-          <div className="text-5xl animate-pulse">🔥</div>
+          <div className="bg-white/20 p-3 rounded-full">
+            <Flame className="w-10 h-10 text-white animate-pulse" />
+          </div>
 
           <div className="text-white">
             <p className="text-sm font-medium opacity-90">連続ログイン</p>
