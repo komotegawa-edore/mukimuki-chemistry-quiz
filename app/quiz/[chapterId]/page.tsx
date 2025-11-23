@@ -54,6 +54,13 @@ export default function QuizPage({
     answers: Record<number, Answer>
   ) => {
     try {
+      console.log('Submitting quiz result:', {
+        chapter_id: parseInt(params.chapterId),
+        score,
+        total,
+        answersCount: Object.keys(answers).length,
+      })
+
       const response = await fetch('/api/results', {
         method: 'POST',
         headers: {
@@ -68,6 +75,12 @@ export default function QuizPage({
       })
 
       const data = await response.json()
+      console.log('Quiz result response:', data)
+
+      if (!response.ok) {
+        console.error('Server returned error:', response.status, data)
+        throw new Error(data.error || 'Failed to save result')
+      }
 
       // 結果ページへ（ポイント獲得情報も渡す）
       const pointsParam = data.pointsAwarded ? '&points=1' : ''
@@ -76,7 +89,7 @@ export default function QuizPage({
       )
     } catch (err) {
       console.error('Failed to save result:', err)
-      alert('結果の保存に失敗しました')
+      alert('結果の保存に失敗しました: ' + (err instanceof Error ? err.message : String(err)))
     }
   }
 

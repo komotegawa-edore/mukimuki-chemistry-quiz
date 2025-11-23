@@ -44,11 +44,20 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     if (!user) {
+      console.error('POST /api/results: No user found')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
     const { chapter_id, score, total, answers } = body
+
+    console.log('POST /api/results:', {
+      user_id: user.id,
+      chapter_id,
+      score,
+      total,
+      answersCount: Object.keys(answers || {}).length,
+    })
 
     // テスト結果を保存
     const { data, error } = await supabase
@@ -64,13 +73,18 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (error) {
+      console.error('Failed to insert test result:', error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
+
+    console.log('Test result saved successfully:', data.id)
 
     // 100%達成の場合、ポイントを付与（1日1回のみ）
     let pointsAwarded = false
     let newBadges: any[] = []
     if (score === total && score > 0) {
+      console.log('Perfect score! Attempting to award points...')
+
       const { error: pointError } = await supabase
         .from('mukimuki_chapter_clears')
         .insert({
@@ -79,16 +93,27 @@ export async function POST(request: NextRequest) {
           points: 1,
         })
 
-      // UNIQUE制約違反（すでに今日獲得済み）の場合はエラーを無視
-      if (!pointError || pointError.code === '23505') {
-        pointsAwarded = !pointError
+      if (pointError) {
+        console.log('Point insert error:', pointError)
+        if (pointError.code === '23505') {
+          console.log('Points already awarded today for this chapter')
+        } else {
+          console.error('Unexpected error awarding points:', pointError)
+        }
+      } else {
+        console.log('Points awarded successfully!')
+        pointsAwarded = true
 
         // ポイントを獲得した場合、バッジチェック
-        if (pointsAwarded) {
-          const { data: badges } = await supabase.rpc('check_and_award_badges', {
-            target_user_id: user.id,
-          })
+        const { data: badges, error: badgeError } = await supabase.rpc('check_and_award_badges', {
+          target_user_id: user.id,
+        })
+
+        if (badgeError) {
+          console.error('Badge check failed:', badgeError)
+        } else {
           newBadges = badges || []
+          console.log('Badges checked:', newBadges.length, 'new badges')
         }
       }
     }
@@ -98,8 +123,9 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
+    console.error('POST /api/results - Unexpected error:', error)
     return NextResponse.json(
-      { error: 'Failed to create result' },
+      { error: 'Failed to create result', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     )
   }
