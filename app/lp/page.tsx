@@ -226,7 +226,7 @@ export default function LandingPage() {
           </Link>
 
           <p className="mt-8 text-sm opacity-60">
-            LINEで簡単ログイン
+            Googleで簡単ログイン
           </p>
         </div>
       </footer>
