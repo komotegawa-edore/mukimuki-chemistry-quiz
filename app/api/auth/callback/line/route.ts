@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -86,21 +87,27 @@ export async function GET(request: NextRequest) {
 
     if (signInError) {
       // ログインに失敗した場合、原因を確認
-      // "Invalid login credentials" の場合のみ新規作成を試みる
+      // "Invalid login credentials" または "Email not confirmed" の場合のみ新規作成を試みる
       if (signInError.message?.includes('Invalid login credentials') ||
-          signInError.message?.includes('User not found')) {
+          signInError.message?.includes('User not found') ||
+          signInError.message?.includes('Email not confirmed')) {
 
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        // Admin APIを使用してメール確認をスキップしてユーザーを作成
+        const supabaseAdmin = createAdminClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_ROLE_KEY!
+        )
+
+        const { data: signUpData, error: signUpError } = await supabaseAdmin.auth.admin.createUser({
           email,
           password,
-          options: {
-            data: {
-              name: profile.displayName,
-              role: 'student', // LINEログインは生徒アカウントのみ
-              avatar_url: profile.pictureUrl,
-              line_user_id: profile.userId,
-              provider: 'line',
-            },
+          email_confirm: true, // メール確認をスキップ
+          user_metadata: {
+            name: profile.displayName,
+            role: 'student', // LINEログインは生徒アカウントのみ
+            avatar_url: profile.pictureUrl,
+            line_user_id: profile.userId,
+            provider: 'line',
           },
         })
 
@@ -119,8 +126,21 @@ export async function GET(request: NextRequest) {
           )
         }
 
-        // 新規ユーザー作成成功
+        // 新規ユーザー作成成功、通常のクライアントでログイン
         console.log('New LINE user created:', signUpData.user?.id)
+
+        // Admin APIで作成したユーザーでログイン
+        const { error: loginError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
+
+        if (loginError) {
+          console.error('Login after signup error:', loginError)
+          return NextResponse.redirect(
+            `${process.env.NEXT_PUBLIC_SITE_URL}/login?error=line_auth_failed`
+          )
+        }
       } else {
         // その他のエラー（パスワード間違いなど）
         console.error('Login error:', signInError)
