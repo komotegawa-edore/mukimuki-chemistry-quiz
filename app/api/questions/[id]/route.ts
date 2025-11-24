@@ -16,6 +16,17 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    // 講師権限チェック
+    const { data: profile } = await supabase
+      .from('mukimuki_profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.role !== 'teacher') {
+      return NextResponse.json({ error: 'Forbidden - Teacher access required' }, { status: 403 })
+    }
+
     const body = await request.json()
     const {
       question_text,
@@ -64,11 +75,13 @@ export async function PUT(
       .single()
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      console.error('Failed to update question:', error)
+      return NextResponse.json({ error: 'Failed to update question' }, { status: 500 })
     }
 
     return NextResponse.json(data)
   } catch (error) {
+    console.error('Unexpected error in PUT /api/questions/[id]:', error)
     return NextResponse.json(
       { error: 'Failed to update question' },
       { status: 500 }
@@ -91,14 +104,27 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    // 講師権限チェック
+    const { data: profile } = await supabase
+      .from('mukimuki_profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.role !== 'teacher') {
+      return NextResponse.json({ error: 'Forbidden - Teacher access required' }, { status: 403 })
+    }
+
     const { error } = await supabase.from('mukimuki_questions').delete().eq('id', id)
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      console.error('Failed to delete question:', error)
+      return NextResponse.json({ error: 'Failed to delete question' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error('Unexpected error in DELETE /api/questions/[id]:', error)
     return NextResponse.json(
       { error: 'Failed to delete question' },
       { status: 500 }

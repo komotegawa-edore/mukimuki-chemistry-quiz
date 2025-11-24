@@ -4,31 +4,58 @@ import { createClient } from '@/lib/supabase/server'
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient()
+
+    // 認証チェック
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // 講師権限チェック
+    const { data: profile } = await supabase
+      .from('mukimuki_profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    const isTeacher = profile?.role === 'teacher'
+
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get('userId')
     const chapterId = searchParams.get('chapterId')
 
+    // 権限チェック: 生徒は自分のデータのみ閲覧可能
+    if (userId && userId !== user.id && !isTeacher) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    // ユーザーIDが指定されていない場合は自分のデータ
+    const targetUserId = (isTeacher && userId) ? userId : user.id
+
     let query = supabase
       .from('mukimuki_test_results')
       .select('*, mukimuki_chapters(id, title, order_num)')
+      .eq('user_id', targetUserId)
       .order('created_at', { ascending: false })
 
-    if (userId) {
-      query = query.eq('user_id', userId)
-    }
-
     if (chapterId) {
-      query = query.eq('chapter_id', parseInt(chapterId))
+      const chapterIdNum = parseInt(chapterId)
+      if (!Number.isInteger(chapterIdNum) || chapterIdNum <= 0) {
+        return NextResponse.json({ error: 'Invalid chapter ID' }, { status: 400 })
+      }
+      query = query.eq('chapter_id', chapterIdNum)
     }
 
     const { data, error } = await query
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      console.error('Failed to fetch results:', error)
+      return NextResponse.json({ error: 'Failed to fetch results' }, { status: 500 })
     }
 
     return NextResponse.json(data)
   } catch (error) {
+    console.error('Unexpected error in GET /api/results:', error)
     return NextResponse.json(
       { error: 'Failed to fetch results' },
       { status: 500 }

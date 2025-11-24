@@ -42,11 +42,13 @@ export async function PUT(
       .single()
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      console.error('Failed to update chapter:', error)
+      return NextResponse.json({ error: 'Failed to update chapter' }, { status: 500 })
     }
 
     return NextResponse.json(data)
   } catch (error) {
+    console.error('Unexpected error in PUT /api/chapters/[id]:', error)
     return NextResponse.json(
       { error: 'Failed to update chapter' },
       { status: 500 }
