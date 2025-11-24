@@ -9,7 +9,9 @@ interface RankingUser {
   user_name: string
   email: string
   total_points: number
+  chapter_clear_count: number
   chapter_clear_points: number
+  login_count: number
   login_bonus_points: number
   current_streak: number
   last_login_date: string | null
@@ -19,15 +21,16 @@ export default function RankingsPage() {
   const [rankings, setRankings] = useState<RankingUser[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [period, setPeriod] = useState<'all-time' | 'weekly'>('all-time')
 
   useEffect(() => {
     fetchRankings()
-  }, [])
+  }, [period])
 
   const fetchRankings = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/rankings')
+      const response = await fetch(`/api/rankings?period=${period}`)
 
       if (!response.ok) {
         throw new Error('ランキングの取得に失敗しました')
@@ -113,9 +116,33 @@ export default function RankingsPage() {
             <Trophy className="h-7 w-7 text-yellow-500" />
             ユーザーランキング
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-4">
             プレゼント企画用のランキング（生徒のみ表示）
           </p>
+
+          {/* 期間切り替えタブ */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setPeriod('all-time')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                period === 'all-time'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              全期間
+            </button>
+            <button
+              onClick={() => setPeriod('weekly')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                period === 'weekly'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              週間（過去7日間）
+            </button>
+          </div>
         </div>
         <div className="p-6">
           <div className="mb-4 text-sm text-gray-600">
@@ -139,10 +166,10 @@ export default function RankingsPage() {
                     総ポイント
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    章クリア
+                    章クリア<br/>回数/PT
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    ログイン
+                    ログイン<br/>回数/PT
                   </th>
                   <th className="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     連続日数
@@ -182,10 +209,12 @@ export default function RankingsPage() {
                         {user.total_points}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-600">
-                        {user.chapter_clear_points}
+                        <div>{user.chapter_clear_count}回</div>
+                        <div className="text-xs text-gray-500">{user.chapter_clear_points}pt</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-600">
-                        {user.login_bonus_points}
+                        <div>{user.login_count}回</div>
+                        <div className="text-xs text-gray-500">{user.login_bonus_points}pt</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
                         <div className="flex items-center justify-center gap-1">
@@ -211,8 +240,10 @@ export default function RankingsPage() {
           </div>
 
           {rankings.length > 0 && (
-            <div className="mt-4 text-sm text-gray-500">
-              ※ 総ポイント = 章クリアポイント + ログインボーナスポイント
+            <div className="mt-4 text-sm text-gray-500 space-y-1">
+              <div>※ 総ポイント = 章クリアポイント + ログインボーナスポイント</div>
+              <div>※ 章クリア: クイズを合格した回数とポイント</div>
+              <div>※ ログイン: ログインした回数とボーナスポイント</div>
             </div>
           )}
         </div>
