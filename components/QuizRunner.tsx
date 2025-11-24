@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import { Timer } from 'lucide-react'
 import { Question, Answer } from '@/lib/types/database'
 
 interface QuizRunnerProps {
@@ -10,6 +11,8 @@ interface QuizRunnerProps {
   chapterTitle: string
   onComplete: (score: number, total: number, answers: Record<number, Answer>) => void
   onQuit?: () => void
+  isMissionMode?: boolean
+  timeLimit?: number // 秒数
 }
 
 export default function QuizRunner({
@@ -18,12 +21,15 @@ export default function QuizRunner({
   chapterTitle,
   onComplete,
   onQuit,
+  isMissionMode = false,
+  timeLimit = 300,
 }: QuizRunnerProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null)
   const [answers, setAnswers] = useState<Record<number, Answer>>({})
   const [isCompleted, setIsCompleted] = useState(false)
   const [showAnswer, setShowAnswer] = useState(false)
+  const [remainingTime, setRemainingTime] = useState(timeLimit)
 
   const currentQuestion = questions[currentIndex]
   const isLastQuestion = currentIndex === questions.length - 1
@@ -35,6 +41,29 @@ export default function QuizRunner({
       audio.preload = 'auto'
     }
   }, [currentQuestion])
+
+  // ミッションモード用タイマー
+  useEffect(() => {
+    if (!isMissionMode || isCompleted) return
+
+    const timer = setInterval(() => {
+      setRemainingTime((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [isMissionMode, isCompleted])
+
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
 
   const handleAnswerSelect = (answer: Answer) => {
     if (!showAnswer) {
@@ -144,19 +173,38 @@ export default function QuizRunner({
       <div className="mb-6">
         <div className="flex justify-between items-start mb-2">
           <h1 className="text-2xl font-bold text-[#3A405A]">{chapterTitle}</h1>
-          {onQuit && (
-            <button
-              onClick={handleQuit}
-              className="px-3 py-2 text-sm text-red-600 border-2 border-red-600 rounded hover:bg-red-50 whitespace-nowrap font-medium transition-colors"
-            >
-              終了
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {isMissionMode && (
+              <div
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold ${
+                  remainingTime <= 60
+                    ? 'bg-red-100 text-red-600'
+                    : remainingTime <= 180
+                      ? 'bg-yellow-100 text-yellow-700'
+                      : 'bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] text-white'
+                }`}
+              >
+                <Timer className="w-5 h-5" />
+                <span className="text-lg">{formatTime(remainingTime)}</span>
+              </div>
+            )}
+            {onQuit && (
+              <button
+                onClick={handleQuit}
+                className="px-3 py-2 text-sm text-red-600 border-2 border-red-600 rounded hover:bg-red-50 whitespace-nowrap font-medium transition-colors"
+              >
+                終了
+              </button>
+            )}
+          </div>
         </div>
         <div className="flex justify-between text-sm text-[#3A405A] opacity-70">
           <span>
             問題 {currentIndex + 1} / {questions.length}
           </span>
+          {isMissionMode && remainingTime === 0 && (
+            <span className="text-red-600 font-semibold">時間切れ（ボーナスなし）</span>
+          )}
         </div>
       </div>
 

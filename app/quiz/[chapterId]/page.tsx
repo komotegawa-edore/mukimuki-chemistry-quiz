@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import QuizRunner from '@/components/QuizRunner'
 import { Question, Answer } from '@/lib/types/database'
 
@@ -11,15 +11,23 @@ export default function QuizPage({
   params: { chapterId: string }
 }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [questions, setQuestions] = useState<Question[]>([])
   const [chapterTitle, setChapterTitle] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isMissionMode, setIsMissionMode] = useState(false)
+  const [timeLimit, setTimeLimit] = useState(300)
 
   useEffect(() => {
     // クイズ開始時刻を記録
     const startTime = Date.now()
     sessionStorage.setItem(`quiz_start_${params.chapterId}`, startTime.toString())
+
+    // ミッションモードチェック
+    const missionParam = searchParams.get('mission')
+    const isMission = missionParam === '1'
+    setIsMissionMode(isMission)
 
     const fetchQuestions = async () => {
       try {
@@ -30,6 +38,17 @@ export default function QuizPage({
 
         const data = await response.json()
         setQuestions(data)
+
+        // ミッションモードの場合、ミッション情報を取得
+        if (isMission) {
+          const missionResponse = await fetch('/api/daily-mission')
+          if (missionResponse.ok) {
+            const missionData = await missionResponse.json()
+            if (missionData.mission && missionData.mission.chapter_id === parseInt(params.chapterId)) {
+              setTimeLimit(missionData.mission.time_limit_seconds)
+            }
+          }
+        }
 
         // 章タイトルも取得（簡易的にfetchで取得）
         const chaptersResponse = await fetch('/api/chapters')
@@ -50,7 +69,7 @@ export default function QuizPage({
     }
 
     fetchQuestions()
-  }, [params.chapterId])
+  }, [params.chapterId, searchParams])
 
   const handleComplete = async (
     score: number,
@@ -166,6 +185,8 @@ export default function QuizPage({
       chapterTitle={chapterTitle || `第${params.chapterId}章`}
       onComplete={handleComplete}
       onQuit={handleQuit}
+      isMissionMode={isMissionMode}
+      timeLimit={timeLimit}
     />
   )
 }

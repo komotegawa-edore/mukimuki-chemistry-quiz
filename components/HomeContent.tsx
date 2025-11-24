@@ -46,7 +46,7 @@ export default function HomeContent({
   latestResults,
   clearedTodayIds,
 }: HomeContentProps) {
-  const [activeTab, setActiveTab] = useState<'home' | 'quest'>('quest')
+  const [activeTab, setActiveTab] = useState<'home' | 'quest'>('home')
   const [expandedSubjects, setExpandedSubjects] = useState<Set<number>>(
     new Set([1]) // デフォルトで無機化学（id=1）を展開
   )

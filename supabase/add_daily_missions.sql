@@ -255,10 +255,51 @@ LEFT JOIN public.mukimuki_daily_missions dm ON p.id = dm.user_id
 GROUP BY p.id, p.name;
 
 -- ====================================
+-- システム設定テーブル
+-- ====================================
+
+CREATE TABLE IF NOT EXISTS public.mukimuki_system_settings (
+  id SERIAL PRIMARY KEY,
+  setting_key VARCHAR(100) UNIQUE NOT NULL,
+  setting_value TEXT NOT NULL,
+  description TEXT,
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_by UUID REFERENCES public.mukimuki_profiles(id)
+);
+
+-- インデックス作成
+CREATE INDEX IF NOT EXISTS idx_mukimuki_system_settings_key ON public.mukimuki_system_settings(setting_key);
+
+-- デフォルト設定を挿入
+INSERT INTO public.mukimuki_system_settings (setting_key, setting_value, description)
+VALUES
+  ('daily_mission_enabled', 'true', 'デイリーミッション機能の有効/無効')
+ON CONFLICT (setting_key) DO NOTHING;
+
+-- RLS ポリシー
+ALTER TABLE public.mukimuki_system_settings ENABLE ROW LEVEL SECURITY;
+
+-- 全ユーザーが設定を読める
+CREATE POLICY "mukimuki_all_users_can_read_settings"
+  ON public.mukimuki_system_settings FOR SELECT
+  USING (true);
+
+-- 講師のみが設定を更新できる
+CREATE POLICY "mukimuki_teachers_can_update_settings"
+  ON public.mukimuki_system_settings FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.mukimuki_profiles
+      WHERE id = auth.uid() AND role = 'teacher'
+    )
+  );
+
+-- ====================================
 -- コメント
 -- ====================================
 
 COMMENT ON TABLE public.mukimuki_daily_missions IS 'デイリーミッション記録テーブル';
+COMMENT ON TABLE public.mukimuki_system_settings IS 'システム設定テーブル';
 COMMENT ON FUNCTION generate_daily_mission IS 'ユーザーの今日のデイリーミッションを生成または取得';
 COMMENT ON FUNCTION complete_daily_mission IS 'デイリーミッションを達成してポイントを付与';
 COMMENT ON FUNCTION expire_old_missions IS '古いミッションを期限切れにする（日次バッチ用）';

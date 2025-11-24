@@ -12,6 +12,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
     }
 
+    // デイリーミッション機能が有効かチェック
+    const { data: settings } = await supabase
+      .from('mukimuki_system_settings')
+      .select('setting_value')
+      .eq('setting_key', 'daily_mission_enabled')
+      .single()
+
+    if (!settings || settings.setting_value !== 'true') {
+      return NextResponse.json({ mission: null, disabled: true }, { status: 200 })
+    }
+
     // デイリーミッション生成関数を呼び出し
     const { data, error } = await supabase.rpc('generate_daily_mission', {
       p_user_id: user.id,

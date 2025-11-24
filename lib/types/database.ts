@@ -228,6 +228,32 @@ export interface Database {
           created_at?: string
         }
       }
+      mukimuki_system_settings: {
+        Row: {
+          id: number
+          setting_key: string
+          setting_value: string
+          description: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          id?: number
+          setting_key: string
+          setting_value: string
+          description?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          id?: number
+          setting_key?: string
+          setting_value?: string
+          description?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+      }
     }
     Views: {
       [_ in never]: never

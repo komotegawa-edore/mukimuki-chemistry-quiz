@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Timer, Target, Sparkles } from 'lucide-react'
+import { Timer, Target, Sparkles, Star } from 'lucide-react'
 
 interface DailyMission {
   id: number
@@ -39,7 +39,7 @@ export default function DailyMissionCard() {
 
   const handleStartMission = () => {
     if (mission) {
-      router.push(`/quiz/${mission.chapter_id}`)
+      router.push(`/quiz/${mission.chapter_id}?mission=1`)
     }
   }
 
@@ -80,7 +80,7 @@ export default function DailyMissionCard() {
               <span>{mission.time_limit_minutes}分以内</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-yellow-300">⭐</span>
+              <Star className="w-4 h-4 fill-yellow-300 text-yellow-300" />
               <span>+{mission.reward_points}pt</span>
             </div>
           </div>

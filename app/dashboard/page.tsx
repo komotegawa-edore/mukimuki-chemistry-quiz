@@ -4,6 +4,7 @@ import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
 import CSVImport from '@/components/CSVImport'
 import DashboardContent from '@/components/DashboardContent'
+import DailyMissionSettings from '@/components/DailyMissionSettings'
 import Header from '@/components/Header'
 import { BookOpen, ArrowRight } from 'lucide-react'
 
@@ -75,6 +76,12 @@ export default async function DashboardPage() {
               <ArrowRight className="w-6 h-6 text-white" />
             </div>
           </Link>
+        </div>
+
+        {/* デイリーミッション設定 */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-black">システム設定</h2>
+          <DailyMissionSettings />
         </div>
 
         <div className="mb-8">
