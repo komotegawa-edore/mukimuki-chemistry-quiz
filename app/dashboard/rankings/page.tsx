@@ -21,16 +21,25 @@ export default function RankingsPage() {
   const [rankings, setRankings] = useState<RankingUser[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [period, setPeriod] = useState<'all-time' | 'weekly'>('all-time')
+  const [period, setPeriod] = useState<'all-time' | 'weekly' | 'custom'>('all-time')
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
 
   useEffect(() => {
     fetchRankings()
-  }, [period])
+  }, [period, startDate, endDate])
 
   const fetchRankings = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/rankings?period=${period}`)
+
+      let url = `/api/rankings?period=${period}`
+      if (period === 'custom') {
+        if (startDate) url += `&start_date=${startDate}`
+        if (endDate) url += `&end_date=${endDate}`
+      }
+
+      const response = await fetch(url)
 
       if (!response.ok) {
         throw new Error('ランキングの取得に失敗しました')
@@ -121,7 +130,7 @@ export default function RankingsPage() {
           </p>
 
           {/* 期間切り替えタブ */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 mb-4">
             <button
               onClick={() => setPeriod('all-time')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
@@ -142,7 +151,57 @@ export default function RankingsPage() {
             >
               週間（過去7日間）
             </button>
+            <button
+              onClick={() => setPeriod('custom')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                period === 'custom'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              カスタム期間
+            </button>
           </div>
+
+          {/* カスタム期間の日付選択 */}
+          {period === 'custom' && (
+            <div className="flex gap-4 items-center p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <label htmlFor="start-date" className="text-sm font-medium text-gray-700">
+                  開始日:
+                </label>
+                <input
+                  id="start-date"
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <span className="text-gray-500">〜</span>
+              <div className="flex items-center gap-2">
+                <label htmlFor="end-date" className="text-sm font-medium text-gray-700">
+                  終了日:
+                </label>
+                <input
+                  id="end-date"
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setStartDate('')
+                  setEndDate('')
+                }}
+                className="px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+              >
+                クリア
+              </button>
+            </div>
+          )}
         </div>
         <div className="p-6">
           <div className="mb-4 text-sm text-gray-600">
@@ -244,6 +303,20 @@ export default function RankingsPage() {
               <div>※ 総ポイント = 章クリアポイント + ログインボーナスポイント</div>
               <div>※ 章クリア: クイズを合格した回数とポイント</div>
               <div>※ ログイン: ログインした回数とボーナスポイント</div>
+              {period === 'custom' && (
+                <div className="mt-2 p-2 bg-blue-50 rounded">
+                  <strong>カスタム期間:</strong>
+                  {startDate && endDate ? (
+                    <span> {startDate} 〜 {endDate}</span>
+                  ) : startDate ? (
+                    <span> {startDate} 以降</span>
+                  ) : endDate ? (
+                    <span> {endDate} まで</span>
+                  ) : (
+                    <span> 全期間（日付を指定してください）</span>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

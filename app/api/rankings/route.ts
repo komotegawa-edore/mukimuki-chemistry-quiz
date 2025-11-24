@@ -26,22 +26,40 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden - Teacher access required' }, { status: 403 })
     }
 
-    // ランキング取得（period パラメータで全期間/週間を切り替え）
+    // ランキング取得（period パラメータで全期間/週間/カスタムを切り替え）
     const { searchParams } = new URL(request.url)
     const period = searchParams.get('period') || 'all-time'
+    const startDate = searchParams.get('start_date')
+    const endDate = searchParams.get('end_date')
 
-    const functionName = period === 'weekly'
-      ? 'get_weekly_user_ranking_with_email'
-      : 'get_user_ranking_with_email'
+    let data, error
 
-    const { data, error } = await supabase.rpc(functionName)
+    if (period === 'custom' && (startDate || endDate)) {
+      // カスタム期間: start_date と end_date を使用
+      const result = await supabase.rpc('get_user_ranking_with_date_range', {
+        p_start_date: startDate || null,
+        p_end_date: endDate || null
+      })
+      data = result.data
+      error = result.error
+    } else if (period === 'weekly') {
+      // 週間: 過去7日間
+      const result = await supabase.rpc('get_weekly_user_ranking_with_email')
+      data = result.data
+      error = result.error
+    } else {
+      // 全期間
+      const result = await supabase.rpc('get_user_ranking_with_email')
+      data = result.data
+      error = result.error
+    }
 
     if (error) {
       console.error('Failed to fetch rankings:', error)
       return NextResponse.json({ error: 'Failed to fetch rankings' }, { status: 500 })
     }
 
-    return NextResponse.json({ rankings: data, period })
+    return NextResponse.json({ rankings: data, period, startDate, endDate })
 
   } catch (error) {
     console.error('Unexpected error in GET /api/rankings:', error)
