@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Beaker, Trophy, Coins, RotateCcw, CheckCircle } from 'lucide-react'
 
 export default function SignupPage() {
   const [name, setName] = useState('')
@@ -82,25 +83,37 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F4F9F7] px-4 py-12">
-      <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <div className="mb-8 text-center">
-            <Image
-              src="/Roopy-full-1.png"
-              alt="Roopy（るーぴー）"
-              width={200}
-              height={67}
-              className="mx-auto mb-2"
-              priority
-            />
-            <h1 className="text-2xl font-bold text-[#3A405A] mb-1">
-              アカウント作成
-            </h1>
-            <p className="text-[#3A405A] text-sm">
-              大学受験学習アプリ
-            </p>
-          </div>
+    <div className="min-h-screen bg-[#F4F9F7] px-4 py-12">
+      <div className="max-w-5xl mx-auto">
+        {/* ヘッダー */}
+        <div className="text-center mb-12">
+          <Image
+            src="/Roopy-full-1.png"
+            alt="Roopy（るーぴー）"
+            width={250}
+            height={84}
+            className="mx-auto mb-4"
+            priority
+          />
+          <h1 className="text-3xl md:text-4xl font-bold text-[#3A405A] mb-3">
+            大学受験を"毎日つづけられる"ゲームにする
+          </h1>
+          <p className="text-lg text-[#3A405A] opacity-80">
+            すべて無料・登録後すぐに始められます
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8 items-start">
+          {/* 左側：フォーム */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="mb-6 text-center">
+              <h2 className="text-2xl font-bold text-[#3A405A] mb-2">
+                アカウント作成
+              </h2>
+              <p className="text-[#3A405A] text-sm opacity-70">
+                1分で登録完了
+              </p>
+            </div>
 
           <form onSubmit={handleSignup} className="space-y-5">
             <div>
@@ -189,6 +202,105 @@ export default function SignupPage() {
             <Link href="/login" className="text-[#5DDFC3] hover:text-[#4ECFB3] font-semibold ml-2">
               ログイン
             </Link>
+          </div>
+          </div>
+
+          {/* 右側：アプリの特徴 */}
+          <div className="space-y-6">
+            {/* Roopyの紹介 */}
+            <div className="bg-gradient-to-br from-[#E0F7F1] to-white rounded-2xl shadow-lg p-6">
+              <div className="flex items-center gap-4 mb-3">
+                <Image
+                  src="/Roopy.png"
+                  alt="Roopy"
+                  width={60}
+                  height={60}
+                  className="flex-shrink-0"
+                />
+                <div>
+                  <h3 className="text-lg font-bold text-[#3A405A]">
+                    Roopyと一緒に学習しよう！
+                  </h3>
+                  <p className="text-sm text-[#3A405A] opacity-70">
+                    あなたの学習をサポートする相棒
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="text-xl font-bold text-[#3A405A] mb-4 flex items-center gap-2">
+                <CheckCircle className="w-6 h-6 text-[#5DDFC3]" />
+                登録すると使える機能
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-[#E0F7F1] p-2 rounded-lg">
+                    <Beaker className="w-5 h-5 text-[#5DDFC3]" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-[#3A405A] mb-1">無機化学の問題演習</h4>
+                    <p className="text-sm text-[#3A405A] opacity-70">
+                      1問1答形式でサクサク進む。全33章を網羅。
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="bg-[#E0F7F1] p-2 rounded-lg">
+                    <Coins className="w-5 h-5 text-[#5DDFC3]" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-[#3A405A] mb-1">ポイント＆バッジ</h4>
+                    <p className="text-sm text-[#3A405A] opacity-70">
+                      学習するたびポイント獲得。ログインボーナスも。
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="bg-[#E0F7F1] p-2 rounded-lg">
+                    <Trophy className="w-5 h-5 text-[#5DDFC3]" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-[#3A405A] mb-1">ランキング機能</h4>
+                    <p className="text-sm text-[#3A405A] opacity-70">
+                      全国のライバルと競い合って、モチベーションUP。
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="bg-[#E0F7F1] p-2 rounded-lg">
+                    <RotateCcw className="w-5 h-5 text-[#5DDFC3]" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-[#3A405A] mb-1">復習モード</h4>
+                    <p className="text-sm text-[#3A405A] opacity-70">
+                      間違えた問題を効率的に復習。弱点を克服。
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-[#5DDFC3] to-[#4ECFB3] rounded-2xl shadow-lg p-6 text-white">
+              <h3 className="text-xl font-bold mb-3">完全無料で使えます</h3>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4" />
+                  料金は一切かかりません
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4" />
+                  全ての機能が使い放題
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4" />
+                  面倒な手続き一切なし
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
