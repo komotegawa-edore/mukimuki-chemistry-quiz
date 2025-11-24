@@ -7,6 +7,7 @@ import { Home, Target, RotateCcw, ChevronDown, ChevronRight, Coins } from 'lucid
 import PointsDisplay from './PointsDisplay'
 import BadgeDisplay from './BadgeDisplay'
 import StreakDisplay from './StreakDisplay'
+import WelcomeModal from './WelcomeModal'
 
 interface Subject {
   id: number
@@ -74,6 +75,7 @@ export default function HomeContent({
 
   return (
     <>
+      <WelcomeModal />
       {/* メインコンテンツ */}
       <main className="max-w-6xl mx-auto px-4 py-8 pb-24">
         {activeTab === 'home' && (
