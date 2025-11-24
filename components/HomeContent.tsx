@@ -9,6 +9,7 @@ import BadgeDisplay from './BadgeDisplay'
 import StreakDisplay from './StreakDisplay'
 import WelcomeModal from './WelcomeModal'
 import InstallPrompt from './InstallPrompt'
+import DailyMissionCard from './DailyMissionCard'
 
 interface Subject {
   id: number
@@ -102,6 +103,9 @@ export default function HomeContent({
                 </div>
               </div>
             </div>
+
+            {/* デイリーミッション */}
+            <DailyMissionCard />
 
             {/* ポイント表示 */}
             <PointsDisplay />

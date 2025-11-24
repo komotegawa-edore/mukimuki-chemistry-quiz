@@ -190,6 +190,44 @@ export interface Database {
           created_at?: string
         }
       }
+      mukimuki_daily_missions: {
+        Row: {
+          id: number
+          user_id: string
+          chapter_id: number
+          mission_date: string
+          time_limit_seconds: number
+          reward_points: number
+          status: string
+          completed_at: string | null
+          completion_time_seconds: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          user_id: string
+          chapter_id: number
+          mission_date?: string
+          time_limit_seconds?: number
+          reward_points?: number
+          status?: string
+          completed_at?: string | null
+          completion_time_seconds?: number | null
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          user_id?: string
+          chapter_id?: number
+          mission_date?: string
+          time_limit_seconds?: number
+          reward_points?: number
+          status?: string
+          completed_at?: string | null
+          completion_time_seconds?: number | null
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

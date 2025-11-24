@@ -17,6 +17,7 @@ export default function ResultPage({
   const total = parseInt(searchParams.get('total') || '1')
   const percentage = Math.round((score / total) * 100)
   const pointsAwarded = searchParams.get('points') === '1'
+  const missionCompleted = searchParams.get('mission') === '1'
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F4F9F7] px-4">
@@ -55,6 +56,16 @@ export default function ResultPage({
               <div className="flex items-center justify-center gap-2">
                 <Coins className="w-6 h-6" />
                 <span className="font-bold text-lg">+1pt 獲得！</span>
+              </div>
+            </div>
+          )}
+
+          {missionCompleted && (
+            <div className="mb-6 bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] text-white p-4 rounded-lg shadow-md animate-pulse">
+              <div className="text-center">
+                <div className="text-2xl mb-1">🎯</div>
+                <div className="font-bold text-lg">デイリーミッション達成！</div>
+                <div className="text-sm opacity-90">+3pt ボーナス獲得！</div>
               </div>
             </div>
           )}

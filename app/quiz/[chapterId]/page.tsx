@@ -17,6 +17,10 @@ export default function QuizPage({
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    // クイズ開始時刻を記録
+    const startTime = Date.now()
+    sessionStorage.setItem(`quiz_start_${params.chapterId}`, startTime.toString())
+
     const fetchQuestions = async () => {
       try {
         const response = await fetch(
@@ -82,10 +86,44 @@ export default function QuizPage({
         throw new Error(data.error || 'Failed to save result')
       }
 
-      // 結果ページへ（ポイント獲得情報も渡す）
+      // デイリーミッション達成チェック
+      let missionCompleted = false
+      try {
+        const startTimeStr = sessionStorage.getItem(`quiz_start_${params.chapterId}`)
+        if (startTimeStr) {
+          const startTime = parseInt(startTimeStr)
+          const completionTimeSeconds = Math.floor((Date.now() - startTime) / 1000)
+
+          const missionResponse = await fetch('/api/daily-mission/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chapter_id: parseInt(params.chapterId),
+              completion_time_seconds: completionTimeSeconds,
+            }),
+          })
+
+          if (missionResponse.ok) {
+            const missionData = await missionResponse.json()
+            if (missionData.success) {
+              missionCompleted = true
+              console.log('Daily mission completed!', missionData.message)
+            }
+          }
+
+          // 開始時刻をクリア
+          sessionStorage.removeItem(`quiz_start_${params.chapterId}`)
+        }
+      } catch (missionErr) {
+        console.error('Mission check failed:', missionErr)
+        // ミッションのエラーはクイズ結果には影響させない
+      }
+
+      // 結果ページへ（ポイント獲得情報とミッション達成情報も渡す）
       const pointsParam = data.pointsAwarded ? '&points=1' : ''
+      const missionParam = missionCompleted ? '&mission=1' : ''
       router.push(
-        `/quiz/${params.chapterId}/result?score=${score}&total=${total}${pointsParam}`
+        `/quiz/${params.chapterId}/result?score=${score}&total=${total}${pointsParam}${missionParam}`
       )
     } catch (err) {
       console.error('Failed to save result:', err)
