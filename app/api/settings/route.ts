@@ -1,6 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
+// 動的ルートとして明示
+export const dynamic = 'force-dynamic'
+
 // GET: システム設定を取得
 export async function GET(request: NextRequest) {
   try {

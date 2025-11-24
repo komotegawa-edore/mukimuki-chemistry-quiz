@@ -1,6 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
+// 動的ルートとして明示
+export const dynamic = 'force-dynamic'
+
 // GET: 今日のデイリーミッションを取得（なければ生成）
 export async function GET(request: NextRequest) {
   try {
