@@ -8,6 +8,7 @@ import PointsDisplay from './PointsDisplay'
 import BadgeDisplay from './BadgeDisplay'
 import StreakDisplay from './StreakDisplay'
 import WelcomeModal from './WelcomeModal'
+import InstallPrompt from './InstallPrompt'
 
 interface Subject {
   id: number
@@ -76,6 +77,7 @@ export default function HomeContent({
   return (
     <>
       <WelcomeModal />
+      <InstallPrompt />
       {/* メインコンテンツ */}
       <main className="max-w-6xl mx-auto px-4 py-8 pb-24">
         {activeTab === 'home' && (

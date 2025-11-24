@@ -1,0 +1,24 @@
+{
+  "name": "Roopy（るーぴー）",
+  "short_name": "Roopy",
+  "description": "大学受験を\"毎日つづけられる\"ゲームにする",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4F9F7",
+  "theme_color": "#5DDFC3",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/Roopy-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/Roopy-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
