@@ -6,7 +6,7 @@ import CSVImport from '@/components/CSVImport'
 import DashboardContent from '@/components/DashboardContent'
 import DailyMissionSettings from '@/components/DailyMissionSettings'
 import Header from '@/components/Header'
-import { BookOpen, ArrowRight } from 'lucide-react'
+import { BookOpen, ArrowRight, Trophy } from 'lucide-react'
 
 export default async function DashboardPage() {
   const profile = await getCurrentProfile()
@@ -57,8 +57,8 @@ export default async function DashboardPage() {
       />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* ガイドへのリンク */}
-        <div className="mb-8">
+        {/* ガイドとランキングへのリンク */}
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/dashboard/guide"
             className="block bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
@@ -71,6 +71,24 @@ export default async function DashboardPage() {
                 </h2>
                 <p className="text-white opacity-90 text-sm">
                   CSV一括インポート、問題の管理方法、定着率の見方などを解説
+                </p>
+              </div>
+              <ArrowRight className="w-6 h-6 text-white" />
+            </div>
+          </Link>
+
+          <Link
+            href="/dashboard/rankings"
+            className="block bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                  <Trophy className="w-5 h-5" />
+                  ユーザーランキング
+                </h2>
+                <p className="text-white opacity-90 text-sm">
+                  プレゼント企画用：順位、名前、メールアドレスを表示
                 </p>
               </div>
               <ArrowRight className="w-6 h-6 text-white" />
