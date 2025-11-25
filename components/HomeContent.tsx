@@ -11,6 +11,7 @@ import WelcomeModal from './WelcomeModal'
 import InstallPrompt from './InstallPrompt'
 import DailyMissionCard from './DailyMissionCard'
 import AnnouncementsList from './AnnouncementsList'
+import TemporaryQuestCard from './TemporaryQuestCard'
 
 interface Subject {
   id: number
@@ -107,6 +108,9 @@ export default function HomeContent({
 
             {/* お知らせ */}
             <AnnouncementsList />
+
+            {/* 臨時クエスト */}
+            <TemporaryQuestCard />
 
             {/* デイリーミッション */}
             <DailyMissionCard />

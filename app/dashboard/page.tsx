@@ -6,7 +6,7 @@ import CSVImport from '@/components/CSVImport'
 import DashboardContent from '@/components/DashboardContent'
 import DailyMissionSettings from '@/components/DailyMissionSettings'
 import Header from '@/components/Header'
-import { BookOpen, ArrowRight, Trophy, Bell } from 'lucide-react'
+import { BookOpen, ArrowRight, Trophy, Bell, Zap } from 'lucide-react'
 
 export default async function DashboardPage() {
   const profile = await getCurrentProfile()
@@ -58,7 +58,7 @@ export default async function DashboardPage() {
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* ガイドとランキングへのリンク */}
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/dashboard/guide"
             className="block bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
@@ -107,6 +107,24 @@ export default async function DashboardPage() {
                 </h2>
                 <p className="text-white opacity-90 text-sm">
                   生徒に表示するお知らせを作成・編集・削除
+                </p>
+              </div>
+              <ArrowRight className="w-6 h-6 text-white" />
+            </div>
+          </Link>
+
+          <Link
+            href="/dashboard/temporary-quests"
+            className="block bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                  <Zap className="w-5 h-5" />
+                  臨時クエスト
+                </h2>
+                <p className="text-white opacity-90 text-sm">
+                  期間限定の特別クエストを作成・管理
                 </p>
               </div>
               <ArrowRight className="w-6 h-6 text-white" />
