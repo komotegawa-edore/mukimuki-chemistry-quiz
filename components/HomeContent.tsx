@@ -10,6 +10,7 @@ import StreakDisplay from './StreakDisplay'
 import WelcomeModal from './WelcomeModal'
 import InstallPrompt from './InstallPrompt'
 import DailyMissionCard from './DailyMissionCard'
+import AnnouncementsList from './AnnouncementsList'
 
 interface Subject {
   id: number
@@ -103,6 +104,9 @@ export default function HomeContent({
                 </div>
               </div>
             </div>
+
+            {/* お知らせ */}
+            <AnnouncementsList />
 
             {/* デイリーミッション */}
             <DailyMissionCard />
