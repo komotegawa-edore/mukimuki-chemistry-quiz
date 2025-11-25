@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Trophy, Medal, Award, Calendar, Flame } from 'lucide-react'
+import { Trophy, Medal, Award, Calendar, Flame, ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
+import Header from '@/components/Header'
 
 interface RankingUser {
   rank: number
@@ -83,16 +85,24 @@ export default function RankingsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6 border-b">
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Trophy className="h-6 w-6" />
-              ユーザーランキング
-            </h1>
-          </div>
-          <div className="p-6">
-            <div className="text-center py-8 text-gray-500">読み込み中...</div>
+      <div className="min-h-screen">
+        <Header
+          title="ユーザーランキング"
+          rightContent={
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap text-black"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              ダッシュボードに戻る
+            </Link>
+          }
+        />
+        <div className="container mx-auto p-6">
+          <div className="bg-white rounded-lg shadow">
+            <div className="p-6">
+              <div className="text-center py-8 text-gray-500">読み込み中...</div>
+            </div>
           </div>
         </div>
       </div>
@@ -101,16 +111,24 @@ export default function RankingsPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6 border-b">
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Trophy className="h-6 w-6" />
-              ユーザーランキング
-            </h1>
-          </div>
-          <div className="p-6">
-            <div className="text-center py-8 text-red-500">{error}</div>
+      <div className="min-h-screen">
+        <Header
+          title="ユーザーランキング"
+          rightContent={
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap text-black"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              ダッシュボードに戻る
+            </Link>
+          }
+        />
+        <div className="container mx-auto p-6">
+          <div className="bg-white rounded-lg shadow">
+            <div className="p-6">
+              <div className="text-center py-8 text-red-500">{error}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -118,7 +136,20 @@ export default function RankingsPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="min-h-screen">
+      <Header
+        title="ユーザーランキング"
+        rightContent={
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap text-black"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            ダッシュボードに戻る
+          </Link>
+        }
+      />
+      <div className="container mx-auto p-6 space-y-6">
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="p-6 border-b">
           <h1 className="text-2xl font-bold flex items-center gap-2 mb-2">
@@ -320,6 +351,7 @@ export default function RankingsPage() {
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   )

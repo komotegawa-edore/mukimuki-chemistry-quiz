@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Bell, Plus, Edit, Trash2, X, Calendar, AlertCircle, AlertTriangle, Info } from 'lucide-react'
+import { Bell, Plus, Edit, Trash2, X, Calendar, AlertCircle, AlertTriangle, Info, ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
+import Header from '@/components/Header'
 
 interface Announcement {
   id: number
@@ -163,16 +165,24 @@ export default function AnnouncementsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6 border-b">
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Bell className="h-6 w-6" />
-              お知らせ管理
-            </h1>
-          </div>
-          <div className="p-6">
-            <div className="text-center py-8 text-gray-500">読み込み中...</div>
+      <div className="min-h-screen">
+        <Header
+          title="お知らせ管理"
+          rightContent={
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap text-black"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              ダッシュボードに戻る
+            </Link>
+          }
+        />
+        <div className="container mx-auto p-6">
+          <div className="bg-white rounded-lg shadow">
+            <div className="p-6">
+              <div className="text-center py-8 text-gray-500">読み込み中...</div>
+            </div>
           </div>
         </div>
       </div>
@@ -180,7 +190,20 @@ export default function AnnouncementsPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="min-h-screen">
+      <Header
+        title="お知らせ管理"
+        rightContent={
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap text-black"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            ダッシュボードに戻る
+          </Link>
+        }
+      />
+      <div className="container mx-auto p-6 space-y-6">
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="p-6 border-b">
           <div className="flex items-center justify-between mb-2">
@@ -404,6 +427,7 @@ export default function AnnouncementsPage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }

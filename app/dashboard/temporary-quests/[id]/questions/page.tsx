@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Plus, Edit, Trash2, X, GripVertical } from 'lucide-react'
 import Link from 'next/link'
+import Header from '@/components/Header'
 
 interface Question {
   id: number
@@ -186,21 +187,42 @@ export default function QuestionsPage() {
   const totalPoints = questions.reduce((sum, q) => sum + q.points, 0)
 
   if (loading) {
-    return <div className="container mx-auto p-6">読み込み中...</div>
+    return (
+      <div className="min-h-screen">
+        <Header
+          title="問題管理"
+          rightContent={
+            <Link
+              href="/dashboard/temporary-quests"
+              className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap text-black"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              クエスト一覧に戻る
+            </Link>
+          }
+        />
+        <div className="container mx-auto p-6">読み込み中...</div>
+      </div>
+    )
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="p-6 border-b">
+    <div className="min-h-screen">
+      <Header
+        title={`${quest?.title} - 問題管理`}
+        rightContent={
           <Link
             href="/dashboard/temporary-quests"
-            className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-4"
+            className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap text-black"
           >
             <ArrowLeft className="h-4 w-4" />
             クエスト一覧に戻る
           </Link>
-
+        }
+      />
+      <div className="container mx-auto p-6 space-y-6">
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="p-6 border-b">
           <div className="flex items-center justify-between mb-2">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
@@ -451,6 +473,7 @@ export default function QuestionsPage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }
