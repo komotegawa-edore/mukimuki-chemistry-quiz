@@ -30,7 +30,7 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { title, content, priority, is_published, valid_from, valid_until } = body
+    const { title, content, priority, is_published, valid_from, valid_until, display_type, excluded_user_ids } = body
 
     // 入力値バリデーション
     if (title !== undefined && !title) {
@@ -45,6 +45,10 @@ export async function PUT(
       return NextResponse.json({ error: 'Invalid priority value' }, { status: 400 })
     }
 
+    if (display_type && !['banner', 'modal', 'both'].includes(display_type)) {
+      return NextResponse.json({ error: 'Invalid display_type value' }, { status: 400 })
+    }
+
     // undefined フィールドを除外してupdateDataを構築
     const updateData: Record<string, unknown> = {}
     if (title !== undefined) updateData.title = title
@@ -53,6 +57,8 @@ export async function PUT(
     if (is_published !== undefined) updateData.is_published = is_published
     if (valid_from !== undefined) updateData.valid_from = valid_from
     if (valid_until !== undefined) updateData.valid_until = valid_until
+    if (display_type !== undefined) updateData.display_type = display_type
+    if (excluded_user_ids !== undefined) updateData.excluded_user_ids = excluded_user_ids
 
     const { data, error } = await supabase
       .from('mukimuki_announcements')

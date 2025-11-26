@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Bell, Plus, Edit, Trash2, X, Calendar, AlertCircle, AlertTriangle, Info, ArrowLeft } from 'lucide-react'
+import { Bell, Plus, Edit, Trash2, X, Calendar, AlertCircle, AlertTriangle, Info, ArrowLeft, Users, Monitor, MessageSquare, Search } from 'lucide-react'
 import Link from 'next/link'
 import Header from '@/components/Header'
 
@@ -13,18 +13,29 @@ interface Announcement {
   is_published: boolean
   valid_from: string
   valid_until: string | null
+  display_type: 'banner' | 'modal' | 'both'
+  excluded_user_ids: string[]
   created_at: string
   updated_at: string
+}
+
+interface User {
+  id: string
+  name: string
+  email: string
+  role: string
 }
 
 type FormMode = 'create' | 'edit' | null
 
 export default function AnnouncementsPage() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([])
+  const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [formMode, setFormMode] = useState<FormMode>(null)
   const [editingId, setEditingId] = useState<number | null>(null)
+  const [userSearchTerm, setUserSearchTerm] = useState('')
 
   // Form state
   const [formData, setFormData] = useState({
@@ -33,11 +44,14 @@ export default function AnnouncementsPage() {
     priority: 'normal' as 'normal' | 'important' | 'urgent',
     is_published: false,
     valid_from: new Date().toISOString().split('T')[0],
-    valid_until: ''
+    valid_until: '',
+    display_type: 'banner' as 'banner' | 'modal' | 'both',
+    excluded_user_ids: [] as string[]
   })
 
   useEffect(() => {
     fetchAnnouncements()
+    fetchUsers()
   }, [])
 
   const fetchAnnouncements = async () => {
@@ -56,6 +70,25 @@ export default function AnnouncementsPage() {
       setError(err instanceof Error ? err.message : 'エラーが発生しました')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('/api/rankings?type=total&limit=1000')
+      if (response.ok) {
+        const data = await response.json()
+        // ランキングAPIからユーザー一覧を取得
+        const userList = data.rankings?.map((r: { user_id: string; name: string; email?: string }) => ({
+          id: r.user_id,
+          name: r.name,
+          email: r.email || '',
+          role: 'student'
+        })) || []
+        setUsers(userList)
+      }
+    } catch (err) {
+      console.error('Failed to fetch users:', err)
     }
   }
 
@@ -115,8 +148,11 @@ export default function AnnouncementsPage() {
       priority: 'normal',
       is_published: false,
       valid_from: new Date().toISOString().split('T')[0],
-      valid_until: ''
+      valid_until: '',
+      display_type: 'banner',
+      excluded_user_ids: []
     })
+    setUserSearchTerm('')
   }
 
   const openEditForm = (announcement: Announcement) => {
@@ -128,14 +164,31 @@ export default function AnnouncementsPage() {
       priority: announcement.priority,
       is_published: announcement.is_published,
       valid_from: announcement.valid_from.split('T')[0],
-      valid_until: announcement.valid_until ? announcement.valid_until.split('T')[0] : ''
+      valid_until: announcement.valid_until ? announcement.valid_until.split('T')[0] : '',
+      display_type: announcement.display_type || 'banner',
+      excluded_user_ids: announcement.excluded_user_ids || []
     })
+    setUserSearchTerm('')
   }
 
   const closeForm = () => {
     setFormMode(null)
     setEditingId(null)
   }
+
+  const toggleExcludedUser = (userId: string) => {
+    setFormData(prev => ({
+      ...prev,
+      excluded_user_ids: prev.excluded_user_ids.includes(userId)
+        ? prev.excluded_user_ids.filter(id => id !== userId)
+        : [...prev.excluded_user_ids, userId]
+    }))
+  }
+
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(userSearchTerm.toLowerCase())
+  )
 
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
@@ -158,6 +211,32 @@ export default function AnnouncementsPage() {
           <span className="px-2 py-1 text-xs font-semibold rounded bg-gray-100 text-gray-800 flex items-center gap-1">
             <Info className="h-3 w-3" />
             通常
+          </span>
+        )
+    }
+  }
+
+  const getDisplayTypeBadge = (displayType: string) => {
+    switch (displayType) {
+      case 'modal':
+        return (
+          <span className="px-2 py-1 text-xs font-semibold rounded bg-purple-100 text-purple-800 flex items-center gap-1">
+            <MessageSquare className="h-3 w-3" />
+            ポップアップ
+          </span>
+        )
+      case 'both':
+        return (
+          <span className="px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800 flex items-center gap-1">
+            <Monitor className="h-3 w-3" />
+            両方
+          </span>
+        )
+      default:
+        return (
+          <span className="px-2 py-1 text-xs font-semibold rounded bg-gray-100 text-gray-600 flex items-center gap-1">
+            <Monitor className="h-3 w-3" />
+            バナー
           </span>
         )
     }
@@ -248,11 +327,12 @@ export default function AnnouncementsPage() {
                   className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap flex-1">
                       <h3 className="font-semibold text-lg text-gray-900">
                         {announcement.title}
                       </h3>
                       {getPriorityBadge(announcement.priority)}
+                      {getDisplayTypeBadge(announcement.display_type)}
                       {announcement.is_published ? (
                         <span className="px-2 py-1 text-xs font-semibold rounded bg-green-100 text-green-800">
                           公開中
@@ -260,6 +340,12 @@ export default function AnnouncementsPage() {
                       ) : (
                         <span className="px-2 py-1 text-xs font-semibold rounded bg-gray-200 text-gray-600">
                           下書き
+                        </span>
+                      )}
+                      {announcement.excluded_user_ids && announcement.excluded_user_ids.length > 0 && (
+                        <span className="px-2 py-1 text-xs font-semibold rounded bg-orange-100 text-orange-800 flex items-center gap-1">
+                          <Users className="h-3 w-3" />
+                          {announcement.excluded_user_ids.length}人除外
                         </span>
                       )}
                     </div>
@@ -281,7 +367,7 @@ export default function AnnouncementsPage() {
                     </div>
                   </div>
 
-                  <p className="text-gray-700 mb-3 whitespace-pre-wrap">
+                  <p className="text-gray-700 mb-3 whitespace-pre-wrap line-clamp-3">
                     {announcement.content}
                   </p>
 
@@ -306,8 +392,8 @@ export default function AnnouncementsPage() {
       {/* Form Modal */}
       {formMode && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b flex items-center justify-between">
+          <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b flex items-center justify-between sticky top-0 bg-white z-10">
               <h2 className="text-xl font-bold">
                 {formMode === 'create' ? 'お知らせを作成' : 'お知らせを編集'}
               </h2>
@@ -331,7 +417,7 @@ export default function AnnouncementsPage() {
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="例: 冬期講習のお知らせ"
+                  placeholder="例: 年末ポイントランキングイベント開催！"
                 />
               </div>
 
@@ -342,40 +428,67 @@ export default function AnnouncementsPage() {
                 <textarea
                   id="content"
                   required
-                  rows={6}
+                  rows={8}
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="お知らせの詳細を入力してください"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
+                  placeholder={`お知らせの詳細を入力してください
+
+テーブルを表示する場合:
+| 順位 | 報酬 | 人数 |
+| --- | --- | --- |
+| 1-4位 | 5,000円 | 4人 |
+| 5-10位 | 1,000円 | 6人 |`}
                 />
+                <p className="mt-1 text-xs text-gray-500">
+                  テーブル形式で入力すると、モーダル表示時に表として整形されます
+                </p>
               </div>
 
-              <div>
-                <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-1">
-                  優先度
-                </label>
-                <select
-                  id="priority"
-                  value={formData.priority}
-                  onChange={(e) => setFormData({ ...formData, priority: e.target.value as any })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="normal">通常</option>
-                  <option value="important">重要</option>
-                  <option value="urgent">緊急</option>
-                </select>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-1">
+                    優先度
+                  </label>
+                  <select
+                    id="priority"
+                    value={formData.priority}
+                    onChange={(e) => setFormData({ ...formData, priority: e.target.value as 'normal' | 'important' | 'urgent' })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="normal">通常</option>
+                    <option value="important">重要</option>
+                    <option value="urgent">緊急</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="display_type" className="block text-sm font-medium text-gray-700 mb-1">
+                    表示タイプ
+                  </label>
+                  <select
+                    id="display_type"
+                    value={formData.display_type}
+                    onChange={(e) => setFormData({ ...formData, display_type: e.target.value as 'banner' | 'modal' | 'both' })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="banner">バナーのみ</option>
+                    <option value="modal">ポップアップのみ（アプリ起動時）</option>
+                    <option value="both">両方</option>
+                  </select>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="valid_from" className="block text-sm font-medium text-gray-700 mb-1">
-                    表示開始日 <span className="text-red-500">*</span>
+                    表示開始日時 <span className="text-red-500">*</span>
                   </label>
                   <input
                     id="valid_from"
-                    type="date"
+                    type="datetime-local"
                     required
-                    value={formData.valid_from}
+                    value={formData.valid_from.includes('T') ? formData.valid_from : formData.valid_from + 'T00:00'}
                     onChange={(e) => setFormData({ ...formData, valid_from: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   />
@@ -383,16 +496,91 @@ export default function AnnouncementsPage() {
 
                 <div>
                   <label htmlFor="valid_until" className="block text-sm font-medium text-gray-700 mb-1">
-                    表示終了日（任意）
+                    表示終了日時（任意）
                   </label>
                   <input
                     id="valid_until"
-                    type="date"
+                    type="datetime-local"
                     value={formData.valid_until}
                     onChange={(e) => setFormData({ ...formData, valid_until: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
+              </div>
+
+              {/* 除外ユーザー選択 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Users className="inline h-4 w-4 mr-1" />
+                  表示しないユーザー（除外リスト）
+                </label>
+                <div className="border border-gray-300 rounded-md p-3">
+                  {/* 選択済みユーザー */}
+                  {formData.excluded_user_ids.length > 0 && (
+                    <div className="mb-3 flex flex-wrap gap-2">
+                      {formData.excluded_user_ids.map(userId => {
+                        const user = users.find(u => u.id === userId)
+                        return (
+                          <span
+                            key={userId}
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 text-orange-800 rounded text-sm"
+                          >
+                            {user?.name || userId.slice(0, 8)}
+                            <button
+                              type="button"
+                              onClick={() => toggleExcludedUser(userId)}
+                              className="hover:text-orange-600"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </span>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                  {/* 検索 */}
+                  <div className="relative mb-2">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="ユーザーを検索..."
+                      value={userSearchTerm}
+                      onChange={(e) => setUserSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md text-sm"
+                    />
+                  </div>
+
+                  {/* ユーザーリスト */}
+                  <div className="max-h-40 overflow-y-auto space-y-1">
+                    {filteredUsers.length === 0 ? (
+                      <p className="text-sm text-gray-500 py-2 text-center">
+                        {userSearchTerm ? '該当するユーザーがいません' : 'ユーザーを読み込み中...'}
+                      </p>
+                    ) : (
+                      filteredUsers.slice(0, 50).map(user => (
+                        <label
+                          key={user.id}
+                          className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={formData.excluded_user_ids.includes(user.id)}
+                            onChange={() => toggleExcludedUser(user.id)}
+                            className="h-4 w-4 text-blue-600 rounded"
+                          />
+                          <span className="text-sm text-gray-700">{user.name}</span>
+                          {user.email && (
+                            <span className="text-xs text-gray-400">{user.email}</span>
+                          )}
+                        </label>
+                      ))
+                    )}
+                  </div>
+                </div>
+                <p className="mt-1 text-xs text-gray-500">
+                  選択したユーザーにはこのお知らせが表示されません（塾生など賞金対象外のユーザーを除外する場合に使用）
+                </p>
               </div>
 
               <div className="flex items-center gap-2">

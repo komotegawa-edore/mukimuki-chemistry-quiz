@@ -24,6 +24,28 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'プロフィールが見つかりません' }, { status: 404 })
     }
 
+    // 除外ユーザーリストを取得
+    const { data: settings } = await supabase
+      .from('mukimuki_system_settings')
+      .select('setting_value')
+      .eq('setting_key', 'referral_excluded_user_ids')
+      .single()
+
+    let isExcluded = false
+    if (settings?.setting_value) {
+      try {
+        const excludedIds = JSON.parse(settings.setting_value)
+        isExcluded = Array.isArray(excludedIds) && excludedIds.includes(user.id)
+      } catch {
+        // JSON parse error - ignore
+      }
+    }
+
+    // 除外ユーザーの場合は非表示フラグを返す
+    if (isExcluded) {
+      return NextResponse.json({ isExcluded: true })
+    }
+
     // 紹介統計を取得
     const { data: stats, error: statsError } = await supabase.rpc('get_referral_stats', {
       p_user_id: user.id,

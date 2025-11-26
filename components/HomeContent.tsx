@@ -13,6 +13,7 @@ import DailyMissionCard from './DailyMissionCard'
 import AnnouncementsList from './AnnouncementsList'
 import TemporaryQuestCard from './TemporaryQuestCard'
 import ReferralCard from './ReferralCard'
+import EventModal from './EventModal'
 
 interface Subject {
   id: number
@@ -82,6 +83,7 @@ export default function HomeContent({
     <>
       <WelcomeModal />
       <InstallPrompt />
+      <EventModal />
       {/* メインコンテンツ */}
       <main className="max-w-6xl mx-auto px-4 py-8 pb-24">
         {activeTab === 'home' && (
@@ -107,6 +109,9 @@ export default function HomeContent({
               </div>
             </div>
 
+            {/* 友達招待（ようこその下、デイリーミッションの上） */}
+            <ReferralCard />
+
             {/* お知らせ */}
             <AnnouncementsList />
 
@@ -124,9 +129,6 @@ export default function HomeContent({
 
             {/* バッジ表示 */}
             <BadgeDisplay />
-
-            {/* 友達招待 */}
-            <ReferralCard />
           </div>
         )}
 

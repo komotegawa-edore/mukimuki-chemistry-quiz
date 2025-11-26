@@ -7,6 +7,8 @@ export const dynamic = 'force-dynamic'
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient()
+    const { searchParams } = new URL(request.url)
+    const displayType = searchParams.get('display_type')
 
     // 認証チェック
     const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -37,6 +39,13 @@ export async function GET(request: NextRequest) {
         .or(`valid_until.is.null,valid_until.gte.${now}`)
     }
 
+    // 表示タイプでフィルター
+    if (displayType === 'modal') {
+      query = query.in('display_type', ['modal', 'both'])
+    } else if (displayType === 'banner') {
+      query = query.in('display_type', ['banner', 'both'])
+    }
+
     const { data, error } = await query
 
     if (error) {
@@ -44,7 +53,32 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch announcements' }, { status: 500 })
     }
 
-    return NextResponse.json({ announcements: data })
+    // 生徒の場合、除外リストに含まれているお知らせを除外
+    let filteredData = data || []
+    if (!isTeacher) {
+      filteredData = filteredData.filter(announcement => {
+        const excludedIds = announcement.excluded_user_ids || []
+        return !excludedIds.includes(user.id)
+      })
+    }
+
+    // モーダル表示の場合、既読情報を追加
+    if (displayType === 'modal' && filteredData.length > 0) {
+      const announcementIds = filteredData.map(a => a.id)
+      const { data: reads } = await supabase
+        .from('mukimuki_announcement_reads')
+        .select('announcement_id')
+        .eq('user_id', user.id)
+        .in('announcement_id', announcementIds)
+
+      const readIds = new Set(reads?.map(r => r.announcement_id) || [])
+      filteredData = filteredData.map(a => ({
+        ...a,
+        is_read: readIds.has(a.id)
+      }))
+    }
+
+    return NextResponse.json({ announcements: filteredData })
 
   } catch (error) {
     console.error('Unexpected error in GET /api/announcements:', error)
@@ -75,7 +109,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { title, content, priority, is_published, valid_from, valid_until } = body
+    const { title, content, priority, is_published, valid_from, valid_until, display_type, excluded_user_ids } = body
 
     // 入力値バリデーション
     if (!title || !content) {
@@ -84,6 +118,10 @@ export async function POST(request: NextRequest) {
 
     if (priority && !['normal', 'important', 'urgent'].includes(priority)) {
       return NextResponse.json({ error: 'Invalid priority value' }, { status: 400 })
+    }
+
+    if (display_type && !['banner', 'modal', 'both'].includes(display_type)) {
+      return NextResponse.json({ error: 'Invalid display_type value' }, { status: 400 })
     }
 
     const { data, error } = await supabase
@@ -95,6 +133,8 @@ export async function POST(request: NextRequest) {
         is_published: is_published || false,
         valid_from: valid_from || new Date().toISOString(),
         valid_until: valid_until || null,
+        display_type: display_type || 'banner',
+        excluded_user_ids: excluded_user_ids || [],
         created_by: user.id
       })
       .select()

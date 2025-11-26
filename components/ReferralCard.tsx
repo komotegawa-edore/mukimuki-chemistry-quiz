@@ -9,6 +9,7 @@ interface ReferralData {
   totalReferrals: number
   completedReferrals: number
   pendingReferrals: number
+  isExcluded?: boolean
   referrals: {
     id: number
     status: string
@@ -86,7 +87,7 @@ export default function ReferralCard() {
     )
   }
 
-  if (!data || !data.referralCode) {
+  if (!data || !data.referralCode || data.isExcluded) {
     return null
   }
 
