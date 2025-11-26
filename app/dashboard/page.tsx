@@ -6,6 +6,7 @@ import CSVImport from '@/components/CSVImport'
 import DashboardContent from '@/components/DashboardContent'
 import DailyMissionSettings from '@/components/DailyMissionSettings'
 import ReferralExcludeSettings from '@/components/ReferralExcludeSettings'
+import ReferralCampaignSettings from '@/components/ReferralCampaignSettings'
 import Header from '@/components/Header'
 import { BookOpen, ArrowRight, Trophy, Bell, Zap } from 'lucide-react'
 
@@ -138,6 +139,7 @@ export default async function DashboardPage() {
           <h2 className="text-xl font-semibold mb-4 text-black">システム設定</h2>
           <div className="space-y-4">
             <DailyMissionSettings />
+            <ReferralCampaignSettings />
             <ReferralExcludeSettings />
           </div>
         </div>

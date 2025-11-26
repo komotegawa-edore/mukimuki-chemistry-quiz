@@ -24,17 +24,39 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'プロフィールが見つかりません' }, { status: 404 })
     }
 
-    // 除外ユーザーリストを取得
-    const { data: settings } = await supabase
+    // 招待機能の設定を取得
+    const { data: allSettings } = await supabase
       .from('mukimuki_system_settings')
-      .select('setting_value')
-      .eq('setting_key', 'referral_excluded_user_ids')
-      .single()
+      .select('setting_key, setting_value')
+      .in('setting_key', [
+        'referral_excluded_user_ids',
+        'referral_enabled',
+        'referral_valid_until',
+        'referral_campaign_title',
+        'referral_campaign_description'
+      ])
 
+    const settingsMap: Record<string, string> = {}
+    allSettings?.forEach(s => {
+      settingsMap[s.setting_key] = s.setting_value
+    })
+
+    // 招待機能が無効の場合
+    if (settingsMap['referral_enabled'] === 'false') {
+      return NextResponse.json({ isDisabled: true })
+    }
+
+    // 有効期限チェック
+    const validUntil = settingsMap['referral_valid_until']
+    if (validUntil && new Date(validUntil) < new Date()) {
+      return NextResponse.json({ isExpired: true })
+    }
+
+    // 除外ユーザーチェック
     let isExcluded = false
-    if (settings?.setting_value) {
+    if (settingsMap['referral_excluded_user_ids']) {
       try {
-        const excludedIds = JSON.parse(settings.setting_value)
+        const excludedIds = JSON.parse(settingsMap['referral_excluded_user_ids'])
         isExcluded = Array.isArray(excludedIds) && excludedIds.includes(user.id)
       } catch {
         // JSON parse error - ignore
@@ -45,6 +67,10 @@ export async function GET(request: NextRequest) {
     if (isExcluded) {
       return NextResponse.json({ isExcluded: true })
     }
+
+    // キャンペーン情報
+    const campaignTitle = settingsMap['referral_campaign_title'] || '友達紹介キャンペーン'
+    const campaignDescription = settingsMap['referral_campaign_description'] || ''
 
     // 紹介統計を取得
     const { data: stats, error: statsError } = await supabase.rpc('get_referral_stats', {
@@ -81,6 +107,9 @@ export async function GET(request: NextRequest) {
       completedReferrals: referralStats?.completed_referrals || 0,
       pendingReferrals: referralStats?.pending_referrals || 0,
       referrals: referrals || [],
+      campaignTitle,
+      campaignDescription,
+      validUntil: validUntil || null,
     })
 
   } catch (error) {

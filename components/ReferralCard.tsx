@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Share2, Copy, Check, Users, Gift, Target } from 'lucide-react'
+import { Share2, Copy, Check, Users, Gift, Target, Calendar } from 'lucide-react'
 
 interface ReferralData {
   referralCode: string
@@ -10,6 +10,9 @@ interface ReferralData {
   completedReferrals: number
   pendingReferrals: number
   isExcluded?: boolean
+  campaignTitle?: string
+  campaignDescription?: string
+  validUntil?: string | null
   referrals: {
     id: number
     status: string
@@ -91,21 +94,58 @@ export default function ReferralCard() {
     return null
   }
 
+  // 期限をフォーマット
+  const formatDate = (dateStr: string | null | undefined) => {
+    if (!dateStr) return null
+    const date = new Date(dateStr)
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
+  }
+
   return (
     <div className="bg-white rounded-2xl p-6 shadow-md">
-      {/* ヘッダー */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Share2 className="w-5 h-5 text-[#5DDFC3]" />
-          <h3 className="text-lg font-bold text-[#3A405A]">友達を招待</h3>
+      {/* キャンペーンヘッダー */}
+      {data.campaignTitle && (
+        <div className="bg-gradient-to-r from-orange-500 to-pink-500 -mx-6 -mt-6 px-6 py-4 rounded-t-2xl mb-4">
+          <h3 className="text-lg font-bold text-white">{data.campaignTitle}</h3>
+          {data.validUntil && (
+            <div className="flex items-center gap-1 text-white/90 text-sm mt-1">
+              <Calendar className="w-4 h-4" />
+              <span>{formatDate(data.validUntil)} まで</span>
+            </div>
+          )}
         </div>
-        {data.completedReferrals > 0 && (
-          <div className="flex items-center gap-1 text-[#5DDFC3] text-sm font-medium">
-            <Users className="w-4 h-4" />
-            <span>{data.completedReferrals}人紹介済み</span>
+      )}
+
+      {/* キャンペーン説明 */}
+      {data.campaignDescription && (
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4 text-sm text-orange-800">
+          {data.campaignDescription}
+        </div>
+      )}
+
+      {/* ヘッダー（キャンペーンタイトルがない場合のみ表示） */}
+      {!data.campaignTitle && (
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Share2 className="w-5 h-5 text-[#5DDFC3]" />
+            <h3 className="text-lg font-bold text-[#3A405A]">友達を招待</h3>
           </div>
-        )}
-      </div>
+          {data.completedReferrals > 0 && (
+            <div className="flex items-center gap-1 text-[#5DDFC3] text-sm font-medium">
+              <Users className="w-4 h-4" />
+              <span>{data.completedReferrals}人紹介済み</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 紹介済み（キャンペーンタイトルがある場合はここに表示） */}
+      {data.campaignTitle && data.completedReferrals > 0 && (
+        <div className="flex items-center gap-1 text-[#5DDFC3] text-sm font-medium mb-4">
+          <Users className="w-4 h-4" />
+          <span>{data.completedReferrals}人紹介済み</span>
+        </div>
+      )}
 
       {/* 特典説明 */}
       <div className="bg-gradient-to-r from-[#E0F7F1] to-[#F0FDF9] rounded-xl p-4 mb-4">
