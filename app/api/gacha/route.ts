@@ -45,12 +45,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ isExcluded: true })
     }
 
-    // ユーザーのポイントを取得
-    const { data: profile } = await supabase
-      .from('mukimuki_profiles')
-      .select('total_points')
-      .eq('id', user.id)
-      .single()
+    // ユーザーのポイントを取得（get_user_rank RPCを使用して整合性を保つ）
+    const { data: rankData, error: rankError } = await supabase.rpc(
+      'get_user_rank',
+      { target_user_id: user.id }
+    )
+
+    if (rankError) {
+      console.error('Failed to get user rank for gacha:', rankError)
+    }
+
+    const userRankInfo = Array.isArray(rankData) && rankData.length > 0
+      ? rankData[0]
+      : { total_points: 0 }
+
+    const currentPoints = userRankInfo.total_points || 0
 
     // 景品一覧を取得
     const { data: prizes, error: prizesError } = await supabase
@@ -97,11 +106,11 @@ export async function GET(request: NextRequest) {
     }) || []
 
     return NextResponse.json({
-      currentPoints: profile?.total_points || 0,
+      currentPoints: currentPoints,
       prizes: prizes || [],
       history: history || [],
       wins,
-      canDraw: (profile?.total_points || 0) >= 50,
+      canDraw: currentPoints >= 50,
     })
 
   } catch (error) {
