@@ -7,6 +7,7 @@ import DashboardContent from '@/components/DashboardContent'
 import DailyMissionSettings from '@/components/DailyMissionSettings'
 import ReferralExcludeSettings from '@/components/ReferralExcludeSettings'
 import ReferralCampaignSettings from '@/components/ReferralCampaignSettings'
+import GachaAdminPanel from '@/components/GachaAdminPanel'
 import Header from '@/components/Header'
 import { BookOpen, ArrowRight, Trophy, Bell, Zap } from 'lucide-react'
 
@@ -132,6 +133,11 @@ export default async function DashboardPage() {
               <ArrowRight className="w-6 h-6 text-white" />
             </div>
           </Link>
+        </div>
+
+        {/* ガチャ管理 */}
+        <div className="mb-8">
+          <GachaAdminPanel />
         </div>
 
         {/* システム設定 */}

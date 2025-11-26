@@ -288,10 +288,13 @@ export default function GachaPage() {
 
             {result.type !== 'lose' && (
               <div className="bg-yellow-50 rounded-xl p-4 mb-4">
-                <p className="text-sm text-yellow-800">
+                <p className="text-sm text-yellow-800 font-medium mb-2">
                   おめでとうございます！
+                </p>
+                <p className="text-xs text-yellow-700">
+                  担当者よりメールにてAmazonギフト券をお送りします。
                   <br />
-                  景品の受け取り方法は後日お知らせします
+                  しばらくお待ちください。
                 </p>
               </div>
             )}

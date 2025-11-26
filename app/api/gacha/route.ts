@@ -53,11 +53,17 @@ export async function GET(request: NextRequest) {
       .single()
 
     // 景品一覧を取得
-    const { data: prizes } = await supabase
+    const { data: prizes, error: prizesError } = await supabase
       .from('mukimuki_gacha_prizes')
       .select('*')
       .eq('is_active', true)
       .order('display_order')
+
+    // テーブルが存在しない場合は無効として扱う
+    if (prizesError) {
+      console.error('Gacha prizes error:', prizesError)
+      return NextResponse.json({ isDisabled: true })
+    }
 
     // ガチャ履歴を取得（最新20件）
     const { data: history } = await supabase

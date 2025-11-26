@@ -1,13 +1,14 @@
 -- ガチャシステム用テーブル
 
--- ガチャ景品マスタ
+-- ガチャ景品マスタ（在庫制）
 CREATE TABLE IF NOT EXISTS mukimuki_gacha_prizes (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,           -- 景品名 (A賞、B賞、C賞、ハズレ)
   description TEXT,                      -- 景品説明
   prize_type VARCHAR(50) NOT NULL,       -- 'amazon_gift' / 'lose'
   prize_value INTEGER DEFAULT 0,         -- 金額（円）
-  probability DECIMAL(5, 4) NOT NULL,    -- 当選確率 (0.0200 = 2%)
+  total_stock INTEGER NOT NULL DEFAULT 0,  -- 総在庫数
+  remaining_stock INTEGER NOT NULL DEFAULT 0, -- 残り在庫数
   display_order INTEGER DEFAULT 0,       -- 表示順
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMP DEFAULT NOW()
@@ -62,12 +63,12 @@ CREATE POLICY "Teachers can view all gacha history" ON mukimuki_gacha_history
     )
   );
 
--- 初期景品データ（100回で約32,000円の予算）
-INSERT INTO mukimuki_gacha_prizes (name, description, prize_type, prize_value, probability, display_order) VALUES
-  ('A賞', 'Amazonギフト券 5,000円分', 'amazon_gift', 5000, 0.0200, 1),  -- 2%
-  ('B賞', 'Amazonギフト券 3,000円分', 'amazon_gift', 3000, 0.0400, 2),  -- 4%
-  ('C賞', 'Amazonギフト券 1,000円分', 'amazon_gift', 1000, 0.1000, 3),  -- 10%
-  ('ハズレ', '残念...次回に期待！', 'lose', 0, 0.8400, 4);              -- 84%
+-- 初期景品データ（在庫制：A賞1個、B賞1個、C賞12個、合計20,000円）
+INSERT INTO mukimuki_gacha_prizes (name, description, prize_type, prize_value, total_stock, remaining_stock, display_order) VALUES
+  ('A賞', 'Amazonギフト券 5,000円分', 'amazon_gift', 5000, 1, 1, 1),
+  ('B賞', 'Amazonギフト券 3,000円分', 'amazon_gift', 3000, 1, 1, 2),
+  ('C賞', 'Amazonギフト券 1,000円分', 'amazon_gift', 1000, 12, 12, 3),
+  ('ハズレ', '残念...次回に期待！', 'lose', 0, 9999, 9999, 4);  -- ハズレは実質無限
 
 -- ガチャを引く関数
 CREATE OR REPLACE FUNCTION draw_gacha(p_user_id UUID)
@@ -83,8 +84,9 @@ RETURNS TABLE (
 ) AS $$
 DECLARE
   v_current_points INTEGER;
-  v_random DECIMAL;
-  v_cumulative DECIMAL := 0;
+  v_total_remaining INTEGER;
+  v_random_num INTEGER;
+  v_cumulative INTEGER := 0;
   v_prize RECORD;
   v_selected_prize_id INTEGER;
   v_excluded_ids TEXT;
@@ -96,7 +98,6 @@ BEGIN
   WHERE setting_key = 'referral_excluded_user_ids';
 
   IF v_excluded_ids IS NOT NULL THEN
-    -- JSONArray内にユーザーIDが含まれているかチェック
     v_is_excluded := v_excluded_ids::jsonb ? p_user_id::text;
   END IF;
 
@@ -132,18 +133,36 @@ BEGIN
     RETURN;
   END IF;
 
-  -- ランダム値生成 (0-1)
-  v_random := random();
+  -- 残り在庫の合計を取得
+  SELECT COALESCE(SUM(remaining_stock), 0) INTO v_total_remaining
+  FROM mukimuki_gacha_prizes
+  WHERE is_active = true AND remaining_stock > 0;
 
-  -- 確率に基づいて景品を選択
+  IF v_total_remaining = 0 THEN
+    RETURN QUERY SELECT
+      false,
+      '景品がすべてなくなりました'::TEXT,
+      NULL::INTEGER,
+      NULL::VARCHAR(100),
+      NULL::TEXT,
+      NULL::VARCHAR(50),
+      NULL::INTEGER,
+      v_current_points;
+    RETURN;
+  END IF;
+
+  -- 在庫に基づいてランダムに選択（1〜合計在庫の乱数）
+  v_random_num := floor(random() * v_total_remaining) + 1;
+
+  -- 在庫数に基づいて景品を選択
   FOR v_prize IN
-    SELECT id, name, description, prize_type, prize_value, probability
+    SELECT id, name, description, prize_type, prize_value, remaining_stock
     FROM mukimuki_gacha_prizes
-    WHERE is_active = true
+    WHERE is_active = true AND remaining_stock > 0
     ORDER BY display_order
   LOOP
-    v_cumulative := v_cumulative + v_prize.probability;
-    IF v_random <= v_cumulative THEN
+    v_cumulative := v_cumulative + v_prize.remaining_stock;
+    IF v_random_num <= v_cumulative THEN
       v_selected_prize_id := v_prize.id;
       EXIT;
     END IF;
@@ -153,6 +172,11 @@ BEGIN
   UPDATE mukimuki_profiles
   SET total_points = total_points - 50
   WHERE id = p_user_id;
+
+  -- 在庫を減らす
+  UPDATE mukimuki_gacha_prizes
+  SET remaining_stock = remaining_stock - 1
+  WHERE id = v_selected_prize_id;
 
   -- 履歴を記録
   INSERT INTO mukimuki_gacha_history (user_id, prize_id, points_used)
