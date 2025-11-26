@@ -35,23 +35,41 @@ export async function GET(request: NextRequest) {
     }
 
     // 当選履歴を取得（ハズレ以外）
-    const { data: winners } = await supabase
+    const { data: historyData } = await supabase
       .from('mukimuki_gacha_history')
       .select(`
         id,
+        user_id,
         points_used,
         is_claimed,
         created_at,
-        prize:prize_id(id, name, description, prize_type, prize_value),
-        user:user_id(id, name, email)
+        prize:prize_id(id, name, description, prize_type, prize_value)
       `)
       .order('created_at', { ascending: false })
 
     // ハズレ以外をフィルタ
-    const winnerList = winners?.filter(w => {
+    const nonLoseHistory = historyData?.filter(w => {
       const prize = w.prize as unknown as { prize_type: string } | null
       return prize && prize.prize_type !== 'lose'
     }) || []
+
+    // ユーザー情報を別途取得
+    const userIds = [...new Set(nonLoseHistory.map(h => h.user_id))]
+    const { data: usersData } = await supabase
+      .from('mukimuki_profiles')
+      .select('id, name, email')
+      .in('id', userIds)
+
+    const usersMap = new Map(usersData?.map(u => [u.id, u]) || [])
+
+    // 当選者一覧を構築
+    const winnerList = nonLoseHistory.map(h => ({
+      id: h.id,
+      is_claimed: h.is_claimed,
+      created_at: h.created_at,
+      prize: h.prize,
+      user: usersMap.get(h.user_id) || null
+    }))
 
     // 総ガチャ回数
     const { count: totalDraws } = await supabase
