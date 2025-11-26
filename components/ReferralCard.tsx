@@ -163,6 +163,16 @@ export default function ReferralCard() {
         </div>
       </div>
 
+      {/* 紹介成立の条件 */}
+      <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-4">
+        <p className="font-semibold text-orange-700 text-sm mb-2">紹介成立の条件</p>
+        <ol className="text-xs text-orange-700/80 space-y-1 list-decimal list-inside">
+          <li>下の招待コードを友達に共有</li>
+          <li>友達がコードを使って新規登録</li>
+          <li>友達が<span className="font-bold">1章クリア</span>で紹介成立！</li>
+        </ol>
+      </div>
+
       {/* 招待コード */}
       <div className="mb-4">
         <label className="block text-xs font-medium text-[#3A405A]/60 mb-2">
