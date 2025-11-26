@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Beaker, Trophy, Coins, RotateCcw, CheckCircle } from 'lucide-react'
+import { Beaker, Trophy, Coins, RotateCcw, CheckCircle, Mail } from 'lucide-react'
 
 export default function SignupPage() {
   const [name, setName] = useState('')
@@ -12,6 +12,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const handleGoogleSignup = async () => {
     setIsLoading(true)
@@ -70,11 +71,9 @@ export default function SignupPage() {
 
       // 2. トリガーによって自動的にプロフィールが作成されます
 
-      // 3. セッションが確立されるまで少し待つ
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // 4. 完全なページリロードでホームへリダイレクト
-      window.location.href = '/'
+      // 3. 登録成功を表示
+      setIsSuccess(true)
+      setIsLoading(false)
     } catch (err) {
       setError('アカウント作成に失敗しました')
       console.error(err)
@@ -106,16 +105,62 @@ export default function SignupPage() {
         <div className="grid md:grid-cols-2 gap-8 items-start">
           {/* 左側：フォーム */}
           <div className="bg-white rounded-2xl shadow-lg p-8">
-            <div className="mb-6 text-center">
-              <h2 className="text-2xl font-bold text-[#3A405A] mb-2">
-                アカウント作成
-              </h2>
-              <p className="text-[#3A405A] text-sm opacity-70">
-                1分で登録完了
-              </p>
-            </div>
+            {isSuccess ? (
+              <div className="text-center space-y-6">
+                <div className="flex justify-center">
+                  <div className="bg-green-100 p-4 rounded-full">
+                    <Mail className="w-12 h-12 text-green-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-[#3A405A] mb-2">
+                    認証メールを送信しました
+                  </h2>
+                  <p className="text-[#3A405A] opacity-70">
+                    {email}
+                  </p>
+                </div>
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-left">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-blue-800">
+                      <p className="font-semibold mb-2">次のステップ</p>
+                      <ol className="list-decimal list-inside space-y-1 text-xs">
+                        <li>メールボックスを確認してください</li>
+                        <li>認証リンクをクリックしてください</li>
+                        <li>認証完了後、ログインしてご利用ください</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-left">
+                  <p className="text-xs text-yellow-800">
+                    <strong>メールが届かない場合：</strong>
+                  </p>
+                  <ul className="text-xs text-yellow-700 mt-1 space-y-1">
+                    <li>• 迷惑メールフォルダをご確認ください</li>
+                    <li>• メールアドレスに誤りがないかご確認ください</li>
+                  </ul>
+                </div>
+                <Link
+                  href="/login"
+                  className="block w-full py-3 bg-[#5DDFC3] text-white rounded-lg font-semibold hover:bg-[#4ECFB3] transition-colors"
+                >
+                  ログインページへ
+                </Link>
+              </div>
+            ) : (
+              <>
+                <div className="mb-6 text-center">
+                  <h2 className="text-2xl font-bold text-[#3A405A] mb-2">
+                    アカウント作成
+                  </h2>
+                  <p className="text-[#3A405A] text-sm opacity-70">
+                    1分で登録完了
+                  </p>
+                </div>
 
-          <form onSubmit={handleSignup} className="space-y-5">
+                <form onSubmit={handleSignup} className="space-y-5">
             <div>
               <label className="block text-sm font-semibold mb-2 text-[#3A405A]">名前</label>
               <input
@@ -163,6 +208,20 @@ export default function SignupPage() {
               </div>
             )}
 
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-start gap-3">
+                <Mail className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-blue-800">
+                    メール認証について
+                  </p>
+                  <p className="text-xs text-blue-700 mt-1">
+                    登録後、入力されたメールアドレス宛に認証用のリンクが送信されます。メール内のリンクをクリックして認証を完了してください。
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <button
               type="submit"
               disabled={isLoading}
@@ -203,6 +262,8 @@ export default function SignupPage() {
               ログイン
             </Link>
           </div>
+              </>
+            )}
           </div>
 
           {/* 右側：アプリの特徴 */}
