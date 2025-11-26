@@ -203,7 +203,8 @@ export default function GachaPage() {
                 <li>・ホーム画面の招待コードを友達に共有</li>
                 <li>・友達がコードを使って登録</li>
                 <li>・友達が <span className="font-bold">1章クリア</span> で紹介成立！</li>
-                <li>・友達も <span className="font-bold">デイリークエスト2つ</span> でスタート</li>
+                <li>・友達も <span className="font-bold">デイリーミッション2つ</span> でスタート</li>
+                <li>・紹介ボーナスは <span className="font-bold">3人まで</span></li>
               </ul>
             </div>
 

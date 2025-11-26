@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
             name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'ユーザー',
             role: 'student',
             referred_by: referrerId || null,
-            bonus_daily_quests: referrerId ? 1 : 0, // 招待された場合はデイリークエスト+1でスタート
+            bonus_daily_quests: referrerId ? 1 : 0, // 招待された場合はデイリーミッション+1でスタート
           })
 
         if (insertError) {

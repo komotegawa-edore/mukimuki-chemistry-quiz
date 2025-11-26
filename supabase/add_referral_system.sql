@@ -18,7 +18,7 @@ ADD COLUMN IF NOT EXISTS referred_by UUID REFERENCES public.mukimuki_profiles(id
 ALTER TABLE public.mukimuki_profiles
 ADD COLUMN IF NOT EXISTS referral_completed BOOLEAN DEFAULT FALSE;
 
--- デイリークエストの追加枠数（有効な紹介数）
+-- デイリーミッションの追加枠数（有効な紹介数）
 ALTER TABLE public.mukimuki_profiles
 ADD COLUMN IF NOT EXISTS bonus_daily_quests INTEGER DEFAULT 0;
 
@@ -111,7 +111,7 @@ BEGIN
     NEW.referral_code := new_code;
   END IF;
 
-  -- 被紹介者の場合、デイリークエスト+1でスタート
+  -- 被紹介者の場合、デイリーミッション+1でスタート
   IF NEW.referred_by IS NOT NULL THEN
     NEW.bonus_daily_quests := 1;
   END IF;
@@ -179,7 +179,7 @@ BEGIN
   SET referral_completed = TRUE
   WHERE id = p_user_id;
 
-  -- 紹介者のボーナスデイリークエストを+1
+  -- 紹介者のボーナスデイリーミッションを+1
   UPDATE public.mukimuki_profiles
   SET bonus_daily_quests = bonus_daily_quests + 1
   WHERE id = v_referrer_id;
@@ -232,7 +232,7 @@ DECLARE
   v_mission_id INTEGER;
   i INTEGER;
 BEGIN
-  -- ユーザーの総デイリークエスト数を計算（基本1 + ボーナス）
+  -- ユーザーの総デイリーミッション数を計算（基本1 + ボーナス）
   SELECT 1 + COALESCE(bonus_daily_quests, 0) INTO v_total_quests
   FROM public.mukimuki_profiles
   WHERE id = p_user_id;

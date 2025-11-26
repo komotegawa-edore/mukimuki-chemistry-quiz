@@ -33,7 +33,8 @@ export async function GET(request: NextRequest) {
         'referral_enabled',
         'referral_valid_until',
         'referral_campaign_title',
-        'referral_campaign_description'
+        'referral_campaign_description',
+        'referral_max_count'
       ])
 
     const settingsMap: Record<string, string> = {}
@@ -71,6 +72,7 @@ export async function GET(request: NextRequest) {
     // キャンペーン情報
     const campaignTitle = settingsMap['referral_campaign_title'] || '友達紹介キャンペーン'
     const campaignDescription = settingsMap['referral_campaign_description'] || ''
+    const maxReferrals = parseInt(settingsMap['referral_max_count'] || '3', 10)
 
     // 紹介統計を取得
     const { data: stats, error: statsError } = await supabase.rpc('get_referral_stats', {
@@ -100,16 +102,21 @@ export async function GET(request: NextRequest) {
       console.error('Referrals fetch error:', referralsError)
     }
 
+    const completedCount = referralStats?.completed_referrals || 0
+    const isMaxReached = completedCount >= maxReferrals
+
     return NextResponse.json({
       referralCode: profile.referral_code,
       bonusDailyQuests: profile.bonus_daily_quests || 0,
       totalReferrals: referralStats?.total_referrals || 0,
-      completedReferrals: referralStats?.completed_referrals || 0,
+      completedReferrals: completedCount,
       pendingReferrals: referralStats?.pending_referrals || 0,
       referrals: referrals || [],
       campaignTitle,
       campaignDescription,
       validUntil: validUntil || null,
+      maxReferrals,
+      isMaxReached,
     })
 
   } catch (error) {

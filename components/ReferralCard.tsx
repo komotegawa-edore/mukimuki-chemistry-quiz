@@ -13,6 +13,8 @@ interface ReferralData {
   campaignTitle?: string
   campaignDescription?: string
   validUntil?: string | null
+  maxReferrals?: number
+  isMaxReached?: boolean
   referrals: {
     id: number
     status: string
@@ -63,7 +65,7 @@ export default function ReferralCard() {
 
   const shareViaLine = () => {
     const url = getReferralUrl()
-    const text = `Roopyで一緒に勉強しよう！\n招待コード: ${data?.referralCode}\n登録するとデイリークエストが2つからスタート！`
+    const text = `Roopyで一緒に勉強しよう！\n招待コード: ${data?.referralCode}\n登録するとデイリーミッションが2つからスタート！`
     window.open(
       `https://line.me/R/share?text=${encodeURIComponent(text + '\n' + url)}`,
       '_blank'
@@ -72,7 +74,7 @@ export default function ReferralCard() {
 
   const shareViaTwitter = () => {
     const url = getReferralUrl()
-    const text = `Roopyで一緒に勉強しよう！\n招待コード: ${data?.referralCode}\n登録するとデイリークエストが2つからスタート！`
+    const text = `Roopyで一緒に勉強しよう！\n招待コード: ${data?.referralCode}\n登録するとデイリーミッションが2つからスタート！`
     window.open(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
       '_blank'
@@ -130,20 +132,25 @@ export default function ReferralCard() {
             <Share2 className="w-5 h-5 text-[#5DDFC3]" />
             <h3 className="text-lg font-bold text-[#3A405A]">友達を招待</h3>
           </div>
-          {data.completedReferrals > 0 && (
-            <div className="flex items-center gap-1 text-[#5DDFC3] text-sm font-medium">
-              <Users className="w-4 h-4" />
-              <span>{data.completedReferrals}人紹介済み</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1 text-[#5DDFC3] text-sm font-medium">
+            <Users className="w-4 h-4" />
+            <span>{data.completedReferrals}/{data.maxReferrals || 3}人</span>
+          </div>
         </div>
       )}
 
       {/* 紹介済み（キャンペーンタイトルがある場合はここに表示） */}
-      {data.campaignTitle && data.completedReferrals > 0 && (
+      {data.campaignTitle && (
         <div className="flex items-center gap-1 text-[#5DDFC3] text-sm font-medium mb-4">
           <Users className="w-4 h-4" />
-          <span>{data.completedReferrals}人紹介済み</span>
+          <span>{data.completedReferrals}/{data.maxReferrals || 3}人紹介済み</span>
+        </div>
+      )}
+
+      {/* 上限達成メッセージ */}
+      {data.isMaxReached && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm text-blue-700">
+          🎉 紹介上限（{data.maxReferrals}人）に達しました！ご協力ありがとうございます。
         </div>
       )}
 
@@ -156,8 +163,8 @@ export default function ReferralCard() {
           <div>
             <p className="font-semibold text-[#3A405A] text-sm mb-1">招待特典</p>
             <ul className="text-xs text-[#3A405A]/70 space-y-1">
-              <li>• あなた：紹介が成立するとデイリークエスト+1</li>
-              <li>• 友達：デイリークエスト2つでスタート</li>
+              <li>• あなた：紹介が成立するとデイリーミッション+1</li>
+              <li>• 友達：デイリーミッション2つでスタート</li>
             </ul>
           </div>
         </div>
@@ -240,7 +247,7 @@ export default function ReferralCard() {
                 <div className="flex items-center gap-1">
                   <Target className="w-4 h-4 text-[#5DDFC3]" />
                   <span className="text-[#3A405A]">
-                    デイリークエスト: {1 + data.bonusDailyQuests}個/日
+                    デイリーミッション: {1 + data.bonusDailyQuests}個/日
                   </span>
                 </div>
               </div>

@@ -245,7 +245,7 @@ function SignupForm() {
                     </span>
                   </div>
                   <p className="text-xs text-green-600 mt-1">
-                    デイリークエストが2つの状態でスタート！
+                    デイリーミッションが2つの状態でスタート！
                   </p>
                 </div>
               )}
