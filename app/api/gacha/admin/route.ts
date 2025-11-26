@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
     }) || []
 
     // ユーザー情報を別途取得
-    const userIds = [...new Set(nonLoseHistory.map(h => h.user_id))]
+    const userIds = Array.from(new Set(nonLoseHistory.map(h => h.user_id)))
     const { data: usersData } = await supabase
       .from('mukimuki_profiles')
       .select('id, name, email')
