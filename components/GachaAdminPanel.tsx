@@ -86,6 +86,8 @@ export default function GachaAdminPanel() {
 
   // 当たり景品のみ（ハズレ以外）
   const activePrizes = prizes.filter(p => p.prize_type !== 'lose')
+  // ハズレ
+  const losePrize = prizes.find(p => p.prize_type === 'lose')
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -110,6 +112,17 @@ export default function GachaAdminPanel() {
           </div>
           <p className="text-2xl font-bold text-yellow-700">{winners.length}</p>
         </div>
+        {losePrize && (
+          <div className="bg-gray-100 rounded-lg p-4">
+            <div className="flex items-center gap-2 text-gray-600 mb-1">
+              <Package className="w-4 h-4" />
+              <span className="text-sm">ハズレ回数</span>
+            </div>
+            <p className="text-2xl font-bold text-gray-700">
+              {losePrize.total_stock - losePrize.remaining_stock}
+            </p>
+          </div>
+        )}
         {activePrizes.map(prize => (
           <div key={prize.id} className="bg-gray-50 rounded-lg p-4">
             <div className="flex items-center gap-2 text-gray-600 mb-1">

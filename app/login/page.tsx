@@ -92,26 +92,38 @@ function LoginForm() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F4F9F7]">
-      <div className="flex-1 flex items-center justify-center px-4">
+      {/* ヘッダー */}
+      <div className="text-center pt-12 pb-8 px-4">
+        <Image
+          src="/Roopy-full-1.png"
+          alt="Roopy（るーぴー）"
+          width={250}
+          height={84}
+          className="mx-auto mb-4"
+          priority
+        />
+        <h1 className="text-2xl md:text-3xl font-bold text-[#3A405A] mb-3">
+          大学受験を"毎日つづけられる"ゲームにする
+        </h1>
+        <p className="text-base text-[#3A405A] opacity-80">
+          すべて無料・登録後すぐに始められます
+        </p>
+      </div>
+
+      <div className="flex-1 flex items-start justify-center px-4 pb-8">
         <div className="max-w-md w-full">
           <div className="bg-white rounded-2xl shadow-lg p-8">
-          <div className="mb-8 text-center">
-            <Image
-              src="/Roopy-full-1.png"
-              alt="Roopy（るーぴー）"
-              width={200}
-              height={67}
-              className="mx-auto mb-4"
-              priority
-            />
-            <p className="text-[#3A405A] text-sm">大学受験学習アプリ</p>
-          </div>
+            <div className="mb-6 text-center">
+              <h2 className="text-2xl font-bold text-[#3A405A] mb-2">
+                ログイン
+              </h2>
+            </div>
 
-          <Suspense fallback={null}>
-            <ErrorDisplay onError={setError} />
-          </Suspense>
+            <Suspense fallback={null}>
+              <ErrorDisplay onError={setError} />
+            </Suspense>
 
-          <form onSubmit={handleLogin} className="space-y-6">
+            <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label className="block text-sm font-semibold mb-2 text-[#3A405A]">
                 メールアドレス
