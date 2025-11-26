@@ -154,8 +154,8 @@ export async function POST(request: NextRequest) {
         id: gachaResult.prize_id,
         name: gachaResult.prize_name,
         description: gachaResult.prize_description,
-        type: gachaResult.prize_type,
-        value: gachaResult.prize_value,
+        type: gachaResult.p_prize_type,  // カラム名変更に対応
+        value: gachaResult.p_prize_value, // カラム名変更に対応
       },
       remainingPoints: gachaResult.remaining_points,
     })

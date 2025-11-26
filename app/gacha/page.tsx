@@ -86,29 +86,37 @@ export default function GachaPage() {
         method: 'POST',
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        if (data.success) {
-          // スピンアニメーション後に結果を表示
+      const data = await response.json()
+
+      if (!response.ok) {
+        // HTTPエラー（500など）の場合
+        alert(data.error || 'エラーが発生しました。しばらく経ってからもう一度お試しください。')
+        setAnimationPhase('idle')
+        setDrawing(false)
+        return
+      }
+
+      if (data.success) {
+        // スピンアニメーション後に結果を表示
+        setTimeout(() => {
+          setAnimationPhase('revealing')
           setTimeout(() => {
-            setAnimationPhase('revealing')
-            setTimeout(() => {
-              setResult(data.prize)
-              setCurrentPoints(data.remainingPoints)
-              setShowResult(true)
-              setAnimationPhase('done')
-              // 履歴を更新
-              fetchGachaData()
-            }, 500)
-          }, 2000)
-        } else {
-          alert(data.message || 'ガチャを引けませんでした')
-          setAnimationPhase('idle')
-          setDrawing(false)
-        }
+            setResult(data.prize)
+            setCurrentPoints(data.remainingPoints)
+            setShowResult(true)
+            setAnimationPhase('done')
+            // 履歴を更新
+            fetchGachaData()
+          }, 500)
+        }, 2000)
+      } else {
+        alert(data.message || 'ガチャを引けませんでした')
+        setAnimationPhase('idle')
+        setDrawing(false)
       }
     } catch (error) {
       console.error('Failed to draw gacha:', error)
+      alert('通信エラーが発生しました。ネットワーク接続を確認してください。')
       setAnimationPhase('idle')
       setDrawing(false)
     }
