@@ -53,14 +53,33 @@ export async function GET(request: NextRequest) {
       return prize && prize.prize_type !== 'lose'
     }) || []
 
-    // ユーザー情報を別途取得
+    // ユーザー情報を別途取得（profilesからname、auth.usersからemail）
     const userIds = Array.from(new Set(nonLoseHistory.map(h => h.user_id)))
-    const { data: usersData } = await supabase
+
+    // profilesからname取得
+    const { data: profilesData } = await supabase
       .from('mukimuki_profiles')
-      .select('id, name, email')
+      .select('id, name')
       .in('id', userIds)
 
-    const usersMap = new Map(usersData?.map(u => [u.id, u]) || [])
+    // auth.usersからemail取得（RPC経由）
+    const { data: emailsData } = await supabase.rpc('get_user_emails_for_admin', {
+      user_ids: userIds
+    })
+
+    const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || [])
+    const emailsMap = new Map(emailsData?.map((e: { id: string; email: string }) => [e.id, e.email]) || [])
+
+    const usersMap = new Map(
+      userIds.map(id => [
+        id,
+        {
+          id,
+          name: profilesMap.get(id)?.name || '不明',
+          email: emailsMap.get(id) || '不明'
+        }
+      ])
+    )
 
     // 当選者一覧を構築
     const winnerList = nonLoseHistory.map(h => ({

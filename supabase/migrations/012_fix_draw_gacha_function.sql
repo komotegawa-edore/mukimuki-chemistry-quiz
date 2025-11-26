@@ -3,6 +3,20 @@
 --       ガチャ用の「使用可能ポイント」は別関数で計算
 
 -- ====================================
+-- 0. 管理者用：ユーザーのメールアドレスを取得する関数
+-- ====================================
+CREATE OR REPLACE FUNCTION public.get_user_emails_for_admin(user_ids UUID[])
+RETURNS TABLE (id UUID, email TEXT)
+LANGUAGE SQL
+STABLE
+SECURITY DEFINER
+AS $$
+  SELECT u.id, u.email::TEXT
+  FROM auth.users u
+  WHERE u.id = ANY(user_ids);
+$$;
+
+-- ====================================
 -- 1. ガチャ用：使用可能ポイントを取得する関数（新規作成）
 -- ====================================
 CREATE OR REPLACE FUNCTION public.get_user_available_points(target_user_id UUID)
