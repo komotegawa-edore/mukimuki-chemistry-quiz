@@ -181,25 +181,56 @@ export default function GachaPage() {
           )}
         </div>
 
+        {/* キャンペーン説明 */}
+        <div className="bg-white rounded-2xl p-5 mb-6 shadow-xl">
+          <h2 className="text-lg font-bold text-[#3A405A] mb-4">
+            友達紹介キャンペーン
+          </h2>
+
+          <div className="space-y-4 text-sm text-gray-700">
+            <div className="bg-purple-50 rounded-xl p-4">
+              <h3 className="font-bold text-purple-700 mb-2">ポイントの貯め方</h3>
+              <ul className="space-y-1 text-purple-800">
+                <li>・毎日ログインで <span className="font-bold">3pt</span></li>
+                <li>・章を100%正解でクリアすると <span className="font-bold">1pt</span>（1日1回）</li>
+                <li>・友達を紹介すると <span className="font-bold">デイリーミッション+1</span></li>
+              </ul>
+            </div>
+
+            <div className="bg-pink-50 rounded-xl p-4">
+              <h3 className="font-bold text-pink-700 mb-2">ガチャの仕組み</h3>
+              <ul className="space-y-1 text-pink-800">
+                <li>・<span className="font-bold">50pt</span> で1回ガチャが引けます</li>
+                <li>・当選者には担当者からメールでギフト券をお届け</li>
+                <li>・各賞は数量限定！なくなり次第終了</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         {/* 景品一覧 */}
         <div className="bg-white rounded-2xl p-4 mb-6 shadow-xl">
           <h2 className="text-lg font-bold text-[#3A405A] mb-3 flex items-center gap-2">
             <Trophy className="w-5 h-5 text-yellow-500" />
-            景品一覧
+            景品一覧（数量限定）
           </h2>
           <div className="space-y-2">
             {prizes.filter(p => p.prize_type !== 'lose').map((prize) => (
               <div
                 key={prize.id}
-                className={`flex items-center justify-between p-3 rounded-lg ${getPrizeBgColor(prize.prize_type, prize.prize_value)}`}
+                className={`p-3 rounded-lg ${getPrizeBgColor(prize.prize_type, prize.prize_value)}`}
               >
-                <div>
+                <div className="flex items-center justify-between">
                   <span className="font-bold text-[#3A405A]">{prize.name}</span>
-                  <p className="text-sm text-gray-600">{prize.description}</p>
+                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                    prize.prize_value >= 5000 ? 'bg-yellow-200 text-yellow-800' :
+                    prize.prize_value >= 3000 ? 'bg-gray-200 text-gray-800' :
+                    'bg-orange-200 text-orange-800'
+                  }`}>
+                    {prize.prize_value.toLocaleString()}円
+                  </span>
                 </div>
-                <span className="text-xs text-gray-500">
-                  {(prize.probability * 100).toFixed(0)}%
-                </span>
+                <p className="text-sm text-gray-600 mt-1">{prize.description}</p>
               </div>
             ))}
           </div>
