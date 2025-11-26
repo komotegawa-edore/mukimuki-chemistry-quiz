@@ -197,6 +197,16 @@ export default function GachaPage() {
               </ul>
             </div>
 
+            <div className="bg-green-50 rounded-xl p-4">
+              <h3 className="font-bold text-green-700 mb-2">友達紹介の条件</h3>
+              <ul className="space-y-1 text-green-800">
+                <li>・ホーム画面の招待コードを友達に共有</li>
+                <li>・友達がコードを使って登録</li>
+                <li>・友達が <span className="font-bold">1章クリア</span> で紹介成立！</li>
+                <li>・友達も <span className="font-bold">デイリークエスト2つ</span> でスタート</li>
+              </ul>
+            </div>
+
             <div className="bg-pink-50 rounded-xl p-4">
               <h3 className="font-bold text-pink-700 mb-2">ガチャの仕組み</h3>
               <ul className="space-y-1 text-pink-800">
