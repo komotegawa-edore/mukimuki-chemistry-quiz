@@ -186,8 +186,8 @@ export default function AnnouncementsPage() {
   }
 
   const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(userSearchTerm.toLowerCase())
+    (user.name || '').toLowerCase().includes(userSearchTerm.toLowerCase()) ||
+    (user.email || '').toLowerCase().includes(userSearchTerm.toLowerCase())
   )
 
   const getPriorityBadge = (priority: string) => {
