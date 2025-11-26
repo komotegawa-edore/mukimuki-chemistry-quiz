@@ -12,6 +12,7 @@ import InstallPrompt from './InstallPrompt'
 import DailyMissionCard from './DailyMissionCard'
 import AnnouncementsList from './AnnouncementsList'
 import TemporaryQuestCard from './TemporaryQuestCard'
+import ReferralCard from './ReferralCard'
 
 interface Subject {
   id: number
@@ -123,6 +124,9 @@ export default function HomeContent({
 
             {/* バッジ表示 */}
             <BadgeDisplay />
+
+            {/* 友達招待 */}
+            <ReferralCard />
           </div>
         )}
 

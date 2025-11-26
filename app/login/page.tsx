@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Image from 'next/image'
+import LPFooter from '@/components/LPFooter'
 
 // エラー表示用のコンポーネント（useSearchParamsを使用）
 function ErrorDisplay({ onError }: { onError: (error: string | null) => void }) {
@@ -90,9 +91,10 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F4F9F7] px-4">
-      <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+    <div className="min-h-screen flex flex-col bg-[#F4F9F7]">
+      <div className="flex-1 flex items-center justify-center px-4">
+        <div className="max-w-md w-full">
+          <div className="bg-white rounded-2xl shadow-lg p-8">
           <div className="mb-8 text-center">
             <Image
               src="/Roopy-full-1.png"
@@ -184,8 +186,10 @@ function LoginForm() {
               新規登録
             </Link>
           </div>
+          </div>
         </div>
       </div>
+      <LPFooter />
     </div>
   )
 }

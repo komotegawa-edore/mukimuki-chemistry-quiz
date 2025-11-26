@@ -23,36 +23,77 @@ export async function GET(request: NextRequest) {
       .single()
 
     if (!settings || settings.setting_value !== 'true') {
-      return NextResponse.json({ mission: null, disabled: true }, { status: 200 })
+      return NextResponse.json({ missions: [], disabled: true }, { status: 200 })
     }
 
-    // デイリーミッション生成関数を呼び出し
-    const { data, error } = await supabase.rpc('generate_daily_mission', {
+    // 複数デイリーミッション生成関数を呼び出し
+    const { data, error } = await supabase.rpc('generate_daily_missions', {
       p_user_id: user.id,
     })
 
     if (error) {
-      console.error('Daily mission generation error:', error)
-      return NextResponse.json({ error: 'ミッションの生成に失敗しました' }, { status: 500 })
+      console.error('Daily missions generation error:', error)
+      // 旧関数にフォールバック
+      const { data: fallbackData, error: fallbackError } = await supabase.rpc('generate_daily_mission', {
+        p_user_id: user.id,
+      })
+
+      if (fallbackError) {
+        return NextResponse.json({ error: 'ミッションの生成に失敗しました' }, { status: 500 })
+      }
+
+      const mission = fallbackData && fallbackData.length > 0 ? fallbackData[0] : null
+      if (!mission) {
+        return NextResponse.json({ missions: [] }, { status: 200 })
+      }
+
+      return NextResponse.json({
+        missions: [{
+          id: mission.mission_id,
+          mission_number: 1,
+          chapter_id: mission.chapter_id,
+          chapter_title: mission.chapter_title,
+          subject_name: mission.subject_name,
+          time_limit_seconds: mission.time_limit_seconds,
+          reward_points: mission.reward_points,
+          time_limit_minutes: Math.floor(mission.time_limit_seconds / 60),
+          status: 'active',
+        }],
+        // 後方互換性のため単一ミッションも返す
+        mission: {
+          id: mission.mission_id,
+          chapter_id: mission.chapter_id,
+          chapter_title: mission.chapter_title,
+          subject_name: mission.subject_name,
+          time_limit_seconds: mission.time_limit_seconds,
+          reward_points: mission.reward_points,
+          time_limit_minutes: Math.floor(mission.time_limit_seconds / 60),
+        },
+      })
     }
 
-    // 結果が配列で返ってくるので最初の要素を取得
-    const mission = data && data.length > 0 ? data[0] : null
-
-    if (!mission) {
-      return NextResponse.json({ error: 'ミッションが見つかりません' }, { status: 404 })
+    if (!data || data.length === 0) {
+      return NextResponse.json({ missions: [] }, { status: 200 })
     }
+
+    const missions = data.map((m: any) => ({
+      id: m.mission_id,
+      mission_number: m.mission_number,
+      chapter_id: m.chapter_id,
+      chapter_title: m.chapter_title,
+      subject_name: m.subject_name,
+      time_limit_seconds: m.time_limit_seconds,
+      reward_points: m.reward_points,
+      time_limit_minutes: Math.floor(m.time_limit_seconds / 60),
+      status: m.status,
+    }))
+
+    // 最初のアクティブなミッションを単一ミッションとしても返す（後方互換性）
+    const activeMission = missions.find((m: any) => m.status === 'active')
 
     return NextResponse.json({
-      mission: {
-        id: mission.mission_id,
-        chapter_id: mission.chapter_id,
-        chapter_title: mission.chapter_title,
-        subject_name: mission.subject_name,
-        time_limit_seconds: mission.time_limit_seconds,
-        reward_points: mission.reward_points,
-        time_limit_minutes: Math.floor(mission.time_limit_seconds / 60),
-      },
+      missions,
+      mission: activeMission || null,
     })
 
   } catch (error) {

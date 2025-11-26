@@ -130,8 +130,17 @@ export async function POST(request: NextRequest) {
     // 100%達成の場合、ポイントを付与（1日1回のみ）
     let pointsAwarded = false
     let newBadges: any[] = []
+    let referralCompleted = false
+    let referrerName: string | null = null
+
     if (score === total && score > 0) {
       console.log('Perfect score! Attempting to award points...')
+
+      // クリア前のユニーク章数を取得（紹介成立判定用）
+      const { count: previousClearCount } = await supabase
+        .from('mukimuki_chapter_clears')
+        .select('chapter_id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
 
       const { error: pointError } = await supabase
         .from('mukimuki_chapter_clears')
@@ -163,11 +172,33 @@ export async function POST(request: NextRequest) {
           newBadges = badges || []
           console.log('Badges checked:', newBadges.length, 'new badges')
         }
+
+        // クリア後のユニーク章数を取得
+        const { count: currentClearCount } = await supabase
+          .from('mukimuki_chapter_clears')
+          .select('chapter_id', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+
+        // 初めて1章クリアした場合、紹介成立処理を実行
+        if ((previousClearCount || 0) === 0 && (currentClearCount || 0) >= 1) {
+          console.log('First chapter cleared! Checking referral...')
+          const { data: referralResult, error: referralError } = await supabase.rpc('complete_referral', {
+            p_user_id: user.id,
+          })
+
+          if (referralError) {
+            console.error('Referral completion error:', referralError)
+          } else if (referralResult && referralResult.length > 0 && referralResult[0].success) {
+            referralCompleted = true
+            referrerName = referralResult[0].referrer_name
+            console.log('Referral completed! Referrer:', referrerName)
+          }
+        }
       }
     }
 
     return NextResponse.json(
-      { ...data, pointsAwarded, newBadges },
+      { ...data, pointsAwarded, newBadges, referralCompleted, referrerName },
       { status: 201 }
     )
   } catch (error) {

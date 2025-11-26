@@ -1,18 +1,81 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Beaker, Trophy, Coins, RotateCcw, CheckCircle, Mail } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { Beaker, Trophy, Coins, RotateCcw, CheckCircle, Mail, Gift } from 'lucide-react'
+import LPFooter from '@/components/LPFooter'
 
-export default function SignupPage() {
+interface Referrer {
+  id: string
+  name: string
+}
+
+function SignupForm() {
+  const searchParams = useSearchParams()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [referralCode, setReferralCode] = useState('')
+  const [referrer, setReferrer] = useState<Referrer | null>(null)
+  const [isValidatingCode, setIsValidatingCode] = useState(false)
+  const [referralError, setReferralError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
+
+  // URLから招待コードを取得
+  useEffect(() => {
+    const code = searchParams.get('ref')
+    if (code) {
+      setReferralCode(code.toUpperCase())
+      validateReferralCode(code)
+    }
+  }, [searchParams])
+
+  // 招待コードを検証
+  const validateReferralCode = async (code: string) => {
+    if (!code || code.length < 8) {
+      setReferrer(null)
+      setReferralError(null)
+      return
+    }
+
+    setIsValidatingCode(true)
+    setReferralError(null)
+
+    try {
+      const response = await fetch(`/api/referral/validate?code=${encodeURIComponent(code)}`)
+      const data = await response.json()
+
+      if (data.valid) {
+        setReferrer(data.referrer)
+        setReferralError(null)
+      } else {
+        setReferrer(null)
+        setReferralError('無効な招待コードです')
+      }
+    } catch (err) {
+      setReferrer(null)
+      setReferralError('招待コードの検証に失敗しました')
+    } finally {
+      setIsValidatingCode(false)
+    }
+  }
+
+  // 招待コード入力時のハンドラ
+  const handleReferralCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const code = e.target.value.toUpperCase().slice(0, 8)
+    setReferralCode(code)
+    if (code.length === 8) {
+      validateReferralCode(code)
+    } else {
+      setReferrer(null)
+      setReferralError(null)
+    }
+  }
 
   const handleGoogleSignup = async () => {
     setIsLoading(true)
@@ -20,10 +83,16 @@ export default function SignupPage() {
 
     try {
       const supabase = createClient()
+      // 招待コードがある場合はcallbackに渡す
+      const callbackUrl = new URL('/auth/callback', window.location.origin)
+      if (referrer) {
+        callbackUrl.searchParams.set('referrer_id', referrer.id)
+      }
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: callbackUrl.toString(),
         },
       })
 
@@ -45,7 +114,7 @@ export default function SignupPage() {
     try {
       const supabase = createClient()
 
-      // 1. ユーザー作成（メタデータに名前とロールを含める）
+      // 1. ユーザー作成（メタデータに名前とロールと紹介者IDを含める）
       // 全ての新規登録ユーザーは自動的に生徒として登録されます
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
@@ -55,6 +124,7 @@ export default function SignupPage() {
           data: {
             name,
             role: 'student',
+            referred_by: referrer?.id || null,
           },
         },
       })
@@ -82,30 +152,8 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F9F7] px-4 py-12">
-      <div className="max-w-5xl mx-auto">
-        {/* ヘッダー */}
-        <div className="text-center mb-12">
-          <Image
-            src="/Roopy-full-1.png"
-            alt="Roopy（るーぴー）"
-            width={250}
-            height={84}
-            className="mx-auto mb-4"
-            priority
-          />
-          <h1 className="text-3xl md:text-4xl font-bold text-[#3A405A] mb-3">
-            大学受験を"毎日つづけられる"ゲームにする
-          </h1>
-          <p className="text-lg text-[#3A405A] opacity-80">
-            すべて無料・登録後すぐに始められます
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-8 items-start">
-          {/* 左側：フォーム */}
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            {isSuccess ? (
+    <div className="bg-white rounded-2xl shadow-lg p-8">
+      {isSuccess ? (
               <div className="text-center space-y-6">
                 <div className="flex justify-center">
                   <div className="bg-green-100 p-4 rounded-full">
@@ -161,6 +209,51 @@ export default function SignupPage() {
                 </div>
 
                 <form onSubmit={handleSignup} className="space-y-5">
+            {/* 招待コード入力欄 */}
+            <div>
+              <label className="block text-sm font-semibold mb-2 text-[#3A405A]">
+                招待コード（任意）
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={referralCode}
+                  onChange={handleReferralCodeChange}
+                  maxLength={8}
+                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#5DDFC3] focus:border-transparent uppercase tracking-widest font-mono ${
+                    referrer ? 'border-green-400 bg-green-50' : referralError ? 'border-red-400 bg-red-50' : 'border-gray-300'
+                  }`}
+                  placeholder="XXXXXXXX"
+                />
+                {isValidatingCode && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <div className="w-5 h-5 border-2 border-[#5DDFC3] border-t-transparent rounded-full animate-spin" />
+                  </div>
+                )}
+                {referrer && !isValidatingCode && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                  </div>
+                )}
+              </div>
+              {referrer && (
+                <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-2 text-green-700">
+                    <Gift className="w-4 h-4" />
+                    <span className="text-sm font-medium">
+                      {referrer.name}さんからの招待
+                    </span>
+                  </div>
+                  <p className="text-xs text-green-600 mt-1">
+                    デイリークエストが2つの状態でスタート！
+                  </p>
+                </div>
+              )}
+              {referralError && (
+                <p className="mt-1 text-sm text-red-500">{referralError}</p>
+              )}
+            </div>
+
             <div>
               <label className="block text-sm font-semibold mb-2 text-[#3A405A]">名前</label>
               <input
@@ -262,9 +355,56 @@ export default function SignupPage() {
               ログイン
             </Link>
           </div>
-              </>
-            )}
-          </div>
+      </>
+    )}
+  </div>
+  )
+}
+
+function SignupFormLoading() {
+  return (
+    <div className="bg-white rounded-2xl shadow-lg p-8">
+      <div className="animate-pulse space-y-5">
+        <div className="h-8 bg-gray-200 rounded w-1/2 mx-auto"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/3 mx-auto"></div>
+        <div className="space-y-4">
+          <div className="h-10 bg-gray-200 rounded"></div>
+          <div className="h-10 bg-gray-200 rounded"></div>
+          <div className="h-10 bg-gray-200 rounded"></div>
+          <div className="h-10 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function SignupPage() {
+  return (
+    <div className="min-h-screen bg-[#F4F9F7] px-4 py-12">
+      <div className="max-w-5xl mx-auto">
+        {/* ヘッダー */}
+        <div className="text-center mb-12">
+          <Image
+            src="/Roopy-full-1.png"
+            alt="Roopy（るーぴー）"
+            width={250}
+            height={84}
+            className="mx-auto mb-4"
+            priority
+          />
+          <h1 className="text-3xl md:text-4xl font-bold text-[#3A405A] mb-3">
+            大学受験を"毎日つづけられる"ゲームにする
+          </h1>
+          <p className="text-lg text-[#3A405A] opacity-80">
+            すべて無料・登録後すぐに始められます
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8 items-start">
+          {/* 左側：フォーム */}
+          <Suspense fallback={<SignupFormLoading />}>
+            <SignupForm />
+          </Suspense>
 
           {/* 右側：アプリの特徴 */}
           <div className="space-y-6">
@@ -365,6 +505,7 @@ export default function SignupPage() {
           </div>
         </div>
       </div>
+      <LPFooter />
     </div>
   )
 }
