@@ -1,9 +1,26 @@
--- draw_gacha関数を更新
--- 修正点:
--- 1. total_pointsカラムではなくget_user_total_points()関数を使用
--- 2. カラム名のあいまいさを解消（prize_type → p_prize_type等）
--- 3. ポイント消費をlogin_bonusesテーブル経由で行う
+-- ガチャ機能修正
+-- 方針: ランキングは獲得ポイントで計算（ガチャ消費を差し引かない）
+--       ガチャ用の「使用可能ポイント」は別関数で計算
 
+-- ====================================
+-- 1. ガチャ用：使用可能ポイントを取得する関数（新規作成）
+-- ====================================
+CREATE OR REPLACE FUNCTION public.get_user_available_points(target_user_id UUID)
+RETURNS INTEGER
+LANGUAGE SQL
+STABLE
+SECURITY DEFINER
+AS $$
+  SELECT GREATEST(0, (
+    COALESCE((SELECT SUM(points) FROM public.mukimuki_chapter_clears WHERE user_id = target_user_id), 0) +
+    COALESCE((SELECT SUM(points) FROM public.mukimuki_login_bonuses WHERE user_id = target_user_id), 0) -
+    COALESCE((SELECT SUM(points_used) FROM public.mukimuki_gacha_history WHERE user_id = target_user_id), 0)
+  ))::INTEGER;
+$$;
+
+-- ====================================
+-- 2. draw_gacha関数を更新（使用可能ポイントを使用）
+-- ====================================
 DROP FUNCTION IF EXISTS draw_gacha(UUID);
 
 CREATE OR REPLACE FUNCTION draw_gacha(p_user_id UUID)
@@ -49,8 +66,8 @@ BEGIN
     RETURN;
   END IF;
 
-  -- get_user_total_points関数でポイントを取得
-  v_current_points := public.get_user_total_points(p_user_id);
+  -- 使用可能ポイントを取得（ガチャ消費後のポイント）
+  v_current_points := public.get_user_available_points(p_user_id);
 
   IF v_current_points < 50 THEN
     RETURN QUERY SELECT
@@ -66,8 +83,8 @@ BEGIN
   END IF;
 
   -- 残り景品数を計算
-  SELECT COALESCE(SUM(remaining_stock), 0) INTO v_total_remaining
-  FROM mukimuki_gacha_prizes WHERE is_active = true AND remaining_stock > 0;
+  SELECT COALESCE(SUM(gp2.remaining_stock), 0) INTO v_total_remaining
+  FROM mukimuki_gacha_prizes gp2 WHERE gp2.is_active = true AND gp2.remaining_stock > 0;
 
   IF v_total_remaining = 0 THEN
     RETURN QUERY SELECT
@@ -86,10 +103,10 @@ BEGIN
   v_random_num := floor(random() * v_total_remaining) + 1;
 
   FOR v_prize IN
-    SELECT gp.id, gp.name, gp.description, gp.prize_type, gp.prize_value, gp.remaining_stock
-    FROM mukimuki_gacha_prizes gp
-    WHERE gp.is_active = true AND gp.remaining_stock > 0
-    ORDER BY gp.display_order
+    SELECT gp3.id, gp3.name, gp3.description, gp3.prize_type, gp3.prize_value, gp3.remaining_stock
+    FROM mukimuki_gacha_prizes gp3
+    WHERE gp3.is_active = true AND gp3.remaining_stock > 0
+    ORDER BY gp3.display_order
   LOOP
     v_cumulative := v_cumulative + v_prize.remaining_stock;
     IF v_random_num <= v_cumulative THEN
@@ -98,18 +115,14 @@ BEGIN
     END IF;
   END LOOP;
 
-  -- ポイント消費（マイナスのログインボーナスとして記録）
-  INSERT INTO mukimuki_login_bonuses (user_id, login_date, points)
-  VALUES (p_user_id, NOW()::DATE, -50);
-
   -- 景品在庫を減らす
   UPDATE mukimuki_gacha_prizes SET remaining_stock = remaining_stock - 1 WHERE id = v_selected_prize_id;
 
-  -- 履歴を記録
+  -- 履歴を記録（points_usedでポイント消費を追跡）
   INSERT INTO mukimuki_gacha_history (user_id, prize_id, points_used)
   VALUES (p_user_id, v_selected_prize_id, 50);
 
-  -- 結果を返す（カラム名を明示的に指定）
+  -- 結果を返す
   RETURN QUERY
   SELECT
     true,
@@ -119,7 +132,7 @@ BEGIN
     gp.description,
     gp.prize_type,
     gp.prize_value,
-    (public.get_user_total_points(p_user_id))::INTEGER
+    (public.get_user_available_points(p_user_id))::INTEGER
   FROM mukimuki_gacha_prizes gp
   WHERE gp.id = v_selected_prize_id;
 END;

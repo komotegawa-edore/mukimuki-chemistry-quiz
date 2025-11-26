@@ -45,21 +45,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ isExcluded: true })
     }
 
-    // ユーザーのポイントを取得（get_user_rank RPCを使用して整合性を保つ）
-    const { data: rankData, error: rankError } = await supabase.rpc(
-      'get_user_rank',
+    // ユーザーの使用可能ポイントを取得（ガチャ消費後のポイント）
+    const { data: availablePoints, error: pointsError } = await supabase.rpc(
+      'get_user_available_points',
       { target_user_id: user.id }
     )
 
-    if (rankError) {
-      console.error('Failed to get user rank for gacha:', rankError)
+    if (pointsError) {
+      console.error('Failed to get available points for gacha:', pointsError)
     }
 
-    const userRankInfo = Array.isArray(rankData) && rankData.length > 0
-      ? rankData[0]
-      : { total_points: 0 }
-
-    const currentPoints = userRankInfo.total_points || 0
+    const currentPoints = availablePoints || 0
 
     // 景品一覧を取得
     const { data: prizes, error: prizesError } = await supabase
