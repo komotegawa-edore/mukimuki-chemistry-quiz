@@ -13,6 +13,7 @@ import DailyMissionCard from './DailyMissionCard'
 import AnnouncementsList from './AnnouncementsList'
 import TemporaryQuestCard from './TemporaryQuestCard'
 import ReferralCard from './ReferralCard'
+import GachaCard from './GachaCard'
 import EventModal from './EventModal'
 
 interface Subject {
@@ -109,8 +110,11 @@ export default function HomeContent({
               </div>
             </div>
 
-            {/* 友達招待（ようこその下、デイリーミッションの上） */}
+            {/* 友達招待（ようこその下） */}
             <ReferralCard />
+
+            {/* ガチャ（招待カードの下） */}
+            <GachaCard />
 
             {/* お知らせ */}
             <AnnouncementsList />
