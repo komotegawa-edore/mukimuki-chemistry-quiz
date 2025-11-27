@@ -37,6 +37,17 @@ export default async function DeckPage({ params }: Props) {
     .eq('is_published', true)
     .order('order_num', { ascending: true })
 
+  // 次のデッキを取得（同じ教科内で次のdisplay_order）
+  const { data: nextDeck } = await supabase
+    .from('mukimuki_flashcard_decks')
+    .select('id')
+    .eq('subject', deck.subject)
+    .eq('is_published', true)
+    .gt('display_order', deck.display_order)
+    .order('display_order', { ascending: true })
+    .limit(1)
+    .single()
+
   // ユーザーの進捗を取得
   const { data: progress } = await supabase
     .from('mukimuki_flashcard_progress')
@@ -67,6 +78,7 @@ export default async function DeckPage({ params }: Props) {
         cards={cards || []}
         progressMap={progressMap}
         userId={profile.id}
+        nextDeckId={nextDeck?.id}
       />
     </div>
   )

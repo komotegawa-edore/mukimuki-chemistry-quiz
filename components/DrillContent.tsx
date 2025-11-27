@@ -23,7 +23,7 @@ interface DrillContentProps {
 
 export default function DrillContent({ decks, progressMap }: DrillContentProps) {
   const [expandedSubjects, setExpandedSubjects] = useState<Set<string>>(
-    new Set(['japanese_history'])
+    new Set()
   )
 
   const toggleSubject = (subject: string) => {
