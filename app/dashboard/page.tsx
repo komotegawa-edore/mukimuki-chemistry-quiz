@@ -8,6 +8,7 @@ import DailyMissionSettings from '@/components/DailyMissionSettings'
 import ReferralExcludeSettings from '@/components/ReferralExcludeSettings'
 import ReferralCampaignSettings from '@/components/ReferralCampaignSettings'
 import GachaAdminPanel from '@/components/GachaAdminPanel'
+import RankingExclusionPanel from '@/components/RankingExclusionPanel'
 import Header from '@/components/Header'
 import { BookOpen, ArrowRight, Trophy, Bell, Zap } from 'lucide-react'
 
@@ -147,6 +148,7 @@ export default async function DashboardPage() {
             <DailyMissionSettings />
             <ReferralCampaignSettings />
             <ReferralExcludeSettings />
+            <RankingExclusionPanel />
           </div>
         </div>
 
