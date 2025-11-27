@@ -60,6 +60,7 @@ export default function FlashcardRunner({
   const [swipeX, setSwipeX] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null)
+  const [enterDirection, setEnterDirection] = useState<'from-right' | 'from-left' | null>(null)
 
   // 自動再生
   const [isAutoPlay, setIsAutoPlay] = useState(false)
@@ -83,12 +84,19 @@ export default function FlashcardRunner({
       setIsAnimating(true)
       setSwipeDirection('left')
 
+      // カードが出ていった後、新しいカードを右から入れる
       setTimeout(() => {
         setIsFlipped(false)
         setCurrentIndex(prev => prev + 1)
         setSwipeDirection(null)
         setSwipeX(0)
-        setIsAnimating(false)
+        setEnterDirection('from-right')
+
+        // 入場アニメーション後にリセット
+        setTimeout(() => {
+          setEnterDirection(null)
+          setIsAnimating(false)
+        }, 300)
       }, 300)
     } else {
       // セッション完了
@@ -110,12 +118,19 @@ export default function FlashcardRunner({
       setIsAnimating(true)
       setSwipeDirection('right')
 
+      // カードが出ていった後、前のカードを左から入れる
       setTimeout(() => {
         setIsFlipped(false)
         setCurrentIndex(prev => prev - 1)
         setSwipeDirection(null)
         setSwipeX(0)
-        setIsAnimating(false)
+        setEnterDirection('from-left')
+
+        // 入場アニメーション後にリセット
+        setTimeout(() => {
+          setEnterDirection(null)
+          setIsAnimating(false)
+        }, 300)
       }, 300)
     }
   }, [currentIndex, isAnimating])
@@ -277,6 +292,7 @@ export default function FlashcardRunner({
 
   // スワイプアニメーションのスタイル
   const getCardStyle = () => {
+    // カードが出ていくアニメーション
     if (swipeDirection === 'left') {
       return {
         transform: 'translateX(-120%) rotate(-10deg)',
@@ -291,6 +307,24 @@ export default function FlashcardRunner({
         transition: 'transform 0.3s ease-out, opacity 0.3s ease-out'
       }
     }
+    // 新しいカードが入ってくるアニメーション
+    if (enterDirection === 'from-right') {
+      return {
+        transform: 'translateX(0) rotate(0deg)',
+        opacity: 1,
+        transition: 'transform 0.3s ease-out, opacity 0.3s ease-out',
+        animation: 'slideInFromRight 0.3s ease-out'
+      }
+    }
+    if (enterDirection === 'from-left') {
+      return {
+        transform: 'translateX(0) rotate(0deg)',
+        opacity: 1,
+        transition: 'transform 0.3s ease-out, opacity 0.3s ease-out',
+        animation: 'slideInFromLeft 0.3s ease-out'
+      }
+    }
+    // スワイプ中
     if (swipeX !== 0) {
       const rotation = swipeX * 0.05
       return {
@@ -306,6 +340,30 @@ export default function FlashcardRunner({
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-4">
+      {/* アニメーション用のスタイル */}
+      <style jsx>{`
+        @keyframes slideInFromRight {
+          from {
+            transform: translateX(120%) rotate(10deg);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0) rotate(0deg);
+            opacity: 1;
+          }
+        }
+        @keyframes slideInFromLeft {
+          from {
+            transform: translateX(-120%) rotate(-10deg);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0) rotate(0deg);
+            opacity: 1;
+          }
+        }
+      `}</style>
+
       {/* デッキ情報 */}
       <div className="text-center mb-3">
         <h1 className="text-lg font-bold text-[#3A405A]">{deck.name}</h1>
