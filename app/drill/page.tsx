@@ -4,6 +4,7 @@ import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import DrillContent from '@/components/DrillContent'
+import BottomNav from '@/components/BottomNav'
 
 export default async function DrillPage() {
   const supabase = await createClient()
@@ -71,6 +72,8 @@ export default async function DrillPage() {
       />
 
       <DrillContent decks={decks || []} progressMap={progressMap} />
+
+      <BottomNav />
     </div>
   )
 }

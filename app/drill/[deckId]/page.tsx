@@ -4,6 +4,7 @@ import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import FlashcardRunner from '@/components/FlashcardRunner'
+import BottomNav from '@/components/BottomNav'
 
 interface Props {
   params: Promise<{ deckId: string }>
@@ -80,6 +81,8 @@ export default async function DeckPage({ params }: Props) {
         userId={profile.id}
         nextDeckId={nextDeck?.id}
       />
+
+      <BottomNav />
     </div>
   )
 }

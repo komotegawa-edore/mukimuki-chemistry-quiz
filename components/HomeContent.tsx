@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Home, Target, BookOpen, RotateCcw, ChevronDown, ChevronRight, Coins } from 'lucide-react'
+import { RotateCcw, ChevronDown, ChevronRight, Coins } from 'lucide-react'
 import PointsDisplay from './PointsDisplay'
 import BadgeDisplay from './BadgeDisplay'
 import StreakDisplay from './StreakDisplay'
@@ -12,6 +12,7 @@ import InstallPrompt from './InstallPrompt'
 import DailyMissionCard from './DailyMissionCard'
 import AnnouncementsList from './AnnouncementsList'
 import TemporaryQuestCard from './TemporaryQuestCard'
+import BottomNav from './BottomNav'
 
 interface Subject {
   id: number
@@ -285,52 +286,7 @@ export default function HomeContent({
       </main>
 
       {/* 下部タブバー */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E0F7F1] shadow-lg z-40">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex justify-around">
-            {/* ホームタブ */}
-            <button
-              onClick={() => setActiveTab('home')}
-              className={`flex-1 flex flex-col items-center py-3 transition-colors ${
-                activeTab === 'home'
-                  ? 'text-[#5DDFC3]'
-                  : 'text-[#3A405A] opacity-50 hover:opacity-70'
-              }`}
-            >
-              <Home
-                className="w-6 h-6 mb-1"
-                fill={activeTab === 'home' ? 'currentColor' : 'none'}
-              />
-              <span className="text-xs font-medium">ホーム</span>
-            </button>
-
-            {/* クエストタブ */}
-            <button
-              onClick={() => setActiveTab('quest')}
-              className={`flex-1 flex flex-col items-center py-3 transition-colors ${
-                activeTab === 'quest'
-                  ? 'text-[#5DDFC3]'
-                  : 'text-[#3A405A] opacity-50 hover:opacity-70'
-              }`}
-            >
-              <Target
-                className="w-6 h-6 mb-1"
-                fill={activeTab === 'quest' ? 'currentColor' : 'none'}
-              />
-              <span className="text-xs font-medium">クエスト</span>
-            </button>
-
-            {/* ドリルタブ */}
-            <Link
-              href="/drill"
-              className="flex-1 flex flex-col items-center py-3 transition-colors text-[#3A405A] opacity-50 hover:opacity-70"
-            >
-              <BookOpen className="w-6 h-6 mb-1" />
-              <span className="text-xs font-medium">ドリル</span>
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
     </>
   )
 }
