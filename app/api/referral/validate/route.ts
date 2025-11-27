@@ -16,9 +16,13 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient()
 
     // 招待コードから紹介者を検索
+    console.log('Validating referral code:', code.toUpperCase())
+
     const { data, error } = await supabase.rpc('get_referrer_by_code', {
       p_code: code.toUpperCase()
     })
+
+    console.log('RPC result - data:', data, 'error:', error)
 
     if (error) {
       console.error('Referral code validation error:', error)
@@ -26,6 +30,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (!data || data.length === 0) {
+      console.log('No referrer found for code:', code.toUpperCase())
       return NextResponse.json({ valid: false, message: '無効な招待コードです' }, { status: 200 })
     }
 
