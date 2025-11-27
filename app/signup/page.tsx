@@ -116,6 +116,9 @@ function SignupForm() {
 
       // 1. ユーザー作成（メタデータに名前とロールと紹介者IDを含める）
       // 全ての新規登録ユーザーは自動的に生徒として登録されます
+      console.log('Signup - referrer:', referrer)
+      console.log('Signup - referralCode:', referralCode)
+
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -128,6 +131,8 @@ function SignupForm() {
           },
         },
       })
+
+      console.log('Signup result - authData:', authData, 'authError:', authError)
 
       if (authError) {
         setError(authError.message)

@@ -7,6 +7,8 @@ export async function GET(request: NextRequest) {
   const referrerId = requestUrl.searchParams.get('referrer_id')
   const origin = requestUrl.origin
 
+  console.log('OAuth callback - referrerId:', referrerId, 'code:', code ? 'present' : 'missing')
+
   if (code) {
     const supabase = await createClient()
 
@@ -19,14 +21,19 @@ export async function GET(request: NextRequest) {
 
     // ユーザーが新規作成された場合、プロフィールを確認/作成
     if (data?.user) {
+      console.log('OAuth callback - user:', data.user.id, 'referrerId:', referrerId)
+
       const { data: profile } = await supabase
         .from('mukimuki_profiles')
-        .select('id')
+        .select('id, referred_by')
         .eq('id', data.user.id)
         .single()
 
+      console.log('OAuth callback - existing profile:', profile)
+
       // プロフィールが存在しない場合は作成（招待者情報も含める）
       if (!profile) {
+        console.log('Creating new profile with referrer:', referrerId)
         const { error: insertError } = await supabase
           .from('mukimuki_profiles')
           .insert({
@@ -34,13 +41,12 @@ export async function GET(request: NextRequest) {
             name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'ユーザー',
             role: 'student',
             referred_by: referrerId || null,
-            bonus_daily_quests: referrerId ? 1 : 0, // 招待された場合はデイリーミッション+1でスタート
+            bonus_daily_quests: referrerId ? 1 : 0,
           })
 
         if (insertError) {
           console.error('Profile creation error:', insertError)
         } else if (referrerId) {
-          // リファラルレコードを作成
           await supabase
             .from('mukimuki_referrals')
             .insert({
@@ -49,6 +55,24 @@ export async function GET(request: NextRequest) {
               status: 'pending',
             })
         }
+      } else if (profile && !profile.referred_by && referrerId) {
+        // プロフィールは存在するがreferred_byがnullで、referrerIdがある場合は更新
+        console.log('Updating existing profile with referrer:', referrerId)
+        await supabase
+          .from('mukimuki_profiles')
+          .update({
+            referred_by: referrerId,
+            bonus_daily_quests: 1,
+          })
+          .eq('id', data.user.id)
+
+        await supabase
+          .from('mukimuki_referrals')
+          .insert({
+            referrer_id: referrerId,
+            referred_id: data.user.id,
+            status: 'pending',
+          })
       }
     }
   }
