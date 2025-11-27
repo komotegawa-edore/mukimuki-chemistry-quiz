@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Home, Target, RotateCcw, ChevronDown, ChevronRight, Coins } from 'lucide-react'
+import { Home, Target, BookOpen, RotateCcw, ChevronDown, ChevronRight, Coins } from 'lucide-react'
 import PointsDisplay from './PointsDisplay'
 import BadgeDisplay from './BadgeDisplay'
 import StreakDisplay from './StreakDisplay'
@@ -48,7 +48,7 @@ export default function HomeContent({
   latestResults,
   clearedTodayIds,
 }: HomeContentProps) {
-  const [activeTab, setActiveTab] = useState<'home' | 'quest'>('home')
+  const [activeTab, setActiveTab] = useState<'home' | 'quest' | 'drill'>('home')
   const [expandedSubjects, setExpandedSubjects] = useState<Set<number>>(
     new Set([1]) // デフォルトで無機化学（id=1）を展開
   )
@@ -319,6 +319,15 @@ export default function HomeContent({
               />
               <span className="text-xs font-medium">クエスト</span>
             </button>
+
+            {/* ドリルタブ */}
+            <Link
+              href="/drill"
+              className="flex-1 flex flex-col items-center py-3 transition-colors text-[#3A405A] opacity-50 hover:opacity-70"
+            >
+              <BookOpen className="w-6 h-6 mb-1" />
+              <span className="text-xs font-medium">ドリル</span>
+            </Link>
           </div>
         </div>
       </nav>
