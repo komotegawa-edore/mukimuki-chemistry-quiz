@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
@@ -20,10 +21,16 @@ export async function GET(request: NextRequest) {
     }
 
     // ユーザーが新規作成された場合、プロフィールを確認/作成
-    if (data?.user) {
+    if (data?.user && referrerId) {
       console.log('OAuth callback - user:', data.user.id, 'referrerId:', referrerId)
 
-      const { data: profile } = await supabase
+      // RLSをバイパスするためにサービスロールキーを使用
+      const supabaseAdmin = createAdminClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      )
+
+      const { data: profile } = await supabaseAdmin
         .from('mukimuki_profiles')
         .select('id, referred_by')
         .eq('id', data.user.id)
@@ -34,31 +41,35 @@ export async function GET(request: NextRequest) {
       // プロフィールが存在しない場合は作成（招待者情報も含める）
       if (!profile) {
         console.log('Creating new profile with referrer:', referrerId)
-        const { error: insertError } = await supabase
+        const { error: insertError } = await supabaseAdmin
           .from('mukimuki_profiles')
           .insert({
             id: data.user.id,
             name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'ユーザー',
             role: 'student',
-            referred_by: referrerId || null,
-            bonus_daily_quests: referrerId ? 1 : 0,
+            referred_by: referrerId,
+            bonus_daily_quests: 1,
           })
 
         if (insertError) {
           console.error('Profile creation error:', insertError)
-        } else if (referrerId) {
-          await supabase
+        } else {
+          // 紹介レコードを作成
+          const { error: referralError } = await supabaseAdmin
             .from('mukimuki_referrals')
             .insert({
               referrer_id: referrerId,
               referred_id: data.user.id,
               status: 'pending',
             })
+          if (referralError) {
+            console.error('Referral record creation error:', referralError)
+          }
         }
-      } else if (profile && !profile.referred_by && referrerId) {
-        // プロフィールは存在するがreferred_byがnullで、referrerIdがある場合は更新
+      } else if (profile && !profile.referred_by) {
+        // プロフィールは存在するがreferred_byがnullの場合は更新
         console.log('Updating existing profile with referrer:', referrerId)
-        await supabase
+        const { error: updateError } = await supabaseAdmin
           .from('mukimuki_profiles')
           .update({
             referred_by: referrerId,
@@ -66,13 +77,30 @@ export async function GET(request: NextRequest) {
           })
           .eq('id', data.user.id)
 
-        await supabase
-          .from('mukimuki_referrals')
-          .insert({
-            referrer_id: referrerId,
-            referred_id: data.user.id,
-            status: 'pending',
-          })
+        if (updateError) {
+          console.error('Profile update error:', updateError)
+        } else {
+          // 紹介レコードを作成（重複チェック）
+          const { data: existingReferral } = await supabaseAdmin
+            .from('mukimuki_referrals')
+            .select('id')
+            .eq('referrer_id', referrerId)
+            .eq('referred_id', data.user.id)
+            .single()
+
+          if (!existingReferral) {
+            const { error: referralError } = await supabaseAdmin
+              .from('mukimuki_referrals')
+              .insert({
+                referrer_id: referrerId,
+                referred_id: data.user.id,
+                status: 'pending',
+              })
+            if (referralError) {
+              console.error('Referral record creation error:', referralError)
+            }
+          }
+        }
       }
     }
   }
