@@ -51,7 +51,7 @@ export default function HomeContent({
 }: HomeContentProps) {
   const [activeTab, setActiveTab] = useState<'home' | 'quest' | 'drill'>('home')
   const [expandedSubjects, setExpandedSubjects] = useState<Set<number>>(
-    new Set([1]) // デフォルトで無機化学（id=1）を展開
+    new Set() // デフォルトで全て閉じた状態
   )
 
   const toggleSubject = (subjectId: number) => {
