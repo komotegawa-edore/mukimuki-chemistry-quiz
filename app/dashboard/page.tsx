@@ -6,7 +6,7 @@ import CSVImport from '@/components/CSVImport'
 import DashboardContent from '@/components/DashboardContent'
 import DailyMissionSettings from '@/components/DailyMissionSettings'
 import Header from '@/components/Header'
-import { BookOpen, ArrowRight, Trophy, Bell, Zap } from 'lucide-react'
+import { BookOpen, ArrowRight, Trophy, Bell, Zap, Layers } from 'lucide-react'
 
 export default async function DashboardPage() {
   const profile = await getCurrentProfile()
@@ -125,6 +125,24 @@ export default async function DashboardPage() {
                 </h2>
                 <p className="text-white opacity-90 text-sm">
                   期間限定の特別クエストを作成・管理
+                </p>
+              </div>
+              <ArrowRight className="w-6 h-6 text-white" />
+            </div>
+          </Link>
+
+          <Link
+            href="/dashboard/drill"
+            className="block bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                  <Layers className="w-5 h-5" />
+                  ドリル管理
+                </h2>
+                <p className="text-white opacity-90 text-sm">
+                  単語カードのセクション・問題を管理
                 </p>
               </div>
               <ArrowRight className="w-6 h-6 text-white" />
