@@ -44,12 +44,19 @@ export async function getCurrentProfile(): Promise<UserProfile | null> {
   // プロフィールが存在しない場合は作成を試みる
   if (!data) {
     console.warn('Profile not found, creating default profile for user:', user.id)
+
+    // user_metadataからreferred_byを取得
+    const referredBy = user.user_metadata?.referred_by || null
+    console.log('Creating profile with referred_by:', referredBy)
+
     const { data: newProfile, error: insertError } = await supabase
       .from('mukimuki_profiles')
       .insert({
         id: user.id,
-        name: user.email?.split('@')[0] || 'ユーザー',
+        name: user.user_metadata?.name || user.email?.split('@')[0] || 'ユーザー',
         role: 'student',
+        referred_by: referredBy,
+        bonus_daily_quests: referredBy ? 1 : 0,
       })
       .select()
       .single()
@@ -57,6 +64,20 @@ export async function getCurrentProfile(): Promise<UserProfile | null> {
     if (insertError) {
       console.error('Error creating profile:', insertError)
       return null
+    }
+
+    // 紹介関係を記録
+    if (referredBy) {
+      const { error: referralError } = await supabase
+        .from('mukimuki_referrals')
+        .insert({
+          referrer_id: referredBy,
+          referred_id: user.id,
+          status: 'pending',
+        })
+      if (referralError) {
+        console.error('Error creating referral record:', referralError)
+      }
     }
 
     return newProfile as UserProfile
