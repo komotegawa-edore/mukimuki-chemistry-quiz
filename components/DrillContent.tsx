@@ -25,6 +25,9 @@ export default function DrillContent({ decks, progressMap }: DrillContentProps) 
   const [expandedSubjects, setExpandedSubjects] = useState<Set<string>>(
     new Set()
   )
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set()
+  )
 
   const toggleSubject = (subject: string) => {
     setExpandedSubjects((prev) => {
@@ -38,16 +41,32 @@ export default function DrillContent({ decks, progressMap }: DrillContentProps) 
     })
   }
 
-  // 教科ごとにグループ化
-  const decksBySubject = decks.reduce(
+  const toggleCategory = (categoryKey: string) => {
+    setExpandedCategories((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(categoryKey)) {
+        newSet.delete(categoryKey)
+      } else {
+        newSet.add(categoryKey)
+      }
+      return newSet
+    })
+  }
+
+  // 教科ごと→カテゴリごとにグループ化
+  const decksBySubjectAndCategory = decks.reduce(
     (acc, deck) => {
       if (!acc[deck.subject]) {
-        acc[deck.subject] = []
+        acc[deck.subject] = {}
       }
-      acc[deck.subject].push(deck)
+      const category = deck.category || 'その他'
+      if (!acc[deck.subject][category]) {
+        acc[deck.subject][category] = []
+      }
+      acc[deck.subject][category].push(deck)
       return acc
     },
-    {} as Record<string, Deck[]>
+    {} as Record<string, Record<string, Deck[]>>
   )
 
   // 教科名の日本語マッピング
@@ -55,6 +74,7 @@ export default function DrillContent({ decks, progressMap }: DrillContentProps) 
     japanese_history: '日本史',
     english: '英語',
     chemistry: '化学',
+    classical_japanese: '古文',
   }
 
   return (
@@ -95,12 +115,15 @@ export default function DrillContent({ decks, progressMap }: DrillContentProps) 
 
       {/* 教科ごとのデッキ一覧 */}
       <div className="space-y-6">
-        {Object.entries(decksBySubject).map(([subject, subjectDecks]) => {
-          const isExpanded = expandedSubjects.has(subject)
-          const totalCards = subjectDecks.reduce(
+        {Object.entries(decksBySubjectAndCategory).map(([subject, categories]) => {
+          const isSubjectExpanded = expandedSubjects.has(subject)
+          const allDecksInSubject = Object.values(categories).flat()
+          const totalCards = allDecksInSubject.reduce(
             (sum, deck) => sum + (deck.cards[0]?.count || 0),
             0
           )
+          const totalSections = allDecksInSubject.length
+          const categoryCount = Object.keys(categories).length
 
           return (
             <div
@@ -120,54 +143,89 @@ export default function DrillContent({ decks, progressMap }: DrillContentProps) 
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-[#3A405A] opacity-70">
-                    {subjectDecks.length}セクション / {totalCards}問
+                    {categoryCount}教材 / {totalSections}セクション / {totalCards}問
                   </span>
                   <ChevronDown
                     className={`w-5 h-5 text-[#5DDFC3] transition-transform ${
-                      isExpanded ? 'rotate-180' : ''
+                      isSubjectExpanded ? 'rotate-180' : ''
                     }`}
                   />
                 </div>
               </button>
 
-              {/* デッキ一覧 */}
-              {isExpanded && (
-                <div className="px-6 pb-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {subjectDecks.map((deck) => {
-                      const cardCount = deck.cards[0]?.count || 0
+              {/* カテゴリ一覧 */}
+              {isSubjectExpanded && (
+                <div className="px-4 pb-4 space-y-3">
+                  {Object.entries(categories).map(([category, categoryDecks]) => {
+                    const categoryKey = `${subject}-${category}`
+                    const isCategoryExpanded = expandedCategories.has(categoryKey)
+                    const categoryTotalCards = categoryDecks.reduce(
+                      (sum, deck) => sum + (deck.cards[0]?.count || 0),
+                      0
+                    )
 
-                      return (
-                        <Link
-                          key={deck.id}
-                          href={`/drill/${deck.id}`}
-                          className="bg-gradient-to-br from-white to-[#F4F9F7] rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-105 transition-all border-2 border-[#E0F7F1]"
+                    return (
+                      <div
+                        key={categoryKey}
+                        className="bg-[#F4F9F7] rounded-lg overflow-hidden"
+                      >
+                        {/* カテゴリヘッダー */}
+                        <button
+                          onClick={() => toggleCategory(categoryKey)}
+                          className="w-full px-4 py-3 flex items-center justify-between hover:bg-[#E0F7F1] transition-colors"
                         >
-                          <div className="flex justify-between items-start mb-2">
-                            <h3 className="font-semibold text-lg text-[#3A405A]">
-                              {deck.name}
+                          <div className="flex items-center gap-2">
+                            <Layers className="w-5 h-5 text-[#5DDFC3]" />
+                            <h3 className="font-medium text-[#3A405A]">
+                              {category}
                             </h3>
-                            <ChevronRight className="w-5 h-5 text-[#5DDFC3]" />
                           </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-[#3A405A] opacity-70">
+                              {categoryDecks.length}セクション / {categoryTotalCards}問
+                            </span>
+                            <ChevronDown
+                              className={`w-4 h-4 text-[#5DDFC3] transition-transform ${
+                                isCategoryExpanded ? 'rotate-180' : ''
+                              }`}
+                            />
+                          </div>
+                        </button>
 
-                          {deck.description && (
-                            <p className="text-sm text-[#3A405A] opacity-70 mb-4">
-                              {deck.description}
-                            </p>
-                          )}
+                        {/* デッキ一覧 */}
+                        {isCategoryExpanded && (
+                          <div className="px-4 pb-4 pt-2">
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                              {categoryDecks.map((deck) => {
+                                const cardCount = deck.cards[0]?.count || 0
 
-                          <div className="flex items-center justify-between mt-4">
-                            <div className="flex items-center gap-2">
-                              <Layers className="w-4 h-4 text-[#5DDFC3]" />
-                              <span className="text-sm text-[#3A405A]">
-                                {cardCount}枚
-                              </span>
+                                return (
+                                  <Link
+                                    key={deck.id}
+                                    href={`/drill/${deck.id}`}
+                                    className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md hover:scale-105 transition-all border border-[#E0F7F1]"
+                                  >
+                                    <div className="flex justify-between items-start mb-1">
+                                      <h4 className="font-medium text-sm text-[#3A405A] line-clamp-2">
+                                        {deck.name}
+                                      </h4>
+                                      <ChevronRight className="w-4 h-4 text-[#5DDFC3] flex-shrink-0" />
+                                    </div>
+                                    <div className="flex items-center gap-1 mt-2">
+                                      <Layers className="w-3 h-3 text-[#5DDFC3]" />
+                                      <span className="text-xs text-[#3A405A] opacity-70">
+                                        {cardCount}枚
+                                      </span>
+                                    </div>
+                                  </Link>
+                                )
+                              })}
                             </div>
                           </div>
-                        </Link>
-                      )
-                    })}
-                  </div>
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
               )}
             </div>
