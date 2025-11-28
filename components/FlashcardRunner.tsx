@@ -50,11 +50,30 @@ export default function FlashcardRunner({
   userId,
   nextDeckId,
 }: FlashcardRunnerProps) {
+  // localStorageのキー
+  const storageKey = `flashcard_progress_${deck.id}`
+
+  // 保存された進捗を読み込む
+  const getSavedProgress = (): number => {
+    if (typeof window === 'undefined') return 0
+    const saved = localStorage.getItem(storageKey)
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      // カード数が変わっている場合はリセット
+      if (parsed.totalCards === cards.length && parsed.currentIndex < cards.length) {
+        return parsed.currentIndex
+      }
+    }
+    return 0
+  }
+
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isFlipped, setIsFlipped] = useState(false)
   const [shuffledCards, setShuffledCards] = useState<Card[]>(cards)
   const [isShuffled, setIsShuffled] = useState(false)
   const [sessionComplete, setSessionComplete] = useState(false)
+  const [showResumeModal, setShowResumeModal] = useState(false)
+  const [savedIndex, setSavedIndex] = useState(0)
 
   // スワイプアニメーション用
   const [swipeX, setSwipeX] = useState(0)
@@ -238,6 +257,80 @@ export default function FlashcardRunner({
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [currentIndex, isFlipped, goToNext, goToPrev])
+
+  // 初回読み込み時に保存された進捗をチェック
+  useEffect(() => {
+    const saved = getSavedProgress()
+    if (saved > 0) {
+      setSavedIndex(saved)
+      setShowResumeModal(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // 進捗を保存（currentIndexが変更されるたびに）
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !sessionComplete) {
+      localStorage.setItem(storageKey, JSON.stringify({
+        currentIndex,
+        totalCards: cards.length,
+        timestamp: Date.now()
+      }))
+    }
+  }, [currentIndex, cards.length, storageKey, sessionComplete])
+
+  // セッション完了時に進捗をクリア
+  useEffect(() => {
+    if (sessionComplete && typeof window !== 'undefined') {
+      localStorage.removeItem(storageKey)
+    }
+  }, [sessionComplete, storageKey])
+
+  // 続きから再開
+  const resumeFromSaved = () => {
+    setCurrentIndex(savedIndex)
+    setShowResumeModal(false)
+  }
+
+  // 最初から始める
+  const startFromBeginning = () => {
+    setCurrentIndex(0)
+    setShowResumeModal(false)
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(storageKey)
+    }
+  }
+
+  // 再開モーダル
+  if (showResumeModal) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+          <div className="text-5xl mb-4">📚</div>
+          <h2 className="text-xl font-bold text-[#3A405A] mb-2">
+            前回の続きがあります
+          </h2>
+          <p className="text-[#3A405A] opacity-70 mb-6">
+            {savedIndex + 1}枚目から再開できます（全{cards.length}枚中）
+          </p>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={resumeFromSaved}
+              className="w-full bg-[#5DDFC3] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#4ECFB3] transition-colors"
+            >
+              続きから始める
+            </button>
+            <button
+              onClick={startFromBeginning}
+              className="w-full bg-gray-100 text-[#3A405A] px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+            >
+              最初から始める
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (cards.length === 0) {
     return (
