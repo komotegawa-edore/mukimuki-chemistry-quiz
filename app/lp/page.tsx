@@ -277,6 +277,11 @@ export default function LandingPage() {
               <h3 className="font-bold mb-3 text-[#3A405A]">サービス</h3>
               <ul className="space-y-2 text-sm">
                 <li>
+                  <Link href="/blog" className="opacity-70 hover:opacity-100 hover:text-[#5DDFC3] transition-colors">
+                    ブログ
+                  </Link>
+                </li>
+                <li>
                   <Link href="/login" className="opacity-70 hover:opacity-100 hover:text-[#5DDFC3] transition-colors">
                     ログイン
                   </Link>
