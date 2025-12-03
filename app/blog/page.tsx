@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import { getBlogs, type Blog } from '@/lib/microcms'
 import { Calendar, ArrowRight } from 'lucide-react'
+import BlogHeader from '@/components/BlogHeader'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -101,41 +102,7 @@ export default async function BlogListPage() {
 
   return (
     <div className={`min-h-screen bg-[#F4F9F7] text-[#3A405A] ${notoSansJP.className}`}>
-      {/* Navigation Header */}
-      <nav className="bg-white border-b border-[#E0F7F1] sticky top-0 z-50">
-        <div className="max-w-[1200px] mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/Roopy-icon.png"
-              alt="Roopy"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-            <span className="font-bold text-xl text-[#3A405A]">Roopy</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/blog"
-              className="text-[#5DDFC3] font-medium"
-            >
-              ブログ
-            </Link>
-            <Link
-              href="/login"
-              className="text-[#3A405A] hover:text-[#5DDFC3] font-medium transition-colors"
-            >
-              ログイン
-            </Link>
-            <Link
-              href="/signup"
-              className="bg-[#5DDFC3] text-white px-6 py-2 rounded-full font-bold hover:bg-[#4ECFB3] transition-colors"
-            >
-              無料で始める
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <BlogHeader />
 
       {/* Hero Section */}
       <header className="bg-gradient-to-b from-white to-[#F4F9F7] py-12 px-4 text-center">
