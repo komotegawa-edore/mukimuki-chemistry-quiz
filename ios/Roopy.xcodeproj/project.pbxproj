@@ -1,0 +1,761 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E1000001299999990000001 /* RoopyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000002299999990000001 /* RoopyApp.swift */; };
+		E1000003299999990000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1000004299999990000001 /* Assets.xcassets */; };
+		E1000005299999990000001 /* Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000006299999990000001 /* Supabase.swift */; };
+		E1000007299999990000001 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000008299999990000001 /* Profile.swift */; };
+		E1000009299999990000001 /* Subject.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100000A299999990000001 /* Subject.swift */; };
+		E100000B299999990000001 /* Chapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100000C299999990000001 /* Chapter.swift */; };
+		E100000D299999990000001 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100000E299999990000001 /* Question.swift */; };
+		E100000F299999990000001 /* TestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000010299999990000001 /* TestResult.swift */; };
+		E1000011299999990000001 /* Flashcard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000012299999990000001 /* Flashcard.swift */; };
+		E1000013299999990000001 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000014299999990000001 /* AuthService.swift */; };
+		E1000015299999990000001 /* QuizService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000016299999990000001 /* QuizService.swift */; };
+		E1000017299999990000001 /* FlashcardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000018299999990000001 /* FlashcardService.swift */; };
+		E1000019299999990000001 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100001A299999990000001 /* AppColors.swift */; };
+		E100001B299999990000001 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100001C299999990000001 /* MainTabView.swift */; };
+		E100001D299999990000001 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100001E299999990000001 /* HomeView.swift */; };
+		E100001F299999990000001 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000020299999990000001 /* HomeViewModel.swift */; };
+		E1000021299999990000001 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000022299999990000001 /* LoginView.swift */; };
+		E1000023299999990000001 /* QuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000024299999990000001 /* QuestView.swift */; };
+		E1000025299999990000001 /* QuestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000026299999990000001 /* QuestViewModel.swift */; };
+		E1000027299999990000001 /* QuizView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000028299999990000001 /* QuizView.swift */; };
+		E1000029299999990000001 /* QuizResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100002A299999990000001 /* QuizResultView.swift */; };
+		E100002B299999990000001 /* QuizViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100002C299999990000001 /* QuizViewModel.swift */; };
+		E100002D299999990000001 /* DrillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100002E299999990000001 /* DrillView.swift */; };
+		E100002F299999990000001 /* DrillViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000030299999990000001 /* DrillViewModel.swift */; };
+		E1000031299999990000001 /* FlashcardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000032299999990000001 /* FlashcardView.swift */; };
+		E1000033299999990000001 /* FlashcardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000034299999990000001 /* FlashcardViewModel.swift */; };
+		E1000035299999990000001 /* AnnouncementsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000036299999990000001 /* AnnouncementsSection.swift */; };
+		E1000037299999990000001 /* DailyMissionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000038299999990000001 /* DailyMissionCard.swift */; };
+		E1000039299999990000001 /* BadgeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100003A299999990000001 /* BadgeSection.swift */; };
+		E100003B299999990000001 /* PlaceholderViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100003C299999990000001 /* PlaceholderViews.swift */; };
+		E100003D299999990000001 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = E100003E299999990000001 /* Supabase */; };
+		E1000044299999990000002 /* ReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000045299999990000002 /* ReviewView.swift */; };
+		E1000046299999990000002 /* ReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000047299999990000002 /* ReviewViewModel.swift */; };
+		E1000048299999990000003 /* MockExamResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000049299999990000003 /* MockExamResult.swift */; };
+		E100004A299999990000003 /* StudyPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100004B299999990000003 /* StudyPlan.swift */; };
+		E100004C299999990000003 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100004D299999990000003 /* ProfileService.swift */; };
+		E100004E299999990000003 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E100004F299999990000003 /* ProfileViewModel.swift */; };
+		E1000050299999990000003 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000051299999990000003 /* ProfileView.swift */; };
+		E1000052299999990000003 /* ProfileEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000053299999990000003 /* ProfileEditView.swift */; };
+		E1000054299999990000003 /* MockExamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1000055299999990000003 /* MockExamView.swift */; };
+		E2000001299999990000001 /* EnglishMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000002299999990000001 /* EnglishMaterial.swift */; };
+		E2000003299999990000001 /* UserRoadmap.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000004299999990000001 /* UserRoadmap.swift */; };
+		E2000005299999990000001 /* RoadmapStage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000006299999990000001 /* RoadmapStage.swift */; };
+		E2000007299999990000001 /* RoadmapMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000008299999990000001 /* RoadmapMaterial.swift */; };
+		E2000009299999990000001 /* RoadmapDailyTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200000A299999990000001 /* RoadmapDailyTask.swift */; };
+		E200002A299999990000001 /* MaterialSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200002B299999990000001 /* MaterialSelection.swift */; };
+		E200002C299999990000001 /* MaterialSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200002D299999990000001 /* MaterialSelectionView.swift */; };
+		E200000B299999990000001 /* RoadmapProgressLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200000C299999990000001 /* RoadmapProgressLog.swift */; };
+		E200000D299999990000001 /* MaterialService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200000E299999990000001 /* MaterialService.swift */; };
+		E200000F299999990000001 /* RoadmapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000010299999990000001 /* RoadmapService.swift */; };
+		E2000011299999990000001 /* RoadmapGeneratorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000012299999990000001 /* RoadmapGeneratorService.swift */; };
+		E2000013299999990000001 /* RoadmapInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000014299999990000001 /* RoadmapInputViewModel.swift */; };
+		E2000015299999990000001 /* RoadmapResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000016299999990000001 /* RoadmapResultViewModel.swift */; };
+		E2000017299999990000001 /* DailyTasksViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000018299999990000001 /* DailyTasksViewModel.swift */; };
+		E2000019299999990000001 /* RoadmapProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200001A299999990000001 /* RoadmapProgressViewModel.swift */; };
+		E200001B299999990000001 /* RoadmapInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200001C299999990000001 /* RoadmapInputView.swift */; };
+		E200001D299999990000001 /* RoadmapResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200001E299999990000001 /* RoadmapResultView.swift */; };
+		E200001F299999990000001 /* DailyTasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000020299999990000001 /* DailyTasksView.swift */; };
+		E2000021299999990000001 /* RoadmapProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000022299999990000001 /* RoadmapProgressView.swift */; };
+		E2000023299999990000001 /* RoadmapTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000024299999990000001 /* RoadmapTabView.swift */; };
+		E2000025299999990000001 /* GanttChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000026299999990000001 /* GanttChartView.swift */; };
+		E2000027299999990000001 /* StudyTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000028299999990000001 /* StudyTabView.swift */; };
+		E200002E299999990000001 /* GanttChartPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200002F299999990000001 /* GanttChartPDFView.swift */; };
+		E2000030299999990000001 /* PDFExportSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000031299999990000001 /* PDFExportSheet.swift */; };
+		E2000032299999990000001 /* WeeklyTasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000033299999990000001 /* WeeklyTasksView.swift */; };
+		E2000034299999990000001 /* WeeklyTasksPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000035299999990000001 /* WeeklyTasksPDFView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E1000000299999990000001 /* Roopy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Roopy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1000002299999990000001 /* RoopyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoopyApp.swift; sourceTree = "<group>"; };
+		E1000004299999990000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E1000006299999990000001 /* Supabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Supabase.swift; sourceTree = "<group>"; };
+		E1000008299999990000001 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		E100000A299999990000001 /* Subject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subject.swift; sourceTree = "<group>"; };
+		E100000C299999990000001 /* Chapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chapter.swift; sourceTree = "<group>"; };
+		E100000E299999990000001 /* Question.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
+		E1000010299999990000001 /* TestResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResult.swift; sourceTree = "<group>"; };
+		E1000012299999990000001 /* Flashcard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flashcard.swift; sourceTree = "<group>"; };
+		E1000014299999990000001 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		E1000016299999990000001 /* QuizService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizService.swift; sourceTree = "<group>"; };
+		E1000018299999990000001 /* FlashcardService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardService.swift; sourceTree = "<group>"; };
+		E100001A299999990000001 /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
+		E100001C299999990000001 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		E100001E299999990000001 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		E1000020299999990000001 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		E1000022299999990000001 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		E1000024299999990000001 /* QuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestView.swift; sourceTree = "<group>"; };
+		E1000026299999990000001 /* QuestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestViewModel.swift; sourceTree = "<group>"; };
+		E1000028299999990000001 /* QuizView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizView.swift; sourceTree = "<group>"; };
+		E100002A299999990000001 /* QuizResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizResultView.swift; sourceTree = "<group>"; };
+		E100002C299999990000001 /* QuizViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizViewModel.swift; sourceTree = "<group>"; };
+		E100002E299999990000001 /* DrillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrillView.swift; sourceTree = "<group>"; };
+		E1000030299999990000001 /* DrillViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrillViewModel.swift; sourceTree = "<group>"; };
+		E1000032299999990000001 /* FlashcardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardView.swift; sourceTree = "<group>"; };
+		E1000034299999990000001 /* FlashcardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardViewModel.swift; sourceTree = "<group>"; };
+		E1000036299999990000001 /* AnnouncementsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsSection.swift; sourceTree = "<group>"; };
+		E1000038299999990000001 /* DailyMissionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyMissionCard.swift; sourceTree = "<group>"; };
+		E100003A299999990000001 /* BadgeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeSection.swift; sourceTree = "<group>"; };
+		E100003C299999990000001 /* PlaceholderViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderViews.swift; sourceTree = "<group>"; };
+		E100003F299999990000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E1000045299999990000002 /* ReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewView.swift; sourceTree = "<group>"; };
+		E1000047299999990000002 /* ReviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewViewModel.swift; sourceTree = "<group>"; };
+		E1000049299999990000003 /* MockExamResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExamResult.swift; sourceTree = "<group>"; };
+		E100004B299999990000003 /* StudyPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyPlan.swift; sourceTree = "<group>"; };
+		E100004D299999990000003 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		E100004F299999990000003 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		E1000051299999990000003 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		E1000053299999990000003 /* ProfileEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditView.swift; sourceTree = "<group>"; };
+		E1000055299999990000003 /* MockExamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExamView.swift; sourceTree = "<group>"; };
+		E2000002299999990000001 /* EnglishMaterial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnglishMaterial.swift; sourceTree = "<group>"; };
+		E2000004299999990000001 /* UserRoadmap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRoadmap.swift; sourceTree = "<group>"; };
+		E2000006299999990000001 /* RoadmapStage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapStage.swift; sourceTree = "<group>"; };
+		E2000008299999990000001 /* RoadmapMaterial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapMaterial.swift; sourceTree = "<group>"; };
+		E200000A299999990000001 /* RoadmapDailyTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapDailyTask.swift; sourceTree = "<group>"; };
+		E200002B299999990000001 /* MaterialSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialSelection.swift; sourceTree = "<group>"; };
+		E200002D299999990000001 /* MaterialSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialSelectionView.swift; sourceTree = "<group>"; };
+		E200000C299999990000001 /* RoadmapProgressLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapProgressLog.swift; sourceTree = "<group>"; };
+		E200000E299999990000001 /* MaterialService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialService.swift; sourceTree = "<group>"; };
+		E2000010299999990000001 /* RoadmapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapService.swift; sourceTree = "<group>"; };
+		E2000012299999990000001 /* RoadmapGeneratorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapGeneratorService.swift; sourceTree = "<group>"; };
+		E2000014299999990000001 /* RoadmapInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapInputViewModel.swift; sourceTree = "<group>"; };
+		E2000016299999990000001 /* RoadmapResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapResultViewModel.swift; sourceTree = "<group>"; };
+		E2000018299999990000001 /* DailyTasksViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTasksViewModel.swift; sourceTree = "<group>"; };
+		E200001A299999990000001 /* RoadmapProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapProgressViewModel.swift; sourceTree = "<group>"; };
+		E200001C299999990000001 /* RoadmapInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapInputView.swift; sourceTree = "<group>"; };
+		E200001E299999990000001 /* RoadmapResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapResultView.swift; sourceTree = "<group>"; };
+		E2000020299999990000001 /* DailyTasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTasksView.swift; sourceTree = "<group>"; };
+		E2000022299999990000001 /* RoadmapProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapProgressView.swift; sourceTree = "<group>"; };
+		E2000024299999990000001 /* RoadmapTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapTabView.swift; sourceTree = "<group>"; };
+		E2000026299999990000001 /* GanttChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GanttChartView.swift; sourceTree = "<group>"; };
+		E2000028299999990000001 /* StudyTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyTabView.swift; sourceTree = "<group>"; };
+		E200002F299999990000001 /* GanttChartPDFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GanttChartPDFView.swift; sourceTree = "<group>"; };
+		E2000031299999990000001 /* PDFExportSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExportSheet.swift; sourceTree = "<group>"; };
+		E2000033299999990000001 /* WeeklyTasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyTasksView.swift; sourceTree = "<group>"; };
+		E2000035299999990000001 /* WeeklyTasksPDFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyTasksPDFView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E1FFFFF7299999990000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E100003D299999990000001 /* Supabase in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E1FFFFF1299999990000001 = {
+			isa = PBXGroup;
+			children = (
+				E1FFFFF2299999990000001 /* Roopy */,
+				E1FFFFFB299999990000001 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E1FFFFF2299999990000001 /* Roopy */ = {
+			isa = PBXGroup;
+			children = (
+				E1000002299999990000001 /* RoopyApp.swift */,
+				E1000006299999990000001 /* Supabase.swift */,
+				E100003F299999990000001 /* Info.plist */,
+				E1000004299999990000001 /* Assets.xcassets */,
+				E1FFFFF3299999990000001 /* Models */,
+				E1FFFFF4299999990000001 /* Services */,
+				E1FFFFF5299999990000001 /* ViewModels */,
+				E1FFFFF6299999990000001 /* Views */,
+				E1FFFFFA299999990000001 /* Theme */,
+			);
+			path = Roopy;
+			sourceTree = "<group>";
+		};
+		E1FFFFF3299999990000001 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E1000008299999990000001 /* Profile.swift */,
+				E100000A299999990000001 /* Subject.swift */,
+				E100000C299999990000001 /* Chapter.swift */,
+				E100000E299999990000001 /* Question.swift */,
+				E1000010299999990000001 /* TestResult.swift */,
+				E1000012299999990000001 /* Flashcard.swift */,
+				E1000049299999990000003 /* MockExamResult.swift */,
+				E100004B299999990000003 /* StudyPlan.swift */,
+				E2FFFFF1299999990000001 /* Roadmap */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E2FFFFF1299999990000001 /* Roadmap */ = {
+			isa = PBXGroup;
+			children = (
+				E2000002299999990000001 /* EnglishMaterial.swift */,
+				E2000004299999990000001 /* UserRoadmap.swift */,
+				E2000006299999990000001 /* RoadmapStage.swift */,
+				E2000008299999990000001 /* RoadmapMaterial.swift */,
+				E200000A299999990000001 /* RoadmapDailyTask.swift */,
+				E200000C299999990000001 /* RoadmapProgressLog.swift */,
+				E200002B299999990000001 /* MaterialSelection.swift */,
+			);
+			path = Roadmap;
+			sourceTree = "<group>";
+		};
+		E1FFFFF4299999990000001 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				E1000014299999990000001 /* AuthService.swift */,
+				E1000016299999990000001 /* QuizService.swift */,
+				E1000018299999990000001 /* FlashcardService.swift */,
+				E100004D299999990000003 /* ProfileService.swift */,
+				E2FFFFF2299999990000001 /* Roadmap */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		E2FFFFF2299999990000001 /* Roadmap */ = {
+			isa = PBXGroup;
+			children = (
+				E200000E299999990000001 /* MaterialService.swift */,
+				E2000010299999990000001 /* RoadmapService.swift */,
+				E2000012299999990000001 /* RoadmapGeneratorService.swift */,
+			);
+			path = Roadmap;
+			sourceTree = "<group>";
+		};
+		E1FFFFF5299999990000001 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E1000020299999990000001 /* HomeViewModel.swift */,
+				E1000026299999990000001 /* QuestViewModel.swift */,
+				E100002C299999990000001 /* QuizViewModel.swift */,
+				E1000030299999990000001 /* DrillViewModel.swift */,
+				E1000034299999990000001 /* FlashcardViewModel.swift */,
+				E1000047299999990000002 /* ReviewViewModel.swift */,
+				E100004F299999990000003 /* ProfileViewModel.swift */,
+				E2FFFFF3299999990000001 /* Roadmap */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E2FFFFF3299999990000001 /* Roadmap */ = {
+			isa = PBXGroup;
+			children = (
+				E2000014299999990000001 /* RoadmapInputViewModel.swift */,
+				E2000016299999990000001 /* RoadmapResultViewModel.swift */,
+				E2000018299999990000001 /* DailyTasksViewModel.swift */,
+				E200001A299999990000001 /* RoadmapProgressViewModel.swift */,
+			);
+			path = Roadmap;
+			sourceTree = "<group>";
+		};
+		E1FFFFF6299999990000001 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E100001C299999990000001 /* MainTabView.swift */,
+				E1FFFFF7299999990000002 /* Auth */,
+				E1FFFFF8299999990000001 /* Home */,
+				E1FFFFF9299999990000001 /* Quest */,
+				E1FFFFF9299999990000002 /* Quiz */,
+				E1FFFFF9299999990000003 /* Drill */,
+				E1FFFFF9299999990000006 /* Review */,
+				E1FFFFF9299999990000007 /* Profile */,
+				E1FFFFF9299999990000004 /* Placeholder */,
+				E2FFFFF4299999990000001 /* Roadmap */,
+				E2000029299999990000001 /* Study */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E2FFFFF4299999990000001 /* Roadmap */ = {
+			isa = PBXGroup;
+			children = (
+				E200001C299999990000001 /* RoadmapInputView.swift */,
+				E200001E299999990000001 /* RoadmapResultView.swift */,
+				E2000020299999990000001 /* DailyTasksView.swift */,
+				E2000022299999990000001 /* RoadmapProgressView.swift */,
+				E2000024299999990000001 /* RoadmapTabView.swift */,
+				E2000026299999990000001 /* GanttChartView.swift */,
+				E200002F299999990000001 /* GanttChartPDFView.swift */,
+				E2000031299999990000001 /* PDFExportSheet.swift */,
+				E2000033299999990000001 /* WeeklyTasksView.swift */,
+				E2000035299999990000001 /* WeeklyTasksPDFView.swift */,
+				E200002D299999990000001 /* MaterialSelectionView.swift */,
+			);
+			path = Roadmap;
+			sourceTree = "<group>";
+		};
+		E2000029299999990000001 /* Study */ = {
+			isa = PBXGroup;
+			children = (
+				E2000028299999990000001 /* StudyTabView.swift */,
+			);
+			path = Study;
+			sourceTree = "<group>";
+		};
+		E1FFFFF9299999990000007 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				E1000051299999990000003 /* ProfileView.swift */,
+				E1000053299999990000003 /* ProfileEditView.swift */,
+				E1000055299999990000003 /* MockExamView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		E1FFFFF7299999990000002 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				E1000022299999990000001 /* LoginView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		E1FFFFF8299999990000001 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				E100001E299999990000001 /* HomeView.swift */,
+				E1000036299999990000001 /* AnnouncementsSection.swift */,
+				E1000038299999990000001 /* DailyMissionCard.swift */,
+				E100003A299999990000001 /* BadgeSection.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		E1FFFFF9299999990000001 /* Quest */ = {
+			isa = PBXGroup;
+			children = (
+				E1000024299999990000001 /* QuestView.swift */,
+			);
+			path = Quest;
+			sourceTree = "<group>";
+		};
+		E1FFFFF9299999990000002 /* Quiz */ = {
+			isa = PBXGroup;
+			children = (
+				E1000028299999990000001 /* QuizView.swift */,
+				E100002A299999990000001 /* QuizResultView.swift */,
+			);
+			path = Quiz;
+			sourceTree = "<group>";
+		};
+		E1FFFFF9299999990000003 /* Drill */ = {
+			isa = PBXGroup;
+			children = (
+				E100002E299999990000001 /* DrillView.swift */,
+				E1000032299999990000001 /* FlashcardView.swift */,
+			);
+			path = Drill;
+			sourceTree = "<group>";
+		};
+		E1FFFFF9299999990000006 /* Review */ = {
+			isa = PBXGroup;
+			children = (
+				E1000045299999990000002 /* ReviewView.swift */,
+			);
+			path = Review;
+			sourceTree = "<group>";
+		};
+		E1FFFFF9299999990000004 /* Placeholder */ = {
+			isa = PBXGroup;
+			children = (
+				E100003C299999990000001 /* PlaceholderViews.swift */,
+			);
+			path = Placeholder;
+			sourceTree = "<group>";
+		};
+		E1FFFFFA299999990000001 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				E100001A299999990000001 /* AppColors.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		E1FFFFFB299999990000001 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E1000000299999990000001 /* Roopy.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E1FFFFFC299999990000001 /* Roopy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E1FFFFFD299999990000001 /* Build configuration list for PBXNativeTarget "Roopy" */;
+			buildPhases = (
+				E1FFFFF7299999990000001 /* Frameworks */,
+				E1FFFFF8299999990000002 /* Sources */,
+				E1FFFFF9299999990000005 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Roopy;
+			packageProductDependencies = (
+				E100003E299999990000001 /* Supabase */,
+			);
+			productName = Roopy;
+			productReference = E1000000299999990000001 /* Roopy.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E1FFFFFE299999990000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					E1FFFFFC299999990000001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = E1FFFFFF299999990000001 /* Build configuration list for PBXProject "Roopy" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = ja;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				ja,
+			);
+			mainGroup = E1FFFFF1299999990000001;
+			packageReferences = (
+				E1000040299999990000001 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
+			productRefGroup = E1FFFFFB299999990000001 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E1FFFFFC299999990000001 /* Roopy */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E1FFFFF9299999990000005 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1000003299999990000001 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E1FFFFF8299999990000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1000001299999990000001 /* RoopyApp.swift in Sources */,
+				E1000005299999990000001 /* Supabase.swift in Sources */,
+				E1000007299999990000001 /* Profile.swift in Sources */,
+				E1000009299999990000001 /* Subject.swift in Sources */,
+				E100000B299999990000001 /* Chapter.swift in Sources */,
+				E100000D299999990000001 /* Question.swift in Sources */,
+				E100000F299999990000001 /* TestResult.swift in Sources */,
+				E1000011299999990000001 /* Flashcard.swift in Sources */,
+				E1000013299999990000001 /* AuthService.swift in Sources */,
+				E1000015299999990000001 /* QuizService.swift in Sources */,
+				E1000017299999990000001 /* FlashcardService.swift in Sources */,
+				E1000019299999990000001 /* AppColors.swift in Sources */,
+				E100001B299999990000001 /* MainTabView.swift in Sources */,
+				E100001D299999990000001 /* HomeView.swift in Sources */,
+				E100001F299999990000001 /* HomeViewModel.swift in Sources */,
+				E1000021299999990000001 /* LoginView.swift in Sources */,
+				E1000023299999990000001 /* QuestView.swift in Sources */,
+				E1000025299999990000001 /* QuestViewModel.swift in Sources */,
+				E1000027299999990000001 /* QuizView.swift in Sources */,
+				E1000029299999990000001 /* QuizResultView.swift in Sources */,
+				E100002B299999990000001 /* QuizViewModel.swift in Sources */,
+				E100002D299999990000001 /* DrillView.swift in Sources */,
+				E100002F299999990000001 /* DrillViewModel.swift in Sources */,
+				E1000031299999990000001 /* FlashcardView.swift in Sources */,
+				E1000033299999990000001 /* FlashcardViewModel.swift in Sources */,
+				E1000035299999990000001 /* AnnouncementsSection.swift in Sources */,
+				E1000037299999990000001 /* DailyMissionCard.swift in Sources */,
+				E1000039299999990000001 /* BadgeSection.swift in Sources */,
+				E100003B299999990000001 /* PlaceholderViews.swift in Sources */,
+				E1000044299999990000002 /* ReviewView.swift in Sources */,
+				E1000046299999990000002 /* ReviewViewModel.swift in Sources */,
+				E1000048299999990000003 /* MockExamResult.swift in Sources */,
+				E100004A299999990000003 /* StudyPlan.swift in Sources */,
+				E100004C299999990000003 /* ProfileService.swift in Sources */,
+				E100004E299999990000003 /* ProfileViewModel.swift in Sources */,
+				E1000050299999990000003 /* ProfileView.swift in Sources */,
+				E1000052299999990000003 /* ProfileEditView.swift in Sources */,
+				E1000054299999990000003 /* MockExamView.swift in Sources */,
+				E2000001299999990000001 /* EnglishMaterial.swift in Sources */,
+				E2000003299999990000001 /* UserRoadmap.swift in Sources */,
+				E2000005299999990000001 /* RoadmapStage.swift in Sources */,
+				E2000007299999990000001 /* RoadmapMaterial.swift in Sources */,
+				E2000009299999990000001 /* RoadmapDailyTask.swift in Sources */,
+				E200002A299999990000001 /* MaterialSelection.swift in Sources */,
+				E200002C299999990000001 /* MaterialSelectionView.swift in Sources */,
+				E200000B299999990000001 /* RoadmapProgressLog.swift in Sources */,
+				E200000D299999990000001 /* MaterialService.swift in Sources */,
+				E200000F299999990000001 /* RoadmapService.swift in Sources */,
+				E2000011299999990000001 /* RoadmapGeneratorService.swift in Sources */,
+				E2000013299999990000001 /* RoadmapInputViewModel.swift in Sources */,
+				E2000015299999990000001 /* RoadmapResultViewModel.swift in Sources */,
+				E2000017299999990000001 /* DailyTasksViewModel.swift in Sources */,
+				E2000019299999990000001 /* RoadmapProgressViewModel.swift in Sources */,
+				E200001B299999990000001 /* RoadmapInputView.swift in Sources */,
+				E200001D299999990000001 /* RoadmapResultView.swift in Sources */,
+				E200001F299999990000001 /* DailyTasksView.swift in Sources */,
+				E2000021299999990000001 /* RoadmapProgressView.swift in Sources */,
+				E2000023299999990000001 /* RoadmapTabView.swift in Sources */,
+				E2000025299999990000001 /* GanttChartView.swift in Sources */,
+				E200002E299999990000001 /* GanttChartPDFView.swift in Sources */,
+				E2000030299999990000001 /* PDFExportSheet.swift in Sources */,
+				E2000032299999990000001 /* WeeklyTasksView.swift in Sources */,
+				E2000034299999990000001 /* WeeklyTasksPDFView.swift in Sources */,
+				E2000027299999990000001 /* StudyTabView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		E1000041299999990000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E1000042299999990000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E1000043299999990000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZQDJTCZY38;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Roopy/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Roopy;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.roopy.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E1000044299999990000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZQDJTCZY38;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Roopy/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Roopy;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.roopy.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E1FFFFFD299999990000001 /* Build configuration list for PBXNativeTarget "Roopy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E1000043299999990000001 /* Debug */,
+				E1000044299999990000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E1FFFFFF299999990000001 /* Build configuration list for PBXProject "Roopy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E1000041299999990000001 /* Debug */,
+				E1000042299999990000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E1000040299999990000001 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E100003E299999990000001 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1000040299999990000001 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = E1FFFFFE299999990000001 /* Project object */;
+}

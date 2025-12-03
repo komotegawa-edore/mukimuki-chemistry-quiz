@@ -6,7 +6,7 @@ import CSVImport from '@/components/CSVImport'
 import DashboardContent from '@/components/DashboardContent'
 import DailyMissionSettings from '@/components/DailyMissionSettings'
 import Header from '@/components/Header'
-import { BookOpen, ArrowRight, Trophy, Bell, Zap, Layers } from 'lucide-react'
+import { BookOpen, ArrowRight, Trophy, Bell, Zap, Layers, Library } from 'lucide-react'
 
 export default async function DashboardPage() {
   const profile = await getCurrentProfile()
@@ -143,6 +143,24 @@ export default async function DashboardPage() {
                 </h2>
                 <p className="text-white opacity-90 text-sm">
                   単語カードのセクション・問題を管理
+                </p>
+              </div>
+              <ArrowRight className="w-6 h-6 text-white" />
+            </div>
+          </Link>
+
+          <Link
+            href="/dashboard/materials"
+            className="block bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                  <Library className="w-5 h-5" />
+                  参考書管理
+                </h2>
+                <p className="text-white opacity-90 text-sm">
+                  英語学習ロードマップ用の参考書を管理
                 </p>
               </div>
               <ArrowRight className="w-6 h-6 text-white" />
