@@ -59,31 +59,39 @@ export default function BlogHeader() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-[#E0F7F1] px-4 py-4 space-y-4">
-          <Link
-            href="/blog"
-            className="block text-[#5DDFC3] font-medium py-2"
+        <>
+          {/* Backdrop */}
+          <div
+            className="md:hidden fixed inset-0 bg-black/20 z-40"
             onClick={() => setIsMenuOpen(false)}
-          >
-            ブログ
-          </Link>
-          <Link
-            href="/login"
-            className="block text-[#3A405A] hover:text-[#5DDFC3] font-medium py-2 transition-colors"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            ログイン
-          </Link>
-          <Link
-            href="/signup"
-            className="block bg-[#5DDFC3] text-white px-6 py-3 rounded-full font-bold text-center hover:bg-[#4ECFB3] transition-colors"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            無料で始める
-          </Link>
-        </div>
+          />
+          {/* Menu */}
+          <div className="md:hidden fixed top-[73px] left-0 right-0 bg-white shadow-lg z-50 px-4 py-4 space-y-4 animate-slide-in-up">
+            <Link
+              href="/blog"
+              className="block text-[#5DDFC3] font-medium py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              ブログ
+            </Link>
+            <Link
+              href="/login"
+              className="block text-[#3A405A] hover:text-[#5DDFC3] font-medium py-2 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              ログイン
+            </Link>
+            <Link
+              href="/signup"
+              className="block bg-[#5DDFC3] text-white px-6 py-3 rounded-full font-bold text-center hover:bg-[#4ECFB3] transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              無料で始める
+            </Link>
+          </div>
+        </>
       )}
     </nav>
   )
