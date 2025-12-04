@@ -5,7 +5,8 @@ import { Noto_Sans_JP } from 'next/font/google'
 import {
   Beaker, RotateCcw, Coins, Trophy, Gift, BarChart3,
   Sparkles, BookOpen, Brain, Target, CheckCircle2,
-  Clock, Zap, Users, ArrowRight, Menu, Smartphone, TrendingDown
+  Clock, Zap, Users, ArrowRight, Menu, Smartphone, TrendingDown,
+  HelpCircle, Map, Compass, Calendar, Route
 } from 'lucide-react'
 import BlogHeader from '@/components/BlogHeader'
 
@@ -17,7 +18,7 @@ const notoSansJP = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: 'Roopy（るーぴー）| 大学受験を毎日続けられるゲームにする',
-  description: '無機化学・英単語・古文単語のクイズで毎日の学習をサポート。ポイント機能やランキングでモチベーション維持。完全無料の大学受験学習アプリ。',
+  description: '無機化学・英単語・古文単語のクイズで毎日の学習をサポート。ポイント機能やランキングでモチベーション維持。学習ロードマップ機能も近日公開予定。',
   alternates: {
     canonical: '/home',
   },
@@ -65,7 +66,7 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="mt-6 text-sm opacity-60">
-            完全無料・登録は30秒で完了
+            登録は30秒で完了
           </p>
         </div>
       </header>
@@ -76,13 +77,20 @@ export default function HomePage() {
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
             こんな悩み、ありませんか？
           </h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-[#FFF5F5] rounded-2xl p-6 text-center">
+              <div className="w-12 h-12 mx-auto mb-4 bg-[#FFE0E0] rounded-full flex items-center justify-center">
+                <HelpCircle className="w-6 h-6 text-[#E57373]" />
+              </div>
+              <p className="font-bold">今何をやるべきか分からない</p>
+              <p className="text-sm opacity-70 mt-2">情報が多すぎて迷子になる</p>
+            </div>
             <div className="bg-[#FFF5F5] rounded-2xl p-6 text-center">
               <div className="w-12 h-12 mx-auto mb-4 bg-[#FFE0E0] rounded-full flex items-center justify-center">
                 <Beaker className="w-6 h-6 text-[#E57373]" />
               </div>
-              <p className="font-bold">無機化学が覚えられない</p>
-              <p className="text-sm opacity-70 mt-2">反応式や色、性質が多すぎて混乱する</p>
+              <p className="font-bold">暗記科目が覚えられない</p>
+              <p className="text-sm opacity-70 mt-2">覚えることが多すぎて混乱する</p>
             </div>
             <div className="bg-[#FFF5F5] rounded-2xl p-6 text-center">
               <div className="w-12 h-12 mx-auto mb-4 bg-[#FFE0E0] rounded-full flex items-center justify-center">
@@ -348,8 +356,8 @@ export default function HomePage() {
                 <p className="opacity-90">無機化学の章</p>
               </div>
               <div>
-                <div className="text-4xl font-bold mb-2">無料</div>
-                <p className="opacity-90">すべての機能が</p>
+                <div className="text-4xl font-bold mb-2">4冊</div>
+                <p className="opacity-90">対応教材</p>
               </div>
             </div>
           </div>
@@ -365,8 +373,8 @@ export default function HomePage() {
 
           <div className="space-y-6">
             <div className="bg-[#F4F9F7] rounded-2xl p-6">
-              <h3 className="font-bold mb-2">本当に無料ですか？</h3>
-              <p className="text-sm opacity-70">はい、すべての機能が完全無料です。広告もありません。</p>
+              <h3 className="font-bold mb-2">料金はかかりますか？</h3>
+              <p className="text-sm opacity-70">現在は無料でご利用いただけます。今後機能追加に伴い、一部有料プランを導入する可能性があります。</p>
             </div>
             <div className="bg-[#F4F9F7] rounded-2xl p-6">
               <h3 className="font-bold mb-2">スマホでもPCでも使えますか？</h3>
@@ -384,6 +392,74 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Coming Soon Section */}
+      <section className="py-16 px-4">
+        <div className="max-w-[900px] mx-auto">
+          <div className="text-center mb-10">
+            <div className="inline-block bg-[#5DDFC3]/10 text-[#3A9A85] text-sm font-bold px-4 py-2 rounded-full mb-4">
+              Coming Soon
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              あなただけの学習ロードマップ
+            </h2>
+            <p className="text-lg opacity-80 max-w-[600px] mx-auto">
+              目標・現在地・残り時間から、最適な学習ルートを提案。<br />
+              もう「何をやればいいか」で迷わない。
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-br from-[#F0FDF9] to-[#E0F7F1] rounded-3xl p-8 md:p-12">
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="bg-white p-3 rounded-xl shadow-sm">
+                    <Target className="w-6 h-6 text-[#5DDFC3]" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold mb-1">志望校を設定</h3>
+                    <p className="text-sm opacity-70">目標に必要な学力を逆算</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-white p-3 rounded-xl shadow-sm">
+                    <Compass className="w-6 h-6 text-[#5DDFC3]" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold mb-1">現在地を診断</h3>
+                    <p className="text-sm opacity-70">得意・苦手を分析</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-white p-3 rounded-xl shadow-sm">
+                    <Calendar className="w-6 h-6 text-[#5DDFC3]" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold mb-1">残り時間を考慮</h3>
+                    <p className="text-sm opacity-70">本番までの日数と勉強可能時間</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-white p-3 rounded-xl shadow-sm">
+                    <Route className="w-6 h-6 text-[#5DDFC3]" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold mb-1">最適ルートを提案</h3>
+                    <p className="text-sm opacity-70">今日やるべきことが明確に</p>
+                  </div>
+                </div>
+              </div>
+              <div className="relative">
+                <div className="bg-white rounded-2xl shadow-lg p-6 text-center">
+                  <Map className="w-20 h-20 mx-auto mb-4 text-[#5DDFC3] opacity-50" />
+                  <p className="text-lg font-bold text-[#3A405A]/50">準備中...</p>
+                  <p className="text-sm opacity-50 mt-2">近日公開予定</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 px-4 bg-gradient-to-b from-[#F4F9F7] to-white">
         <div className="max-w-[700px] mx-auto text-center">
@@ -391,7 +467,6 @@ export default function HomePage() {
             さあ、今日から始めよう
           </h2>
           <p className="text-lg mb-10 opacity-80">
-            すべての機能が完全無料。<br />
             面倒な手続きなし、30秒で始められます。
           </p>
 

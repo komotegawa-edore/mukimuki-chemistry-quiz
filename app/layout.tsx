@@ -7,14 +7,14 @@ export const metadata: Metadata = {
     default: 'Roopy（るーぴー）| 大学受験学習アプリ',
     template: '%s | Roopy',
   },
-  description: '大学受験を"毎日つづけられる"ゲームにする。無機化学・英単語・古文単語のクイズで毎日の学習をサポート。完全無料。',
+  description: '大学受験を"毎日つづけられる"ゲームにする。無機化学・英単語・古文単語のクイズで毎日の学習をサポート。',
   metadataBase: new URL('https://edore-edu.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: 'Roopy（るーぴー）| 大学受験学習アプリ',
-    description: '大学受験を"毎日つづけられる"ゲームにする。無機化学・英単語・古文単語のクイズで毎日の学習をサポート。完全無料。',
+    description: '大学受験を"毎日つづけられる"ゲームにする。無機化学・英単語・古文単語のクイズで毎日の学習をサポート。',
     url: 'https://edore-edu.com',
     siteName: 'Roopy',
     images: [
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Roopy（るーぴー）| 大学受験学習アプリ',
-    description: '大学受験を"毎日つづけられる"ゲームにする。完全無料の学習アプリ。',
+    description: '大学受験を"毎日つづけられる"ゲームにする。大学受験学習アプリ。',
     images: ['/Roopy-full-1.png'],
   },
   icons: {
