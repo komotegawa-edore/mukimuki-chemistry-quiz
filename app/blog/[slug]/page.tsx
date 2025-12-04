@@ -35,13 +35,17 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${blog.title} | Roopy ブログ`,
+    title: blog.title,
     description: blog.excerpt,
+    alternates: {
+      canonical: `/blog/${slug}`,
+    },
     openGraph: {
       title: blog.title,
       description: blog.excerpt,
       type: 'article',
       publishedTime: blog.publishedAt,
+      url: `https://edore-edu.com/blog/${slug}`,
       images: blog.thumbnail ? [blog.thumbnail.url] : [],
     },
     twitter: {

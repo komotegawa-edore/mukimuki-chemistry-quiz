@@ -13,12 +13,16 @@ const notoSansJP = Noto_Sans_JP({
 })
 
 export const metadata: Metadata = {
-  title: 'ブログ | Roopy（るーぴー）',
+  title: 'ブログ',
   description: '大学受験の勉強法、学習のコツ、Roopyの使い方など、受験生に役立つ情報をお届けします。',
+  alternates: {
+    canonical: '/blog',
+  },
   openGraph: {
     title: 'ブログ | Roopy（るーぴー）',
     description: '大学受験の勉強法、学習のコツ、Roopyの使い方など、受験生に役立つ情報をお届けします。',
     type: 'website',
+    url: 'https://edore-edu.com/blog',
   },
 }
 
