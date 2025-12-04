@@ -5,7 +5,7 @@ import { Noto_Sans_JP } from 'next/font/google'
 import {
   Beaker, RotateCcw, Coins, Trophy, Gift, BarChart3,
   Sparkles, BookOpen, Brain, Target, CheckCircle2,
-  Clock, Zap, Users, ArrowRight, Menu
+  Clock, Zap, Users, ArrowRight, Menu, Smartphone, TrendingDown
 } from 'lucide-react'
 import BlogHeader from '@/components/BlogHeader'
 
@@ -78,17 +78,23 @@ export default function HomePage() {
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-[#FFF5F5] rounded-2xl p-6 text-center">
-              <div className="text-4xl mb-4">😫</div>
+              <div className="w-12 h-12 mx-auto mb-4 bg-[#FFE0E0] rounded-full flex items-center justify-center">
+                <Beaker className="w-6 h-6 text-[#E57373]" />
+              </div>
               <p className="font-bold">無機化学が覚えられない</p>
               <p className="text-sm opacity-70 mt-2">反応式や色、性質が多すぎて混乱する</p>
             </div>
             <div className="bg-[#FFF5F5] rounded-2xl p-6 text-center">
-              <div className="text-4xl mb-4">📱</div>
+              <div className="w-12 h-12 mx-auto mb-4 bg-[#FFE0E0] rounded-full flex items-center justify-center">
+                <Smartphone className="w-6 h-6 text-[#E57373]" />
+              </div>
               <p className="font-bold">気づいたらスマホをいじってる</p>
               <p className="text-sm opacity-70 mt-2">勉強しようと思ったのに...</p>
             </div>
             <div className="bg-[#FFF5F5] rounded-2xl p-6 text-center">
-              <div className="text-4xl mb-4">📉</div>
+              <div className="w-12 h-12 mx-auto mb-4 bg-[#FFE0E0] rounded-full flex items-center justify-center">
+                <TrendingDown className="w-6 h-6 text-[#E57373]" />
+              </div>
               <p className="font-bold">成果が見えなくてモチベが下がる</p>
               <p className="text-sm opacity-70 mt-2">頑張っているのに実感がない</p>
             </div>
