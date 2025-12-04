@@ -29,8 +29,8 @@ LINEログインを実装するには、以下の2つの方法があります：
 `.env.local` に追加：
 
 ```env
-LINE_CHANNEL_ID=your-line-channel-id
-LINE_CHANNEL_SECRET=your-line-channel-secret
+LINE_CHANNEL_ID=2008542244
+LINE_CHANNEL_SECRET=919b8bc1f1cb1b284e2ec1f270fcef81
 ```
 
 #### 3. APIルートの実装

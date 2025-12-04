@@ -1,0 +1,51 @@
+ステージID,ステージ名,教材名,教材カテゴリ,章番号,章名,推奨日数,標準時間（分/章）,総章数,入門レベル,推奨周回数,備考,画像のアドレス
+E1,英単語基礎,システム英単語Basic,英単語,*,*,常時,20,1500語,初級,N,中学版やTarget1200でも可。基礎単語の徹底。,https://m.media-amazon.com/images/I/91AI7DIgNnL._SY445_SX342_ML2_.jpg
+E1,英単語基礎,Stock3000,英単語,*,*,常時,20,3000語,初級,N,基礎から学び直す人向け。,https://m.media-amazon.com/images/I/51Nsf2KxTuL._SY522_.jpg
+E1,英単語基礎,英単語ターゲット1400,英単語,*,*,常時,20,1400語,初級,N,基礎固め用。,https://m.media-amazon.com/images/I/41ZzIhAQtfL._SY445_SX342_ML2_.jpg
+E2,英単語標準,システム英単語,英単語,1-1200,各章,常時,20,1200語,初級,N,1200番までが基礎。1日100個ペース推奨。,https://m.media-amazon.com/images/I/41Y71rpDQPL._SY445_SX342_ML2_.jpg
+E2,英単語標準,英単語ターゲット1900,英単語,1-800,各章,常時,20,800語,初級,N,800番までが基礎。,https://m.media-amazon.com/images/I/417gMKTA1pL._SY445_SX342_ML2_.jpg
+E2,英単語標準,Stock4500,英単語,*,*,常時,20,4500語,中級,N,標準レベルの単語。,https://m.media-amazon.com/images/I/51FF+0KmmzL._SY522_.jpg
+E2,英単語標準,鉄緑会東大英単語熟語 鉄壁,英単語,*,各Section,常時,30,約3000語,上級,N,語源や派生語に強い。自信がある人向け。,https://m.media-amazon.com/images/I/51VcmFf+4YL._SY445_SX342_ML2_.jpg
+E3,英熟語,速読英熟語,英熟語,*,各章,常時,20,約850語,中級,N,文章は最初は読まなくても良い。熟語を覚えること優先。,https://m.media-amazon.com/images/I/31nq+q0GKyL._SY445_SX342_ML2_.jpg
+E3,英熟語,英熟語ターゲット1000,英熟語,*,各章,常時,20,1000語,中級,N,シンプルに覚えたい人向け。,https://m.media-amazon.com/images/I/51-BbmgVqnS._SY445_SX342_ML2_.jpg
+E3,英熟語,英熟語図鑑,英熟語,*,各章,常時,20,全編,中級,N,イメージで覚える。,https://m.media-amazon.com/images/I/81L4yreFRKL._SY522_.jpg
+E4,中学復習,中学英語をもう一度ひとつひとつわかりやすく。,文法,*,各章,14,30,全編,初級,1,中学英語に不安がある場合はここから。,https://m.media-amazon.com/images/I/61HhuFBIYhL._SY522_.jpg
+E4,基礎文法,大岩のいちばんはじめの英文法【超基礎文法編】,文法,1-25,各講,14,30,25講,初級,2,読んで閉じて説明できるか確認。「わかったつもり」を防ぐ。,https://m.media-amazon.com/images/I/71aVXsROpTL._SY522_.jpg
+E4,基礎文法,肘井学のゼロから英文法が面白いほどわかる本,文法,*,各テーマ,14,30,全編,初級,2,基礎文法の導入に最適。,https://m.media-amazon.com/images/I/81xTyiEGiaL._SY522_.jpg
+E5,文法ドリル,英文法パターンドリル,文法演習,*,各章,21,20,全編,初級,2,文を作ることで理解を深める。,https://m.media-amazon.com/images/I/71FvwMljLsL._SY522_.jpg
+E5,解釈ドリル,高校英文読解をひとつひとつわかりやすく。,解釈,*,各章,21,20,全編,初級,1,訳すことに特化したドリル。,https://m.media-amazon.com/images/I/61vlpF2DypL._SY522_.jpg
+E6,標準文法,関正生の英文法ポラリス1,文法,1-30,各Unit,21,30,約370問,中級,2,理由付きで正解を選べるようにする。,https://m.media-amazon.com/images/I/517Pw66+z-L._SY445_SX342_ML2_.jpg
+E6,標準文法,関正生の英文法ポラリス1 ファイナル演習編,文法,*,各回,14,30,300問,中級,1,通称「黒ポラリス」。ランダム演習で実力確認。,https://m.media-amazon.com/images/I/71d2qWoBDPL._SY522_.jpg
+E6,網羅文法,Vintage,文法,*,各章,常時,30,網羅,中級,1,日大レベル後半から開始。知識の穴埋め。,https://m.media-amazon.com/images/I/718q30+sdnL._SY522_.jpg
+E7,英文解釈,動画でわかる英文法 [読解入門編],解釈,*,各テーマ,21,40,全編,中級,2,「見抜く」プロセスを大事にする。QRコードの動画も活用。,https://m.media-amazon.com/images/I/51bvR6vr8PL._SY445_SX342_ML2_.jpg
+E7,解釈演習,大学入試 はじめの英文読解ドリル,解釈,*,各章,14,30,全編,中級,2,ドリル形式でSVOC振りと和訳を徹底練習。,https://m.media-amazon.com/images/I/51rfrVNGMgL._SY445_SX342_ML2_.jpg
+E7,英文解釈入門,肘井の読解のための英文法,文法,1-15,各章,60,30,15,中級〜上級,2,"S,V,O,Cの役割を理解して読解力の基礎をつける。全てはここから始まる。",https://m.media-amazon.com/images/I/51MDoM6feWL._SY445_SX342_ML2_.jpg
+E7,英文解釈,入門英文解釈の技術70,英文解釈,1-70,各技術,60,30,70,中級,1,構文把握の核,https://m.media-amazon.com/images/I/91GZSeQSToL._SY522_.jpg
+E7,英文解釈,入門英文問題精講,解釈,*,各問,14,40,全編,中級,2,竹岡先生の著書。解釈の標準。,https://m.media-amazon.com/images/I/51mhbZyMK8L._SY522_.jpg
+E7,英文解釈,英文読解の基礎・必修編（クラシック）,解釈,*,各講,20,45,全編,上級,2,本質的な理解を深める。難易度高め。,https://m.media-amazon.com/images/I/41FjaZR+T9L._SY445_SX342_ML2_.jpg
+E8,基礎長文,東進レベル別英語長文1・2,長文,1-20,各レベル,60,20,20,中級,1,高校入試プラスアルファくらいの優しめの長文に慣れる,https://m.media-amazon.com/images/I/41MceiL-h7L._SY445_SX342_ML2_.jpg
+E8,基礎長文,関正生のThe Rules 英語長文問題集1,長文,1-12,各問,12,40,12問,中級,1,解説の「ルール」を意識して読む。音読必須。,https://m.media-amazon.com/images/I/41YG4WLnRfL._SY445_SX342_ML2_.jpg
+E8,標準長文,ソリューション1,英文解釈,1-30,各章,60,30,30,中級〜上級,2,読解の基礎固め,https://m.media-amazon.com/images/I/71HWNx2SLYL._SY522_.jpg
+E8,標準長文,関正生のThe Rules 英語長文問題集2,長文,1-12,各問,12,40,12問,中級,1,入試標準レベル。復習・音読を徹底。,https://m.media-amazon.com/images/I/71AeMUR10KL._SY522_.jpg
+E8,標準長文,東進レベル別英語長文3,長文,1-20,各レベル,60,20,20,中級,1,短めの長文で安定化,https://m.media-amazon.com/images/I/41pn2alIS1L._SY445_SX342_ML2_.jpg
+E8,標準長文,関正生の英語長文ポラリス1,長文,1-12,各問,12,40,12問,中級,1,日大レベルの総仕上げ。,https://m.media-amazon.com/images/I/71ba2fFyvpL._SY522_.jpg
+E8,基礎長文,関正生の英語長文ポラリス0,長文,1-12,各問,12,35,12問,初級,1,英語長文の導入。,https://m.media-amazon.com/images/I/7150QJvuNPL._SY522_.jpg
+E9,応用解釈,関正生の英文解釈ポラリス1,解釈,1-11,各テーマ,14,40,11章,上級,2,MARCHレベルの複雑な構文をビジュアルで理解。,https://m.media-amazon.com/images/I/51MPxQsJnsL._SY445_SX342_ML2_.jpg
+E10,応用長文,関正生のThe Rules 英語長文問題集3,長文,1-12,各問,12,45,12問,上級,1,MARCHレベル。,https://m.media-amazon.com/images/I/41W6kfmXxML._SY445_SX342_ML2_.jpg
+E10,応用長文,関正生の英語長文ポラリス2,長文,1-12,各問,12,45,12問,上級,1,MARCH・関関同立レベル演習。,https://m.media-amazon.com/images/I/71ddCslr2YL._SY522_.jpg
+E10,速読演習,大学入試英語長文プラス 速読トレーニング問題集,長文,1-10,各問,10,45,10問,上級,1,22の速読ルールを学ぶ。予測読みの習得。,https://m.media-amazon.com/images/I/51yEDfDgPcL._SY445_SX342_ML2_.jpg
+E10,応用長文,英語長文Supremacy,長文,*,各問,15,45,全編,上級,1,MARCH・難関大レベルのテーマ別演習。,https://m.media-amazon.com/images/I/51d+rO9kJAL._SY445_SX342_ML2_.jpg
+E12,難関解釈,関正生の英文解釈ポラリス2,解釈,*,各テーマ,14,45,全編,最上級,2,早慶レベルの複雑な英文解釈。,https://m.media-amazon.com/images/I/511LX0-yTnL._SY445_SX342_ML2_.jpg
+E13,難関長文,関正生のThe Rules 英語長文問題集4,長文,1-12,各問,12,50,12問,最上級,1,早慶・旧帝大レベル。,https://m.media-amazon.com/images/I/41CI7qejbuL._SY445_SX342_ML2_.jpg
+E13,難関長文,関正生の英語長文ポラリス3,長文,1-12,各問,12,50,12問,最上級,1,最難関大演習。,https://m.media-amazon.com/images/I/71SAN5jiDUL._SY522_.jpg
+E13,大学別,世界一わかりやすい早稲田の英語 合格講座,長文,*,各学部,14,60,学部別,最上級,1,学部ごとの傾向と対策。,https://m.media-amazon.com/images/I/510LP8QAIRL._SY445_SX342_ML2_.jpg
+E13,大学別,世界一わかりやすい慶應の英語 合格講座,長文,*,各学部,14,60,学部別,最上級,1,学部ごとの傾向と対策。,https://m.media-amazon.com/images/I/81Ro50FH47L._SY522_.jpg
+E14,英作文,英作文ハイパートレーニング 和文英訳編,英作文,*,各Lesson,30,30,全編,上級,2,英作文の基礎から。ミスを減らす書き方を学ぶ。,https://m.media-amazon.com/images/I/81+2kg4nUgL._SY522_.jpg
+E15,英作文,竹岡広信の 英作文が面白いほど書ける本,英作文,60,各Lesson,60,20,全編,上級,2,英作文はこれでOK。,https://m.media-amazon.com/images/I/819J1BP0FZL._SY522_.jpg
+E14,英作文,頻出英作文完全対策,英作文,*,各章,30,40,全編,上級,1,和文英訳から自由英作文まで網羅。,https://m.media-amazon.com/images/I/610wyvL2AwS._SY522_.jpg
+E14,英文和訳,英文熟考 上,解釈,*,各問,14,45,全編,上級,2,和訳演習に特化。,https://m.media-amazon.com/images/I/51NFvTo82+L._SY445_SX342_ML2_.jpg
+E14,英文和訳,英文熟考 下,解釈,*,各問,14,45,全編,上級,2,和訳演習に特化。,https://m.media-amazon.com/images/I/51e-r6wmNhL._SY445_SX342_ML2_.jpg
+E14,英文和訳,ポレポレ,英文解釈,1-60,各章,180,20,60,最難関,2,阪大解釈の完成,https://m.media-amazon.com/images/I/91oFSF+bt7L._SY522_.jpg
+E14,記述長文,国公立標準問題集 CanPass 英語,長文,*,各問,20,50,全編,上級,1,国公立の記述・和訳対策。,https://m.media-amazon.com/images/I/51XygguGqIL._SY445_SX342_ML2_.jpg
+E15,リスニング,1ヶ月で洋書が読める・聴けるようになる本,リスニング,*,各日,30,30,全編,初級,1,リスニング入門。,https://m.media-amazon.com/images/I/81dvfOHU-pL._SY522_.jpg
+E15,リスニング,大学入試 関正生の英語リスニング プラチナルール,リスニング,*,各Unit,30,30,全編,中級,1,リスニングの解法ルール。,https://m.media-amazon.com/images/I/71qcF7Kra6L._SY522_.jpg
