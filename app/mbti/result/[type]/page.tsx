@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Noto_Sans_JP } from 'next/font/google'
 import { typeResults, isValidMBTIType } from '@/lib/mbti-data'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Dumbbell, AlertTriangle, BookOpen, Users } from 'lucide-react'
 import ShareButtons from './ShareButtons'
 import TypeIcon from './TypeIcon'
 
@@ -133,7 +133,9 @@ export default async function MBTIResultPage({ params }: PageProps) {
             {/* Strengths */}
             <div className="mb-6">
               <h3 className="font-bold text-[#5DDFC3] mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 bg-[#E0F7F1] rounded-full flex items-center justify-center text-sm">💪</span>
+                <span className="w-6 h-6 bg-[#E0F7F1] rounded-full flex items-center justify-center">
+                  <Dumbbell className="w-3.5 h-3.5 text-[#5DDFC3]" />
+                </span>
                 強み
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -151,7 +153,9 @@ export default async function MBTIResultPage({ params }: PageProps) {
             {/* Weaknesses */}
             <div className="mb-6">
               <h3 className="font-bold text-orange-400 mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 bg-orange-50 rounded-full flex items-center justify-center text-sm">⚠️</span>
+                <span className="w-6 h-6 bg-orange-50 rounded-full flex items-center justify-center">
+                  <AlertTriangle className="w-3.5 h-3.5 text-orange-400" />
+                </span>
                 気をつけたいこと
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -169,7 +173,9 @@ export default async function MBTIResultPage({ params }: PageProps) {
             {/* Study Tips */}
             <div className="mb-6">
               <h3 className="font-bold text-[#3A405A] mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 bg-blue-50 rounded-full flex items-center justify-center text-sm">📚</span>
+                <span className="w-6 h-6 bg-blue-50 rounded-full flex items-center justify-center">
+                  <BookOpen className="w-3.5 h-3.5 text-blue-500" />
+                </span>
                 おすすめ勉強法
               </h3>
               <ul className="space-y-2">
@@ -185,7 +191,9 @@ export default async function MBTIResultPage({ params }: PageProps) {
             {/* Compatible Types */}
             <div className="bg-[#F4F9F7] rounded-xl p-4">
               <h3 className="font-bold text-[#3A405A] mb-2 text-sm flex items-center gap-2">
-                <span className="w-5 h-5 bg-white rounded-full flex items-center justify-center text-xs">🤝</span>
+                <span className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
+                  <Users className="w-3 h-3 text-[#5DDFC3]" />
+                </span>
                 相性の良いタイプ
               </h3>
               <div className="flex gap-2">
