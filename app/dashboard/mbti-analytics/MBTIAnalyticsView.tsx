@@ -15,7 +15,6 @@ interface MBTIResult {
   utm_campaign: string | null
   country: string | null
   region: string | null
-  city: string | null
   created_at: string
   converted_at: string | null
   converted_user_id: string | null

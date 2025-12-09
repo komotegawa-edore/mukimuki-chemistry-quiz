@@ -48,9 +48,9 @@ export async function POST(request: NextRequest) {
   }
 
   // Vercelのジオヘッダーから位置情報を取得（IPアドレス自体は保存しない）
+  // プライバシー配慮のため都道府県レベルまで（市区町村は保存しない）
   const country = request.headers.get('x-vercel-ip-country') || null
   const region = request.headers.get('x-vercel-ip-country-region') || null
-  const city = request.headers.get('x-vercel-ip-city') || null
 
   // レートリミット用のidentifier（国+地域で大まかに識別、プライバシー配慮）
   const rateLimitId = `${country || 'unknown'}_${region || 'unknown'}`
@@ -92,7 +92,6 @@ export async function POST(request: NextRequest) {
       p_utm_campaign: utm_campaign,
       p_country: country,
       p_region: region,
-      p_city: city,
     })
 
     if (error) {
