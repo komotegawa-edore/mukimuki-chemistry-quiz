@@ -227,7 +227,7 @@ export default async function MBTIResultPage({ params }: PageProps) {
             毎日の勉強が続く仕組みを提供します。
           </p>
           <Link
-            href="/roopy-roadmap"
+            href="/lp"
             className="inline-flex items-center gap-2 bg-white text-[#5DDFC3] font-bold py-3 px-6 rounded-full hover:bg-gray-50 transition-colors"
           >
             詳しく見る
