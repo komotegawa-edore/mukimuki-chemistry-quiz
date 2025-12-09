@@ -1,14 +1,19 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-// Service role client for anonymous inserts
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
 export async function POST(request: NextRequest) {
   try {
+    // Use anon key since RLS allows anyone to insert
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Missing Supabase env vars')
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
     const body = await request.json()
     const { mbti_type } = body
 
@@ -16,17 +21,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid MBTI type' }, { status: 400 })
     }
 
-    // Get tracking info from headers and URL
+    // Get tracking info from headers
     const userAgent = request.headers.get('user-agent') || null
     const referrer = request.headers.get('referer') || null
 
-    // Parse URL for UTM params
-    const url = new URL(request.url)
-    const utm_source = body.utm_source || url.searchParams.get('utm_source')
-    const utm_medium = body.utm_medium || url.searchParams.get('utm_medium')
-    const utm_campaign = body.utm_campaign || url.searchParams.get('utm_campaign')
+    // Parse UTM params from body
+    const utm_source = body.utm_source || null
+    const utm_medium = body.utm_medium || null
+    const utm_campaign = body.utm_campaign || null
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from('mukimuki_mbti_results')
       .insert({
         mbti_type: mbti_type.toUpperCase(),
@@ -41,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Error saving MBTI result:', error)
-      return NextResponse.json({ error: 'Failed to save result' }, { status: 500 })
+      return NextResponse.json({ error: 'Failed to save result', details: error.message }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -50,6 +54,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error in MBTI API:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error', details: String(error) }, { status: 500 })
   }
 }
