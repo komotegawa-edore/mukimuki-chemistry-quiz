@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -145,6 +145,11 @@ export default function MBTIPage() {
   // 現在のページの全質問が回答済みかチェック
   const isPageComplete = currentQuestions.every((q) => answers[q.id] !== undefined)
 
+  // ページ変更時に上にスクロール
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentPage, hasStarted])
+
   const calculateResult = (finalAnswers: Record<number, number>): string => {
     const scores: Scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 }
 
@@ -185,11 +190,27 @@ export default function MBTIPage() {
       if (currentPage < TOTAL_PAGES - 1) {
         setCurrentPage(currentPage + 1)
         setIsAnimating(false)
-        // ページトップにスクロール
-        window.scrollTo({ top: 0, behavior: 'smooth' })
       } else {
-        // 結果を計算して結果ページへリダイレクト
+        // 結果を計算して保存し、結果ページへリダイレクト
         const mbtiResult = calculateResult(answers)
+
+        // UTMパラメータを取得
+        const urlParams = new URLSearchParams(window.location.search)
+
+        // 結果をSupabaseに保存（非同期で実行、エラーは無視）
+        fetch('/api/mbti', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mbti_type: mbtiResult,
+            utm_source: urlParams.get('utm_source'),
+            utm_medium: urlParams.get('utm_medium'),
+            utm_campaign: urlParams.get('utm_campaign'),
+          }),
+        }).catch(() => {
+          // エラーは無視（ユーザー体験を優先）
+        })
+
         router.push(`/mbti/result/${mbtiResult.toLowerCase()}`)
       }
     }, 300)
