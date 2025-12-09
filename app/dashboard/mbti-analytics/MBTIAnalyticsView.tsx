@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Brain, Users, TrendingUp, Calendar, ExternalLink, CheckCircle } from 'lucide-react'
+import { Brain, Users, TrendingUp, MapPin, CheckCircle } from 'lucide-react'
 
 interface MBTIResult {
   id: number
@@ -13,6 +13,9 @@ interface MBTIResult {
   utm_source: string | null
   utm_medium: string | null
   utm_campaign: string | null
+  country: string | null
+  region: string | null
+  city: string | null
   created_at: string
   converted_at: string | null
   converted_user_id: string | null
@@ -261,6 +264,62 @@ export default function MBTIAnalyticsView() {
         </div>
       </div>
 
+      {/* Geographic Distribution */}
+      <div className="bg-white rounded-xl p-6 shadow-sm">
+        <h2 className="text-lg font-bold text-[#3A405A] mb-4 flex items-center gap-2">
+          <MapPin className="w-5 h-5 text-[#5DDFC3]" />
+          地域分布
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Country Distribution */}
+          <div>
+            <h3 className="text-sm font-medium text-gray-500 mb-3">国別</h3>
+            <div className="space-y-2">
+              {(() => {
+                const countryMap = new Map<string, number>()
+                results.forEach((r) => {
+                  const country = r.country || 'Unknown'
+                  countryMap.set(country, (countryMap.get(country) || 0) + 1)
+                })
+                return Array.from(countryMap.entries())
+                  .sort((a, b) => b[1] - a[1])
+                  .slice(0, 5)
+                  .map(([country, count]) => (
+                    <div key={country} className="flex items-center justify-between py-2 border-b border-gray-100">
+                      <span className="text-sm text-[#3A405A]">{country === 'JP' ? '🇯🇵 日本' : country}</span>
+                      <span className="text-sm font-medium text-[#5DDFC3]">{count}件</span>
+                    </div>
+                  ))
+              })()}
+            </div>
+          </div>
+          {/* Region Distribution (Japan only) */}
+          <div>
+            <h3 className="text-sm font-medium text-gray-500 mb-3">都道府県別（日本）</h3>
+            <div className="space-y-2">
+              {(() => {
+                const regionMap = new Map<string, number>()
+                results
+                  .filter((r) => r.country === 'JP')
+                  .forEach((r) => {
+                    const region = r.region || 'Unknown'
+                    regionMap.set(region, (regionMap.get(region) || 0) + 1)
+                  })
+                return Array.from(regionMap.entries())
+                  .sort((a, b) => b[1] - a[1])
+                  .slice(0, 8)
+                  .map(([region, count]) => (
+                    <div key={region} className="flex items-center justify-between py-2 border-b border-gray-100">
+                      <span className="text-sm text-[#3A405A]">{region}</span>
+                      <span className="text-sm font-medium text-[#5DDFC3]">{count}件</span>
+                    </div>
+                  ))
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Recent Results Table */}
       <div className="bg-white rounded-xl p-6 shadow-sm">
         <h2 className="text-lg font-bold text-[#3A405A] mb-4">最近の診断結果</h2>
@@ -271,6 +330,7 @@ export default function MBTIAnalyticsView() {
                 <th className="text-left py-3 px-2 text-gray-500 font-medium">日時</th>
                 <th className="text-left py-3 px-2 text-gray-500 font-medium">タイプ</th>
                 <th className="text-left py-3 px-2 text-gray-500 font-medium">デバイス</th>
+                <th className="text-left py-3 px-2 text-gray-500 font-medium">地域</th>
                 <th className="text-left py-3 px-2 text-gray-500 font-medium">流入元</th>
                 <th className="text-left py-3 px-2 text-gray-500 font-medium">転換</th>
               </tr>
@@ -285,6 +345,9 @@ export default function MBTIAnalyticsView() {
                     </span>
                   </td>
                   <td className="py-3 px-2 text-gray-500">{getDeviceType(result.user_agent)}</td>
+                  <td className="py-3 px-2 text-gray-500 text-xs">
+                    {result.country === 'JP' && result.region ? result.region : (result.country || '-')}
+                  </td>
                   <td className="py-3 px-2 text-gray-500 truncate max-w-[150px]">
                     {result.utm_source || result.utm_campaign || '-'}
                   </td>
