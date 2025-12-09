@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Noto_Sans_JP } from 'next/font/google'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Clock, Brain, Sparkles, Target } from 'lucide-react'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -131,6 +131,7 @@ const TOTAL_PAGES = Math.ceil(questions.length / QUESTIONS_PER_PAGE)
 
 export default function MBTIPage() {
   const router = useRouter()
+  const [hasStarted, setHasStarted] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [isAnimating, setIsAnimating] = useState(false)
@@ -226,128 +227,211 @@ export default function MBTIPage() {
       </nav>
 
       <main className="max-w-2xl mx-auto px-4 py-8">
-        {/* Title */}
-        <div className="text-center mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">
-            <span className="text-[#5DDFC3]">受験生</span>タイプ診断
-          </h1>
-          <p className="text-sm text-[#3A405A] opacity-70">
-            12問の質問であなたの勉強スタイルを診断
-          </p>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium">
-              {currentPage + 1} / {TOTAL_PAGES} ページ
-            </span>
-            <span className="text-sm text-[#5DDFC3] font-medium">
-              {answeredCount} / {questions.length} 回答済み
-            </span>
-          </div>
-          <div className="w-full bg-white rounded-full h-3 shadow-inner">
-            <div
-              className="bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] h-3 rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Questions */}
-        <div
-          className={`space-y-6 transition-all duration-300 ${
-            isAnimating ? 'opacity-50' : 'opacity-100'
-          }`}
-        >
-          {currentQuestions.map((question, index) => (
-            <div
-              key={question.id}
-              className="bg-white rounded-2xl shadow-lg p-5 md:p-6"
-            >
-              {/* Question Number & Text */}
-              <div className="flex items-start gap-3 mb-5">
-                <span className="flex-shrink-0 w-8 h-8 bg-[#5DDFC3] text-white rounded-full flex items-center justify-center text-sm font-bold">
-                  {question.id}
-                </span>
-                <h2 className="text-lg font-bold pt-1">{question.question}</h2>
+        {!hasStarted ? (
+          /* Start Screen */
+          <div className="text-center">
+            {/* Hero Section */}
+            <div className="mb-8">
+              <div className="w-24 h-24 bg-gradient-to-br from-[#5DDFC3] to-[#4ECFB3] rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <Brain className="w-12 h-12 text-white" />
               </div>
+              <h1 className="text-3xl md:text-4xl font-bold mb-3">
+                <span className="text-[#5DDFC3]">受験生</span>タイプ診断
+              </h1>
+              <p className="text-[#3A405A] opacity-80 text-lg">
+                あなたの勉強スタイルを分析して
+                <br />
+                16タイプに診断します
+              </p>
+            </div>
 
-              {/* Labels */}
-              <div className="flex justify-between items-center mb-3 px-1">
-                <span className="text-xs md:text-sm font-medium text-[#5DDFC3]">
-                  {question.leftLabel}
-                </span>
-                <span className="text-xs md:text-sm font-medium text-[#F97316]">
-                  {question.rightLabel}
-                </span>
-              </div>
-
-              {/* Slider */}
-              <div className="relative px-1">
-                {/* Track background */}
-                <div className="absolute top-1/2 left-0 right-0 h-1.5 bg-gray-200 rounded-full -translate-y-1/2" />
-
-                {/* Center-based track */}
-                {answers[question.id] !== undefined && answers[question.id] !== 3 && (
-                  <div
-                    className="absolute top-1/2 h-1.5 rounded-full -translate-y-1/2 transition-all"
-                    style={{
-                      left: answers[question.id] < 3 ? `${((answers[question.id] - 1) / 4) * 100}%` : '50%',
-                      width: `${Math.abs((answers[question.id] || 3) - 3) * 25}%`,
-                      background: answers[question.id] < 3 ? '#5DDFC3' : '#F97316',
-                    }}
-                  />
-                )}
-
-                {/* Dots */}
-                <div className="relative flex justify-between items-center">
-                  {[1, 2, 3, 4, 5].map((value) => {
-                    const isSelected = answers[question.id] === value
-                    return (
-                      <button
-                        key={value}
-                        onClick={() => handleAnswerChange(question.id, value)}
-                        className={`w-7 h-7 md:w-8 md:h-8 rounded-full border-2 transition-all z-10 flex items-center justify-center ${
-                          isSelected
-                            ? value < 3
-                              ? 'bg-[#5DDFC3] border-[#5DDFC3] shadow-lg scale-110'
-                              : value > 3
-                                ? 'bg-[#F97316] border-[#F97316] shadow-lg scale-110'
-                                : 'bg-gray-400 border-gray-400 shadow-lg scale-110'
-                            : 'bg-white border-gray-300 hover:border-gray-400'
-                        }`}
-                      >
-                        <span
-                          className={`text-xs font-medium ${
-                            isSelected ? 'text-white' : 'text-gray-400'
-                          }`}
-                        >
-                          {value === 3 ? '−' : value < 3 ? 4 - value : value - 2}
-                        </span>
-                      </button>
-                    )
-                  })}
+            {/* Features */}
+            <div className="grid grid-cols-3 gap-4 mb-8">
+              <div className="bg-white rounded-xl p-4 shadow-md">
+                <div className="w-10 h-10 bg-[#E0F7F1] rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Clock className="w-5 h-5 text-[#5DDFC3]" />
                 </div>
+                <p className="text-sm font-medium text-[#3A405A]">約1分</p>
+                <p className="text-xs text-[#3A405A] opacity-60">でサクッと診断</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 shadow-md">
+                <div className="w-10 h-10 bg-[#E0F7F1] rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Target className="w-5 h-5 text-[#5DDFC3]" />
+                </div>
+                <p className="text-sm font-medium text-[#3A405A]">12問</p>
+                <p className="text-xs text-[#3A405A] opacity-60">の質問に回答</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 shadow-md">
+                <div className="w-10 h-10 bg-[#E0F7F1] rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Sparkles className="w-5 h-5 text-[#5DDFC3]" />
+                </div>
+                <p className="text-sm font-medium text-[#3A405A]">16タイプ</p>
+                <p className="text-xs text-[#3A405A] opacity-60">から診断結果</p>
               </div>
             </div>
-          ))}
-        </div>
 
-        {/* Next Button */}
-        <button
-          onClick={handleNext}
-          disabled={isAnimating || !isPageComplete}
-          className="w-full mt-6 p-4 bg-[#5DDFC3] hover:bg-[#4ECFB3] text-white font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {currentPage < TOTAL_PAGES - 1 ? '次へ' : '結果を見る'}
-          <ChevronRight className="w-5 h-5" />
-        </button>
+            {/* Description Card */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg mb-8 text-left">
+              <h2 className="font-bold text-lg mb-3 text-[#3A405A]">この診断でわかること</h2>
+              <ul className="space-y-2 text-sm text-[#3A405A]">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#5DDFC3] mt-0.5">✓</span>
+                  <span>あなたに合った勉強スタイル</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#5DDFC3] mt-0.5">✓</span>
+                  <span>学習における強みと気をつけたいこと</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#5DDFC3] mt-0.5">✓</span>
+                  <span>おすすめの勉強法アドバイス</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#5DDFC3] mt-0.5">✓</span>
+                  <span>相性の良い勉強仲間のタイプ</span>
+                </li>
+              </ul>
+            </div>
 
-        {!isPageComplete && (
-          <p className="text-center text-sm text-[#3A405A] opacity-50 mt-3">
-            全ての質問に回答してください
-          </p>
+            {/* Start Button */}
+            <button
+              onClick={() => setHasStarted(true)}
+              className="w-full p-4 bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] hover:from-[#4ECFB3] hover:to-[#3DBF9F] text-white font-bold text-lg rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              診断スタート
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            <p className="text-xs text-[#3A405A] opacity-50 mt-4">
+              ※ログイン不要・無料で診断できます
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* Title */}
+            <div className="text-center mb-6">
+              <h1 className="text-2xl md:text-3xl font-bold mb-2">
+                <span className="text-[#5DDFC3]">受験生</span>タイプ診断
+              </h1>
+              <p className="text-sm text-[#3A405A] opacity-70">
+                12問の質問であなたの勉強スタイルを診断
+              </p>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium">
+                  {currentPage + 1} / {TOTAL_PAGES} ページ
+                </span>
+                <span className="text-sm text-[#5DDFC3] font-medium">
+                  {answeredCount} / {questions.length} 回答済み
+                </span>
+              </div>
+              <div className="w-full bg-white rounded-full h-3 shadow-inner">
+                <div
+                  className="bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] h-3 rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Questions */}
+            <div
+              className={`space-y-6 transition-all duration-300 ${
+                isAnimating ? 'opacity-50' : 'opacity-100'
+              }`}
+            >
+              {currentQuestions.map((question) => (
+                <div
+                  key={question.id}
+                  className="bg-white rounded-2xl shadow-lg p-5 md:p-6"
+                >
+                  {/* Question Number & Text */}
+                  <div className="flex items-start gap-3 mb-5">
+                    <span className="flex-shrink-0 w-8 h-8 bg-[#5DDFC3] text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      {question.id}
+                    </span>
+                    <h2 className="text-lg font-bold pt-1">{question.question}</h2>
+                  </div>
+
+                  {/* Labels */}
+                  <div className="flex justify-between items-center mb-3 px-1">
+                    <span className="text-xs md:text-sm font-medium text-[#5DDFC3]">
+                      {question.leftLabel}
+                    </span>
+                    <span className="text-xs md:text-sm font-medium text-[#F97316]">
+                      {question.rightLabel}
+                    </span>
+                  </div>
+
+                  {/* Slider */}
+                  <div className="relative px-1">
+                    {/* Track background */}
+                    <div className="absolute top-1/2 left-0 right-0 h-1.5 bg-gray-200 rounded-full -translate-y-1/2" />
+
+                    {/* Center-based track */}
+                    {answers[question.id] !== undefined && answers[question.id] !== 3 && (
+                      <div
+                        className="absolute top-1/2 h-1.5 rounded-full -translate-y-1/2 transition-all"
+                        style={{
+                          left: answers[question.id] < 3 ? `${((answers[question.id] - 1) / 4) * 100}%` : '50%',
+                          width: `${Math.abs((answers[question.id] || 3) - 3) * 25}%`,
+                          background: answers[question.id] < 3 ? '#5DDFC3' : '#F97316',
+                        }}
+                      />
+                    )}
+
+                    {/* Dots */}
+                    <div className="relative flex justify-between items-center">
+                      {[1, 2, 3, 4, 5].map((value) => {
+                        const isSelected = answers[question.id] === value
+                        return (
+                          <button
+                            key={value}
+                            onClick={() => handleAnswerChange(question.id, value)}
+                            className={`w-7 h-7 md:w-8 md:h-8 rounded-full border-2 transition-all z-10 flex items-center justify-center ${
+                              isSelected
+                                ? value < 3
+                                  ? 'bg-[#5DDFC3] border-[#5DDFC3] shadow-lg scale-110'
+                                  : value > 3
+                                    ? 'bg-[#F97316] border-[#F97316] shadow-lg scale-110'
+                                    : 'bg-gray-400 border-gray-400 shadow-lg scale-110'
+                                : 'bg-white border-gray-300 hover:border-gray-400'
+                            }`}
+                          >
+                            <span
+                              className={`text-xs font-medium ${
+                                isSelected ? 'text-white' : 'text-gray-400'
+                              }`}
+                            >
+                              {value === 3 ? '−' : value < 3 ? 4 - value : value - 2}
+                            </span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={handleNext}
+              disabled={isAnimating || !isPageComplete}
+              className="w-full mt-6 p-4 bg-[#5DDFC3] hover:bg-[#4ECFB3] text-white font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {currentPage < TOTAL_PAGES - 1 ? '次へ' : '結果を見る'}
+              <ChevronRight className="w-5 h-5" />
+            </button>
+
+            {!isPageComplete && (
+              <p className="text-center text-sm text-[#3A405A] opacity-50 mt-3">
+                全ての質問に回答してください
+              </p>
+            )}
+          </>
         )}
       </main>
 
