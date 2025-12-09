@@ -126,73 +126,76 @@ interface Scores {
   P: number
 }
 
+const QUESTIONS_PER_PAGE = 3
+const TOTAL_PAGES = Math.ceil(questions.length / QUESTIONS_PER_PAGE)
+
 export default function MBTIPage() {
   const router = useRouter()
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [scores, setScores] = useState<Scores>({
-    E: 0,
-    I: 0,
-    S: 0,
-    N: 0,
-    T: 0,
-    F: 0,
-    J: 0,
-    P: 0,
-  })
-  const [sliderValue, setSliderValue] = useState(3) // 1-5, 3 is center
+  const [currentPage, setCurrentPage] = useState(0)
+  const [answers, setAnswers] = useState<Record<number, number>>({})
   const [isAnimating, setIsAnimating] = useState(false)
 
-  const calculateResult = (finalScores: Scores): string => {
-    const e_i = finalScores.E >= finalScores.I ? 'E' : 'I'
-    const s_n = finalScores.S >= finalScores.N ? 'S' : 'N'
-    const t_f = finalScores.T >= finalScores.F ? 'T' : 'F'
-    const j_p = finalScores.J >= finalScores.P ? 'J' : 'P'
+  // 現在のページの質問を取得
+  const currentQuestions = questions.slice(
+    currentPage * QUESTIONS_PER_PAGE,
+    (currentPage + 1) * QUESTIONS_PER_PAGE
+  )
+
+  // 現在のページの全質問が回答済みかチェック
+  const isPageComplete = currentQuestions.every((q) => answers[q.id] !== undefined)
+
+  const calculateResult = (finalAnswers: Record<number, number>): string => {
+    const scores: Scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 }
+
+    questions.forEach((question) => {
+      const value = finalAnswers[question.id] || 3
+
+      if (value === 1) {
+        scores[question.leftType] += 2
+      } else if (value === 2) {
+        scores[question.leftType] += 1
+      } else if (value === 3) {
+        scores[question.leftType] += 0.5
+        scores[question.rightType] += 0.5
+      } else if (value === 4) {
+        scores[question.rightType] += 1
+      } else if (value === 5) {
+        scores[question.rightType] += 2
+      }
+    })
+
+    const e_i = scores.E >= scores.I ? 'E' : 'I'
+    const s_n = scores.S >= scores.N ? 'S' : 'N'
+    const t_f = scores.T >= scores.F ? 'T' : 'F'
+    const j_p = scores.J >= scores.P ? 'J' : 'P'
     return `${e_i}${s_n}${t_f}${j_p}`
   }
 
+  const handleAnswerChange = (questionId: number, value: number) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: value }))
+  }
+
   const handleNext = useCallback(() => {
-    if (isAnimating) return
+    if (isAnimating || !isPageComplete) return
 
     setIsAnimating(true)
 
-    const question = questions[currentQuestion]
-    const newScores = { ...scores }
-
-    // スライダー値に基づいてスコアを計算
-    // 1: left +2, 2: left +1, 3: both +0.5, 4: right +1, 5: right +2
-    if (sliderValue === 1) {
-      newScores[question.leftType] += 2
-    } else if (sliderValue === 2) {
-      newScores[question.leftType] += 1
-    } else if (sliderValue === 3) {
-      newScores[question.leftType] += 0.5
-      newScores[question.rightType] += 0.5
-    } else if (sliderValue === 4) {
-      newScores[question.rightType] += 1
-    } else if (sliderValue === 5) {
-      newScores[question.rightType] += 2
-    }
-
-    setScores(newScores)
-
     setTimeout(() => {
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1)
-        setSliderValue(3) // リセット
+      if (currentPage < TOTAL_PAGES - 1) {
+        setCurrentPage(currentPage + 1)
         setIsAnimating(false)
+        // ページトップにスクロール
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       } else {
         // 結果を計算して結果ページへリダイレクト
-        const mbtiResult = calculateResult(newScores)
+        const mbtiResult = calculateResult(answers)
         router.push(`/mbti/result/${mbtiResult.toLowerCase()}`)
       }
     }, 300)
-  }, [currentQuestion, scores, sliderValue, isAnimating, router])
+  }, [currentPage, answers, isAnimating, isPageComplete, router])
 
-  const progress = ((currentQuestion + 1) / questions.length) * 100
-  const question = questions[currentQuestion]
-
-  // スライダーのラベル
-  const sliderLabels = ['', '強め', 'やや', 'どちらも', 'やや', '強め', '']
+  const progress = ((currentPage + 1) / TOTAL_PAGES) * 100
+  const answeredCount = Object.keys(answers).length
 
   return (
     <div
@@ -224,7 +227,7 @@ export default function MBTIPage() {
 
       <main className="max-w-2xl mx-auto px-4 py-8">
         {/* Title */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">
             <span className="text-[#5DDFC3]">受験生</span>タイプ診断
           </h1>
@@ -234,13 +237,13 @@ export default function MBTIPage() {
         </div>
 
         {/* Progress Bar */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-medium">
-              Q{currentQuestion + 1} / {questions.length}
+              {currentPage + 1} / {TOTAL_PAGES} ページ
             </span>
             <span className="text-sm text-[#5DDFC3] font-medium">
-              {Math.round(progress)}%
+              {answeredCount} / {questions.length} 回答済み
             </span>
           </div>
           <div className="w-full bg-white rounded-full h-3 shadow-inner">
@@ -251,106 +254,101 @@ export default function MBTIPage() {
           </div>
         </div>
 
-        {/* Question Card */}
+        {/* Questions */}
         <div
-          className={`bg-white rounded-2xl shadow-lg p-6 md:p-8 transition-all duration-300 ${
-            isAnimating ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
+          className={`space-y-6 transition-all duration-300 ${
+            isAnimating ? 'opacity-50' : 'opacity-100'
           }`}
         >
-          <h2 className="text-xl md:text-2xl font-bold text-center mb-8">
-            {question.question}
-          </h2>
+          {currentQuestions.map((question, index) => (
+            <div
+              key={question.id}
+              className="bg-white rounded-2xl shadow-lg p-5 md:p-6"
+            >
+              {/* Question Number & Text */}
+              <div className="flex items-start gap-3 mb-5">
+                <span className="flex-shrink-0 w-8 h-8 bg-[#5DDFC3] text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  {question.id}
+                </span>
+                <h2 className="text-lg font-bold pt-1">{question.question}</h2>
+              </div>
 
-          {/* Slider Section */}
-          <div className="space-y-6">
-            {/* Labels */}
-            <div className="flex justify-between items-center">
-              <div className="text-center flex-1">
-                <span className="text-sm md:text-base font-medium text-[#5DDFC3]">
+              {/* Labels */}
+              <div className="flex justify-between items-center mb-3 px-1">
+                <span className="text-xs md:text-sm font-medium text-[#5DDFC3]">
                   {question.leftLabel}
                 </span>
-              </div>
-              <div className="text-center flex-1">
-                <span className="text-sm md:text-base font-medium text-[#F97316]">
+                <span className="text-xs md:text-sm font-medium text-[#F97316]">
                   {question.rightLabel}
                 </span>
               </div>
-            </div>
 
-            {/* Slider */}
-            <div className="relative px-2">
-              {/* Track background */}
-              <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 rounded-full -translate-y-1/2" />
+              {/* Slider */}
+              <div className="relative px-1">
+                {/* Track background */}
+                <div className="absolute top-1/2 left-0 right-0 h-1.5 bg-gray-200 rounded-full -translate-y-1/2" />
 
-              {/* Center-based track */}
-              {sliderValue !== 3 && (
-                <div
-                  className="absolute top-1/2 h-2 rounded-full -translate-y-1/2 transition-all"
-                  style={{
-                    left: sliderValue < 3 ? `${((sliderValue - 1) / 4) * 100}%` : '50%',
-                    width: `${Math.abs(sliderValue - 3) * 25}%`,
-                    background: sliderValue < 3 ? '#5DDFC3' : '#F97316',
-                  }}
-                />
-              )}
+                {/* Center-based track */}
+                {answers[question.id] !== undefined && answers[question.id] !== 3 && (
+                  <div
+                    className="absolute top-1/2 h-1.5 rounded-full -translate-y-1/2 transition-all"
+                    style={{
+                      left: answers[question.id] < 3 ? `${((answers[question.id] - 1) / 4) * 100}%` : '50%',
+                      width: `${Math.abs((answers[question.id] || 3) - 3) * 25}%`,
+                      background: answers[question.id] < 3 ? '#5DDFC3' : '#F97316',
+                    }}
+                  />
+                )}
 
-              {/* Dots */}
-              <div className="relative flex justify-between items-center">
-                {[1, 2, 3, 4, 5].map((value) => (
-                  <button
-                    key={value}
-                    onClick={() => setSliderValue(value)}
-                    className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 transition-all z-10 flex items-center justify-center ${
-                      sliderValue === value
-                        ? value < 3
-                          ? 'bg-white border-[#5DDFC3] shadow-lg scale-110'
-                          : value > 3
-                            ? 'bg-white border-[#F97316] shadow-lg scale-110'
-                            : 'bg-white border-gray-400 shadow-lg scale-110'
-                        : 'bg-white border-gray-300 hover:border-gray-400'
-                    }`}
-                  >
-                    <span className={`text-xs font-medium ${
-                      sliderValue === value
-                        ? value < 3
-                          ? 'text-[#5DDFC3]'
-                          : value > 3
-                            ? 'text-[#F97316]'
-                            : 'text-gray-500'
-                        : 'text-gray-400'
-                    }`}>
-                      {value === 3 ? '−' : value < 3 ? 5 - value : value - 1}
-                    </span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Slider labels */}
-              <div className="flex justify-between mt-2 text-xs text-gray-400">
-                <span>強め</span>
-                <span>やや</span>
-                <span>中立</span>
-                <span>やや</span>
-                <span>強め</span>
+                {/* Dots */}
+                <div className="relative flex justify-between items-center">
+                  {[1, 2, 3, 4, 5].map((value) => {
+                    const isSelected = answers[question.id] === value
+                    return (
+                      <button
+                        key={value}
+                        onClick={() => handleAnswerChange(question.id, value)}
+                        className={`w-7 h-7 md:w-8 md:h-8 rounded-full border-2 transition-all z-10 flex items-center justify-center ${
+                          isSelected
+                            ? value < 3
+                              ? 'bg-[#5DDFC3] border-[#5DDFC3] shadow-lg scale-110'
+                              : value > 3
+                                ? 'bg-[#F97316] border-[#F97316] shadow-lg scale-110'
+                                : 'bg-gray-400 border-gray-400 shadow-lg scale-110'
+                            : 'bg-white border-gray-300 hover:border-gray-400'
+                        }`}
+                      >
+                        <span
+                          className={`text-xs font-medium ${
+                            isSelected ? 'text-white' : 'text-gray-400'
+                          }`}
+                        >
+                          {value === 3 ? '−' : value < 3 ? 4 - value : value - 2}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
             </div>
-
-            {/* Next Button */}
-            <button
-              onClick={handleNext}
-              disabled={isAnimating}
-              className="w-full mt-6 p-4 bg-[#5DDFC3] hover:bg-[#4ECFB3] text-white font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              {currentQuestion < questions.length - 1 ? '次へ' : '結果を見る'}
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
+          ))}
         </div>
 
-        {/* Hint */}
-        <p className="text-center text-sm text-[#3A405A] opacity-50 mt-6">
-          直感で選んでください
-        </p>
+        {/* Next Button */}
+        <button
+          onClick={handleNext}
+          disabled={isAnimating || !isPageComplete}
+          className="w-full mt-6 p-4 bg-[#5DDFC3] hover:bg-[#4ECFB3] text-white font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {currentPage < TOTAL_PAGES - 1 ? '次へ' : '結果を見る'}
+          <ChevronRight className="w-5 h-5" />
+        </button>
+
+        {!isPageComplete && (
+          <p className="text-center text-sm text-[#3A405A] opacity-50 mt-3">
+            全ての質問に回答してください
+          </p>
+        )}
       </main>
 
       {/* Footer */}
