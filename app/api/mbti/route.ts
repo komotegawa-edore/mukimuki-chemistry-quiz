@@ -42,18 +42,15 @@ export async function POST(request: NextRequest) {
 
     console.log('Inserting MBTI result:', { mbti_type, userAgent, referrer })
 
-    const { data, error } = await supabase
-      .from('mukimuki_mbti_results')
-      .insert({
-        mbti_type: mbti_type.toUpperCase(),
-        user_agent: userAgent,
-        referrer: referrer,
-        utm_source,
-        utm_medium,
-        utm_campaign,
-      })
-      .select('session_id')
-      .single()
+    // SECURITY DEFINER関数を使用してRLSをバイパス
+    const { data, error } = await supabase.rpc('insert_mbti_result', {
+      p_mbti_type: mbti_type.toUpperCase(),
+      p_user_agent: userAgent,
+      p_referrer: referrer,
+      p_utm_source: utm_source,
+      p_utm_medium: utm_medium,
+      p_utm_campaign: utm_campaign,
+    })
 
     if (error) {
       console.error('Supabase insert error:', error)
@@ -67,7 +64,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      session_id: data.session_id,
+      session_id: data, // rpcは直接UUIDを返す
     })
   } catch (err) {
     console.error('API error:', err)
