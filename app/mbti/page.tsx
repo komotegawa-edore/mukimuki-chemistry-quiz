@@ -282,16 +282,17 @@ export default function MBTIPage() {
               {/* Track background */}
               <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 rounded-full -translate-y-1/2" />
 
-              {/* Gradient track */}
-              <div
-                className="absolute top-1/2 left-0 h-2 rounded-full -translate-y-1/2 transition-all"
-                style={{
-                  width: `${((sliderValue - 1) / 4) * 100}%`,
-                  background: sliderValue <= 3
-                    ? 'linear-gradient(to right, #5DDFC3, #5DDFC3)'
-                    : 'linear-gradient(to right, #5DDFC3, #F97316)',
-                }}
-              />
+              {/* Center-based track */}
+              {sliderValue !== 3 && (
+                <div
+                  className="absolute top-1/2 h-2 rounded-full -translate-y-1/2 transition-all"
+                  style={{
+                    left: sliderValue < 3 ? `${((sliderValue - 1) / 4) * 100}%` : '50%',
+                    width: `${Math.abs(sliderValue - 3) * 25}%`,
+                    background: sliderValue < 3 ? '#5DDFC3' : '#F97316',
+                  }}
+                />
+              )}
 
               {/* Dots */}
               <div className="relative flex justify-between items-center">
@@ -301,14 +302,24 @@ export default function MBTIPage() {
                     onClick={() => setSliderValue(value)}
                     className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 transition-all z-10 flex items-center justify-center ${
                       sliderValue === value
-                        ? 'bg-white border-[#5DDFC3] shadow-lg scale-110'
-                        : 'bg-white border-gray-300 hover:border-[#5DDFC3]'
+                        ? value < 3
+                          ? 'bg-white border-[#5DDFC3] shadow-lg scale-110'
+                          : value > 3
+                            ? 'bg-white border-[#F97316] shadow-lg scale-110'
+                            : 'bg-white border-gray-400 shadow-lg scale-110'
+                        : 'bg-white border-gray-300 hover:border-gray-400'
                     }`}
                   >
                     <span className={`text-xs font-medium ${
-                      sliderValue === value ? 'text-[#5DDFC3]' : 'text-gray-400'
+                      sliderValue === value
+                        ? value < 3
+                          ? 'text-[#5DDFC3]'
+                          : value > 3
+                            ? 'text-[#F97316]'
+                            : 'text-gray-500'
+                        : 'text-gray-400'
                     }`}>
-                      {value}
+                      {value === 3 ? '−' : value < 3 ? 5 - value : value - 1}
                     </span>
                   </button>
                 ))}
@@ -318,7 +329,7 @@ export default function MBTIPage() {
               <div className="flex justify-between mt-2 text-xs text-gray-400">
                 <span>強め</span>
                 <span>やや</span>
-                <span>どちらも</span>
+                <span>中立</span>
                 <span>やや</span>
                 <span>強め</span>
               </div>
