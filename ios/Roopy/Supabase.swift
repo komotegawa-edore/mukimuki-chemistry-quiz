@@ -50,7 +50,8 @@ final class SupabaseManager {
             supabaseURL: URL(string: "https://hlfpnquhlkqjsqsipnea.supabase.co")!,
             supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsZnBucXVobGtxanNxc2lwbmVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzMyNTgsImV4cCI6MjA3OTE0OTI1OH0.SST4WlhXN7nZHUV3xkTvr9z7Jca_XlLuxCZR4-OwOzg",
             options: SupabaseClientOptions(
-                db: .init(decoder: decoder)
+                db: .init(decoder: decoder),
+                auth: .init(emitLocalSessionAsInitialSession: true)
             )
         )
     }
@@ -58,3 +59,4 @@ final class SupabaseManager {
 
 // 便利なグローバルアクセサ
 let supabase = SupabaseManager.shared.client
+

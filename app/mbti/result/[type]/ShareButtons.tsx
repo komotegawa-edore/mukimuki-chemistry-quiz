@@ -6,7 +6,7 @@ import Link from 'next/link'
 interface ShareButtonsProps {
   type: string
   typeData: {
-    emoji: string
+    icon: string
     title: string
     description: string
   }
@@ -16,7 +16,7 @@ export default function ShareButtons({ type, typeData }: ShareButtonsProps) {
   const shareUrl = `https://edore-edu.com/mbti/result/${type.toLowerCase()}`
 
   const handleShare = async () => {
-    const shareText = `【受験生タイプ診断】\n\n私は「${typeData.emoji} ${type} - ${typeData.title}」でした！\n\n${typeData.description}\n\n🎓 大学受験を"ゲームする"なら #Roopy`
+    const shareText = `【受験生タイプ診断】\n\n私は「${type} - ${typeData.title}」でした！\n\n${typeData.description}\n\n大学受験を"ゲームする"なら #Roopy`
 
     if (navigator.share) {
       try {
@@ -37,7 +37,7 @@ export default function ShareButtons({ type, typeData }: ShareButtonsProps) {
 
   const shareToX = () => {
     const text = encodeURIComponent(
-      `【受験生タイプ診断】\n私は「${typeData.emoji} ${type} - ${typeData.title}」でした！\n\n🎓 大学受験を"ゲームする"なら #Roopy`
+      `【受験生タイプ診断】\n私は「${type} - ${typeData.title}」でした！\n\n大学受験を"ゲームする"なら #Roopy`
     )
     const url = encodeURIComponent(shareUrl)
     window.open(

@@ -8,36 +8,79 @@ final class HomeViewModel: ObservableObject {
     @Published var dailyMission: DailyMission?
     @Published var badges: [UserBadge] = []
     @Published var totalPoints: Int = 0
-    @Published var todayTasks: [RoadmapDailyTask] = []
-    @Published var overdueTasks: [RoadmapDailyTask] = []
+    @Published var nextTasks: [RoadmapDailyTask] = []  // 次にやるべきタスク（未完了の最も早いもの）
     @Published var activeRoadmap: UserRoadmap?
     @Published var currentMaterials: [RoadmapMaterial] = []
+    @Published var allTasks: [RoadmapDailyTask] = []  // 全タスク（進捗計算用）
     @Published var isLoading = false
     @Published var error: Error?
 
     private let roadmapService = RoadmapService.shared
 
-    /// 今日の未完了タスク数
-    var pendingTaskCount: Int {
-        todayTasks.filter { $0.status != .completed }.count
+    /// 教材ごとの進捗率を取得
+    func progressForMaterial(_ materialId: Int) -> Double {
+        let materialTasks = allTasks.filter { $0.roadmapMaterialId == materialId }
+        guard !materialTasks.isEmpty else { return 0 }
+        let completedCount = materialTasks.filter { $0.status == .completed || $0.status == .skipped }.count
+        return Double(completedCount) / Double(materialTasks.count)
     }
 
-    /// 今日の完了タスク数
-    var completedTaskCount: Int {
-        todayTasks.filter { $0.status == .completed }.count
+    /// 教材ごとの完了タスク数を取得
+    func completedTaskCountForMaterial(_ materialId: Int) -> Int {
+        allTasks.filter { $0.roadmapMaterialId == materialId && ($0.status == .completed || $0.status == .skipped) }.count
     }
 
-    /// 今日の進捗率
-    var todayProgress: Double {
-        guard !todayTasks.isEmpty else { return 0 }
-        return Double(completedTaskCount) / Double(todayTasks.count)
+    /// 教材ごとの総タスク数を取得
+    func totalTaskCountForMaterial(_ materialId: Int) -> Int {
+        allTasks.filter { $0.roadmapMaterialId == materialId }.count
     }
 
-    /// 今日の残り予想時間
-    var remainingMinutes: Int {
-        todayTasks
-            .filter { $0.status != .completed }
-            .reduce(0) { $0 + $1.estimatedMinutes }
+    /// 教材ごとの残り日数を動的計算
+    func daysRemainingForMaterial(_ materialId: Int) -> Int {
+        let materialTasks = allTasks.filter { $0.roadmapMaterialId == materialId }
+        guard !materialTasks.isEmpty else { return 0 }
+
+        let completedCount = materialTasks.filter { $0.status == .completed || $0.status == .skipped }.count
+        let remainingCount = materialTasks.count - completedCount
+
+        // 全部終わっていたら0日
+        if remainingCount == 0 { return 0 }
+
+        // 1日あたりの平均タスク数を計算
+        let tasksByDate = Dictionary(grouping: materialTasks) { task -> String in
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            return formatter.string(from: task.taskDate)
+        }
+        let avgTasksPerDay = max(1.0, Double(materialTasks.count) / Double(max(1, tasksByDate.count)))
+
+        // 残りタスク数 ÷ 1日あたりタスク数 = 残り日数
+        return Int(ceil(Double(remainingCount) / avgTasksPerDay))
+    }
+
+    /// 次のタスク数
+    var nextTaskCount: Int {
+        nextTasks.count
+    }
+
+    /// 次のタスクの予想時間
+    var nextTasksMinutes: Int {
+        nextTasks.reduce(0) { $0 + $1.estimatedMinutes }
+    }
+
+    /// 次のタスクの日付テキスト
+    var nextTaskDateText: String {
+        guard let firstTask = nextTasks.first else { return "なし" }
+        let calendar = Calendar.current
+        if calendar.isDateInToday(firstTask.taskDate) {
+            return "今日"
+        } else if calendar.isDateInTomorrow(firstTask.taskDate) {
+            return "明日"
+        } else {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "M/d"
+            return formatter.string(from: firstTask.taskDate)
+        }
     }
 
     func loadData() async {
@@ -50,7 +93,6 @@ final class HomeViewModel: ObservableObject {
         async let missionsTask = fetchDailyMission(userId: userId)
         async let badgesTask = fetchBadges(userId: userId)
         async let pointsTask = fetchTotalPoints(userId: userId)
-        async let tasksTask = fetchTodayTasks(userId: userId)
         async let roadmapTask = fetchActiveRoadmap(userId: userId)
 
         do {
@@ -58,18 +100,39 @@ final class HomeViewModel: ObservableObject {
             dailyMission = try await missionsTask
             badges = try await badgesTask
             totalPoints = try await pointsTask
-            let (today, overdue) = try await tasksTask
-            todayTasks = today
-            overdueTasks = overdue
             activeRoadmap = try await roadmapTask
 
-            // 現在取り組み中の教材を取得
+            // 現在取り組み中の教材とタスクを取得
             if let roadmap = activeRoadmap {
                 currentMaterials = try await roadmapService.fetchCurrentMaterials(roadmapId: roadmap.id)
+                allTasks = try await roadmapService.fetchAllTasks(roadmapId: roadmap.id)
+
+                print("📚 HomeViewModel: currentMaterials count = \(currentMaterials.count)")
+                print("📚 HomeViewModel: allTasks count = \(allTasks.count)")
+
+                // 次にやるべきタスクを計算（未完了で最も早い日付のタスク）
+                nextTasks = calculateNextTasks()
+                print("📚 HomeViewModel: nextTasks count = \(nextTasks.count)")
             }
         } catch {
             self.error = error
             print("HomeViewModel error: \(error)")
+        }
+    }
+
+    /// 次にやるべきタスクを計算（未完了の最も早い日付のタスク群）
+    private func calculateNextTasks() -> [RoadmapDailyTask] {
+        // 未完了タスクを日付順にソート
+        let pendingTasks = allTasks
+            .filter { $0.status != .completed && $0.status != .skipped }
+            .sorted { $0.taskDate < $1.taskDate }
+
+        guard let firstTask = pendingTasks.first else { return [] }
+
+        // 最も早い日付のタスクをすべて取得
+        let calendar = Calendar.current
+        return pendingTasks.filter {
+            calendar.isDate($0.taskDate, inSameDayAs: firstTask.taskDate)
         }
     }
 
@@ -143,12 +206,6 @@ final class HomeViewModel: ObservableObject {
         return chapterPoints + loginPoints
     }
 
-    private func fetchTodayTasks(userId: UUID) async throws -> (today: [RoadmapDailyTask], overdue: [RoadmapDailyTask]) {
-        async let today = roadmapService.fetchTodayTasksForUser(userId: userId)
-        async let overdue = roadmapService.fetchOverdueTasksForUser(userId: userId)
-        return try await (today, overdue)
-    }
-
     private func fetchActiveRoadmap(userId: UUID) async throws -> UserRoadmap? {
         try await roadmapService.fetchActiveRoadmap(userId: userId)
     }
@@ -164,11 +221,13 @@ final class HomeViewModel: ObservableObject {
                 notes: notes
             )
             // ローカル状態更新
-            if let index = todayTasks.firstIndex(where: { $0.id == task.id }) {
-                todayTasks[index].status = .completed
-                todayTasks[index].completedAt = Date()
-                todayTasks[index].actualMinutes = actualMinutes
+            if let index = allTasks.firstIndex(where: { $0.id == task.id }) {
+                allTasks[index].status = .completed
+                allTasks[index].completedAt = Date()
+                allTasks[index].actualMinutes = actualMinutes
             }
+            // 次のタスクを再計算
+            nextTasks = calculateNextTasks()
         } catch {
             self.error = error
         }
@@ -179,11 +238,13 @@ final class HomeViewModel: ObservableObject {
         do {
             try await roadmapService.uncompleteTask(taskId: task.id)
             // ローカル状態更新
-            if let index = todayTasks.firstIndex(where: { $0.id == task.id }) {
-                todayTasks[index].status = .pending
-                todayTasks[index].completedAt = nil
-                todayTasks[index].actualMinutes = nil
+            if let index = allTasks.firstIndex(where: { $0.id == task.id }) {
+                allTasks[index].status = .pending
+                allTasks[index].completedAt = nil
+                allTasks[index].actualMinutes = nil
             }
+            // 次のタスクを再計算
+            nextTasks = calculateNextTasks()
         } catch {
             self.error = error
         }
@@ -199,12 +260,14 @@ final class HomeViewModel: ObservableObject {
                 notes: notes
             )
             // ローカル状態更新
-            if let index = todayTasks.firstIndex(where: { $0.id == task.id }) {
-                todayTasks[index].status = .completed
-                todayTasks[index].completedAt = Date()
-                todayTasks[index].actualMinutes = actualMinutes
-                todayTasks[index].completedChapter = completedChapter
+            if let index = allTasks.firstIndex(where: { $0.id == task.id }) {
+                allTasks[index].status = .completed
+                allTasks[index].completedAt = Date()
+                allTasks[index].actualMinutes = actualMinutes
+                allTasks[index].completedChapter = completedChapter
             }
+            // 次のタスクを再計算
+            nextTasks = calculateNextTasks()
         } catch {
             self.error = error
         }

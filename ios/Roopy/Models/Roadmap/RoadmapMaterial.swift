@@ -76,4 +76,14 @@ struct MaterialSchedule {
     let endDate: Date
     let cycles: Int
     let isParallel: Bool
+    let isWeekly: Bool  // 週2回ペースか（長文用）
+
+    init(material: EnglishMaterial, startDate: Date, endDate: Date, cycles: Int, isParallel: Bool, isWeekly: Bool = false) {
+        self.material = material
+        self.startDate = startDate
+        self.endDate = endDate
+        self.cycles = cycles
+        self.isParallel = isParallel
+        self.isWeekly = isWeekly
+    }
 }

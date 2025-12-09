@@ -15,21 +15,21 @@ struct MaterialGroup: Identifiable {
         self.stageName = stageName
         self.category = category
         self.materials = materials
-        // 英単語・英熟語は並行進行
-        self.isParallel = ["英単語", "英熟語"].contains(category)
+        // 単語・熟語は並行進行
+        self.isParallel = ["単語", "熟語"].contains(category)
     }
 
     /// カテゴリのアイコン
     var categoryIcon: String {
         switch category {
-        case "英単語": return "textformat.abc"
-        case "英熟語": return "text.word.spacing"
+        case "単語": return "textformat.abc"
+        case "熟語": return "text.word.spacing"
         case "文法": return "text.book.closed"
-        case "文法演習": return "pencil.and.list.clipboard"
         case "解釈": return "magnifyingglass"
         case "長文": return "doc.text"
         case "英作文": return "pencil"
         case "リスニング": return "headphones"
+        case "過去問": return "doc.badge.clock"
         default: return "book"
         }
     }
@@ -37,14 +37,14 @@ struct MaterialGroup: Identifiable {
     /// カテゴリの説明
     var categoryDescription: String {
         switch category {
-        case "英単語": return "毎日コツコツ進める"
-        case "英熟語": return "毎日コツコツ進める"
+        case "単語": return "毎日コツコツ進める"
+        case "熟語": return "毎日コツコツ進める"
         case "文法": return "基礎から順番に"
-        case "文法演習": return "文法の定着用"
         case "解釈": return "長文読解の基礎"
         case "長文": return "実践的な読解力"
         case "英作文": return "アウトプット力"
         case "リスニング": return "リスニング対策"
+        case "過去問": return "実践的な演習"
         default: return ""
         }
     }
@@ -55,12 +55,22 @@ struct MaterialSelections {
     /// stageId_category -> 選択されたmaterial.id
     var selections: [String: Int] = [:]
 
-    /// グループで選択された教材を取得
+    /// グループで選択された教材を取得（未選択ならnil）
     func selectedMaterial(for group: MaterialGroup) -> EnglishMaterial? {
         guard let selectedId = selections[group.id] else {
-            return group.materials.first
+            return nil  // 未選択の場合はnilを返す
         }
         return group.materials.first { $0.id == selectedId }
+    }
+
+    /// グループが選択済みかどうか
+    func isSelected(for group: MaterialGroup) -> Bool {
+        selections[group.id] != nil
+    }
+
+    /// すべてのグループが選択済みかどうか
+    func allSelected(groups: [MaterialGroup]) -> Bool {
+        groups.allSatisfy { isSelected(for: $0) }
     }
 
     /// 教材を選択

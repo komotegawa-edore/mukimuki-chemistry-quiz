@@ -178,7 +178,16 @@ function LoginForm() {
             </button>
           </div>
 
-          <div className="mt-6 text-center text-sm">
+          <div className="mt-4 text-center">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-[#3A405A] opacity-70 hover:text-[#5DDFC3] hover:opacity-100 transition-colors"
+            >
+              パスワードを忘れた方はこちら
+            </Link>
+          </div>
+
+          <div className="mt-4 text-center text-sm">
             <span className="text-[#3A405A]">アカウントをお持ちでないですか？</span>
             <Link href="/signup" className="text-[#5DDFC3] hover:text-[#4ECFB3] font-semibold ml-2">
               新規登録

@@ -4,8 +4,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Noto_Sans_JP } from 'next/font/google'
 import { typeResults, isValidMBTIType } from '@/lib/mbti-data'
-import { Share2, RotateCcw, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import ShareButtons from './ShareButtons'
+import TypeIcon from './TypeIcon'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -32,10 +33,10 @@ export async function generateMetadata({
   const typeData = typeResults[upperType]
 
   return {
-    title: `${typeData.emoji} ${upperType} ${typeData.title} | 受験生タイプ診断`,
+    title: `${upperType} ${typeData.title} | 受験生タイプ診断`,
     description: typeData.description,
     openGraph: {
-      title: `${typeData.emoji} ${upperType} ${typeData.title} | 受験生タイプ診断`,
+      title: `${upperType} ${typeData.title} | 受験生タイプ診断`,
       description: typeData.description,
       images: [
         {
@@ -48,7 +49,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${typeData.emoji} ${upperType} ${typeData.title} | 受験生タイプ診断`,
+      title: `${upperType} ${typeData.title} | 受験生タイプ診断`,
       description: typeData.description,
       images: [`/api/og/mbti?type=${upperType}`],
     },
@@ -111,12 +112,14 @@ export default async function MBTIResultPage({ params }: PageProps) {
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6">
           {/* Type Header */}
           <div
-            className="p-6 text-white text-center"
+            className="p-8 text-white text-center"
             style={{
               background: `linear-gradient(135deg, ${typeData.color} 0%, ${typeData.color}dd 100%)`,
             }}
           >
-            <div className="text-5xl mb-2">{typeData.emoji}</div>
+            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <TypeIcon iconName={typeData.icon} className="w-10 h-10 text-white" />
+            </div>
             <div className="text-3xl font-bold mb-1">{upperType}</div>
             <div className="text-xl">{typeData.title}</div>
           </div>
@@ -129,7 +132,10 @@ export default async function MBTIResultPage({ params }: PageProps) {
 
             {/* Strengths */}
             <div className="mb-6">
-              <h3 className="font-bold text-[#5DDFC3] mb-3">💪 強み</h3>
+              <h3 className="font-bold text-[#5DDFC3] mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 bg-[#E0F7F1] rounded-full flex items-center justify-center text-sm">💪</span>
+                強み
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {typeData.strengths.map((strength, index) => (
                   <span
@@ -144,8 +150,9 @@ export default async function MBTIResultPage({ params }: PageProps) {
 
             {/* Weaknesses */}
             <div className="mb-6">
-              <h3 className="font-bold text-orange-400 mb-3">
-                ⚠️ 気をつけたいこと
+              <h3 className="font-bold text-orange-400 mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 bg-orange-50 rounded-full flex items-center justify-center text-sm">⚠️</span>
+                気をつけたいこと
               </h3>
               <div className="flex flex-wrap gap-2">
                 {typeData.weaknesses.map((weakness, index) => (
@@ -161,8 +168,9 @@ export default async function MBTIResultPage({ params }: PageProps) {
 
             {/* Study Tips */}
             <div className="mb-6">
-              <h3 className="font-bold text-[#3A405A] mb-3">
-                📚 おすすめ勉強法
+              <h3 className="font-bold text-[#3A405A] mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 bg-blue-50 rounded-full flex items-center justify-center text-sm">📚</span>
+                おすすめ勉強法
               </h3>
               <ul className="space-y-2">
                 {typeData.studyTips.map((tip, index) => (
@@ -176,8 +184,9 @@ export default async function MBTIResultPage({ params }: PageProps) {
 
             {/* Compatible Types */}
             <div className="bg-[#F4F9F7] rounded-xl p-4">
-              <h3 className="font-bold text-[#3A405A] mb-2 text-sm">
-                🤝 相性の良いタイプ
+              <h3 className="font-bold text-[#3A405A] mb-2 text-sm flex items-center gap-2">
+                <span className="w-5 h-5 bg-white rounded-full flex items-center justify-center text-xs">🤝</span>
+                相性の良いタイプ
               </h3>
               <div className="flex gap-2">
                 {typeData.compatibleTypes.map((compatType, index) => (

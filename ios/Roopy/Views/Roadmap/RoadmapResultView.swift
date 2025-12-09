@@ -4,11 +4,16 @@ import SwiftUI
 struct RoadmapResultView: View {
 
     @StateObject private var viewModel: RoadmapResultViewModel
+    @EnvironmentObject var authService: AuthService
     @Environment(\.dismiss) private var dismiss
+    @State private var isSaving = false
+    @State private var saveError: String?
 
     let generatedRoadmap: GeneratedRoadmap
     let inputParams: RoadmapInputParams
     let onConfirm: () -> Void
+
+    private let roadmapService = RoadmapService.shared
 
     init(generatedRoadmap: GeneratedRoadmap, inputParams: RoadmapInputParams, onConfirm: @escaping () -> Void) {
         self.generatedRoadmap = generatedRoadmap
@@ -124,7 +129,7 @@ struct RoadmapResultView: View {
 
     private var stagesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("ステージ別スケジュール", systemImage: "chart.gantt")
+            Label("ステージ別スケジュール", systemImage: "chart.bar.xaxis")
                 .font(.headline)
 
             ForEach(viewModel.materialsByStage, id: \.stage.id) { item in
@@ -147,18 +152,41 @@ struct RoadmapResultView: View {
 
     private var confirmButton: some View {
         VStack(spacing: 12) {
-            Button(action: onConfirm) {
+            if let error = saveError {
                 HStack {
-                    Image(systemName: "checkmark.circle.fill")
-                    Text("このプランで開始")
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundColor(.red)
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
+                .padding()
+                .background(Color.red.opacity(0.1))
+                .cornerRadius(8)
+            }
+
+            Button {
+                Task {
+                    await saveRoadmap()
+                }
+            } label: {
+                HStack {
+                    if isSaving {
+                        ProgressView()
+                            .tint(.white)
+                    } else {
+                        Image(systemName: "checkmark.circle.fill")
+                    }
+                    Text(isSaving ? "保存中..." : "このプランで開始")
                 }
                 .font(.headline)
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color.blue)
+                .background(isSaving ? Color.gray : Color.blue)
                 .cornerRadius(12)
             }
+            .disabled(isSaving)
 
             Button {
                 dismiss()
@@ -167,6 +195,7 @@ struct RoadmapResultView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
+            .disabled(isSaving)
         }
         .padding(.top)
     }
@@ -177,6 +206,35 @@ struct RoadmapResultView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "M/d"
         return formatter.string(from: date)
+    }
+
+    // MARK: - Save
+
+    @MainActor
+    private func saveRoadmap() async {
+        guard let userId = authService.currentUserId else {
+            saveError = "ログインが必要です"
+            print("❌ currentUserId is nil")
+            return
+        }
+
+        isSaving = true
+        saveError = nil
+
+        do {
+            let saved = try await roadmapService.createRoadmap(
+                userId: userId,
+                params: inputParams,
+                generatedRoadmap: generatedRoadmap
+            )
+            print("✅ Roadmap saved successfully: \(saved.id)")
+            onConfirm()
+        } catch {
+            print("❌ Failed to save roadmap: \(error)")
+            saveError = "保存に失敗しました: \(error.localizedDescription)"
+        }
+
+        isSaving = false
     }
 }
 
@@ -332,4 +390,5 @@ struct WeekCard: View {
         ),
         onConfirm: {}
     )
+    .environmentObject(AuthService.shared)
 }

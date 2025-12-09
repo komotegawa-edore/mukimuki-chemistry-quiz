@@ -5,8 +5,10 @@ import SwiftUI
 struct GanttChartView: View {
     let stages: [RoadmapStage]
     let materials: [RoadmapMaterial]
+    let futureStages: [FutureStageEstimate]  // 将来のステージ予測
     let startDate: Date
     let endDate: Date
+    let examDate: Date?  // 入試日
 
     @State private var selectedMaterial: RoadmapMaterial?
     @State private var contentOffset: CGPoint = .zero
@@ -31,6 +33,11 @@ struct GanttChartView: View {
         for group in groupedMaterials {
             height += stageHeaderHeight
             height += CGFloat(group.materials.count) * rowHeight
+        }
+        // 将来のステージの高さを追加（通常の教材と同じ高さ）
+        if !futureStages.isEmpty {
+            height += stageHeaderHeight  // "将来の予定"ヘッダー
+            height += CGFloat(futureStages.count) * rowHeight
         }
         return max(height, 100)
     }
@@ -159,53 +166,147 @@ struct GanttChartView: View {
         VStack(spacing: 0) {
             ForEach(groupedMaterials, id: \.stage.id) { group in
                 // ステージヘッダー
-                HStack {
-                    Text(group.stage.stageId)
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(stageColor(group.stage.stageId))
-                        .cornerRadius(4)
-                    Spacer()
-                }
-                .frame(height: stageHeaderHeight)
-                .padding(.horizontal, 8)
-                .background(Color(.systemGray6))
-                .overlay(
-                    Rectangle()
-                        .stroke(Color(.systemGray5), lineWidth: 0.5)
-                )
+                leftColumnStageHeader(stageId: group.stage.stageId)
 
                 // 教材行（タップで詳細表示）
                 ForEach(group.materials) { material in
-                    Button {
-                        selectedMaterial = material
-                    } label: {
-                        HStack {
-                            Text(material.material?.materialName ?? "不明")
-                                .font(.system(size: 12))
-                                .lineLimit(1)
-                                .foregroundColor(.primary)
-                            Spacer()
-                            Image(systemName: "info.circle")
-                                .font(.system(size: 10))
-                                .foregroundColor(.secondary)
-                        }
-                        .frame(height: rowHeight)
-                        .padding(.horizontal, 8)
-                        .background(Color(.systemBackground))
-                        .overlay(
-                            Rectangle()
-                                .stroke(Color(.systemGray5), lineWidth: 0.5)
-                        )
-                    }
-                    .buttonStyle(.plain)
+                    leftColumnMaterialRow(material: material)
+                }
+            }
+
+            // 将来のステージ（予測）
+            if !futureStages.isEmpty {
+                // 将来の予定ヘッダー
+                leftColumnFutureHeader
+
+                // 将来のステージ行
+                ForEach(futureStages) { stage in
+                    leftColumnFutureRow(stage: stage)
                 }
             }
         }
         .background(Color(.systemBackground))
+    }
+
+    /// 左カラム - ステージヘッダー
+    private func leftColumnStageHeader(stageId: String) -> some View {
+        ZStack {
+            Rectangle()
+                .fill(Color(.systemGray6))
+
+            HStack {
+                Text(stageId)
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(stageColor(stageId))
+                    .cornerRadius(4)
+                Spacer()
+            }
+            .padding(.horizontal, 8)
+        }
+        .frame(width: leftColumnWidth, height: stageHeaderHeight)
+        .overlay(
+            Rectangle()
+                .stroke(Color(.systemGray5), lineWidth: 0.5)
+        )
+    }
+
+    /// 左カラム - 教材行
+    private func leftColumnMaterialRow(material: RoadmapMaterial) -> some View {
+        Button {
+            selectedMaterial = material
+        } label: {
+            ZStack {
+                Rectangle()
+                    .fill(Color(.systemBackground))
+
+                HStack {
+                    Text(material.material?.materialName ?? "不明")
+                        .font(.system(size: 12))
+                        .lineLimit(1)
+                        .foregroundColor(.primary)
+                    Spacer()
+                    Image(systemName: "info.circle")
+                        .font(.system(size: 10))
+                        .foregroundColor(.secondary)
+                }
+                .padding(.horizontal, 8)
+            }
+            .frame(width: leftColumnWidth, height: rowHeight)
+            .overlay(
+                Rectangle()
+                    .stroke(Color(.systemGray5), lineWidth: 0.5)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// 左カラム - 将来の予定ヘッダー
+    private var leftColumnFutureHeader: some View {
+        ZStack {
+            LinearGradient(
+                colors: [Color.orange.opacity(0.15), Color.orange.opacity(0.08)],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+
+            HStack(spacing: 6) {
+                Image(systemName: "clock.arrow.circlepath")
+                    .font(.caption)
+                    .foregroundColor(.orange)
+                Text("将来の予測")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundColor(.orange)
+                Spacer()
+                Text("(\(futureStages.count)件)")
+                    .font(.system(size: 10))
+                    .foregroundColor(.orange.opacity(0.7))
+            }
+            .padding(.horizontal, 8)
+        }
+        .frame(width: leftColumnWidth, height: stageHeaderHeight)
+        .overlay(
+            Rectangle()
+                .stroke(Color.orange.opacity(0.4), lineWidth: 0.5)
+        )
+    }
+
+    /// 左カラム - 将来のステージ行
+    private func leftColumnFutureRow(stage: FutureStageEstimate) -> some View {
+        let stageClr = stageColor(stage.stageId)
+
+        return ZStack {
+            Rectangle()
+                .fill(Color(.systemGray6).opacity(0.3))
+
+            HStack(spacing: 6) {
+                Text(stage.stageId)
+                    .font(.system(size: 11))
+                    .fontWeight(.semibold)
+                    .foregroundColor(stageClr)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4)
+                            .strokeBorder(stageClr, style: StrokeStyle(lineWidth: 1, dash: [3, 2]))
+                            .background(stageClr.opacity(0.1).clipShape(RoundedRectangle(cornerRadius: 4)))
+                    )
+                Spacer()
+                Text(stage.dateRangeText)
+                    .font(.system(size: 9))
+                    .foregroundColor(.secondary)
+            }
+            .padding(.horizontal, 8)
+        }
+        .frame(width: leftColumnWidth, height: rowHeight)
+        .overlay(
+            Rectangle()
+                .stroke(Color(.systemGray5), lineWidth: 0.5)
+        )
     }
 
     // MARK: - Chart Content
@@ -219,24 +320,60 @@ struct GanttChartView: View {
             VStack(spacing: 0) {
                 ForEach(groupedMaterials, id: \.stage.id) { group in
                     // ステージヘッダー行
-                    Rectangle()
-                        .fill(Color(.systemGray6))
-                        .frame(width: chartWidth, height: stageHeaderHeight)
-                        .overlay(
-                            Rectangle()
-                                .stroke(Color(.systemGray5), lineWidth: 0.5)
-                        )
+                    chartStageHeader
 
                     // 教材バー
                     ForEach(group.materials) { material in
                         materialBar(material)
                     }
                 }
+
+                // 将来のステージ（予測）
+                if !futureStages.isEmpty {
+                    // 将来の予定ヘッダー行
+                    chartFutureHeader
+
+                    // 将来のステージバー
+                    ForEach(futureStages) { stage in
+                        futureStageBar(stage)
+                    }
+                }
             }
+
+            // 入試日ライン
+            examDateLine
 
             // 今日のライン（最前面）
             todayLine
         }
+    }
+
+    /// チャート - ステージヘッダー行
+    private var chartStageHeader: some View {
+        Rectangle()
+            .fill(Color(.systemGray6))
+            .frame(width: chartWidth, height: stageHeaderHeight)
+            .overlay(
+                Rectangle()
+                    .stroke(Color(.systemGray5), lineWidth: 0.5)
+            )
+    }
+
+    /// チャート - 将来の予定ヘッダー行
+    private var chartFutureHeader: some View {
+        Rectangle()
+            .fill(
+                LinearGradient(
+                    colors: [Color.orange.opacity(0.15), Color.orange.opacity(0.08)],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
+            .frame(width: chartWidth, height: stageHeaderHeight)
+            .overlay(
+                Rectangle()
+                    .stroke(Color.orange.opacity(0.4), lineWidth: 0.5)
+            )
     }
 
     private var gridBackground: some View {
@@ -273,6 +410,91 @@ struct GanttChartView: View {
                     .offset(x: CGFloat(todayOffset) * dayWidth - 1)
             }
         }
+    }
+
+    /// 入試日ライン
+    private var examDateLine: some View {
+        Group {
+            if let exam = examDate {
+                let examOffset = Calendar.current.dateComponents([.day], from: startDate, to: exam).day ?? 0
+                if examOffset >= 0 && examOffset <= totalDays {
+                    VStack(spacing: 0) {
+                        // 入試日ラベル
+                        Text("入試")
+                            .font(.system(size: 9))
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 2)
+                            .background(Color.purple)
+                            .cornerRadius(4)
+                            .offset(y: -2)
+
+                        Rectangle()
+                            .fill(Color.purple)
+                            .frame(width: 2, height: totalRowHeight)
+                    }
+                    .offset(x: CGFloat(examOffset) * dayWidth - 1)
+                }
+            }
+        }
+    }
+
+    /// 将来のステージバー（予測スタイル - ストライプパターン）
+    private func futureStageBar(_ stage: FutureStageEstimate) -> some View {
+        let startOffset = max(0, Calendar.current.dateComponents([.day], from: startDate, to: stage.estimatedStartDate).day ?? 0)
+        let duration = max(1, Calendar.current.dateComponents([.day], from: stage.estimatedStartDate, to: stage.estimatedEndDate).day ?? 1)
+        let barWidth = CGFloat(duration) * dayWidth
+        let barOffset = CGFloat(startOffset) * dayWidth
+        let stageClr = stageColor(stage.stageId)
+
+        return ZStack(alignment: .leading) {
+            // 背景行
+            Rectangle()
+                .fill(Color(.systemGray6).opacity(0.3))
+                .frame(width: chartWidth, height: rowHeight)
+                .overlay(
+                    Rectangle()
+                        .stroke(Color(.systemGray5), lineWidth: 0.5)
+                )
+
+            // バー（予測スタイル - ストライプ + 破線枠）
+            ZStack {
+                // 斜線パターン背景
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(stageClr.opacity(0.25))
+
+                // ストライプパターン（予測を示す）
+                DiagonalStripePattern(color: stageClr.opacity(0.4), lineWidth: 2, spacing: 6)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+
+                // 破線の枠
+                RoundedRectangle(cornerRadius: 4)
+                    .strokeBorder(stageClr, style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
+
+                // テキスト
+                HStack(spacing: 4) {
+                    Image(systemName: "clock.arrow.circlepath")
+                        .font(.system(size: 9))
+                        .foregroundColor(stageClr)
+                    Text(stage.stageId)
+                        .font(.system(size: 10))
+                        .fontWeight(.semibold)
+                        .foregroundColor(stageClr)
+                    Spacer()
+                    if barWidth > 60 {
+                        Text("\(stage.estimatedDays)日")
+                            .font(.system(size: 10))
+                            .fontWeight(.medium)
+                            .foregroundColor(stageClr)
+                    }
+                }
+                .padding(.horizontal, 6)
+            }
+            .frame(width: max(barWidth - 6, 30), height: rowHeight - 10)
+            .offset(x: barOffset + 3)
+        }
+        .frame(width: chartWidth, height: rowHeight)
     }
 
     private func materialBar(_ material: RoadmapMaterial) -> some View {
@@ -323,7 +545,7 @@ struct GanttChartView: View {
             .buttonStyle(.plain)
             .offset(x: barOffset + 3)
         }
-        .frame(height: rowHeight)
+        .frame(width: chartWidth, height: rowHeight)
     }
 
     // MARK: - Helpers
@@ -372,6 +594,10 @@ struct GanttChartView: View {
     }
 
     private func stageColor(_ stageId: String) -> Color {
+        // 過去問演習フェーズは紫色
+        if stageId == "過去問" || stageId == "EXAM" {
+            return .purple
+        }
         let stageNumber = Int(stageId.dropFirst()) ?? 1
         let hue = Double(stageNumber - 1) / 10.0 * 0.6
         return Color(hue: hue, saturation: 0.6, brightness: 0.7)
@@ -391,7 +617,16 @@ struct GanttChartView: View {
     }
 }
 
-// MARK: - ScrollView with Offset Tracking
+// MARK: - Scroll Offset Preference Key
+
+struct ScrollOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGPoint = .zero
+    static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) {
+        value = nextValue()
+    }
+}
+
+// MARK: - ScrollView with Offset Tracking (Legacy - UIKit版)
 
 struct ScrollViewWithOffset<Content: View>: UIViewRepresentable {
     @Binding var offset: CGPoint
@@ -405,10 +640,15 @@ struct ScrollViewWithOffset<Content: View>: UIViewRepresentable {
         scrollView.bounces = true
         scrollView.alwaysBounceHorizontal = true
         scrollView.alwaysBounceVertical = true
+        scrollView.contentInsetAdjustmentBehavior = .never  // Safe area insetを無効化
 
         let hostingController = UIHostingController(rootView: content())
         hostingController.view.backgroundColor = .clear
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        // Safe area marginを無効化
+        if #available(iOS 16.4, *) {
+            hostingController.safeAreaRegions = []
+        }
 
         scrollView.addSubview(hostingController.view)
 
@@ -658,11 +898,57 @@ struct StatusBadge: View {
     }
 }
 
+// MARK: - Diagonal Stripe Pattern
+
+/// 斜線ストライプパターン（将来の予測を示すため）
+struct DiagonalStripePattern: View {
+    let color: Color
+    let lineWidth: CGFloat
+    let spacing: CGFloat
+
+    var body: some View {
+        GeometryReader { geometry in
+            Canvas { context, size in
+                let stripeSpacing = lineWidth + spacing
+                let diagonal = sqrt(size.width * size.width + size.height * size.height)
+                let numStripes = Int(diagonal / stripeSpacing) + 2
+
+                for i in -numStripes...numStripes {
+                    var path = Path()
+                    let offset = CGFloat(i) * stripeSpacing
+                    path.move(to: CGPoint(x: offset, y: 0))
+                    path.addLine(to: CGPoint(x: offset + size.height, y: size.height))
+                    context.stroke(path, with: .color(color), lineWidth: lineWidth)
+                }
+            }
+        }
+    }
+}
+
 #Preview {
     GanttChartView(
         stages: [],
         materials: [],
+        futureStages: [
+            FutureStageEstimate(
+                id: "E7",
+                stageId: "E7",
+                stageName: "E7 発展",
+                estimatedStartDate: Date(),
+                estimatedEndDate: Calendar.current.date(byAdding: .day, value: 30, to: Date())!,
+                estimatedDays: 30
+            ),
+            FutureStageEstimate(
+                id: "E8",
+                stageId: "E8",
+                stageName: "E8 難関",
+                estimatedStartDate: Calendar.current.date(byAdding: .day, value: 31, to: Date())!,
+                estimatedEndDate: Calendar.current.date(byAdding: .day, value: 60, to: Date())!,
+                estimatedDays: 29
+            )
+        ],
         startDate: Date(),
-        endDate: Calendar.current.date(byAdding: .month, value: 3, to: Date())!
+        endDate: Calendar.current.date(byAdding: .month, value: 3, to: Date())!,
+        examDate: Calendar.current.date(byAdding: .month, value: 4, to: Date())
     )
 }

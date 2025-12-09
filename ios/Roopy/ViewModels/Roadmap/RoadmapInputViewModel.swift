@@ -1,27 +1,35 @@
 import Foundation
 import SwiftUI
 
-/// 現在レベル入力モード
-enum CurrentLevelMode: String, CaseIterable {
-    case deviationBased = "偏差値"
-    case stageBased = "ステージ"
-
-    var displayName: String { rawValue }
-}
-
 /// ロードマップ入力画面のViewModel
 @MainActor
 final class RoadmapInputViewModel: ObservableObject {
 
     // MARK: - Published Properties (入力値)
 
-    @Published var selectedTargetLevel: TargetLevel = .march
-    @Published var selectedCurrentLevel: CurrentLevelMode = .deviationBased
+    /// 学年
+    @Published var selectedYear: SchoolYear = .secondYear
+
+    /// 模試種類
+    @Published var selectedExamType: MockExamType = .kawaiZentou
+
+    /// 偏差値
     @Published var deviationValue: Double = 50
-    @Published var currentStage: String = "E3"
+
+    /// 志望校レベル
+    @Published var selectedTargetLevel: TargetLevel = .march
+
+    /// 苦手分野
     @Published var selectedWeakAreas: Set<WeakArea> = []
+
+    /// 1日の学習時間
     @Published var dailyStudyMinutes: Int = 90
+
+    /// 試験日
     @Published var examDate: Date = Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date()
+
+    /// ステージ判定結果
+    @Published var stageDeterminationResult: StageDeterminationResult?
 
     // MARK: - Published Properties (教材選択)
 
@@ -57,11 +65,16 @@ final class RoadmapInputViewModel: ObservableObject {
         selectedWeakAreas.map { $0.rawValue }
     }
 
+    /// 現在のステージ（判定結果から取得）
+    var currentStage: String {
+        stageDeterminationResult?.stage ?? "E3"
+    }
+
     /// 入力パラメータ
     var inputParams: RoadmapInputParams {
         RoadmapInputParams(
-            currentLevel: selectedCurrentLevel == .stageBased ? currentStage : "",
-            currentDeviationValue: selectedCurrentLevel == .deviationBased ? deviationValue : nil,
+            currentLevel: currentStage,
+            currentDeviationValue: deviationValue,
             weakAreas: weakAreasArray,
             dailyStudyMinutes: dailyStudyMinutes,
             daysUntilExam: daysUntilExam,
@@ -72,10 +85,7 @@ final class RoadmapInputViewModel: ObservableObject {
 
     /// バリデーション
     var isValid: Bool {
-        if selectedCurrentLevel == .deviationBased {
-            return deviationValue >= 30 && deviationValue <= 80
-        }
-        return !currentStage.isEmpty
+        deviationValue >= 30 && deviationValue <= 80 && stageDeterminationResult != nil
     }
 
     /// 偏差値スライダーの表示テキスト
@@ -88,14 +98,19 @@ final class RoadmapInputViewModel: ObservableObject {
         [30, 60, 90, 120, 150, 180]
     }
 
-    /// ステージの選択肢
-    var stageOptions: [String] {
-        (1...10).map { "E\($0)" }
-    }
-
     // MARK: - Methods
 
+    /// ステージを判定
+    func determineStage() {
+        stageDeterminationResult = StageDeterminationResult(
+            year: selectedYear,
+            examType: selectedExamType,
+            deviation: deviationValue
+        )
+    }
+
     /// 教材データを取得してグループ化（教材選択画面へ）
+    /// 現在のステージの教材のみを表示する
     func loadMaterialsAndShowSelection() async {
         guard isValid else {
             errorMessage = "入力内容を確認してください"
@@ -117,15 +132,10 @@ final class RoadmapInputViewModel: ObservableObject {
 
             allMaterials = materials
 
-            // 2. 必要なステージ範囲を計算
-            let startStage = determineStartStage()
-            let targetStage = determineTargetStage()
-            let requiredStages = getStageRange(from: startStage, to: targetStage)
+            // 2. 現在のステージのみの教材をグループ化（先のステージは今は選ばない）
+            materialGroups = groupMaterials(materials, forStages: [currentStage])
 
-            // 3. 教材をグループ化
-            materialGroups = groupMaterials(materials, forStages: requiredStages)
-
-            // 4. デフォルト選択を設定（各グループの最初の教材）
+            // 3. デフォルト選択を設定（各グループの最初の教材）
             for group in materialGroups {
                 if let first = group.materials.first {
                     materialSelections.select(first, for: group)
@@ -207,21 +217,7 @@ final class RoadmapInputViewModel: ObservableObject {
 
     /// 開始ステージを決定
     private func determineStartStage() -> String {
-        if selectedCurrentLevel == .stageBased {
-            return currentStage
-        }
-
-        // 偏差値ベースの判定
-        switch deviationValue {
-        case ..<40:  return "E1"
-        case 40..<45: return "E3"
-        case 45..<50: return "E5"
-        case 50..<55: return "E6"
-        case 55..<60: return "E7"
-        case 60..<65: return "E8"
-        case 65..<70: return "E9"
-        default:      return "E10"
-        }
+        return currentStage
     }
 
     /// 目標ステージを決定
@@ -310,7 +306,8 @@ final class RoadmapInputViewModel: ObservableObject {
             isLoading = false
             return roadmap
         } catch {
-            errorMessage = "保存に失敗しました: \(error.localizedDescription)"
+            print("❌ saveRoadmap error: \(error)")
+            errorMessage = "保存に失敗しました: \(error)"
             isLoading = false
             return nil
         }
@@ -318,13 +315,14 @@ final class RoadmapInputViewModel: ObservableObject {
 
     /// 入力をリセット
     func reset() {
-        selectedTargetLevel = .march
-        selectedCurrentLevel = .deviationBased
+        selectedYear = .secondYear
+        selectedExamType = .kawaiZentou
         deviationValue = 50
-        currentStage = "E3"
+        selectedTargetLevel = .march
         selectedWeakAreas = []
         dailyStudyMinutes = 90
         examDate = Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date()
+        stageDeterminationResult = nil
         generatedRoadmap = nil
         showingResult = false
         errorMessage = nil

@@ -15,13 +15,12 @@ struct HomeView: View {
                     // Roopy挨拶カード
                     WelcomeCard()
 
-                    // 今日のタスク（ロードマップがある場合）
-                    if !viewModel.todayTasks.isEmpty || !viewModel.overdueTasks.isEmpty {
-                        TodayTasksCard(
-                            todayTasks: viewModel.todayTasks,
-                            overdueTasks: viewModel.overdueTasks,
-                            progress: viewModel.todayProgress,
-                            remainingMinutes: viewModel.remainingMinutes,
+                    // 次のタスク（ロードマップがある場合）
+                    if !viewModel.nextTasks.isEmpty {
+                        NextTasksCard(
+                            nextTasks: viewModel.nextTasks,
+                            dateText: viewModel.nextTaskDateText,
+                            totalMinutes: viewModel.nextTasksMinutes,
                             onTaskTap: { task in
                                 showingTaskCompletion = task
                             },
@@ -38,7 +37,11 @@ struct HomeView: View {
 
                     // 現在取り組み中の参考書
                     if !viewModel.currentMaterials.isEmpty {
-                        CurrentMaterialsCard(materials: viewModel.currentMaterials)
+                        CurrentMaterialsCard(
+                            materials: viewModel.currentMaterials,
+                            progressForMaterial: viewModel.progressForMaterial,
+                            daysRemainingForMaterial: viewModel.daysRemainingForMaterial
+                        )
                     }
 
                     // お知らせ（あれば表示）
@@ -306,30 +309,21 @@ struct StreakCard: View {
     }
 }
 
-/// 今日のタスクカード
-struct TodayTasksCard: View {
-    let todayTasks: [RoadmapDailyTask]
-    let overdueTasks: [RoadmapDailyTask]
-    let progress: Double
-    let remainingMinutes: Int
+/// 次のタスクカード（前倒し対応）
+struct NextTasksCard: View {
+    let nextTasks: [RoadmapDailyTask]
+    let dateText: String  // 「今日」「明日」「12/15」など
+    let totalMinutes: Int
     let onTaskTap: (RoadmapDailyTask) -> Void
     let onUncomplete: (RoadmapDailyTask) -> Void
 
-    private var pendingTasks: [RoadmapDailyTask] {
-        todayTasks.filter { $0.status != .completed }
-    }
-
-    private var completedTasks: [RoadmapDailyTask] {
-        todayTasks.filter { $0.status == .completed }
-    }
-
-    private var remainingTimeText: String {
-        if remainingMinutes >= 60 {
-            let hours = remainingMinutes / 60
-            let minutes = remainingMinutes % 60
+    private var timeText: String {
+        if totalMinutes >= 60 {
+            let hours = totalMinutes / 60
+            let minutes = totalMinutes % 60
             return minutes > 0 ? "\(hours)時間\(minutes)分" : "\(hours)時間"
         }
-        return "\(remainingMinutes)分"
+        return "\(totalMinutes)分"
     }
 
     var body: some View {
@@ -337,85 +331,57 @@ struct TodayTasksCard: View {
             // ヘッダー
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("今日のタスク")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        .foregroundColor(.roopyText)
+                    HStack(spacing: 8) {
+                        Text("次のタスク")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.roopyText)
 
-                    if pendingTasks.isEmpty && completedTasks.isEmpty == false {
-                        Text("全て完了! 🎉")
+                        // 日付バッジ
+                        Text(dateText)
                             .font(.caption)
-                            .foregroundColor(.green)
-                    } else if remainingMinutes > 0 {
-                        Text("残り約 \(remainingTimeText)")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                            .fontWeight(.medium)
+                            .foregroundColor(dateText == "今日" ? .white : .blue)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(dateText == "今日" ? Color.blue : Color.blue.opacity(0.1))
+                            .cornerRadius(8)
                     }
+
+                    Text("\(nextTasks.count)件 • 約\(timeText)")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
 
                 Spacer()
 
-                // 進捗リング
+                // タスク数表示
                 ZStack {
                     Circle()
-                        .stroke(Color.gray.opacity(0.2), lineWidth: 6)
+                        .fill(Color.blue.opacity(0.1))
 
-                    Circle()
-                        .trim(from: 0, to: progress)
-                        .stroke(Color.blue, style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                        .rotationEffect(.degrees(-90))
-
-                    Text("\(Int(progress * 100))%")
-                        .font(.caption2)
+                    Text("\(nextTasks.count)")
+                        .font(.title2)
                         .fontWeight(.bold)
+                        .foregroundColor(.blue)
                 }
                 .frame(width: 44, height: 44)
             }
 
-            // 遅延タスク警告
-            if !overdueTasks.isEmpty {
-                HStack(spacing: 8) {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundColor(.orange)
-                    Text("\(overdueTasks.count)件の遅延タスク")
-                        .font(.caption)
-                        .foregroundColor(.orange)
-                    Spacer()
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(Color.orange.opacity(0.1))
-                .cornerRadius(8)
-            }
-
-            // タスクリスト（最大3件表示）
-            let displayTasks = Array(pendingTasks.prefix(3))
-            ForEach(displayTasks) { task in
+            // タスクリスト
+            ForEach(nextTasks) { task in
                 HomeTaskRow(task: task) {
                     onTaskTap(task)
                 }
             }
 
-            // 完了済みタスク（最大2件表示）
-            if !completedTasks.isEmpty {
-                let displayCompleted = Array(completedTasks.prefix(2))
-                ForEach(displayCompleted) { task in
-                    HomeCompletedTaskRow(task: task) {
-                        onUncomplete(task)
-                    }
-                }
-            }
-
             // もっと見るリンク
-            if todayTasks.count > 3 || overdueTasks.count > 0 {
-                NavigationLink {
-                    // ロードマップタブへ
-                    RoadmapTabView()
-                } label: {
-                    Text("全てのタスクを見る →")
-                        .font(.caption)
-                        .foregroundColor(.blue)
-                }
+            NavigationLink {
+                RoadmapTabView()
+            } label: {
+                Text("ロードマップを見る →")
+                    .font(.caption)
+                    .foregroundColor(.blue)
             }
         }
         .padding()
@@ -743,60 +709,118 @@ struct TaskCompletionSheet: View {
 /// 現在取り組み中の参考書カード
 struct CurrentMaterialsCard: View {
     let materials: [RoadmapMaterial]
+    let progressForMaterial: (Int) -> Double
+    let daysRemainingForMaterial: (Int) -> Int
+
+    /// カテゴリでグループ化した教材
+    private var groupedMaterials: [(category: String, materials: [RoadmapMaterial])] {
+        let grouped = Dictionary(grouping: materials) { $0.material?.materialCategory ?? "その他" }
+        // カテゴリの表示順序（8つのパート）
+        let order = ["単語", "熟語", "文法", "解釈", "長文", "英作文", "リスニング", "過去問", "その他"]
+        return order.compactMap { category in
+            if let mats = grouped[category], !mats.isEmpty {
+                return (category, mats)
+            }
+            return nil
+        }
+    }
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 16) {
             // ヘッダー
             HStack {
-                Image(systemName: "book.fill")
+                Image(systemName: "books.vertical.fill")
+                    .font(.title2)
                     .foregroundColor(.blue)
-                Text("取り組み中の教材")
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .foregroundColor(.roopyText)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("現在の参考書")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundColor(.roopyText)
+                    Text("\(materials.count)冊取り組み中")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
                 Spacer()
-            }
 
-            // 教材リスト（最大3件）
-            let displayMaterials = Array(materials.prefix(3))
-            ForEach(displayMaterials) { material in
-                CurrentMaterialRow(material: material)
-            }
-
-            // もっと見るリンク
-            if materials.count > 3 {
                 NavigationLink {
                     RoadmapTabView()
                 } label: {
-                    Text("全ての教材を見る →")
+                    Text("詳細")
                         .font(.caption)
                         .foregroundColor(.blue)
                 }
             }
+
+            // カテゴリ別に表示
+            ForEach(groupedMaterials, id: \.category) { group in
+                VStack(alignment: .leading, spacing: 8) {
+                    // カテゴリラベル
+                    HStack(spacing: 4) {
+                        Image(systemName: categoryIcon(for: group.category))
+                            .font(.caption)
+                            .foregroundColor(categoryColor(for: group.category))
+                        Text(group.category)
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(categoryColor(for: group.category))
+                    }
+
+                    // 教材リスト
+                    ForEach(group.materials) { material in
+                        CurrentMaterialRow(
+                            material: material,
+                            progress: progressForMaterial(material.id),
+                            daysRemaining: daysRemainingForMaterial(material.id)
+                        )
+                    }
+                }
+            }
         }
         .padding()
-        .background(Color.white)
+        .background(
+            LinearGradient(
+                colors: [Color.white, Color.blue.opacity(0.03)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        )
         .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+        .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
+    }
+
+    private func categoryIcon(for category: String) -> String {
+        switch category {
+        case "単語": return "textformat.abc"
+        case "熟語": return "text.word.spacing"
+        case "文法": return "text.book.closed"
+        case "解釈": return "magnifyingglass"
+        case "長文": return "doc.text"
+        case "英作文": return "pencil"
+        case "リスニング": return "headphones"
+        default: return "book"
+        }
+    }
+
+    private func categoryColor(for category: String) -> Color {
+        switch category {
+        case "単語": return .blue
+        case "熟語": return .purple
+        case "文法": return .green
+        case "解釈": return .orange
+        case "長文": return .red
+        case "英作文": return .pink
+        case "リスニング": return .cyan
+        default: return .gray
+        }
     }
 }
 
 /// 教材行
 struct CurrentMaterialRow: View {
     let material: RoadmapMaterial
-
-    /// 残り日数
-    private var daysRemaining: Int {
-        let days = Calendar.current.dateComponents([.day], from: Date(), to: material.plannedEndDate).day ?? 0
-        return max(0, days)
-    }
-
-    /// 進捗率
-    private var progress: Double {
-        let totalDays = Calendar.current.dateComponents([.day], from: material.plannedStartDate, to: material.plannedEndDate).day ?? 1
-        let elapsed = Calendar.current.dateComponents([.day], from: material.plannedStartDate, to: Date()).day ?? 0
-        return min(1.0, max(0, Double(elapsed) / Double(max(1, totalDays))))
-    }
+    let progress: Double  // タスクベースの進捗率（外部から渡される）
+    let daysRemaining: Int  // タスクベースの残り日数（外部から渡される）
 
     var body: some View {
         HStack(spacing: 12) {

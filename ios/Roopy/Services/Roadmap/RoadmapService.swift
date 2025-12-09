@@ -21,15 +21,35 @@ final class RoadmapService {
 
     /// アクティブなロードマップを取得
     func fetchActiveRoadmap(userId: UUID) async throws -> UserRoadmap? {
+        print("🔍 fetchActiveRoadmap: userId=\(userId)")
+
+        // まず全ロードマップを確認（デバッグ用）
+        let allRoadmaps: [UserRoadmap] = try await supabase
+            .from("mukimuki_user_roadmaps")
+            .select()
+            .eq("user_id", value: userId.uuidString)
+            .execute()
+            .value
+
+        print("📋 All roadmaps for user: \(allRoadmaps.count)")
+        for rm in allRoadmaps {
+            print("   - id=\(rm.id), status=\(rm.status.rawValue), progress=\(rm.progressPercentage)")
+        }
+
         let response: [UserRoadmap] = try await supabase
             .from("mukimuki_user_roadmaps")
             .select()
             .eq("user_id", value: userId.uuidString)
             .eq("status", value: "active")
+            .order("created_at", ascending: false)
             .limit(1)
             .execute()
             .value
 
+        print("✅ Active roadmaps found: \(response.count)")
+        if let first = response.first {
+            print("   Using roadmap id=\(first.id)")
+        }
         return response.first
     }
 
@@ -50,6 +70,10 @@ final class RoadmapService {
         params: RoadmapInputParams,
         generatedRoadmap: GeneratedRoadmap
     ) async throws -> UserRoadmap {
+        print("🚀 createRoadmap started")
+        print("   - stages: \(generatedRoadmap.stages.count)")
+        print("   - materials: \(generatedRoadmap.materials.count)")
+        print("   - dailyTasks: \(generatedRoadmap.dailyTasks.count)")
 
         // 1. メインロードマップを作成
         let roadmapParams: [String: AnyJSON] = [
@@ -64,28 +88,63 @@ final class RoadmapService {
             "start_stage": .string(generatedRoadmap.startStage),
             "target_stage": .string(generatedRoadmap.targetStage),
             "estimated_completion_date": .string(dateFormatter.string(from: generatedRoadmap.estimatedCompletionDate)),
-            "current_stage": .string(generatedRoadmap.startStage)
+            "current_stage": .string(generatedRoadmap.startStage),
+            "status": .string("active"),
+            "progress_percentage": .double(0)
         ]
 
-        let roadmap: UserRoadmap = try await supabase
-            .from("mukimuki_user_roadmaps")
-            .insert(roadmapParams)
-            .select()
-            .single()
-            .execute()
-            .value
+        print("📝 Inserting roadmap with params: \(roadmapParams)")
+        let roadmap: UserRoadmap
+        do {
+            roadmap = try await supabase
+                .from("mukimuki_user_roadmaps")
+                .insert(roadmapParams)
+                .select()
+                .single()
+                .execute()
+                .value
+            print("✅ Roadmap inserted: id=\(roadmap.id)")
+        } catch {
+            print("❌ Failed to insert roadmap: \(error)")
+            throw error
+        }
 
         // 2. ステージを作成
-        try await createStages(roadmapId: roadmap.id, stages: generatedRoadmap.stages)
+        do {
+            try await createStages(roadmapId: roadmap.id, stages: generatedRoadmap.stages)
+            print("✅ Stages created")
+        } catch {
+            print("❌ Failed to create stages: \(error)")
+            throw error
+        }
 
         // 3. 教材を作成し、IDマッピングを取得
-        let materialIdMap = try await createMaterials(roadmapId: roadmap.id, materials: generatedRoadmap.materials)
+        let materialIdMap: [Int: Int]
+        do {
+            materialIdMap = try await createMaterials(roadmapId: roadmap.id, materials: generatedRoadmap.materials)
+            print("✅ Materials created, map: \(materialIdMap)")
+        } catch {
+            print("❌ Failed to create materials: \(error)")
+            throw error
+        }
 
         // 4. デイリータスクを作成
-        try await createDailyTasks(roadmapId: roadmap.id, tasks: generatedRoadmap.dailyTasks, materialIdMap: materialIdMap)
+        do {
+            try await createDailyTasks(roadmapId: roadmap.id, tasks: generatedRoadmap.dailyTasks, materialIdMap: materialIdMap)
+            print("✅ Daily tasks created")
+        } catch {
+            print("❌ Failed to create daily tasks: \(error)")
+            throw error
+        }
 
         // 5. 進捗ログを記録
-        try await logProgress(roadmapId: roadmap.id, taskId: nil, actionType: .roadmapStarted)
+        do {
+            try await logProgress(roadmapId: roadmap.id, taskId: nil, actionType: .roadmapStarted)
+            print("✅ Progress log created")
+        } catch {
+            print("❌ Failed to log progress: \(error)")
+            throw error
+        }
 
         return roadmap
     }
@@ -131,6 +190,12 @@ final class RoadmapService {
     }
 
     private func createStages(roadmapId: Int, stages: [StageSchedule]) async throws {
+        // 空配列の場合はスキップ
+        guard !stages.isEmpty else {
+            print("⚠️ createStages: stages is empty, skipping")
+            return
+        }
+
         var stageParams: [[String: AnyJSON]] = []
 
         for (index, stage) in stages.enumerated() {
@@ -143,6 +208,7 @@ final class RoadmapService {
             ])
         }
 
+        print("📝 createStages: inserting \(stageParams.count) stages")
         try await supabase
             .from("mukimuki_roadmap_stages")
             .insert(stageParams)
@@ -190,24 +256,35 @@ final class RoadmapService {
             .value
     }
 
-    /// 進行中の教材を取得（開始日≤今日≤終了日、またはstatus=in_progress）
+    /// 進行中の教材を取得（完了していない教材を表示）
     func fetchCurrentMaterials(roadmapId: Int) async throws -> [RoadmapMaterial] {
-        let today = dateFormatter.string(from: Date())
+        print("📚 fetchCurrentMaterials: roadmapId=\(roadmapId)")
 
-        // 開始日が今日以前で、終了日が今日以降、かつ完了していない教材
-        return try await supabase
+        // 完了していない教材をすべて取得
+        let materials: [RoadmapMaterial] = try await supabase
             .from("mukimuki_roadmap_materials")
             .select("*, material:mukimuki_english_materials(*)")
             .eq("roadmap_id", value: roadmapId)
-            .lte("planned_start_date", value: today)
-            .gte("planned_end_date", value: today)
             .neq("status", value: "completed")
             .order("material_order")
             .execute()
             .value
+
+        print("📚 fetchCurrentMaterials: DB returned \(materials.count) materials")
+        for m in materials {
+            print("  - \(m.material?.materialName ?? "?") | category=\(m.material?.materialCategory ?? "?") | status=\(m.status)")
+        }
+
+        return materials
     }
 
     private func createMaterials(roadmapId: Int, materials: [MaterialSchedule]) async throws -> [Int: Int] {
+        // 空配列の場合は空のマップを返す
+        guard !materials.isEmpty else {
+            print("⚠️ createMaterials: materials is empty, skipping")
+            return [:]
+        }
+
         var materialParams: [[String: AnyJSON]] = []
         var tempIdToMaterialId: [Int: Int] = [:] // インデックス -> material.id
 
@@ -224,6 +301,7 @@ final class RoadmapService {
             tempIdToMaterialId[material.material.id] = index
         }
 
+        print("📝 createMaterials: inserting \(materialParams.count) materials")
         let insertedMaterials: [RoadmapMaterial] = try await supabase
             .from("mukimuki_roadmap_materials")
             .insert(materialParams)
@@ -257,6 +335,76 @@ final class RoadmapService {
             .update(updates)
             .eq("id", value: id)
             .execute()
+    }
+
+    /// 教材をスキップ（削除扱い）
+    func skipMaterial(materialId: Int) async throws {
+        // 1. 教材のステータスをskippedに更新
+        try await updateRoadmapMaterial(id: materialId, status: .skipped, currentCycle: nil)
+
+        // 2. 関連する未完了タスクもスキップ
+        try await supabase
+            .from("mukimuki_roadmap_daily_tasks")
+            .update([
+                "status": AnyJSON.string("skipped"),
+                "updated_at": AnyJSON.string(isoFormatter.string(from: Date()))
+            ])
+            .eq("roadmap_material_id", value: materialId)
+            .eq("status", value: "pending")
+            .execute()
+
+        print("✅ Material skipped: \(materialId)")
+    }
+
+    /// 教材を別の教材に変更
+    func replaceMaterial(roadmapMaterialId: Int, newMaterialId: Int, roadmapId: Int) async throws {
+        // 1. 現在の教材情報を取得
+        let currentMaterials: [RoadmapMaterial] = try await supabase
+            .from("mukimuki_roadmap_materials")
+            .select("*, material:mukimuki_english_materials(*)")
+            .eq("id", value: roadmapMaterialId)
+            .execute()
+            .value
+
+        guard let currentMaterial = currentMaterials.first else {
+            throw NSError(domain: "RoadmapService", code: 404, userInfo: [NSLocalizedDescriptionKey: "教材が見つかりません"])
+        }
+
+        // 2. 新しい教材情報を取得
+        let newMaterials: [EnglishMaterial] = try await supabase
+            .from("mukimuki_english_materials")
+            .select()
+            .eq("id", value: newMaterialId)
+            .execute()
+            .value
+
+        guard let newMaterial = newMaterials.first else {
+            throw NSError(domain: "RoadmapService", code: 404, userInfo: [NSLocalizedDescriptionKey: "新しい教材が見つかりません"])
+        }
+
+        // 3. 教材IDを更新
+        try await supabase
+            .from("mukimuki_roadmap_materials")
+            .update([
+                "material_id": AnyJSON.integer(newMaterialId),
+                "updated_at": AnyJSON.string(isoFormatter.string(from: Date()))
+            ])
+            .eq("id", value: roadmapMaterialId)
+            .execute()
+
+        // 4. 関連する未完了タスクのタスク名を更新
+        let taskPrefix = newMaterial.materialName
+        try await supabase
+            .from("mukimuki_roadmap_daily_tasks")
+            .update([
+                "task_name": AnyJSON.string(taskPrefix),
+                "updated_at": AnyJSON.string(isoFormatter.string(from: Date()))
+            ])
+            .eq("roadmap_material_id", value: roadmapMaterialId)
+            .eq("status", value: "pending")
+            .execute()
+
+        print("✅ Material replaced: \(roadmapMaterialId) -> \(newMaterialId)")
     }
 
     // MARK: - Daily Tasks
@@ -315,6 +463,14 @@ final class RoadmapService {
     }
 
     private func createDailyTasks(roadmapId: Int, tasks: [DailyTaskTemplate], materialIdMap: [Int: Int]) async throws {
+        print("📝 createDailyTasks: \(tasks.count) tasks, materialIdMap: \(materialIdMap)")
+
+        // 空配列の場合はスキップ
+        guard !tasks.isEmpty else {
+            print("⚠️ createDailyTasks: tasks is empty, skipping")
+            return
+        }
+
         // バッチで作成（500件ずつ）
         let batchSize = 500
 
@@ -358,6 +514,7 @@ final class RoadmapService {
 
     /// タスクを完了としてマーク
     func completeTask(taskId: Int, actualMinutes: Int?, notes: String?) async throws {
+        // 1. タスクを完了にする
         var updates: [String: AnyJSON] = [
             "status": .string("completed"),
             "completed_at": .string(isoFormatter.string(from: Date())),
@@ -377,6 +534,38 @@ final class RoadmapService {
             .update(updates)
             .eq("id", value: taskId)
             .execute()
+
+        // 2. このタスクの情報を取得
+        let tasks: [RoadmapDailyTask] = try await supabase
+            .from("mukimuki_roadmap_daily_tasks")
+            .select()
+            .eq("id", value: taskId)
+            .execute()
+            .value
+
+        guard let task = tasks.first else { return }
+
+        // 3. 同じ教材の全タスクを確認
+        try await checkAndUpdateMaterialCompletion(roadmapMaterialId: task.roadmapMaterialId)
+    }
+
+    /// 教材の全タスクが完了したかチェックし、完了していれば教材ステータスを更新
+    private func checkAndUpdateMaterialCompletion(roadmapMaterialId: Int) async throws {
+        // この教材に紐づく全タスクを取得
+        let allTasks: [RoadmapDailyTask] = try await supabase
+            .from("mukimuki_roadmap_daily_tasks")
+            .select()
+            .eq("roadmap_material_id", value: roadmapMaterialId)
+            .execute()
+            .value
+
+        // 全タスクが completed または skipped なら教材も完了
+        let allDone = allTasks.allSatisfy { $0.status == .completed || $0.status == .skipped }
+
+        if allDone && !allTasks.isEmpty {
+            print("✅ All tasks completed for material \(roadmapMaterialId), updating material status")
+            try await updateRoadmapMaterial(id: roadmapMaterialId, status: .completed, currentCycle: nil)
+        }
     }
 
     /// タスクをスキップ
@@ -572,6 +761,220 @@ final class RoadmapService {
             .from("mukimuki_roadmap_progress_logs")
             .insert(params)
             .execute()
+    }
+
+    // MARK: - Stage Addition (B案: 段階的アプローチ)
+
+    /// 指定ステージの教材を取得
+    func fetchMaterialsForStage(stageId: String) async throws -> [EnglishMaterial] {
+        try await supabase
+            .from("mukimuki_english_materials")
+            .select()
+            .eq("stage_id", value: stageId)
+            .eq("is_published", value: true)
+            .order("display_order")
+            .execute()
+            .value
+    }
+
+    /// 既存ロードマップに新しいステージを追加
+    func addStageToRoadmap(
+        roadmapId: Int,
+        stageId: String,
+        materials: [EnglishMaterial],
+        dailyMinutes: Int
+    ) async throws {
+        print("📝 addStageToRoadmap: roadmapId=\(roadmapId), stageId=\(stageId), materials=\(materials.count)")
+
+        // 1. 既存の最終日を取得
+        let existingMaterials = try await fetchRoadmapMaterials(roadmapId: roadmapId, stageId: nil)
+        let lastEndDate = existingMaterials.map { $0.plannedEndDate }.max() ?? Date()
+
+        // 開始日は最終日の翌日
+        var currentStartDate = Calendar.current.date(byAdding: .day, value: 1, to: lastEndDate) ?? Date()
+
+        // 2. 新しいステージを作成
+        let existingStages = try await fetchStages(roadmapId: roadmapId)
+        let newStageOrder = (existingStages.map { $0.stageOrder }.max() ?? 0) + 1
+
+        // ステージの終了日は全教材の最大終了日で後で更新
+        var stageEndDate = currentStartDate
+
+        // 3. 教材を作成
+        var materialIdMap: [Int: Int] = [:]
+        let existingMaterialCount = existingMaterials.count
+
+        for (index, material) in materials.enumerated() {
+            let cycles = material.recommendedCycles ?? 1
+            let totalDays = calculateMaterialDays(material: material, dailyMinutes: dailyMinutes, cycles: cycles)
+            let endDate = Calendar.current.date(byAdding: .day, value: totalDays, to: currentStartDate) ?? currentStartDate
+
+            let materialParams: [String: AnyJSON] = [
+                "roadmap_id": .integer(roadmapId),
+                "stage_id": .string(stageId),
+                "material_id": .integer(material.id),
+                "material_order": .integer(existingMaterialCount + index + 1),
+                "planned_start_date": .string(dateFormatter.string(from: currentStartDate)),
+                "planned_end_date": .string(dateFormatter.string(from: endDate)),
+                "total_cycles": .integer(cycles)
+            ]
+
+            let insertedMaterial: [RoadmapMaterial] = try await supabase
+                .from("mukimuki_roadmap_materials")
+                .insert(materialParams)
+                .select()
+                .execute()
+                .value
+
+            if let inserted = insertedMaterial.first {
+                materialIdMap[material.id] = inserted.id
+            }
+
+            // 並行カテゴリ（英単語、英熟語）は開始日を変えない
+            let parallelCategories: Set<String> = ["英単語", "英熟語"]
+            if !parallelCategories.contains(material.materialCategory) {
+                currentStartDate = endDate
+            }
+
+            if endDate > stageEndDate {
+                stageEndDate = endDate
+            }
+        }
+
+        // 4. ステージレコードを作成
+        let stageParams: [String: AnyJSON] = [
+            "roadmap_id": .integer(roadmapId),
+            "stage_id": .string(stageId),
+            "stage_order": .integer(newStageOrder),
+            "planned_start_date": .string(dateFormatter.string(from: Calendar.current.date(byAdding: .day, value: 1, to: lastEndDate) ?? Date())),
+            "planned_end_date": .string(dateFormatter.string(from: stageEndDate))
+        ]
+
+        try await supabase
+            .from("mukimuki_roadmap_stages")
+            .insert(stageParams)
+            .execute()
+
+        // 5. デイリータスクを生成
+        try await generateAndInsertDailyTasks(
+            roadmapId: roadmapId,
+            materials: materials,
+            materialIdMap: materialIdMap,
+            startDate: Calendar.current.date(byAdding: .day, value: 1, to: lastEndDate) ?? Date(),
+            dailyMinutes: dailyMinutes
+        )
+
+        // 6. 進捗ログを記録
+        try await logProgress(roadmapId: roadmapId, taskId: nil, actionType: .stageStarted, details: ["stage_id": stageId])
+
+        print("✅ Stage \(stageId) added successfully")
+    }
+
+    /// 教材の所要日数を計算（公開版）
+    func calculateMaterialDays(material: EnglishMaterial, dailyMinutes: Int, cycles: Int) -> Int {
+        // 1. 推奨日数が設定されている場合はそれを優先使用
+        if let recommendedDays = material.recommendedDays, recommendedDays > 0 {
+            return recommendedDays * cycles
+        }
+
+        // 2. 総章数と1章あたりの時間から計算
+        if let totalChapters = material.totalChapters,
+           let minutesPerChapter = material.standardMinutesPerChapter,
+           totalChapters > 0, minutesPerChapter > 0 {
+
+            let totalMinutes = totalChapters * minutesPerChapter * cycles
+            let daysNeeded = Int(ceil(Double(totalMinutes) / Double(dailyMinutes)))
+            return max(daysNeeded, 1)
+        }
+
+        // 3. デフォルト: 30日
+        return 30 * cycles
+    }
+
+    /// デイリータスクを生成して挿入
+    private func generateAndInsertDailyTasks(
+        roadmapId: Int,
+        materials: [EnglishMaterial],
+        materialIdMap: [Int: Int],
+        startDate: Date,
+        dailyMinutes: Int
+    ) async throws {
+        var tasks: [[String: AnyJSON]] = []
+        var currentDate = startDate
+
+        for material in materials {
+            guard let roadmapMaterialId = materialIdMap[material.id] else { continue }
+
+            let cycles = material.recommendedCycles ?? 1
+            let totalDays = calculateMaterialDays(material: material, dailyMinutes: dailyMinutes, cycles: cycles)
+
+            // 章数がある場合は章ごとに分割
+            if let totalChapters = material.totalChapters, totalChapters > 0, material.materialCategory != "英単語" {
+                let chaptersPerDay = max(1, Int(ceil(Double(totalChapters * cycles) / Double(totalDays))))
+                var currentChapter = 1
+                var taskDate = currentDate
+
+                while currentChapter <= totalChapters * cycles {
+                    let effectiveChapter = ((currentChapter - 1) % totalChapters) + 1
+                    let endChapter = min(effectiveChapter + chaptersPerDay - 1, totalChapters)
+                    let minutesForTask = chaptersPerDay * (material.standardMinutesPerChapter ?? 20)
+
+                    var taskParams: [String: AnyJSON] = [
+                        "roadmap_id": .integer(roadmapId),
+                        "roadmap_material_id": .integer(roadmapMaterialId),
+                        "task_date": .string(dateFormatter.string(from: taskDate)),
+                        "material_name": .string(material.materialName),
+                        "estimated_minutes": .integer(minutesForTask),
+                        "chapter_start": .integer(effectiveChapter),
+                        "chapter_end": .integer(endChapter)
+                    ]
+
+                    tasks.append(taskParams)
+
+                    currentChapter += chaptersPerDay
+                    taskDate = Calendar.current.date(byAdding: .day, value: 1, to: taskDate) ?? taskDate
+                }
+
+                // 並行カテゴリ以外は開始日を更新
+                let parallelCategories: Set<String> = ["英単語", "英熟語"]
+                if !parallelCategories.contains(material.materialCategory) {
+                    currentDate = taskDate
+                }
+            } else {
+                // 章数がない場合は日数で分割
+                var taskDate = currentDate
+                let minutesPerDay = material.materialCategory == "英単語" ? 20 : 30
+
+                for _ in 0..<totalDays {
+                    let taskParams: [String: AnyJSON] = [
+                        "roadmap_id": .integer(roadmapId),
+                        "roadmap_material_id": .integer(roadmapMaterialId),
+                        "task_date": .string(dateFormatter.string(from: taskDate)),
+                        "material_name": .string(material.materialName),
+                        "estimated_minutes": .integer(minutesPerDay)
+                    ]
+
+                    tasks.append(taskParams)
+                    taskDate = Calendar.current.date(byAdding: .day, value: 1, to: taskDate) ?? taskDate
+                }
+            }
+        }
+
+        // バッチ挿入
+        if !tasks.isEmpty {
+            let batchSize = 500
+            for batchStart in stride(from: 0, to: tasks.count, by: batchSize) {
+                let batchEnd = min(batchStart + batchSize, tasks.count)
+                let batch = Array(tasks[batchStart..<batchEnd])
+
+                try await supabase
+                    .from("mukimuki_roadmap_daily_tasks")
+                    .insert(batch)
+                    .execute()
+            }
+        }
+
+        print("✅ Generated \(tasks.count) daily tasks for new stage")
     }
 
     // MARK: - Summary

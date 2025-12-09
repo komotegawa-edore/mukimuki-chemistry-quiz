@@ -14,11 +14,16 @@ struct RoadmapInputView: View {
                     // ヘッダー
                     headerSection
 
+                    // 現在の学力（学年・模試・偏差値）
+                    currentAbilitySection
+
+                    // ステージ判定結果
+                    if viewModel.stageDeterminationResult != nil {
+                        stageResultSection
+                    }
+
                     // 志望校レベル
                     targetLevelSection
-
-                    // 現在のレベル
-                    currentLevelSection
 
                     // 苦手分野
                     weakAreasSection
@@ -53,6 +58,7 @@ struct RoadmapInputView: View {
             .sheet(isPresented: $viewModel.showingMaterialSelection) {
                 MaterialSelectionView(
                     materialGroups: viewModel.materialGroups,
+                    currentStage: viewModel.currentStage,
                     selections: $viewModel.materialSelections,
                     onConfirm: {
                         Task {
@@ -67,14 +73,10 @@ struct RoadmapInputView: View {
                         generatedRoadmap: generated,
                         inputParams: viewModel.inputParams,
                         onConfirm: {
-                            Task {
-                                if let userId = authService.currentUserId,
-                                   let _ = await viewModel.saveRoadmap(userId: userId) {
-                                    dismiss()
-                                }
-                            }
+                            dismiss()
                         }
                     )
+                    .environmentObject(authService)
                 }
             }
         }
@@ -123,53 +125,147 @@ struct RoadmapInputView: View {
         .cornerRadius(12)
     }
 
-    private var currentLevelSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label("現在のレベル", systemImage: "chart.bar.fill")
+    private var currentAbilitySection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Label("現在の学力", systemImage: "chart.bar.fill")
                 .font(.headline)
 
-            Picker("入力方法", selection: $viewModel.selectedCurrentLevel) {
-                ForEach(CurrentLevelMode.allCases, id: \.self) { option in
-                    Text(option.displayName).tag(option)
+            // 学年選択
+            VStack(alignment: .leading, spacing: 8) {
+                Text("学年")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+
+                HStack(spacing: 8) {
+                    ForEach(SchoolYear.allCases, id: \.self) { year in
+                        Button {
+                            viewModel.selectedYear = year
+                            viewModel.determineStage()
+                        } label: {
+                            Text(year.displayName)
+                                .font(.subheadline)
+                                .fontWeight(viewModel.selectedYear == year ? .bold : .regular)
+                                .foregroundColor(viewModel.selectedYear == year ? .white : .primary)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(viewModel.selectedYear == year ? Color.blue : Color.white)
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(viewModel.selectedYear == year ? Color.blue : Color.gray.opacity(0.3), lineWidth: 1)
+                                )
+                        }
+                        .buttonStyle(.plain)
+                    }
                 }
             }
-            .pickerStyle(.segmented)
 
-            if viewModel.selectedCurrentLevel == .deviationBased {
-                VStack(spacing: 8) {
-                    HStack {
-                        Text("偏差値")
-                        Spacer()
-                        Text(viewModel.deviationDisplayText)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .foregroundColor(.blue)
-                    }
+            // 模試種類選択
+            VStack(alignment: .leading, spacing: 8) {
+                Text("模試")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
 
-                    Slider(value: $viewModel.deviationValue, in: 30...75, step: 1)
-                        .tint(.blue)
-
-                    HStack {
-                        Text("30")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("75")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            } else {
-                Picker("現在のステージ", selection: $viewModel.currentStage) {
-                    ForEach(viewModel.stageOptions, id: \.self) { stage in
-                        Text(stage).tag(stage)
+                Picker("模試種類", selection: $viewModel.selectedExamType) {
+                    ForEach(MockExamType.allCases, id: \.self) { exam in
+                        Text(exam.displayName).tag(exam)
                     }
                 }
                 .pickerStyle(.menu)
+                .onChange(of: viewModel.selectedExamType) { _, _ in
+                    viewModel.determineStage()
+                }
+            }
+
+            // 偏差値スライダー
+            VStack(spacing: 8) {
+                HStack {
+                    Text("偏差値")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Text(viewModel.deviationDisplayText)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+                }
+
+                Slider(value: $viewModel.deviationValue, in: 30...75, step: 1)
+                    .tint(.blue)
+                    .onChange(of: viewModel.deviationValue) { _, _ in
+                        viewModel.determineStage()
+                    }
+
+                HStack {
+                    Text("30")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Text("75")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
         }
         .padding()
         .background(Color(.systemGray6))
+        .cornerRadius(12)
+        .onAppear {
+            viewModel.determineStage()
+        }
+    }
+
+    private var stageResultSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("判定結果", systemImage: "checkmark.seal.fill")
+                .font(.headline)
+                .foregroundColor(.green)
+
+            if let result = viewModel.stageDeterminationResult {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("現在のステージ")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text(result.stage)
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.blue)
+                    }
+
+                    Spacer()
+
+                    VStack(alignment: .trailing, spacing: 4) {
+                        Text("レベル")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text(result.description)
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                            .multilineTextAlignment(.trailing)
+                    }
+                }
+
+                if !result.achievableLevel.isEmpty {
+                    HStack {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(.blue)
+                        Text("現在到達可能: \(result.achievableLevel)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                // 補正情報（デバッグ用、本番では非表示にしてもOK）
+                if result.inputExamType != .kawaiZentou {
+                    Text("※ \(result.inputExamType.displayName)の偏差値\(Int(result.inputDeviation))を河合換算\(Int(result.adjustedDeviation))で判定")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .padding()
+        .background(Color.green.opacity(0.1))
         .cornerRadius(12)
     }
 

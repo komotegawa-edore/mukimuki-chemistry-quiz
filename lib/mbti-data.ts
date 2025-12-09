@@ -3,7 +3,7 @@ export const typeResults: Record<
   string,
   {
     title: string
-    emoji: string
+    icon: string // lucide-react icon name
     description: string
     strengths: string[]
     weaknesses: string[]
@@ -14,7 +14,7 @@ export const typeResults: Record<
 > = {
   ISTJ: {
     title: '堅実な計画者',
-    emoji: '📚',
+    icon: 'BookOpen',
     description:
       'コツコツ型の努力家。計画通りに進めることで安心感を得られるタイプ。過去問分析や暗記系科目で力を発揮する。',
     strengths: ['計画を守り抜く力', '暗記力', '継続力'],
@@ -29,7 +29,7 @@ export const typeResults: Record<
   },
   ISFJ: {
     title: '献身的なサポーター',
-    emoji: '🌸',
+    icon: 'Heart',
     description:
       '周囲を支えながら自分も頑張るタイプ。友達に教えることで自分の理解も深まる。グループ学習が向いている。',
     strengths: ['丁寧な復習力', '人に教える力', '協調性'],
@@ -44,7 +44,7 @@ export const typeResults: Record<
   },
   INFJ: {
     title: '理想を追う探求者',
-    emoji: '🔮',
+    icon: 'Compass',
     description:
       '深い理解を求めるタイプ。表面的な暗記より「なぜそうなるか」を追求する。記述問題や小論文で力を発揮。',
     strengths: ['深い洞察力', '記述力', '長期的な視点'],
@@ -59,7 +59,7 @@ export const typeResults: Record<
   },
   INTJ: {
     title: '戦略的な建築家',
-    emoji: '🎯',
+    icon: 'Target',
     description:
       '効率重視の戦略家。無駄を省いた勉強計画を立てるのが得意。志望校に向けた逆算思考が武器。',
     strengths: ['戦略的思考', '効率化能力', '目標達成力'],
@@ -74,7 +74,7 @@ export const typeResults: Record<
   },
   ISTP: {
     title: '冷静な分析者',
-    emoji: '🔧',
+    icon: 'Wrench',
     description:
       '問題を分解して解くのが得意。数学や物理など、論理的に考える科目で力を発揮。効率よく短時間で成果を出す。',
     strengths: ['問題分析力', '効率的な学習', '冷静な判断力'],
@@ -89,7 +89,7 @@ export const typeResults: Record<
   },
   ISFP: {
     title: '感性豊かな芸術家',
-    emoji: '🎨',
+    icon: 'Palette',
     description:
       '自分のペースで学ぶことを大切にするタイプ。好きな科目はとことん伸びる。モチベーション管理が鍵。',
     strengths: ['創造的な発想', '好きなことへの集中力', '柔軟性'],
@@ -104,7 +104,7 @@ export const typeResults: Record<
   },
   INFP: {
     title: '理想主義の夢追い人',
-    emoji: '🌙',
+    icon: 'Moon',
     description:
       '志望校への強い想いが原動力。国語や英語など、言葉を扱う科目が得意。自分の世界観を大切にする。',
     strengths: ['文章力', '創造性', '志望校への情熱'],
@@ -119,7 +119,7 @@ export const typeResults: Record<
   },
   INTP: {
     title: '論理的な思索家',
-    emoji: '🧠',
+    icon: 'Brain',
     description:
       '知的好奇心が強く、深く考えることが好き。数学や物理の難問に挑むのが楽しいタイプ。',
     strengths: ['論理的思考', '知的好奇心', '独創的な解法'],
@@ -134,7 +134,7 @@ export const typeResults: Record<
   },
   ESTP: {
     title: '行動派のチャレンジャー',
-    emoji: '⚡',
+    icon: 'Zap',
     description:
       '即行動タイプ。とりあえずやってみる精神で、実践的な学習が得意。本番に強いメンタルの持ち主。',
     strengths: ['実践力', '本番に強い', 'スピード感'],
@@ -149,7 +149,7 @@ export const typeResults: Record<
   },
   ESFP: {
     title: 'エンターテイナー',
-    emoji: '🎉',
+    icon: 'PartyPopper',
     description:
       '楽しみながら学ぶのが得意。友達と一緒に勉強するとパワーアップ。雰囲気づくりが上手。',
     strengths: ['ムードメーカー', '暗記のコツを掴む力', '楽しむ力'],
@@ -164,7 +164,7 @@ export const typeResults: Record<
   },
   ENFP: {
     title: '情熱的な冒険家',
-    emoji: '🚀',
+    icon: 'Rocket',
     description:
       'アイデア豊富で、新しい勉強法を試すのが好き。モチベーションの波が激しいが、乗っている時の集中力は抜群。',
     strengths: ['発想力', '熱中力', 'コミュニケーション力'],
@@ -179,7 +179,7 @@ export const typeResults: Record<
   },
   ENTP: {
     title: '議論好きの発明家',
-    emoji: '💡',
+    icon: 'Lightbulb',
     description:
       '知的な議論が大好き。問題の別解を考えるのが楽しいタイプ。記述問題で独自の視点を発揮。',
     strengths: ['批判的思考', '別解発見力', '議論力'],
@@ -194,7 +194,7 @@ export const typeResults: Record<
   },
   ESTJ: {
     title: '頼れるリーダー',
-    emoji: '👔',
+    icon: 'Briefcase',
     description:
       '目標達成に向けて周囲を引っ張るタイプ。計画的かつ効率的に勉強を進める。模試の目標設定が得意。',
     strengths: ['リーダーシップ', '計画実行力', '目標管理'],
@@ -209,7 +209,7 @@ export const typeResults: Record<
   },
   ESFJ: {
     title: 'みんなの調整役',
-    emoji: '🤝',
+    icon: 'Users',
     description:
       '周囲と協力しながら目標に向かうタイプ。勉強会の企画や友達のサポートが得意。人間関係を大切にする。',
     strengths: ['協調性', 'モチベーション維持', '教え合い'],
@@ -224,7 +224,7 @@ export const typeResults: Record<
   },
   ENFJ: {
     title: 'カリスマ指導者',
-    emoji: '✨',
+    icon: 'Sparkles',
     description:
       '周囲を巻き込んで一緒に成長するタイプ。後輩への指導やグループ学習で力を発揮。志望校への情熱が周囲にも伝染する。',
     strengths: ['影響力', 'モチベーション管理', '共感力'],
@@ -239,7 +239,7 @@ export const typeResults: Record<
   },
   ENTJ: {
     title: '野心的な司令官',
-    emoji: '👑',
+    icon: 'Crown',
     description:
       '大きな目標に向かって突き進むタイプ。志望校合格への強い意志と、それを実現する計画力を持つ。',
     strengths: ['目標達成力', '戦略立案', 'リーダーシップ'],

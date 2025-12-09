@@ -1,13 +1,5 @@
 import SwiftUI
 
-/// 履歴画面（プレースホルダー）
-struct HistoryView: View {
-    var body: some View {
-        Text("履歴画面")
-            .navigationTitle("履歴")
-    }
-}
-
 /// 講師ダッシュボード（プレースホルダー）
 struct TeacherDashboardView: View {
     @EnvironmentObject var authService: AuthService
@@ -31,12 +23,6 @@ struct TeacherDashboardView: View {
             }
             .navigationTitle("ダッシュボード")
         }
-    }
-}
-
-#Preview("History") {
-    NavigationStack {
-        HistoryView()
     }
 }
 

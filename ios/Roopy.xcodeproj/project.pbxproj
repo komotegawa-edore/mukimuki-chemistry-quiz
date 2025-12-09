@@ -73,6 +73,14 @@
 		E2000030299999990000001 /* PDFExportSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000031299999990000001 /* PDFExportSheet.swift */; };
 		E2000032299999990000001 /* WeeklyTasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000033299999990000001 /* WeeklyTasksView.swift */; };
 		E2000034299999990000001 /* WeeklyTasksPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000035299999990000001 /* WeeklyTasksPDFView.swift */; };
+		E2000036299999990000001 /* StageDetermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000037299999990000001 /* StageDetermination.swift */; };
+		E3000001299999990000001 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3000002299999990000001 /* HistoryView.swift */; };
+		E3000003299999990000001 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3000004299999990000001 /* HistoryViewModel.swift */; };
+		E4000001299999990000001 /* NextStagePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4000002299999990000001 /* NextStagePromptView.swift */; };
+		E4000003299999990000001 /* NextStageSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4000004299999990000001 /* NextStageSelectionViewModel.swift */; };
+		E4000005299999990000001 /* CategoryRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4000006299999990000001 /* CategoryRules.swift */; };
+		E5000001299999990000001 /* MaterialManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5000002299999990000001 /* MaterialManagementView.swift */; };
+		E5000003299999990000001 /* MaterialManagementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5000004299999990000001 /* MaterialManagementViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -143,6 +151,14 @@
 		E2000031299999990000001 /* PDFExportSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExportSheet.swift; sourceTree = "<group>"; };
 		E2000033299999990000001 /* WeeklyTasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyTasksView.swift; sourceTree = "<group>"; };
 		E2000035299999990000001 /* WeeklyTasksPDFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyTasksPDFView.swift; sourceTree = "<group>"; };
+		E2000037299999990000001 /* StageDetermination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageDetermination.swift; sourceTree = "<group>"; };
+		E3000002299999990000001 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		E3000004299999990000001 /* HistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
+		E4000002299999990000001 /* NextStagePromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextStagePromptView.swift; sourceTree = "<group>"; };
+		E4000004299999990000001 /* NextStageSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextStageSelectionViewModel.swift; sourceTree = "<group>"; };
+		E4000006299999990000001 /* CategoryRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryRules.swift; sourceTree = "<group>"; };
+		E5000002299999990000001 /* MaterialManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialManagementView.swift; sourceTree = "<group>"; };
+		E5000004299999990000001 /* MaterialManagementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialManagementViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,6 +223,8 @@
 				E200000A299999990000001 /* RoadmapDailyTask.swift */,
 				E200000C299999990000001 /* RoadmapProgressLog.swift */,
 				E200002B299999990000001 /* MaterialSelection.swift */,
+				E2000037299999990000001 /* StageDetermination.swift */,
+				E4000006299999990000001 /* CategoryRules.swift */,
 			);
 			path = Roadmap;
 			sourceTree = "<group>";
@@ -243,6 +261,7 @@
 				E1000034299999990000001 /* FlashcardViewModel.swift */,
 				E1000047299999990000002 /* ReviewViewModel.swift */,
 				E100004F299999990000003 /* ProfileViewModel.swift */,
+				E3000004299999990000001 /* HistoryViewModel.swift */,
 				E2FFFFF3299999990000001 /* Roadmap */,
 			);
 			path = ViewModels;
@@ -255,6 +274,8 @@
 				E2000016299999990000001 /* RoadmapResultViewModel.swift */,
 				E2000018299999990000001 /* DailyTasksViewModel.swift */,
 				E200001A299999990000001 /* RoadmapProgressViewModel.swift */,
+				E4000004299999990000001 /* NextStageSelectionViewModel.swift */,
+				E5000004299999990000001 /* MaterialManagementViewModel.swift */,
 			);
 			path = Roadmap;
 			sourceTree = "<group>";
@@ -270,6 +291,7 @@
 				E1FFFFF9299999990000003 /* Drill */,
 				E1FFFFF9299999990000006 /* Review */,
 				E1FFFFF9299999990000007 /* Profile */,
+				E3000005299999990000001 /* History */,
 				E1FFFFF9299999990000004 /* Placeholder */,
 				E2FFFFF4299999990000001 /* Roadmap */,
 				E2000029299999990000001 /* Study */,
@@ -291,6 +313,8 @@
 				E2000033299999990000001 /* WeeklyTasksView.swift */,
 				E2000035299999990000001 /* WeeklyTasksPDFView.swift */,
 				E200002D299999990000001 /* MaterialSelectionView.swift */,
+				E5000002299999990000001 /* MaterialManagementView.swift */,
+				E4000002299999990000001 /* NextStagePromptView.swift */,
 			);
 			path = Roadmap;
 			sourceTree = "<group>";
@@ -372,6 +396,14 @@
 				E100003C299999990000001 /* PlaceholderViews.swift */,
 			);
 			path = Placeholder;
+			sourceTree = "<group>";
+		};
+		E3000005299999990000001 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				E3000002299999990000001 /* HistoryView.swift */,
+			);
+			path = History;
 			sourceTree = "<group>";
 		};
 		E1FFFFFA299999990000001 /* Theme */ = {
@@ -530,6 +562,14 @@
 				E2000032299999990000001 /* WeeklyTasksView.swift in Sources */,
 				E2000034299999990000001 /* WeeklyTasksPDFView.swift in Sources */,
 				E2000027299999990000001 /* StudyTabView.swift in Sources */,
+				E2000036299999990000001 /* StageDetermination.swift in Sources */,
+				E3000001299999990000001 /* HistoryView.swift in Sources */,
+				E3000003299999990000001 /* HistoryViewModel.swift in Sources */,
+				E4000001299999990000001 /* NextStagePromptView.swift in Sources */,
+				E4000003299999990000001 /* NextStageSelectionViewModel.swift in Sources */,
+				E4000005299999990000001 /* CategoryRules.swift in Sources */,
+				E5000001299999990000001 /* MaterialManagementView.swift in Sources */,
+				E5000003299999990000001 /* MaterialManagementViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

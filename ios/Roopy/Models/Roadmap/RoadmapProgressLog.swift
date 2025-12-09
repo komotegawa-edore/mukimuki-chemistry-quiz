@@ -25,6 +25,7 @@ struct RoadmapProgressLog: Codable, Identifiable {
 enum ProgressActionType: String, Codable {
     case taskCompleted = "task_completed"
     case taskSkipped = "task_skipped"
+    case stageStarted = "stage_started"
     case stageCompleted = "stage_completed"
     case reschedule = "reschedule"
     case roadmapStarted = "roadmap_started"
@@ -34,6 +35,7 @@ enum ProgressActionType: String, Codable {
         switch self {
         case .taskCompleted: return "タスク完了"
         case .taskSkipped: return "タスクスキップ"
+        case .stageStarted: return "ステージ開始"
         case .stageCompleted: return "ステージ完了"
         case .reschedule: return "リスケジュール"
         case .roadmapStarted: return "ロードマップ開始"
@@ -45,6 +47,7 @@ enum ProgressActionType: String, Codable {
         switch self {
         case .taskCompleted: return "checkmark.circle.fill"
         case .taskSkipped: return "forward.circle.fill"
+        case .stageStarted: return "play.circle.fill"
         case .stageCompleted: return "flag.checkered"
         case .reschedule: return "calendar.badge.clock"
         case .roadmapStarted: return "play.circle.fill"

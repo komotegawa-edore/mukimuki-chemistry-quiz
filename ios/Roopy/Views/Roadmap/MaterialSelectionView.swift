@@ -1,8 +1,10 @@
 import SwiftUI
 
 /// 教材選択画面
+/// 現在のステージの教材のみを選択する
 struct MaterialSelectionView: View {
     let materialGroups: [MaterialGroup]
+    let currentStage: String  // 現在のステージ（E3など）
     @Binding var selections: MaterialSelections
     let onConfirm: () -> Void
 
@@ -68,11 +70,19 @@ struct MaterialSelectionView: View {
                 .font(.system(size: 40))
                 .foregroundColor(.blue)
 
-            Text("使用する教材を選択")
+            Text("今やる教材を選択")
                 .font(.title3)
                 .fontWeight(.bold)
 
-            Text("各カテゴリから1冊ずつ選んでください\n同じレベルの教材から好みのものを選べます")
+            Text("ステージ \(currentStage)")
+                .font(.headline)
+                .foregroundColor(.blue)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 4)
+                .background(Color.blue.opacity(0.1))
+                .cornerRadius(8)
+
+            Text("各カテゴリから1冊ずつ選んでください\n次のステージの教材はその時に選びます")
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -83,20 +93,39 @@ struct MaterialSelectionView: View {
         .cornerRadius(12)
     }
 
+    /// すべてのカテゴリで教材が選択されているか
+    private var allSelected: Bool {
+        selections.allSelected(groups: materialGroups)
+    }
+
+    /// 選択済みカテゴリ数
+    private var selectedCount: Int {
+        materialGroups.filter { selections.isSelected(for: $0) }.count
+    }
+
     private var confirmButton: some View {
-        Button {
-            onConfirm()
-        } label: {
-            HStack {
-                Image(systemName: "checkmark.circle.fill")
-                Text("この教材でロードマップを作成")
+        VStack(spacing: 8) {
+            Button {
+                onConfirm()
+            } label: {
+                HStack {
+                    Image(systemName: "checkmark.circle.fill")
+                    Text("この教材で学習を開始")
+                }
+                .font(.headline)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(allSelected ? Color.blue : Color.gray)
+                .cornerRadius(12)
             }
-            .font(.headline)
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.blue)
-            .cornerRadius(12)
+            .disabled(!allSelected)
+
+            if !allSelected {
+                Text("すべてのカテゴリから教材を選択してください（\(selectedCount)/\(materialGroups.count)）")
+                    .font(.caption)
+                    .foregroundColor(.orange)
+            }
         }
     }
 }
@@ -205,12 +234,16 @@ struct MaterialGroupCard: View {
 
                     Spacer()
 
-                    // 選択中の教材
+                    // 選択中の教材または未選択表示
                     if let selected = selectedMaterial {
                         Text(selected.materialName)
                             .font(.caption)
                             .foregroundColor(.blue)
                             .lineLimit(1)
+                    } else {
+                        Text("未選択")
+                            .font(.caption)
+                            .foregroundColor(.orange)
                     }
 
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
@@ -353,6 +386,7 @@ struct MaterialSelectableRow: View {
 #Preview {
     MaterialSelectionView(
         materialGroups: [],
+        currentStage: "E3",
         selections: .constant(MaterialSelections()),
         onConfirm: {}
     )

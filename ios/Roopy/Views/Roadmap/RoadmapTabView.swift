@@ -9,6 +9,8 @@ struct RoadmapTabView: View {
     @State private var selectedView: RoadmapViewType = .overview
     @State private var showingCancelConfirmation = false
     @State private var showingPDFExport = false
+    @State private var showingNextStageSelection = false
+    @State private var showingMaterialManagement = false
 
     enum RoadmapViewType: String, CaseIterable {
         case overview = "概要"
@@ -96,9 +98,44 @@ struct RoadmapTabView: View {
                     )
                 }
             }
+            .sheet(isPresented: $showingNextStageSelection) {
+                if let roadmap = viewModel.roadmap,
+                   let nextStage = viewModel.nextStageId {
+                    NextStageSelectionSheet(
+                        roadmap: roadmap,
+                        nextStageId: nextStage,
+                        onComplete: {
+                            // データをリロード
+                            if let userId = authService.currentUserId {
+                                Task {
+                                    await viewModel.fetchData(userId: userId)
+                                }
+                            }
+                        }
+                    )
+                }
+            }
             .onChange(of: showingCreateRoadmap) { _, isPresented in
                 if !isPresented {
                     // シートを閉じたらリロード
+                    if let userId = authService.currentUserId {
+                        Task {
+                            await viewModel.fetchData(userId: userId)
+                        }
+                    }
+                }
+            }
+            .sheet(isPresented: $showingMaterialManagement) {
+                if let roadmap = viewModel.roadmap {
+                    MaterialManagementView(
+                        roadmapId: roadmap.id,
+                        currentStage: roadmap.currentStage ?? roadmap.startStage
+                    )
+                }
+            }
+            .onChange(of: showingMaterialManagement) { _, isPresented in
+                if !isPresented {
+                    // 教材管理シートを閉じたらリロード
                     if let userId = authService.currentUserId {
                         Task {
                             await viewModel.fetchData(userId: userId)
@@ -151,14 +188,28 @@ struct RoadmapTabView: View {
                     TodayTaskSummaryCard(summary: summary, roadmapId: roadmap.id)
                 }
 
-                // 全体進捗
+                // 全体進捗（現在ステージの教材完了率ベース）
                 OverallProgressCard(
-                    progress: roadmap.progressPercentage / 100,
+                    progress: viewModel.overallProgress,
                     currentStage: roadmap.currentStage ?? roadmap.startStage,
                     targetStage: roadmap.targetStage,
                     daysRemaining: viewModel.daysRemaining,
-                    status: roadmap.status
+                    status: roadmap.status,
+                    completedCount: viewModel.currentStageCompletedCount,
+                    totalCount: viewModel.currentStageTotalCount,
+                    isStageCompleted: viewModel.isCurrentStageCompleted,
+                    hasNextStage: viewModel.hasNextStage,
+                    stageEndDateText: viewModel.currentStageEndDateText,
+                    daysUntilStageEnd: viewModel.daysUntilStageEnd,
+                    onNextStage: {
+                        showingNextStageSelection = true
+                    }
                 )
+
+                // 教材管理カード
+                MaterialManagementCard {
+                    showingMaterialManagement = true
+                }
             }
             .padding()
         }
@@ -166,10 +217,13 @@ struct RoadmapTabView: View {
 
     // MARK: - Gantt Chart Content
 
-    /// ガントチャートの終了日を計算（教材の最大終了日とロードマップの推定完了日の大きい方）
+    /// ガントチャートの終了日を計算（教材の最大終了日、将来ステージの終了日、ロードマップの推定完了日の大きい方）
     private func calculateGanttEndDate(roadmap: UserRoadmap) -> Date {
         // 教材の最大終了日
         let maxMaterialEndDate = viewModel.materials.map { $0.plannedEndDate }.max()
+
+        // 将来ステージの最大終了日
+        let maxFutureStageEndDate = viewModel.futureStages.map { $0.estimatedEndDate }.max()
 
         // ロードマップの推定完了日
         let estimatedEnd = roadmap.estimatedCompletionDate
@@ -182,10 +236,15 @@ struct RoadmapTabView: View {
         if let materialEnd = maxMaterialEndDate {
             endDate = max(endDate, materialEnd)
         }
+        if let futureEnd = maxFutureStageEndDate {
+            endDate = max(endDate, futureEnd)
+        }
         if let estimated = estimatedEnd {
             endDate = max(endDate, estimated)
         }
-        return endDate
+
+        // 少し余裕を持たせる（1週間後）
+        return Calendar.current.date(byAdding: .day, value: 7, to: endDate) ?? endDate
     }
 
     private func ganttChartContent(roadmap: UserRoadmap) -> some View {
@@ -198,8 +257,10 @@ struct RoadmapTabView: View {
                 GanttChartView(
                     stages: viewModel.stages,
                     materials: viewModel.materials,
+                    futureStages: viewModel.futureStages,
                     startDate: roadmap.createdAt ?? Date(),
-                    endDate: calculateGanttEndDate(roadmap: roadmap)
+                    endDate: calculateGanttEndDate(roadmap: roadmap),
+                    examDate: roadmap.estimatedCompletionDate
                 )
             } else {
                 VStack(spacing: 16) {
@@ -221,6 +282,10 @@ struct RoadmapTabView: View {
                     LegendItem(color: .blue, label: "進行中")
                     LegendItem(color: .gray, label: "未着手")
                     LegendItem(color: .red.opacity(0.6), label: "今日")
+                    if !viewModel.futureStages.isEmpty {
+                        LegendItem(color: .orange.opacity(0.7), label: "将来予測")
+                        LegendItem(color: .purple, label: "入試日")
+                    }
                 }
                 .padding(.horizontal)
                 .padding(.vertical, 8)
@@ -437,17 +502,29 @@ struct OverallProgressCard: View {
     let targetStage: String
     let daysRemaining: Int
     let status: RoadmapStatus
+    let completedCount: Int
+    let totalCount: Int
+    let isStageCompleted: Bool
+    let hasNextStage: Bool
+    let stageEndDateText: String
+    let daysUntilStageEnd: Int
+    var onNextStage: (() -> Void)? = nil
 
     var body: some View {
         VStack(spacing: 16) {
             HStack {
-                Text("全体進捗")
-                    .font(.headline)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("\(currentStage) 進捗")
+                        .font(.headline)
+                    Text("\(completedCount) / \(totalCount) 教材完了")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
                 Spacer()
                 Text(String(format: "%.0f%%", progress * 100))
                     .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundColor(.roopyPrimary)
+                    .foregroundColor(isStageCompleted ? .green : .roopyPrimary)
             }
 
             // プログレスバー
@@ -459,15 +536,30 @@ struct OverallProgressCard: View {
                     RoundedRectangle(cornerRadius: 8)
                         .fill(
                             LinearGradient(
-                                colors: [.roopyPrimary, .roopyPrimary.opacity(0.7)],
+                                colors: isStageCompleted
+                                    ? [.green, .green.opacity(0.7)]
+                                    : [.roopyPrimary, .roopyPrimary.opacity(0.7)],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
                         )
-                        .frame(width: geo.size.width * progress)
+                        .frame(width: geo.size.width * min(progress, 1.0))
                 }
             }
             .frame(height: 12)
+
+            // ステージ完了時のメッセージ
+            if isStageCompleted {
+                HStack {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                    Text("\(currentStage) 完了!")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.green)
+                    Spacer()
+                }
+            }
 
             HStack {
                 VStack(alignment: .leading) {
@@ -481,8 +573,21 @@ struct OverallProgressCard: View {
 
                 Spacer()
 
-                Image(systemName: "arrow.right")
-                    .foregroundColor(.gray)
+                // ステージ終了予定日
+                VStack {
+                    Text("終了予定")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text(stageEndDateText)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.orange)
+                    if !isStageCompleted && daysUntilStageEnd > 0 {
+                        Text("あと\(daysUntilStageEnd)日")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
 
                 Spacer()
 
@@ -502,7 +607,7 @@ struct OverallProgressCard: View {
             HStack {
                 Image(systemName: "calendar")
                     .foregroundColor(.gray)
-                Text("残り \(daysRemaining) 日")
+                Text("全体 残り \(daysRemaining) 日")
                     .font(.subheadline)
 
                 Spacer()
@@ -515,6 +620,26 @@ struct OverallProgressCard: View {
                         .font(.caption)
                         .foregroundColor(statusColor)
                 }
+            }
+
+            // 次のステージへボタン
+            if hasNextStage {
+                Button {
+                    onNextStage?()
+                } label: {
+                    HStack {
+                        Image(systemName: isStageCompleted ? "arrow.right.circle.fill" : "lock.fill")
+                        Text(isStageCompleted ? "次のステージへ進む" : "全ての教材を完了すると次へ進めます")
+                    }
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundColor(isStageCompleted ? .white : .gray)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(isStageCompleted ? Color.roopyPrimary : Color.gray.opacity(0.3))
+                    .cornerRadius(10)
+                }
+                .disabled(!isStageCompleted)
             }
         }
         .padding()
@@ -653,6 +778,49 @@ struct AchievementsCard: View {
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(12)
+    }
+}
+
+/// 教材管理カード
+struct MaterialManagementCard: View {
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: 16) {
+                // アイコン
+                ZStack {
+                    Circle()
+                        .fill(Color.orange.opacity(0.15))
+                        .frame(width: 50, height: 50)
+
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.title2)
+                        .foregroundColor(.orange)
+                }
+
+                // テキスト
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("教材の管理")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+
+                    Text("教材の変更・削除ができます")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            }
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(12)
+        }
+        .buttonStyle(.plain)
     }
 }
 
