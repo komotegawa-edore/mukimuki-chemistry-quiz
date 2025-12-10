@@ -1,37 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import type { ListeningQuestion, DailyListeningSetResponse, ListeningSet } from '@/lib/types/database';
+import type { ListeningQuestion, ListeningSet, ListeningSetsResponse } from '@/lib/types/database';
 
 export const dynamic = 'force-dynamic';
 
-// シンプルなシードベースの乱数生成器
-function seededRandom(seed: number): () => number {
-  return function () {
-    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-    return seed / 0x7fffffff;
-  };
-}
-
-// 日付からシード値を生成
-function getDateSeed(dateStr: string): number {
-  return parseInt(dateStr.replace(/-/g, ''), 10);
-}
-
-// 今日の日付を取得（JST）
-function getTodayDateString(): string {
-  const now = new Date();
-  const jstOffset = 9 * 60;
-  const localOffset = now.getTimezoneOffset();
-  const jstTime = new Date(now.getTime() + (jstOffset + localOffset) * 60 * 1000);
-
-  const year = jstTime.getFullYear();
-  const month = String(jstTime.getMonth() + 1).padStart(2, '0');
-  const day = String(jstTime.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
-}
-
-// DBの行をフロントエンド用の型に変換
 interface QuestionRow {
   id: string;
   audio_url: string;
@@ -85,21 +57,12 @@ export async function GET() {
       );
     }
 
-    // 今日の日付とシードを取得
-    const todayStr = getTodayDateString();
-    const seed = getDateSeed(todayStr);
-
-    // シードベースでセットを選択
-    const random = seededRandom(seed);
-    const selectedIndex = Math.floor(random() * sets.length);
-    const selectedSet = sets[selectedIndex];
-
-    // 選択されたセットの問題を取得
+    // 全ての問題を取得
     const { data: questions, error: questionsError } = await supabase
       .from('mukimuki_listening_questions')
       .select('*')
-      .eq('set_id', selectedSet.id)
       .eq('is_published', true)
+      .not('set_id', 'is', null)
       .order('id');
 
     if (questionsError) {
@@ -110,26 +73,39 @@ export async function GET() {
       );
     }
 
-    const listeningSet: ListeningSet = {
-      id: selectedSet.id,
-      title: selectedSet.title,
-      description: selectedSet.description,
-      orderNum: selectedSet.order_num,
-      questions: (questions || []).map(toListeningQuestion),
-    };
+    // 問題をセットごとにグループ化
+    const questionsBySet = (questions || []).reduce((acc: Record<number, QuestionRow[]>, q: QuestionRow) => {
+      if (q.set_id) {
+        if (!acc[q.set_id]) {
+          acc[q.set_id] = [];
+        }
+        acc[q.set_id].push(q);
+      }
+      return acc;
+    }, {});
 
-    const response: DailyListeningSetResponse = {
-      set: listeningSet,
-      date: todayStr,
-      totalSets: sets.length,
-      seed: seed,
+    // セットに問題を紐付け
+    const listeningSets: ListeningSet[] = sets.map(set => ({
+      id: set.id,
+      title: set.title,
+      description: set.description,
+      orderNum: set.order_num,
+      questions: (questionsBySet[set.id] || []).map(toListeningQuestion),
+    }));
+
+    // 3問揃っているセットのみフィルタリング
+    const completeSets = listeningSets.filter(set => set.questions.length >= 3);
+
+    const response: ListeningSetsResponse = {
+      sets: completeSets,
+      totalSets: completeSets.length,
     };
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('リスニング問題取得エラー:', error);
+    console.error('リスニングセット取得エラー:', error);
     return NextResponse.json(
-      { error: 'リスニング問題の取得に失敗しました' },
+      { error: 'リスニングセットの取得に失敗しました' },
       { status: 500 }
     );
   }

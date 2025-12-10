@@ -217,8 +217,8 @@ export default function HomeContent({
                                 ? Math.round((result.score / result.total) * 100)
                                 : null
                               const canEarnPoints = !clearedTodayIds.has(chapter.id)
-                              // リスニング教科の場合は /listening へ遷移
-                              const chapterHref = isListening ? '/listening' : `/quiz/${chapter.id}`
+                              // リスニング教科の場合は /listening/sets へ遷移
+                              const chapterHref = isListening ? '/listening/sets' : `/quiz/${chapter.id}`
 
                               return (
                                 <Link

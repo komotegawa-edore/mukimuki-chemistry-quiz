@@ -1,14 +1,516 @@
+
 {
   "questions": [
     {
+      "id": "L010",
+      "audioUrl": "",
+      "englishScript": "Due to the typhoon, all afternoon classes have been cancelled. Students should leave the school by 1 PM. Please be careful on your way home.",
+      "jpQuestion": "生徒は何時までに下校する必要がありますか？",
+      "choices": ["12:00", "1:00 PM", "2:00 PM", "3:00 PM"],
+      "answerIndex": 1,
+      "tags": ["time", "school", "announcement"],
+      "level": 2,
+      "translation": "台風の影響で、午後の授業はすべて中止となりました。生徒は午後1時までに下校してください。帰り道には十分ご注意ください。"
+    },
+    {
       "id": "L011",
-      "english_script": "Your English script here.",
-      "jp_question": "日本語の質問文",
-      "choices": ["選択肢A", "選択肢B", "選択肢C", "選択肢D"],
-      "answer_index": 0,
-      "tags": ["time", "announcement"],
+      "english_script": "Attention passengers. The train to Osaka will depart from platform 5 at 10:30.",
+      "jp_question": "電車は何番ホームから出発しますか？",
+      "choices": ["3番", "4番", "5番", "6番"],
+      "answer_index": 2,
+      "tags": ["train", "announcement"],
       "level": 1,
-      "translation": "英文の日本語訳"
+      "translation": "乗客の皆様にお知らせします。大阪行きの電車は10時30分に5番ホームから出発します。"
+    },
+    {
+      "id": "L012",
+      "english_script": "Welcome to City Market. Today, fresh apples are on sale. You can get three apples for two dollars.",
+      "jp_question": "リンゴはいくらで買えますか？",
+      "choices": ["1個2ドル", "2個3ドル", "3個2ドル", "3個3ドル"],
+      "answer_index": 2,
+      "tags": ["store", "sale", "numbers"],
+      "level": 1,
+      "translation": "シティマーケットへようこそ。今日は新鮮なリンゴが特売です。3個2ドルでお求めいただけます。"
+    },
+    {
+      "id": "L013",
+      "english_script": "The next stop is Central Library. If you are going to the art museum, please get off here and take the number 10 bus.",
+      "jp_question": "美術館に行く人はどうすればいいですか？",
+      "choices": ["そのまま乗っている", "次のバス停で降りて乗り換える", "図書館の中で待つ", "終点まで行く"],
+      "answer_index": 1,
+      "tags": ["bus", "directions"],
+      "level": 2,
+      "translation": "次は中央図書館です。美術館へ行かれる方は、ここで降りて10番のバスに乗り換えてください。"
+    },
+    {
+      "id": "L014",
+      "english_script": "Class, please listen carefully. The math homework is due next Tuesday, not Monday. Please don't forget.",
+      "jp_question": "数学の宿題の締め切りはいつですか？",
+      "choices": ["今週の月曜日", "来週の月曜日", "今週の火曜日", "来週の火曜日"],
+      "answer_index": 3,
+      "tags": ["school", "deadline"],
+      "level": 1,
+      "translation": "クラスの皆さん、よく聞いてください。数学の宿題の締め切りは来週の火曜日です。月曜日ではありません。忘れないでください。"
+    },
+    {
+      "id": "L015",
+      "english_script": "Thank you for calling Sakura Restaurant. We are open from 11 a.m. to 9 p.m. every day, except Wednesdays.",
+      "jp_question": "レストランの定休日はいつですか？",
+      "choices": ["月曜日", "水曜日", "土曜日", "日曜日"],
+      "answer_index": 1,
+      "tags": ["restaurant", "hours"],
+      "level": 2,
+      "translation": "サクラレストランにお電話ありがとうございます。当店の営業時間は午前11時から午後9時までです。ただし水曜日は定休日です。"
+    },
+    {
+      "id": "L016",
+      "english_script": "Attention please. Flight 305 to New York has been delayed due to bad weather. The new departure time is 4:45 p.m.",
+      "jp_question": "新しい出発時間は何時ですか？",
+      "choices": ["3:05", "4:15", "4:45", "5:30"],
+      "answer_index": 2,
+      "tags": ["airport", "delay", "time"],
+      "level": 2,
+      "translation": "お知らせします。ニューヨーク行き305便は悪天候のため遅れています。新しい出発時間は午後4時45分です。"
+    },
+    {
+      "id": "L017",
+      "english_script": "Hi, I'd like to return this shirt. It's a bit too small for me. Do you have a medium size?",
+      "jp_question": "客はなぜシャツを返品したいのですか？",
+      "choices": ["色が気に入らないから", "サイズが小さすぎるから", "サイズが大きすぎるから", "汚れているから"],
+      "answer_index": 1,
+      "tags": ["shopping", "conversation"],
+      "level": 1,
+      "translation": "こんにちは、このシャツを返品したいのですが。私には少し小さすぎるんです。Mサイズはありますか？"
+    },
+    {
+      "id": "L018",
+      "english_script": "Good morning. The soccer practice scheduled for this afternoon has been canceled because the field is wet.",
+      "jp_question": "なぜサッカーの練習は中止になったのですか？",
+      "choices": ["雨が降っているから", "暑すぎるから", "グラウンドが濡れているから", "コーチが風邪を引いたから"],
+      "answer_index": 2,
+      "tags": ["school", "sports", "reason"],
+      "level": 2,
+      "translation": "おはようございます。今日の午後に予定されていたサッカーの練習は、グラウンドが濡れているため中止になりました。"
+    },
+    {
+      "id": "L019",
+      "english_script": "Excuse me, does this bus go to the city hospital? No, you need to take the blue bus across the street.",
+      "jp_question": "男性はどこに行きたいですか？",
+      "choices": ["駅", "青いバス", "市民病院", "向かいの通り"],
+      "answer_index": 2,
+      "tags": ["bus", "conversation", "location"],
+      "level": 1,
+      "translation": "すみません、このバスは市民病院に行きますか？ いいえ、通りの向こう側にある青いバスに乗る必要がありますよ。"
+    },
+    {
+      "id": "L020",
+      "english_script": "Our winter sale starts this Saturday. Everything in the store will be 20% off for three days only.",
+      "jp_question": "セールは何日間続きますか？",
+      "choices": ["2日間", "3日間", "1週間", "20日間"],
+      "answer_index": 1,
+      "tags": ["store", "sale", "duration"],
+      "level": 2,
+      "translation": "冬のセールは今週の土曜日から始まります。店内全品が3日間限定で20%オフになります。"
+    },
+    {
+      "id": "L021",
+      "english_script": "The train was scheduled to arrive at 3:00 p.m., but it is running 15 minutes late.",
+      "jp_question": "電車は何時に到着する予定ですか？",
+      "choices": ["2:45", "3:00", "3:15", "3:30"],
+      "answer_index": 2,
+      "tags": ["train", "time", "calculation"],
+      "level": 3,
+      "translation": "電車は午後3時に到着する予定でしたが、15分遅れて運行しています。"
+    },
+    {
+      "id": "L022",
+      "english_script": "I'd like two tickets for adults and one for a child. Adult tickets are 10 dollars each, and children are half price.",
+      "jp_question": "合計でいくらになりますか？",
+      "choices": ["15ドル", "20ドル", "25ドル", "30ドル"],
+      "answer_index": 2,
+      "tags": ["ticket", "money", "calculation"],
+      "level": 3,
+      "translation": "大人2枚と子供1枚のチケットをお願いします。大人は1枚10ドルで、子供は半額です。"
+    },
+    {
+      "id": "L023",
+      "english_script": "The meeting was supposed to start at 4:50, but the boss decided to start 30 minutes earlier.",
+      "jp_question": "会議は何時から始まりますか？",
+      "choices": ["4:20", "4:50", "5:20", "5:30"],
+      "answer_index": 0,
+      "tags": ["business", "time", "change"],
+      "level": 3,
+      "translation": "会議は4時50分に始まるはずでしたが、上司は30分早く始めることに決めました。"
+    },
+    {
+      "id": "L024",
+      "english_script": "I need to catch the 7:00 bus. It takes 10 minutes to walk to the bus stop, and I need 40 minutes to get ready.",
+      "jp_question": "遅くとも何時には起きる必要がありますか？",
+      "choices": ["6:00", "6:10", "6:20", "6:30"],
+      "answer_index": 1,
+      "tags": ["daily", "time", "logic"],
+      "level": 3,
+      "translation": "7時のバスに乗らなければなりません。バス停まで歩くのに10分かかり、支度をするのに40分必要です。"
+    },
+    {
+      "id": "L025",
+      "english_script": "Excuse me, where is the shoe section? It's on the 3rd floor. Oh wait, we moved it to the 5th floor yesterday.",
+      "jp_question": "靴売り場は何階にありますか？",
+      "choices": ["1階", "3階", "4階", "5階"],
+      "answer_index": 3,
+      "tags": ["store", "location", "correction"],
+      "level": 2,
+      "translation": "すみません、靴売り場はどこですか？ 3階です。あ、待ってください、昨日5階に移動したんでした。"
+    },
+    {
+      "id": "L026",
+      "english_script": "This shirt is usually 40 dollars, but today it is 10 percent off.",
+      "jp_question": "シャツはいくらになりますか？",
+      "choices": ["30ドル", "36ドル", "44ドル", "50ドル"],
+      "answer_index": 1,
+      "tags": ["shopping", "math", "discount"],
+      "level": 3,
+      "translation": "このシャツは通常40ドルですが、今日は10パーセントオフです。"
+    },
+    {
+      "id": "L027",
+      "english_script": "The library is closed on Mondays. Since today is Sunday, it will be closed tomorrow.",
+      "jp_question": "今日は何曜日ですか？",
+      "choices": ["月曜日", "土曜日", "日曜日", "火曜日"],
+      "answer_index": 2,
+      "tags": ["library", "days", "inference"],
+      "level": 2,
+      "translation": "図書館は月曜日が休館日です。今日は日曜日なので、明日は閉まっています。"
+    },
+    {
+      "id": "L028",
+      "english_script": "Attention passengers. The gate for Flight 202 has changed from 15 to 50.",
+      "jp_question": "乗客はどのゲートへ行くべきですか？",
+      "choices": ["15番", "20番", "50番", "55番"],
+      "answer_index": 2,
+      "tags": ["airport", "announcement", "change"],
+      "level": 2,
+      "translation": "乗客の皆様にお知らせします。202便の搭乗口は15番から50番に変更されました。"
+    },
+    {
+      "id": "L029",
+      "english_script": "My brother is 15 years old. I am 3 years younger than him.",
+      "jp_question": "話し手は何歳ですか？",
+      "choices": ["12歳", "13歳", "15歳", "18歳"],
+      "answer_index": 0,
+      "tags": ["family", "age", "math"],
+      "level": 2,
+      "translation": "私の兄は15歳です。私は兄より3歳年下です。"
+    },
+    {
+      "id": "L030",
+      "english_script": "The movie is 2 hours long. It starts at 1:30 p.m.",
+      "jp_question": "映画は何時に終わりますか？",
+      "choices": ["2:30", "3:00", "3:30", "4:30"],
+      "answer_index": 2,
+      "tags": ["entertainment", "time", "calculation"],
+      "level": 2,
+      "translation": "映画の長さは2時間です。午後1時30分に始まります。"
+    },
+    {
+      "id": "L031",
+      "english_script": "We need 10 chairs for the party, but we only have 6 in this room.",
+      "jp_question": "あと何脚の椅子が必要ですか？",
+      "choices": ["4脚", "6脚", "10脚", "16脚"],
+      "answer_index": 0,
+      "tags": ["party", "numbers", "math"],
+      "level": 2,
+      "translation": "パーティーには椅子が10脚必要ですが、この部屋には6脚しかありません。"
+    },
+    {
+      "id": "L032",
+      "english_script": "The weather forecast says it will be 25 degrees tomorrow, which is 5 degrees hotter than today.",
+      "jp_question": "今日の気温は何度ですか？",
+      "choices": ["20度", "25度", "30度", "35度"],
+      "answer_index": 0,
+      "tags": ["weather", "temperature", "logic"],
+      "level": 3,
+      "translation": "天気予報によると明日は25度になるそうです。これは今日より5度高い気温です。"
+    },
+    {
+      "id": "L033",
+      "english_script": "I paid with a 20 dollar bill for a lunch that cost 12 dollars.",
+      "jp_question": "お釣りはいくらですか？",
+      "choices": ["8ドル", "10ドル", "12ドル", "32ドル"],
+      "answer_index": 0,
+      "tags": ["restaurant", "money", "calculation"],
+      "level": 2,
+      "translation": "12ドルのランチ代を20ドル札で支払いました。"
+    },
+    {
+      "id": "L034",
+      "english_script": "Please take the bus number 12, not 20. The number 20 goes to the opposite direction.",
+      "jp_question": "どのバスに乗るべきですか？",
+      "choices": ["12番", "20番", "両方", "どちらでもない"],
+      "answer_index": 0,
+      "tags": ["bus", "directions", "choice"],
+      "level": 1,
+      "translation": "12番のバスに乗ってください、20番ではありません。20番は反対方向に行きます。"
+    },
+    {
+      "id": "L035",
+      "english_script": "Cooking class starts at 10 a.m. It takes 30 minutes to prepare the ingredients and 1 hour to cook.",
+      "jp_question": "料理が完成するのは何時ですか？",
+      "choices": ["10:30", "11:00", "11:30", "12:00"],
+      "answer_index": 2,
+      "tags": ["cooking", "time", "calculation"],
+      "level": 3,
+      "translation": "料理教室は午前10時に始まります。材料の準備に30分、調理に1時間かかります。"
+    },
+    {
+      "id": "L036",
+      "english_script": "The parking fee is 5 dollars per hour. I parked my car for 3 hours.",
+      "jp_question": "駐車料金はいくらですか？",
+      "choices": ["5ドル", "10ドル", "15ドル", "20ドル"],
+      "answer_index": 2,
+      "tags": ["parking", "money", "multiplication"],
+      "level": 3,
+      "translation": "駐車料金は1時間につき5ドルです。私は3時間駐車しました。"
+    },
+    {
+      "id": "L037",
+      "english_script": "I have a dentist appointment on the 3rd of October. Today is the 1st.",
+      "jp_question": "歯医者の予約は何日後ですか？",
+      "choices": ["今日", "明日", "2日後", "3日後"],
+      "answer_index": 2,
+      "tags": ["schedule", "date", "logic"],
+      "level": 2,
+      "translation": "10月3日に歯医者の予約があります。今日は1日です。"
+    },
+    {
+      "id": "L038",
+      "english_script": "The train leaves every 20 minutes. The first one left at 8:00.",
+      "jp_question": "3本目の電車は何時に出発しますか？",
+      "choices": ["8:20", "8:40", "9:00", "9:20"],
+      "answer_index": 1,
+      "tags": ["train", "schedule", "sequence"],
+      "level": 3,
+      "translation": "電車は20分おきに出発します。始発は8時に出ました。"
+    },
+    {
+      "id": "L039",
+      "english_script": "I wanted to buy the red dress, but they only had blue ones in my size.",
+      "jp_question": "この人は何色のドレスを買うことになりそうですか（あるいは買えませんでしたか）？",
+      "choices": ["赤色", "青色", "黄色", "黒色"],
+      "answer_index": 1,
+      "tags": ["shopping", "color", "compromise"],
+      "level": 2,
+      "translation": "赤いドレスを買いたかったのですが、私のサイズは青色しかありませんでした。"
+    },
+    {
+      "id": "L040",
+      "english_script": "Room 301 is on the 3rd floor. Room 501 is two floors above it.",
+      "jp_question": "501号室は何階にありますか？",
+      "choices": ["2階", "3階", "4階", "5階"],
+      "answer_index": 3,
+      "tags": ["hotel", "floor", "logic"],
+      "level": 2,
+      "translation": "301号室は3階にあります。501号室はその2階上です。"
+    },
+    {
+      "id": "L041",
+      "english_script": "The library is on the second floor, and the computer room is on the floor just above it.",
+      "jp_question": "コンピュータ室は何階にありますか？",
+      "choices": ["1階", "2階", "3階", "4階"],
+      "answer_index": 2,
+      "tags": ["school", "location", "logic"],
+      "level": 2,
+      "translation": "図書館は2階にあり、コンピュータ室はそのすぐ上の階にあります。"
+    },
+    {
+      "id": "L042",
+      "english_script": "The concert started at 6:00 p.m. and lasted for two and a half hours.",
+      "jp_question": "コンサートは何時に終わりましたか？",
+      "choices": ["7:30", "8:00", "8:30", "9:00"],
+      "answer_index": 2,
+      "tags": ["entertainment", "time", "calculation"],
+      "level": 3,
+      "translation": "コンサートは午後6時に始まり、2時間半続きました。"
+    },
+    {
+      "id": "L043",
+      "english_script": "I need 5 eggs for this cake, but I only have 2 in the fridge.",
+      "jp_question": "あと何個の卵を買う必要がありますか？",
+      "choices": ["2個", "3個", "5個", "7個"],
+      "answer_index": 1,
+      "tags": ["cooking", "math", "subtraction"],
+      "level": 3,
+      "translation": "このケーキには卵が5個必要ですが、冷蔵庫には2個しかありません。"
+    },
+    {
+      "id": "L044",
+      "english_script": "The bus comes every 15 minutes. The last bus left at 10:00.",
+      "jp_question": "次のバスは何時に来ますか？",
+      "choices": ["10:05", "10:10", "10:15", "10:30"],
+      "answer_index": 2,
+      "tags": ["bus", "schedule", "calculation"],
+      "level": 3,
+      "translation": "バスは15分おきに来ます。前のバスは10時に出ました。"
+    },
+    {
+      "id": "L045",
+      "english_script": "Tickets are 12 dollars each. If you buy 3 tickets, you get a 2 dollar discount on the total price.",
+      "jp_question": "チケットを3枚買うといくらになりますか？",
+      "choices": ["30ドル", "34ドル", "36ドル", "38ドル"],
+      "answer_index": 1,
+      "tags": ["ticket", "money", "discount", "math"],
+      "level": 3,
+      "translation": "チケットは1枚12ドルです。もし3枚買うなら、合計金額から2ドル割引されます。"
+    },
+    {
+      "id": "L046",
+      "english_script": "My flight departs at 2:00 p.m. I need to be at the airport 2 hours before departure.",
+      "jp_question": "空港には何時に到着している必要がありますか？",
+      "choices": ["12:00", "1:00", "2:00", "4:00"],
+      "answer_index": 0,
+      "tags": ["airport", "time", "planning"],
+      "level": 2,
+      "translation": "私のフライトは午後2時に出発します。出発の2時間前には空港にいる必要があります。"
+    },
+    {
+      "id": "L047",
+      "english_script": "The blue notebook costs 3 dollars, and the red one is double the price.",
+      "jp_question": "赤いノートはいくらですか？",
+      "choices": ["3ドル", "5ドル", "6ドル", "9ドル"],
+      "answer_index": 2,
+      "tags": ["shopping", "price", "multiplication"],
+      "level": 2,
+      "translation": "青いノートは3ドルで、赤いノートはその2倍の値段です。"
+    },
+    {
+      "id": "L048",
+      "english_script": "We are open from Monday to Friday. We are closed on weekends.",
+      "jp_question": "この店が閉まっているのはいつですか？",
+      "choices": ["水曜日", "金曜日", "土曜日", "平日"],
+      "answer_index": 2,
+      "tags": ["store", "hours", "logic"],
+      "level": 1,
+      "translation": "当店は月曜から金曜まで営業しています。週末は休業です。"
+    },
+    {
+      "id": "L049",
+      "english_script": "I have a meeting on August 15th. Today is August 10th.",
+      "jp_question": "会議は何日後ですか？",
+      "choices": ["3日後", "4日後", "5日後", "1週間後"],
+      "answer_index": 2,
+      "tags": ["business", "date", "subtraction"],
+      "level": 2,
+      "translation": "8月15日に会議があります。今日は8月10日です。"
+    },
+    {
+      "id": "L050",
+      "english_script": "Please turn to page 20. Then, read the next 5 pages.",
+      "jp_question": "何ページまで読む必要がありますか？",
+      "choices": ["20ページ", "24ページ", "25ページ", "30ページ"],
+      "answer_index": 2,
+      "tags": ["school", "instruction", "math"],
+      "level": 2,
+      "translation": "20ページを開いてください。そして、そこから5ページ読んでください。"
+    },
+    {
+      "id": "L051",
+      "english_script": "The express train takes 30 minutes to get to Tokyo. The local train takes twice as long.",
+      "jp_question": "各駅停車（Local train）で行くと何分かかりますか？",
+      "choices": ["30分", "45分", "60分", "90分"],
+      "answer_index": 2,
+      "tags": ["train", "time", "comparison"],
+      "level": 3,
+      "translation": "急行電車は東京まで30分かかります。各駅停車はその2倍の時間がかかります。"
+    },
+    {
+      "id": "L052",
+      "english_script": "It is raining now, but the weather forecast says it will stop by noon.",
+      "jp_question": "いつ雨が止む予報ですか？",
+      "choices": ["今すぐ", "正午までに", "夕方", "明日"],
+      "answer_index": 1,
+      "tags": ["weather", "time", "prediction"],
+      "level": 2,
+      "translation": "今は雨が降っていますが、天気予報によると正午までには止むそうです。"
+    },
+    {
+      "id": "L053",
+      "english_script": "I gave the cashier a 50 dollar bill for a 35 dollar purchase.",
+      "jp_question": "お釣りはいくらですか？",
+      "choices": ["5ドル", "10ドル", "15ドル", "25ドル"],
+      "answer_index": 2,
+      "tags": ["shopping", "money", "calculation"],
+      "level": 2,
+      "translation": "35ドルの買い物をして、レジで50ドル札を出しました。"
+    },
+    {
+      "id": "L054",
+      "english_script": "Attention students. The science room has changed from Room 101 to Room 104.",
+      "jp_question": "生徒はどの教室に行くべきですか？",
+      "choices": ["101", "102", "103", "104"],
+      "answer_index": 3,
+      "tags": ["school", "announcement", "change"],
+      "level": 1,
+      "translation": "生徒の皆さんに連絡です。理科室は101教室から104教室に変更になりました。"
+    },
+    {
+      "id": "L055",
+      "english_script": "My sister is 10 years old. My brother is 5 years older than her.",
+      "jp_question": "兄（弟）は何歳ですか？",
+      "choices": ["5歳", "10歳", "15歳", "20歳"],
+      "answer_index": 2,
+      "tags": ["family", "age", "math"],
+      "level": 2,
+      "translation": "私の妹は10歳です。私の兄は彼女より5歳年上です。"
+    },
+    {
+      "id": "L056",
+      "english_script": "Lunch is served from 11:30 to 1:30. You arrived at 1:40.",
+      "jp_question": "この人はランチを食べることができますか？",
+      "choices": ["できる", "できない", "少しだけできる", "予約すればできる"],
+      "answer_index": 1,
+      "tags": ["restaurant", "time", "logic"],
+      "level": 2,
+      "translation": "ランチの提供時間は11時30分から1時30分までです。あなたは1時40分に到着しました。"
+    },
+    {
+      "id": "L057",
+      "english_script": "The box weighs 10 kilograms. I can only carry 4 kilograms at a time.",
+      "jp_question": "箱の中身を運ぶのに最低何回往復する必要がありますか？",
+      "choices": ["2回", "3回", "4回", "5回"],
+      "answer_index": 1,
+      "tags": ["daily", "math", "division_logic"],
+      "level": 3,
+      "translation": "箱の重さは10キログラムです。私は一度に4キログラムしか運べません。"
+    },
+    {
+      "id": "L058",
+      "english_script": "Please do not use the elevators during the fire drill. Use the stairs instead.",
+      "jp_question": "避難訓練中、何を使って移動すべきですか？",
+      "choices": ["エレベーター", "エスカレーター", "階段", "窓"],
+      "answer_index": 2,
+      "tags": ["safety", "instruction", "vocabulary"],
+      "level": 1,
+      "translation": "避難訓練中はエレベーターを使わないでください。代わりに階段を使ってください。"
+    },
+    {
+      "id": "L059",
+      "english_script": "The train fare is 200 yen for adults and 100 yen for children. I have two children with me.",
+      "jp_question": "子供2人分の運賃はいくらですか？",
+      "choices": ["100円", "200円", "300円", "400円"],
+      "answer_index": 1,
+      "tags": ["train", "money", "calculation"],
+      "level": 2,
+      "translation": "電車の運賃は大人200円、子供100円です。私は子供を2人連れています。"
+    },
+    {
+      "id": "L060",
+      "english_script": "Today is Tuesday. I have a dentist appointment the day after tomorrow.",
+      "jp_question": "歯医者の予約は何曜日ですか？",
+      "choices": ["水曜日", "木曜日", "金曜日", "土曜日"],
+      "answer_index": 1,
+      "tags": ["schedule", "days", "logic"],
+      "level": 2,
+      "translation": "今日は火曜日です。明後日、歯医者の予約があります。"
     }
   ]
 }

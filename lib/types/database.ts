@@ -412,4 +412,28 @@ export interface ListeningSessionResult {
   score: number                 // 正答数
   total: number                 // 問題数
   rank: 'S' | 'A' | 'B' | 'C'   // ランク
+  setId?: number                // セットID（通常クエスト時）
+}
+
+// リスニングセット（3問1セット）
+export interface ListeningSet {
+  id: number
+  title: string
+  description: string | null
+  orderNum: number
+  questions: ListeningQuestion[]
+}
+
+// リスニングセット一覧APIレスポンス
+export interface ListeningSetsResponse {
+  sets: ListeningSet[]
+  totalSets: number
+}
+
+// セット形式のデイリーリスニングレスポンス
+export interface DailyListeningSetResponse {
+  set: ListeningSet
+  date: string
+  totalSets: number
+  seed: number
 }

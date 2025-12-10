@@ -2,10 +2,17 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import { Volume2, Play, RefreshCw, CheckCircle, XCircle, Headphones, Sparkles, Star, Coins } from 'lucide-react';
-import type { ListeningQuestion, DailyListeningResponse, ListeningResult, ListeningSessionResult } from '@/lib/types/database';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Volume2, Play, RefreshCw, CheckCircle, XCircle, Headphones, Sparkles, Star, Coins, Home, ChevronRight } from 'lucide-react';
+import type { ListeningQuestion, ListeningResult, ListeningSessionResult, ListeningSet, DailyListeningSetResponse } from '@/lib/types/database';
 
 type GameState = 'start' | 'playing' | 'answered' | 'result';
+
+interface DailyListeningProps {
+  setId?: number;        // 特定セットを指定する場合
+  isDaily?: boolean;     // デイリークエストかどうか
+}
 
 // ランクを計算する関数
 function calculateRank(score: number, total: number): 'S' | 'A' | 'B' | 'C' {
@@ -50,8 +57,10 @@ function getRankInfo(rank: 'S' | 'A' | 'B' | 'C'): { color: string; bg: string; 
   }
 }
 
-export default function DailyListening() {
+export default function DailyListening({ setId, isDaily = true }: DailyListeningProps) {
+  const router = useRouter();
   const [gameState, setGameState] = useState<GameState>('start');
+  const [currentSet, setCurrentSet] = useState<ListeningSet | null>(null);
   const [questions, setQuestions] = useState<ListeningQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [results, setResults] = useState<ListeningResult[]>([]);
@@ -62,6 +71,7 @@ export default function DailyListening() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playCount, setPlayCount] = useState(0);
   const [pointsEarned, setPointsEarned] = useState<number | null>(null);
+  const [nextSetId, setNextSetId] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // 問題を取得
@@ -70,20 +80,33 @@ export default function DailyListening() {
     setError(null);
 
     try {
-      const response = await fetch('/api/listening/daily');
+      const url = setId ? `/api/listening/sets/${setId}` : '/api/listening/daily';
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error('問題の取得に失敗しました');
       }
 
-      const data: DailyListeningResponse = await response.json();
-      setQuestions(data.questions);
-      setDate(data.date);
+      const data = await response.json();
+
+      if (setId) {
+        // 特定セット取得の場合
+        setCurrentSet(data.set);
+        setQuestions(data.set.questions);
+        setNextSetId(data.nextSetId);
+        setDate(new Date().toISOString().split('T')[0]);
+      } else {
+        // デイリークエストの場合
+        const dailyData = data as DailyListeningSetResponse;
+        setCurrentSet(dailyData.set);
+        setQuestions(dailyData.set.questions);
+        setDate(dailyData.date);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : '問題の取得に失敗しました');
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [setId]);
 
   // 初回読み込み
   useEffect(() => {
@@ -160,26 +183,28 @@ export default function DailyListening() {
       setGameState('playing');
       setPlayCount(0);
     } else {
-      // 全問終了 - 結果をAPIに送信
-      const lastResult = results[results.length - 1];
-      if (lastResult) {
-        try {
-          const response = await fetch('/api/listening/result', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              questionId: lastResult.questionId,
-              isCorrect: lastResult.isCorrect,
-              userAnswer: lastResult.userAnswer,
-              timeSpent: lastResult.timeSpent,
-            }),
-          });
-          const data = await response.json();
-          if (data.pointsEarned !== undefined) {
-            setPointsEarned(data.pointsEarned);
+      // 全問終了 - 結果をAPIに送信（デイリーの場合のみポイント付与）
+      if (isDaily) {
+        const lastResult = results[results.length - 1];
+        if (lastResult) {
+          try {
+            const response = await fetch('/api/listening/result', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                questionId: lastResult.questionId,
+                isCorrect: lastResult.isCorrect,
+                userAnswer: lastResult.userAnswer,
+                timeSpent: lastResult.timeSpent,
+              }),
+            });
+            const data = await response.json();
+            if (data.pointsEarned !== undefined) {
+              setPointsEarned(data.pointsEarned);
+            }
+          } catch (error) {
+            console.error('Failed to save listening result:', error);
           }
-        } catch (error) {
-          console.error('Failed to save listening result:', error);
         }
       }
       setGameState('result');
@@ -194,6 +219,7 @@ export default function DailyListening() {
     setResults([]);
     setSelectedAnswer(null);
     setPlayCount(0);
+    setPointsEarned(null);
   };
 
   // 結果計算
@@ -203,6 +229,7 @@ export default function DailyListening() {
     score: results.filter(r => r.isCorrect).length,
     total: questions.length,
     rank: calculateRank(results.filter(r => r.isCorrect).length, questions.length),
+    setId: currentSet?.id,
   } : null;
 
   // ローディング中
@@ -249,7 +276,9 @@ export default function DailyListening() {
           {/* ヘッダー */}
           <div className="flex items-center gap-2 mb-4">
             <Headphones className="w-6 h-6 text-[#5DDFC3]" />
-            <h3 className="text-xl font-bold text-[#3A405A]">1分リスニングチェック</h3>
+            <h3 className="text-xl font-bold text-[#3A405A]">
+              {isDaily ? 'デイリーリスニング' : currentSet?.title || 'リスニングチェック'}
+            </h3>
           </div>
 
           {/* Roopyとメッセージ */}
@@ -257,8 +286,11 @@ export default function DailyListening() {
             <Image src="/Roopy.png" alt="Roopy" width={80} height={80} className="flex-shrink-0" />
             <div className="bg-white/60 rounded-xl p-4 backdrop-blur-sm">
               <p className="text-[#3A405A] text-sm">
-                今日のリスニング問題だよ！<br />
-                英語を聞いて、質問に答えてね 🎧
+                {isDaily ? (
+                  <>今日のリスニング問題だよ！<br />英語を聞いて、質問に答えてね 🎧</>
+                ) : (
+                  <>このセットの問題に挑戦しよう！<br />全問正解を目指してね 🎯</>
+                )}
               </p>
             </div>
           </div>
@@ -268,10 +300,13 @@ export default function DailyListening() {
             <div className="flex items-center justify-between text-[#3A405A]">
               <div className="flex items-center gap-2">
                 <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                <span className="text-sm font-medium">今日の1問</span>
+                <span className="text-sm font-medium">全{questions.length}問</span>
               </div>
               <span className="text-sm opacity-70">{date}</span>
             </div>
+            {currentSet?.description && (
+              <p className="text-xs text-[#3A405A] opacity-70 mt-2">{currentSet.description}</p>
+            )}
           </div>
 
           {/* スタートボタン */}
@@ -285,7 +320,7 @@ export default function DailyListening() {
           </button>
 
           <p className="text-[#3A405A] opacity-60 text-xs mt-3 text-center">
-            毎日チャレンジしてリスニング力をアップ！
+            {isDaily ? '毎日チャレンジしてリスニング力をアップ！' : 'リスニング力を鍛えよう！'}
           </p>
         </div>
       </div>
@@ -304,7 +339,7 @@ export default function DailyListening() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2 text-white">
               <Headphones className="w-5 h-5" />
-              <span className="font-semibold">リスニング</span>
+              <span className="font-semibold">{currentSet?.title || 'リスニング'}</span>
             </div>
             <div className="flex gap-2">
               {questions.map((_, i) => (
@@ -497,7 +532,7 @@ export default function DailyListening() {
         {/* ヘッダー */}
         <div className="bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] px-6 py-4 text-center">
           <h2 className="text-xl font-bold text-white">リスニングチェック結果</h2>
-          <p className="text-white/80 text-sm">{sessionResult.date}</p>
+          <p className="text-white/80 text-sm">{currentSet?.title || sessionResult.date}</p>
         </div>
 
         <div className="p-6">
@@ -576,14 +611,47 @@ export default function DailyListening() {
             </div>
           </div>
 
-          {/* もう一度やるボタン */}
-          <button
-            onClick={restartGame}
-            className="w-full flex items-center justify-center gap-2 py-4 bg-[#5DDFC3] text-white font-bold rounded-xl hover:bg-[#4ECFB3] transition-colors shadow-md"
-          >
-            <RefreshCw className="w-5 h-5" />
-            もう一度チャレンジ
-          </button>
+          {/* アクションボタン */}
+          <div className="space-y-3">
+            {/* 次のセクションへ（通常クエストで次セットがある場合） */}
+            {!isDaily && nextSetId && (
+              <Link
+                href={`/listening/sets/${nextSetId}`}
+                className="w-full flex items-center justify-center gap-2 py-4 bg-[#5DDFC3] text-white font-bold rounded-xl hover:bg-[#4ECFB3] transition-colors shadow-md"
+              >
+                次のセクションへ
+                <ChevronRight className="w-5 h-5" />
+              </Link>
+            )}
+
+            {/* もう一度チャレンジ */}
+            <button
+              onClick={restartGame}
+              className="w-full flex items-center justify-center gap-2 py-4 bg-white text-[#5DDFC3] font-bold rounded-xl border-2 border-[#5DDFC3] hover:bg-[#F4F9F7] transition-colors"
+            >
+              <RefreshCw className="w-5 h-5" />
+              もう一度チャレンジ
+            </button>
+
+            {/* ホームへ戻る */}
+            <Link
+              href="/"
+              className="w-full flex items-center justify-center gap-2 py-4 bg-[#F4F9F7] text-[#3A405A] font-bold rounded-xl hover:bg-[#E0F7F1] transition-colors"
+            >
+              <Home className="w-5 h-5" />
+              ホームへ戻る
+            </Link>
+
+            {/* セット一覧へ（通常クエストの場合） */}
+            {!isDaily && (
+              <Link
+                href="/listening/sets"
+                className="w-full flex items-center justify-center gap-2 py-3 text-[#3A405A] opacity-70 hover:opacity-100 transition-opacity text-sm"
+              >
+                セット一覧へ
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     );
