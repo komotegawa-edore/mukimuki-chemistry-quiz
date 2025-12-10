@@ -1,12 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Target } from 'lucide-react'
+import { Target, BookOpen } from 'lucide-react'
 
 export default function DailyMissionSettings() {
   const [enabled, setEnabled] = useState(true)
+  const [drillEnabled, setDrillEnabled] = useState(false)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [savingDrill, setSavingDrill] = useState(false)
 
   useEffect(() => {
     fetchSettings()
@@ -14,10 +16,17 @@ export default function DailyMissionSettings() {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch('/api/settings?key=daily_mission_enabled')
-      if (response.ok) {
-        const data = await response.json()
+      const [missionRes, drillRes] = await Promise.all([
+        fetch('/api/settings?key=daily_mission_enabled'),
+        fetch('/api/settings?key=drill_enabled'),
+      ])
+      if (missionRes.ok) {
+        const data = await missionRes.json()
         setEnabled(data.settings.setting_value === 'true')
+      }
+      if (drillRes.ok) {
+        const data = await drillRes.json()
+        setDrillEnabled(data.settings.setting_value === 'true')
       }
     } catch (error) {
       console.error('Failed to fetch settings:', error)
@@ -52,6 +61,32 @@ export default function DailyMissionSettings() {
     }
   }
 
+  const handleDrillToggle = async () => {
+    setSavingDrill(true)
+    try {
+      const newValue = !drillEnabled
+      const response = await fetch('/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          setting_key: 'drill_enabled',
+          setting_value: newValue ? 'true' : 'false',
+        }),
+      })
+
+      if (response.ok) {
+        setDrillEnabled(newValue)
+      } else {
+        alert('設定の更新に失敗しました')
+      }
+    } catch (error) {
+      console.error('Failed to update settings:', error)
+      alert('設定の更新に失敗しました')
+    } finally {
+      setSavingDrill(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
@@ -61,6 +96,7 @@ export default function DailyMissionSettings() {
   }
 
   return (
+    <>
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -111,5 +147,39 @@ export default function DailyMissionSettings() {
         </div>
       )}
     </div>
+
+    {/* ドリル機能設定 */}
+    <div className="bg-white rounded-lg shadow-md p-6 mt-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg">
+            <BookOpen className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg text-[#3A405A]">ドリル機能</h3>
+            <p className="text-sm text-[#3A405A] opacity-70">
+              {drillEnabled
+                ? '単語ドリル・フラッシュカード機能が公開されています'
+                : 'ドリル機能が非公開になっています（著作権対応中）'}
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={handleDrillToggle}
+          disabled={savingDrill}
+          className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+            drillEnabled ? 'bg-[#5DDFC3]' : 'bg-gray-300'
+          } ${savingDrill ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+        >
+          <span
+            className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+              drillEnabled ? 'translate-x-7' : 'translate-x-1'
+            }`}
+          />
+        </button>
+      </div>
+    </div>
+    </>
   )
 }

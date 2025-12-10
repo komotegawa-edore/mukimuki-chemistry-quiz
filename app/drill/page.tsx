@@ -19,6 +19,17 @@ export default async function DrillPage() {
     redirect('/dashboard')
   }
 
+  // ドリル機能が無効な場合はホームへリダイレクト
+  const { data: drillSetting } = await supabase
+    .from('mukimuki_system_settings')
+    .select('setting_value')
+    .eq('setting_key', 'drill_enabled')
+    .single()
+
+  if (drillSetting?.setting_value !== 'true') {
+    redirect('/')
+  }
+
   // デッキ一覧を取得
   const { data: decks } = await supabase
     .from('mukimuki_flashcard_decks')

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { Home, Target, BookOpen } from 'lucide-react'
 
 interface BottomNavProps {
@@ -11,6 +12,22 @@ interface BottomNavProps {
 
 export default function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
   const pathname = usePathname()
+  const [drillEnabled, setDrillEnabled] = useState(false)
+
+  useEffect(() => {
+    const fetchDrillSetting = async () => {
+      try {
+        const response = await fetch('/api/settings?key=drill_enabled')
+        if (response.ok) {
+          const data = await response.json()
+          setDrillEnabled(data.settings?.setting_value === 'true')
+        }
+      } catch (error) {
+        console.error('Failed to fetch drill setting:', error)
+      }
+    }
+    fetchDrillSetting()
+  }, [])
 
   // パスから現在のタブを判定
   const currentTab = activeTab || (pathname?.startsWith('/drill') ? 'drill' : 'home')
@@ -79,21 +96,23 @@ export default function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
             </button>
           )}
 
-          {/* ドリルタブ */}
-          <Link
-            href="/drill"
-            className={`flex-1 flex flex-col items-center py-3 transition-colors ${
-              currentTab === 'drill'
-                ? 'text-[#5DDFC3]'
-                : 'text-[#3A405A] opacity-50 hover:opacity-70'
-            }`}
-          >
-            <BookOpen
-              className="w-6 h-6 mb-1"
-              fill={currentTab === 'drill' ? 'currentColor' : 'none'}
-            />
-            <span className="text-xs font-medium">ドリル</span>
-          </Link>
+          {/* ドリルタブ - 設定で有効な場合のみ表示 */}
+          {drillEnabled && (
+            <Link
+              href="/drill"
+              className={`flex-1 flex flex-col items-center py-3 transition-colors ${
+                currentTab === 'drill'
+                  ? 'text-[#5DDFC3]'
+                  : 'text-[#3A405A] opacity-50 hover:opacity-70'
+              }`}
+            >
+              <BookOpen
+                className="w-6 h-6 mb-1"
+                fill={currentTab === 'drill' ? 'currentColor' : 'none'}
+              />
+              <span className="text-xs font-medium">ドリル</span>
+            </Link>
+          )}
         </div>
       </div>
     </nav>

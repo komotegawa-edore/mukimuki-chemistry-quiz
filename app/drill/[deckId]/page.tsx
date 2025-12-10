@@ -19,6 +19,19 @@ export default async function DeckPage({ params }: Props) {
     redirect('/login')
   }
 
+  // ドリル機能が無効な場合はホームへリダイレクト（講師以外）
+  if (profile.role !== 'teacher') {
+    const { data: drillSetting } = await supabase
+      .from('mukimuki_system_settings')
+      .select('setting_value')
+      .eq('setting_key', 'drill_enabled')
+      .single()
+
+    if (drillSetting?.setting_value !== 'true') {
+      redirect('/')
+    }
+  }
+
   // デッキ情報を取得
   const { data: deck } = await supabase
     .from('mukimuki_flashcard_decks')
