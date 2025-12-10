@@ -12,7 +12,6 @@ import InstallPrompt from './InstallPrompt'
 import DailyMissionCard from './DailyMissionCard'
 import AnnouncementsList from './AnnouncementsList'
 import TemporaryQuestCard from './TemporaryQuestCard'
-import DailyListeningQuest from './DailyListeningQuest'
 import BottomNav from './BottomNav'
 
 interface Subject {
@@ -117,9 +116,6 @@ export default function HomeContent({
             {/* デイリーミッション */}
             <DailyMissionCard />
 
-            {/* デイリーリスニングクエスト */}
-            <DailyListeningQuest />
-
             {/* ポイント表示 */}
             <PointsDisplay />
 
@@ -164,7 +160,6 @@ export default function HomeContent({
                 const subjectChapters = chaptersBySubject[subject.id] || []
                 const isExpanded = expandedSubjects.has(subject.id)
                 const isComingSoon = subject.id === 2 // 有機化学のみ実装中
-                const isListening = subject.id === 3 // リスニング教科
 
                 return (
                   <div key={subject.id} className="bg-white rounded-lg shadow-md overflow-hidden border-2 border-[#E0F7F1]">
@@ -217,8 +212,7 @@ export default function HomeContent({
                                 ? Math.round((result.score / result.total) * 100)
                                 : null
                               const canEarnPoints = !clearedTodayIds.has(chapter.id)
-                              // リスニング教科の場合は /listening/sets へ遷移
-                              const chapterHref = isListening ? '/listening/sets' : `/quiz/${chapter.id}`
+                              const chapterHref = `/quiz/${chapter.id}`
 
                               return (
                                 <Link
