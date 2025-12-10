@@ -1,0 +1,114 @@
+{
+  "questions": [
+    {
+      "id": "L001",
+      "audioUrl": "",
+      "englishScript": "Attention passengers. The express train to Tokyo will depart from platform 3 at 9:45. Please make sure you have all your belongings before boarding.",
+      "jpQuestion": "この電車は何時に出発しますか？",
+      "choices": ["9:15", "9:45", "10:15", "10:45"],
+      "answerIndex": 1,
+      "tags": ["time", "train", "announcement"],
+      "level": 1,
+      "translation": "乗客の皆様にお知らせします。東京行きの急行電車は3番ホームから9時45分に出発します。ご乗車前にお忘れ物がないかご確認ください。"
+    },
+    {
+      "id": "L002",
+      "audioUrl": "",
+      "englishScript": "The next bus to Shibuya will arrive in approximately 12 minutes. The fare is 220 yen. Please have exact change ready.",
+      "jpQuestion": "バスの運賃はいくらですか？",
+      "choices": ["120円", "200円", "220円", "250円"],
+      "answerIndex": 2,
+      "tags": ["price", "bus", "announcement"],
+      "level": 1,
+      "translation": "渋谷行きの次のバスは約12分後に到着します。運賃は220円です。おつりのないようご用意ください。"
+    },
+    {
+      "id": "L003",
+      "audioUrl": "",
+      "englishScript": "Good morning everyone. Today's field trip will begin at 8:30. Please gather at the school gate by 8:15 at the latest.",
+      "jpQuestion": "校門に何時までに集合する必要がありますか？",
+      "choices": ["8:00", "8:15", "8:30", "8:45"],
+      "answerIndex": 1,
+      "tags": ["time", "school", "announcement"],
+      "level": 1,
+      "translation": "皆さん、おはようございます。本日の遠足は8時30分に始まります。遅くとも8時15分までに校門に集合してください。"
+    },
+    {
+      "id": "L004",
+      "audioUrl": "",
+      "englishScript": "The museum will close in 30 minutes. The gift shop on the first floor will remain open until 6 PM. Thank you for visiting.",
+      "jpQuestion": "ギフトショップは何時まで開いていますか？",
+      "choices": ["5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM"],
+      "answerIndex": 2,
+      "tags": ["time", "museum", "announcement"],
+      "level": 1,
+      "translation": "博物館は30分後に閉館します。1階のギフトショップは午後6時まで営業しています。ご来館ありがとうございました。"
+    },
+    {
+      "id": "L005",
+      "audioUrl": "",
+      "englishScript": "Attention shoppers. We have a special sale on the third floor. All winter coats are now 40 percent off until Sunday.",
+      "jpQuestion": "冬物コートはどのくらい割引されていますか？",
+      "choices": ["20%", "30%", "40%", "50%"],
+      "answerIndex": 2,
+      "tags": ["price", "shopping", "announcement"],
+      "level": 1,
+      "translation": "お買い物中のお客様にお知らせします。3階で特別セールを開催中です。冬物コートが日曜日まで全品40パーセントオフとなっております。"
+    },
+    {
+      "id": "L006",
+      "audioUrl": "",
+      "englishScript": "The flight from Osaka has been delayed. The new arrival time is 2:35 PM at gate B7. We apologize for any inconvenience.",
+      "jpQuestion": "この飛行機は何番ゲートに到着しますか？",
+      "choices": ["A7", "B5", "B7", "C7"],
+      "answerIndex": 2,
+      "tags": ["location", "airport", "announcement"],
+      "level": 2,
+      "translation": "大阪からの便は遅延しております。新しい到着時刻はB7ゲートにて午後2時35分です。ご不便をおかけして申し訳ございません。"
+    },
+    {
+      "id": "L007",
+      "audioUrl": "",
+      "englishScript": "The library will be closed this Saturday for maintenance. We will reopen on Monday at 9 AM. All books due this weekend can be returned on Monday without late fees.",
+      "jpQuestion": "図書館は何曜日に閉館しますか？",
+      "choices": ["金曜日", "土曜日", "日曜日", "月曜日"],
+      "answerIndex": 1,
+      "tags": ["day", "library", "announcement"],
+      "level": 2,
+      "translation": "今週の土曜日は設備点検のため図書館は閉館します。月曜日の午前9時に再開します。今週末が返却期限の本は、月曜日に延滞料なしで返却できます。"
+    },
+    {
+      "id": "L008",
+      "audioUrl": "",
+      "englishScript": "Your total comes to 1,850 yen. If you pay with cash, you will receive 150 yen back from 2,000 yen.",
+      "jpQuestion": "合計金額はいくらですか？",
+      "choices": ["1,500円", "1,800円", "1,850円", "2,000円"],
+      "answerIndex": 2,
+      "tags": ["price", "shopping", "conversation"],
+      "level": 2,
+      "translation": "合計で1,850円になります。2,000円からお支払いいただければ、150円のお釣りになります。"
+    },
+    {
+      "id": "L009",
+      "audioUrl": "",
+      "englishScript": "The concert will start at 7 PM, but doors will open at 6:30. Please note that food and drinks are not allowed inside the hall.",
+      "jpQuestion": "開場時間は何時ですか？",
+      "choices": ["6:00", "6:30", "7:00", "7:30"],
+      "answerIndex": 1,
+      "tags": ["time", "concert", "announcement"],
+      "level": 2,
+      "translation": "コンサートは午後7時に始まりますが、開場は6時30分です。なお、ホール内への飲食物の持ち込みはご遠慮ください。"
+    },
+    {
+      "id": "L010",
+      "audioUrl": "",
+      "englishScript": "Due to the typhoon, all afternoon classes have been cancelled. Students should leave the school by 1 PM. Please be careful on your way home.",
+      "jpQuestion": "生徒は何時までに下校する必要がありますか？",
+      "choices": ["12:00", "1:00 PM", "2:00 PM", "3:00 PM"],
+      "answerIndex": 1,
+      "tags": ["time", "school", "announcement"],
+      "level": 2,
+      "translation": "台風の影響で、午後の授業はすべて中止となりました。生徒は午後1時までに下校してください。帰り道には十分ご注意ください。"
+    }
+  ]
+}

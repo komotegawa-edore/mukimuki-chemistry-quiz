@@ -327,3 +327,41 @@ export interface ChapterWithSubject extends Chapter {
 export interface QuestionWithMedia extends Question {
   // メディアURLのヘルパープロパティ（必要に応じて）
 }
+
+// リスニング問題用の型定義
+export interface ListeningQuestion {
+  id: string                    // "L001" など
+  audioUrl: string              // 生成されたmp3のURL
+  englishScript: string         // 英語スクリプト（TTS生成用）
+  jpQuestion: string            // 日本語の設問文
+  choices: string[]             // 4択（配列）
+  answerIndex: number           // 正解のインデックス（0〜3）
+  tags: string[]                // タグ（例: ["time", "basic", "listening_check"]）
+  level: number                 // 難易度（1,2,3など）
+  translation?: string          // 英文の日本語訳（解説用、オプション）
+}
+
+// 「今日の3問」APIレスポンス型
+export interface DailyListeningResponse {
+  questions: ListeningQuestion[]  // 3問分
+  date: string                    // "2025-12-10" のような文字列
+  totalQuestions?: number         // 全問題数（オプション）
+  seed?: number                   // シード値（オプション）
+}
+
+// リスニング結果の型
+export interface ListeningResult {
+  questionId: string
+  userAnswer: number            // ユーザーの選択（0〜3）
+  isCorrect: boolean
+  timeSpent?: number            // 回答にかかった時間（秒）
+}
+
+// リスニングセッション結果
+export interface ListeningSessionResult {
+  date: string
+  results: ListeningResult[]
+  score: number                 // 正答数
+  total: number                 // 問題数
+  rank: 'S' | 'A' | 'B' | 'C'   // ランク
+}
