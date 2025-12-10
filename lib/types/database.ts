@@ -254,6 +254,53 @@ export interface Database {
           updated_by?: string | null
         }
       }
+      mukimuki_listening_questions: {
+        Row: {
+          id: string
+          audio_url: string
+          english_script: string
+          jp_question: string
+          choices: string[]
+          answer_index: number
+          tags: string[]
+          level: number
+          translation: string | null
+          is_published: boolean
+          created_at: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          id: string
+          audio_url?: string
+          english_script: string
+          jp_question: string
+          choices: string[]
+          answer_index: number
+          tags?: string[]
+          level?: number
+          translation?: string | null
+          is_published?: boolean
+          created_at?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          id?: string
+          audio_url?: string
+          english_script?: string
+          jp_question?: string
+          choices?: string[]
+          answer_index?: number
+          tags?: string[]
+          level?: number
+          translation?: string | null
+          is_published?: boolean
+          created_at?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -306,6 +353,7 @@ export type Subject = Database['public']['Tables']['mukimuki_subjects']['Row']
 export type Chapter = Database['public']['Tables']['mukimuki_chapters']['Row']
 export type Question = Database['public']['Tables']['mukimuki_questions']['Row']
 export type TestResult = Database['public']['Tables']['mukimuki_test_results']['Row']
+export type ListeningQuestionRow = Database['public']['Tables']['mukimuki_listening_questions']['Row']
 
 export type Answer = 'A' | 'B' | 'C' | 'D'
 export type MediaType = 'text' | 'image' | 'audio' | 'mixed'

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-import type { ListeningQuestion, DailyListeningResponse } from '@/lib/types/database';
+import { createClient } from '@/lib/supabase/server';
+import type { ListeningQuestion, DailyListeningResponse, ListeningQuestionRow } from '@/lib/types/database';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +14,6 @@ function seededRandom(seed: number): () => number {
 
 // 日付からシード値を生成
 function getDateSeed(dateStr: string): number {
-  // "2025-12-10" -> 20251210
   return parseInt(dateStr.replace(/-/g, ''), 10);
 }
 
@@ -32,7 +30,6 @@ function shuffleArray<T>(array: T[], random: () => number): T[] {
 // 今日の日付を取得（JST）
 function getTodayDateString(): string {
   const now = new Date();
-  // JST (UTC+9) に変換
   const jstOffset = 9 * 60;
   const localOffset = now.getTimezoneOffset();
   const jstTime = new Date(now.getTime() + (jstOffset + localOffset) * 60 * 1000);
@@ -44,23 +41,49 @@ function getTodayDateString(): string {
   return `${year}-${month}-${day}`;
 }
 
+// DBの行をフロントエンド用の型に変換
+function toListeningQuestion(row: ListeningQuestionRow): ListeningQuestion {
+  return {
+    id: row.id,
+    audioUrl: row.audio_url,
+    englishScript: row.english_script,
+    jpQuestion: row.jp_question,
+    choices: row.choices,
+    answerIndex: row.answer_index,
+    tags: row.tags,
+    level: row.level,
+    translation: row.translation ?? undefined,
+  };
+}
+
 export async function GET() {
   try {
-    // JSONファイルを読み込む
-    const dataPath = path.join(process.cwd(), 'data', 'listening_questions.json');
-    const rawData = await fs.readFile(dataPath, 'utf-8');
-    const data = JSON.parse(rawData) as { questions: ListeningQuestion[] };
+    const supabase = await createClient();
 
-    // 有効な問題（audioUrlが設定されているもの）をフィルタリング
-    // MVPでは audioUrl が空でも表示する（音声なしでもテキストで確認可能）
-    const validQuestions = data.questions;
+    // 公開されているリスニング問題を取得
+    const { data, error } = await supabase
+      .from('mukimuki_listening_questions')
+      .select('*')
+      .eq('is_published', true)
+      .order('id');
 
-    if (validQuestions.length === 0) {
+    if (error) {
+      console.error('Supabaseエラー:', error);
+      return NextResponse.json(
+        { error: 'リスニング問題の取得に失敗しました' },
+        { status: 500 }
+      );
+    }
+
+    if (!data || data.length === 0) {
       return NextResponse.json(
         { error: 'リスニング問題が見つかりません' },
         { status: 404 }
       );
     }
+
+    // フロントエンド用の型に変換
+    const questions = data.map(toListeningQuestion);
 
     // 今日の日付を取得
     const todayStr = getTodayDateString();
@@ -70,13 +93,13 @@ export async function GET() {
     const random = seededRandom(seed);
 
     // 問題をシャッフルして3問選択
-    const shuffledQuestions = shuffleArray(validQuestions, random);
+    const shuffledQuestions = shuffleArray(questions, random);
     const selectedQuestions = shuffledQuestions.slice(0, Math.min(3, shuffledQuestions.length));
 
     const response: DailyListeningResponse = {
       questions: selectedQuestions,
       date: todayStr,
-      totalQuestions: validQuestions.length,
+      totalQuestions: questions.length,
       seed: seed,
     };
 
