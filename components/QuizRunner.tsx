@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { Timer } from 'lucide-react'
+import { Timer, Volume2 } from 'lucide-react'
 import { Question, Answer } from '@/lib/types/database'
 
 interface QuizRunnerProps {
@@ -30,6 +30,8 @@ export default function QuizRunner({
   const [isCompleted, setIsCompleted] = useState(false)
   const [showAnswer, setShowAnswer] = useState(false)
   const [remainingTime, setRemainingTime] = useState(timeLimit)
+  const [playbackRate, setPlaybackRate] = useState(0.85) // デフォルト0.85倍速
+  const audioRef = useRef<HTMLAudioElement>(null)
 
   const currentQuestion = questions[currentIndex]
   const isLastQuestion = currentIndex === questions.length - 1
@@ -41,6 +43,13 @@ export default function QuizRunner({
       audio.preload = 'auto'
     }
   }, [currentQuestion])
+
+  // 再生速度の適用
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackRate
+    }
+  }, [playbackRate, currentIndex])
 
   // ミッションモード用タイマー
   useEffect(() => {
@@ -226,8 +235,33 @@ export default function QuizRunner({
 
           {/* 問題文の音声 */}
           {currentQuestion.question_audio_url && (
-            <div className="mb-6">
-              <audio src={currentQuestion.question_audio_url} controls className="w-full" />
+            <div className="mb-6 space-y-2">
+              <audio
+                ref={audioRef}
+                src={currentQuestion.question_audio_url}
+                controls
+                className="w-full"
+                onLoadedMetadata={(e) => {
+                  (e.target as HTMLAudioElement).playbackRate = playbackRate
+                }}
+              />
+              <div className="flex items-center justify-center gap-2">
+                <Volume2 className="w-4 h-4 text-[#3A405A] opacity-70" />
+                <span className="text-sm text-[#3A405A] opacity-70">再生速度:</span>
+                {[0.7, 0.85, 1.0].map((rate) => (
+                  <button
+                    key={rate}
+                    onClick={() => setPlaybackRate(rate)}
+                    className={`px-3 py-1 text-sm rounded-full transition-colors ${
+                      playbackRate === rate
+                        ? 'bg-[#5DDFC3] text-white'
+                        : 'bg-[#E0F7F1] text-[#3A405A] hover:bg-[#d0ede5]'
+                    }`}
+                  >
+                    {rate === 1.0 ? '標準' : `${rate}x`}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
