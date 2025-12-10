@@ -1,0 +1,14 @@
+{
+  "questions": [
+    {
+      "id": "L011",
+      "english_script": "Your English script here.",
+      "jp_question": "日本語の質問文",
+      "choices": ["選択肢A", "選択肢B", "選択肢C", "選択肢D"],
+      "answer_index": 0,
+      "tags": ["time", "announcement"],
+      "level": 1,
+      "translation": "英文の日本語訳"
+    }
+  ]
+}

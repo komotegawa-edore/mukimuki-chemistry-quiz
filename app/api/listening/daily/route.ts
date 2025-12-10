@@ -92,9 +92,9 @@ export async function GET() {
     // シードベースの乱数生成器を作成
     const random = seededRandom(seed);
 
-    // 問題をシャッフルして3問選択
+    // 問題をシャッフルして1問選択（デイリークエスト）
     const shuffledQuestions = shuffleArray(questions, random);
-    const selectedQuestions = shuffledQuestions.slice(0, Math.min(3, shuffledQuestions.length));
+    const selectedQuestions = shuffledQuestions.slice(0, 1);
 
     const response: DailyListeningResponse = {
       questions: selectedQuestions,

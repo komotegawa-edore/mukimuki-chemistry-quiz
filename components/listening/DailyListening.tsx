@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import { Volume2, Play, RefreshCw, CheckCircle, XCircle, Headphones, Sparkles, Star } from 'lucide-react';
+import { Volume2, Play, RefreshCw, CheckCircle, XCircle, Headphones, Sparkles, Star, Coins } from 'lucide-react';
 import type { ListeningQuestion, DailyListeningResponse, ListeningResult, ListeningSessionResult } from '@/lib/types/database';
 
 type GameState = 'start' | 'playing' | 'answered' | 'result';
@@ -61,6 +61,7 @@ export default function DailyListening() {
   const [date, setDate] = useState<string>('');
   const [isPlaying, setIsPlaying] = useState(false);
   const [playCount, setPlayCount] = useState(0);
+  const [pointsEarned, setPointsEarned] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // 問題を取得
@@ -151,15 +152,36 @@ export default function DailyListening() {
     stopAudio();
   };
 
-  // 次の問題へ
-  const goToNextQuestion = () => {
+  // 次の問題へ（または結果画面へ）
+  const goToNextQuestion = async () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
       setSelectedAnswer(null);
       setGameState('playing');
       setPlayCount(0);
     } else {
-      // 全問終了
+      // 全問終了 - 結果をAPIに送信
+      const lastResult = results[results.length - 1];
+      if (lastResult) {
+        try {
+          const response = await fetch('/api/listening/result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              questionId: lastResult.questionId,
+              isCorrect: lastResult.isCorrect,
+              userAnswer: lastResult.userAnswer,
+              timeSpent: lastResult.timeSpent,
+            }),
+          });
+          const data = await response.json();
+          if (data.pointsEarned !== undefined) {
+            setPointsEarned(data.pointsEarned);
+          }
+        } catch (error) {
+          console.error('Failed to save listening result:', error);
+        }
+      }
       setGameState('result');
     }
   };
@@ -246,7 +268,7 @@ export default function DailyListening() {
             <div className="flex items-center justify-between text-[#3A405A]">
               <div className="flex items-center gap-2">
                 <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                <span className="text-sm font-medium">全3問</span>
+                <span className="text-sm font-medium">今日の1問</span>
               </div>
               <span className="text-sm opacity-70">{date}</span>
             </div>
@@ -434,6 +456,14 @@ export default function DailyListening() {
                 </div>
               </div>
 
+              {/* 英語スクリプト */}
+              <div className="p-4 bg-white rounded-xl border-2 border-[#E0F7F1]">
+                <p className="text-sm text-[#3A405A] opacity-70 mb-2">📝 英語スクリプト</p>
+                <p className="text-[#3A405A] italic leading-relaxed">
+                  &ldquo;{currentQuestion.englishScript}&rdquo;
+                </p>
+              </div>
+
               {/* 日本語訳 */}
               {currentQuestion.translation && (
                 <div className="p-4 bg-[#F4F9F7] rounded-xl border-l-4 border-[#5DDFC3]">
@@ -507,9 +537,24 @@ export default function DailyListening() {
             </div>
           </div>
 
+          {/* ポイント獲得表示 */}
+          {pointsEarned !== null && pointsEarned > 0 && (
+            <div className="mb-6 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-4 border-2 border-yellow-200">
+              <div className="flex items-center justify-center gap-2">
+                <Coins className="w-6 h-6 text-yellow-500" />
+                <span className="text-lg font-bold text-yellow-700">
+                  +{pointsEarned}ポイント獲得！
+                </span>
+              </div>
+              <p className="text-center text-sm text-yellow-600 mt-1">
+                デイリーリスニングクエスト達成！
+              </p>
+            </div>
+          )}
+
           {/* 問題別結果 */}
           <div className="mb-6">
-            <p className="text-sm font-semibold text-[#3A405A] mb-3">問題別結果</p>
+            <p className="text-sm font-semibold text-[#3A405A] mb-3">結果</p>
             <div className="flex justify-center gap-4">
               {sessionResult.results.map((result, index) => (
                 <div

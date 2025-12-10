@@ -12,6 +12,7 @@ import InstallPrompt from './InstallPrompt'
 import DailyMissionCard from './DailyMissionCard'
 import AnnouncementsList from './AnnouncementsList'
 import TemporaryQuestCard from './TemporaryQuestCard'
+import DailyListeningQuest from './DailyListeningQuest'
 import BottomNav from './BottomNav'
 
 interface Subject {
@@ -115,6 +116,9 @@ export default function HomeContent({
 
             {/* デイリーミッション */}
             <DailyMissionCard />
+
+            {/* デイリーリスニングクエスト */}
+            <DailyListeningQuest />
 
             {/* ポイント表示 */}
             <PointsDisplay />
