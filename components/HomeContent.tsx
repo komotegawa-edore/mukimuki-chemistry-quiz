@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { RotateCcw, ChevronDown, ChevronRight, Coins } from 'lucide-react'
+import { RotateCcw, ChevronDown, ChevronRight, Coins, Headphones } from 'lucide-react'
 import PointsDisplay from './PointsDisplay'
 import BadgeDisplay from './BadgeDisplay'
 import StreakDisplay from './StreakDisplay'
@@ -130,7 +130,7 @@ export default function HomeContent({
         {activeTab === 'quest' && (
           <div>
             {/* 復習モードカード */}
-            <div className="mb-8">
+            <div className="mb-4">
               <Link
                 href="/review"
                 className="block bg-gradient-to-r from-[#5DDFC3] to-[#4ECFB3] rounded-xl shadow-md p-6 hover:shadow-lg transition-all"
@@ -146,6 +146,31 @@ export default function HomeContent({
                       </h2>
                       <p className="text-white/90 text-sm">
                         間違えた問題を復習しましょう
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-6 h-6 text-white" />
+                </div>
+              </Link>
+            </div>
+
+            {/* 1分リスニングチェック */}
+            <div className="mb-8">
+              <Link
+                href="/listening"
+                className="block bg-gradient-to-r from-[#4ECFB3] to-[#3BB8A0] rounded-xl shadow-md p-6 hover:shadow-lg transition-all"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-white/20 p-3 rounded-full">
+                      <Headphones className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white mb-1">
+                        1分リスニングチェック
+                      </h2>
+                      <p className="text-white/90 text-sm">
+                        毎日3問でリスニング力アップ 🎧
                       </p>
                     </div>
                   </div>
