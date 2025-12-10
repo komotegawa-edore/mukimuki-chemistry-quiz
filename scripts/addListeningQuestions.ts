@@ -19,7 +19,8 @@ config({ path: path.join(process.cwd(), '.env.local') });
 interface ListeningQuestion {
   id: string;
   english_script: string;
-  jp_question: string;
+  jp_question?: string;
+  question?: string; // jp_questionの代替
   choices: string[];
   answer_index: number;
   tags: string[];
@@ -90,13 +91,16 @@ async function main(): Promise<void> {
   for (const q of data.questions) {
     console.log(`🔄 追加中: ${q.id}`);
 
+    // jp_question または question フィールドを使用
+    const jpQuestion = q.jp_question || q.question || '';
+
     const { error } = await supabase
       .from('mukimuki_listening_questions')
       .upsert({
         id: q.id,
         audio_url: '',
         english_script: q.english_script,
-        jp_question: q.jp_question,
+        jp_question: jpQuestion,
         choices: q.choices,
         answer_index: q.answer_index,
         tags: q.tags,
