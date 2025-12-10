@@ -44,8 +44,12 @@ export default function QuizPage({
           const missionResponse = await fetch('/api/daily-mission')
           if (missionResponse.ok) {
             const missionData = await missionResponse.json()
-            if (missionData.mission && missionData.mission.chapter_id === parseInt(params.chapterId)) {
-              setTimeLimit(missionData.mission.time_limit_seconds)
+            const missions = missionData.missions || (missionData.mission ? [missionData.mission] : [])
+            const targetMission = missions.find(
+              (m: { chapter_id: number }) => m.chapter_id === parseInt(params.chapterId)
+            )
+            if (targetMission) {
+              setTimeLimit(targetMission.time_limit_seconds)
             }
           }
         }

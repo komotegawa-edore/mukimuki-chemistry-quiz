@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
+const DUAL_MISSION_SUBJECTS = [3, 1] // 3: Listening, 1: 無機化学
+
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>
 
 type MissionRow = {
@@ -9,6 +11,7 @@ type MissionRow = {
   time_limit_seconds: number | null
   reward_points: number | null
   chapter: {
+    id: number | null
     title: string | null
     subject_id: number | null
     subject:
@@ -23,6 +26,8 @@ type ChapterRow = {
   title: string
   subject_id: number
 }
+
+type MissionResponse = ReturnType<typeof formatMissionResponse>
 
 // 動的ルートとして明示
 export const dynamic = 'force-dynamic'
@@ -49,19 +54,19 @@ export async function GET(request: NextRequest) {
       .single()
 
     if (!settings || settings.setting_value !== 'true') {
-      return NextResponse.json({ mission: null, disabled: true }, { status: 200 })
+      return NextResponse.json({ missions: [], disabled: true }, { status: 200 })
     }
 
-    const mission = await getOrCreateDailyMission(supabase, user.id)
+    const missions = await getOrCreateDailyMissions(supabase, user.id, DUAL_MISSION_SUBJECTS)
 
-    if (!mission) {
-      return NextResponse.json({ error: 'ミッションが見つかりません' }, { status: 404 })
+    if (missions.length === 0) {
+      return NextResponse.json({ missions: [] }, { status: 200 })
     }
 
-    const formattedMission = formatMissionResponse(mission)
+    const formatted = missions.map(formatMissionResponse)
 
     return NextResponse.json({
-      mission: formattedMission,
+      missions: formatted,
     })
   } catch (error) {
     console.error('Daily mission GET error:', error)
@@ -69,60 +74,42 @@ export async function GET(request: NextRequest) {
   }
 }
 
-async function getOrCreateDailyMission(
+async function getOrCreateDailyMissions(
   supabase: SupabaseServerClient,
-  userId: string
+  userId: string,
+  subjectPriority: number[]
 ) {
   const today = getTodayDateString()
+  const existingMissions = await fetchMissionsForDate(supabase, userId, today)
 
-  // 既存のミッションを確認
-  const existingMission = await fetchMissionForDate(supabase, userId, today)
-  if (existingMission) {
-    return existingMission
-  }
-
-  // 教科の表示順に従って章を選択（リスニング優先）
-  const selectedChapter = await pickChapterBySubjectPriority(supabase)
-  if (!selectedChapter) {
-    return null
-  }
-
-  const { data, error } = await supabase
-    .from('mukimuki_daily_missions')
-    .insert({
-      user_id: userId,
-      chapter_id: selectedChapter.id,
-      mission_date: today,
-      time_limit_seconds: 300,
-      reward_points: 3,
-      status: 'active',
-    })
-    .select(`
-      id,
-      chapter_id,
-      time_limit_seconds,
-      reward_points,
-      chapter:mukimuki_chapters(
-        title,
-        subject_id,
-        subject:mukimuki_subjects(name)
-      )
-    `)
-    .single()
-
-  if (error) {
-    // すでに作成済みの場合（競合）は既存データを返す
-    if ((error as { code?: string }).code === '23505') {
-      return await fetchMissionForDate(supabase, userId, today)
+  const missionsBySubject = new Map<number, MissionRow>()
+  existingMissions.forEach((mission) => {
+    const subjectId = mission.chapter?.subject_id ?? undefined
+    if (subjectId) {
+      missionsBySubject.set(subjectId, mission)
     }
-    console.error('Failed to insert daily mission:', error)
-    throw error
+  })
+
+  const ensuredMissions: MissionRow[] = []
+
+  for (const subjectId of subjectPriority) {
+    let mission: MissionRow | null | undefined = missionsBySubject.get(subjectId)
+    if (!mission) {
+      mission = await createMissionForSubject(supabase, userId, today, subjectId)
+      if (mission) {
+        missionsBySubject.set(subjectId, mission)
+      }
+    }
+
+    if (mission) {
+      ensuredMissions.push(mission)
+    }
   }
 
-  return data as unknown as MissionRow
+  return ensuredMissions
 }
 
-async function fetchMissionForDate(
+async function fetchMissionsForDate(
   supabase: SupabaseServerClient,
   userId: string,
   date: string
@@ -136,6 +123,7 @@ async function fetchMissionForDate(
         time_limit_seconds,
         reward_points,
         chapter:mukimuki_chapters(
+          id,
           title,
           subject_id,
           subject:mukimuki_subjects(name)
@@ -145,57 +133,83 @@ async function fetchMissionForDate(
     .eq('user_id', userId)
     .eq('mission_date', date)
     .eq('status', 'active')
-    .maybeSingle()
 
   if (error) {
-    console.error('Failed to fetch daily mission:', error)
+    console.error('Failed to fetch daily missions:', error)
     throw error
   }
 
-  if (!data) {
+  return ((data ?? []) as unknown as MissionRow[])
+}
+
+async function createMissionForSubject(
+  supabase: SupabaseServerClient,
+  userId: string,
+  date: string,
+  subjectId: number
+) {
+  const chapter = await pickChapterForSubject(supabase, subjectId)
+  if (!chapter) {
     return null
   }
+
+  const { data, error } = await supabase
+    .from('mukimuki_daily_missions')
+    .insert({
+      user_id: userId,
+      chapter_id: chapter.id,
+      mission_date: date,
+      time_limit_seconds: 300,
+      reward_points: 3,
+      status: 'active',
+    })
+    .select(
+      `
+        id,
+        chapter_id,
+        time_limit_seconds,
+        reward_points,
+        chapter:mukimuki_chapters(
+          id,
+          title,
+          subject_id,
+          subject:mukimuki_subjects(name)
+        )
+      `
+    )
+    .single()
+
+  if (error) {
+    console.error('Failed to insert daily mission:', error)
+    // UNIQUE違反などで挿入できない場合は最新の状態を再取得
+    const missions = await fetchMissionsForDate(supabase, userId, date)
+    return missions.find((mission) => mission.chapter?.subject_id === subjectId) ?? null
+  }
+
   return data as unknown as MissionRow
 }
 
-async function pickChapterBySubjectPriority(supabase: SupabaseServerClient) {
-  const { data: subjects, error: subjectsError } = await supabase
-    .from('mukimuki_subjects')
-    .select('id')
-    .order('display_order')
-
-  if (subjectsError) {
-    console.error('Failed to fetch subjects for mission:', subjectsError)
-    throw subjectsError
-  }
-
-  const subjectPriority = (subjects || []).map((subject) => subject.id)
-
-  const { data: chapters, error: chaptersError } = await supabase
+async function pickChapterForSubject(
+  supabase: SupabaseServerClient,
+  subjectId: number
+) {
+  const { data, error } = await supabase
     .from('mukimuki_chapters')
     .select('id, title, subject_id')
+    .eq('subject_id', subjectId)
     .eq('is_published', true)
 
-  if (chaptersError) {
-    console.error('Failed to fetch chapters for mission:', chaptersError)
-    throw chaptersError
+  if (error) {
+    console.error('Failed to fetch chapters for subject', subjectId, error)
+    throw error
   }
 
-  const chapterList = chapters as ChapterRow[] | null
-
-  if (!chapterList || chapterList.length === 0) {
+  const chapters = data as ChapterRow[] | null
+  if (!chapters || chapters.length === 0) {
     return null
   }
 
-  for (const subjectId of subjectPriority) {
-    const candidates = chapterList.filter((chapter) => chapter.subject_id === subjectId)
-    if (candidates.length > 0) {
-      return candidates[Math.floor(Math.random() * candidates.length)]
-    }
-  }
-
-  // フォールバック：教科に関わらずランダムで1章選択
-  return chapterList[Math.floor(Math.random() * chapterList.length)]
+  return chapters[Math.floor(Math.random() * chapters.length)]
 }
 
 function getTodayDateString() {
@@ -214,6 +228,7 @@ function formatMissionResponse(mission: MissionRow) {
     id: mission.id,
     chapter_id: mission.chapter_id,
     chapter_title: mission.chapter?.title ?? '',
+    subject_id: mission.chapter?.subject_id ?? 0,
     subject_name: normalizedSubject?.name ?? '',
     time_limit_seconds: timeLimitSeconds,
     reward_points: mission.reward_points ?? 3,
