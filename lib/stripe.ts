@@ -1,7 +1,8 @@
 import Stripe from 'stripe'
 
 // サーバーサイド用Stripeインスタンス
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+// 環境変数が未設定の場合はダミー値を使用（ビルド時のエラー回避）
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy', {
   apiVersion: '2025-11-17.clover',
   typescript: true,
 })
