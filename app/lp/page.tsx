@@ -161,6 +161,12 @@ export default function LandingPage() {
 
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl shadow-sm p-8 text-center hover:shadow-md transition-shadow">
+            <Headphones className="w-12 h-12 mx-auto mb-4 text-[#5DDFC3]" />
+            <h3 className="text-xl font-bold mb-2 text-[#3A405A]">英語リスニング</h3>
+            <p className="opacity-70 text-[#3A405A]">90問の音声付き問題で耳を鍛える</p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center hover:shadow-md transition-shadow">
             <Beaker className="w-12 h-12 mx-auto mb-4 text-[#5DDFC3]" />
             <h3 className="text-xl font-bold mb-2 text-[#3A405A]">無機化学テスト</h3>
             <p className="opacity-70 text-[#3A405A]">1問1答形式でサクサク進む</p>
@@ -189,12 +195,6 @@ export default function LandingPage() {
             <h3 className="text-xl font-bold mb-2 text-[#3A405A]">ログインボーナス</h3>
             <p className="opacity-70 text-[#3A405A]">毎日の習慣化をサポート</p>
           </div>
-
-          <div className="bg-white rounded-2xl shadow-sm p-8 text-center hover:shadow-md transition-shadow">
-            <BarChart3 className="w-12 h-12 mx-auto mb-4 text-[#5DDFC3]" />
-            <h3 className="text-xl font-bold mb-2 text-[#3A405A]">学習記録</h3>
-            <p className="opacity-70 text-[#3A405A]">成長の過程を可視化</p>
-          </div>
         </div>
       </section>
 
@@ -207,16 +207,11 @@ export default function LandingPage() {
           <p className="mb-8 text-lg opacity-90">
             Roopyは、これからも進化していきます。
           </p>
-          <div className="grid md:grid-cols-3 gap-6 text-left">
+          <div className="grid md:grid-cols-2 gap-6 text-left max-w-[500px] mx-auto">
             <div>
               <FlaskConical className="w-8 h-8 mb-2 text-[#5DDFC3]" />
               <h3 className="font-bold mb-1">有機化学</h3>
               <p className="text-sm opacity-80">構造式・反応系統図</p>
-            </div>
-            <div>
-              <Headphones className="w-8 h-8 mb-2 text-[#5DDFC3]" />
-              <h3 className="font-bold mb-1">英語リスニング</h3>
-              <p className="text-sm opacity-80">スキマ時間で学習</p>
             </div>
             <div>
               <Sparkles className="w-8 h-8 mb-2 text-[#5DDFC3]" />
