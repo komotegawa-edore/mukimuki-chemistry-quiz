@@ -29,7 +29,7 @@ export default function ListeningLandingPage() {
     <div className={`min-h-screen text-[#3A405A] ${notoSansJP.className} overflow-x-hidden`}>
 
       {/* Navigation Header */}
-      <nav className="bg-white/80 backdrop-blur-md border-b border-indigo-100 sticky top-0 z-50">
+      <nav className="bg-indigo-600/90 backdrop-blur-md border-b border-indigo-500 sticky top-0 z-50">
         <div className="max-w-[1200px] mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <Image
@@ -39,18 +39,18 @@ export default function ListeningLandingPage() {
               height={40}
               className="rounded-full"
             />
-            <span className="font-bold text-xl text-[#3A405A]">Roopy</span>
+            <span className="font-bold text-xl text-white">Roopy</span>
           </Link>
           <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="text-[#3A405A] hover:text-indigo-600 font-medium transition-colors hidden sm:block"
+              className="text-white/90 hover:text-white font-medium transition-colors hidden sm:block"
             >
               ログイン
             </Link>
             <Link
               href="/signup"
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2 rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all"
+              className="bg-white text-indigo-600 px-6 py-2 rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all"
             >
               無料で始める
             </Link>
