@@ -5,8 +5,10 @@ import { Noto_Sans_JP } from 'next/font/google'
 import {
   Headphones, Play, CheckCircle, Clock, Target, Zap, Volume2, BarChart3, Repeat,
   HelpCircle, Frown, Timer, AlertCircle, ArrowDown, Star, Mic, Sparkles, TrendingUp,
-  Award, Users, BookOpen
+  Award, Users, BookOpen, ArrowRight
 } from 'lucide-react'
+import BlogCard from '@/components/BlogCard'
+import { getBlogs } from '@/lib/microcms'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700', '900'],
@@ -28,7 +30,13 @@ export const viewport: Viewport = {
   themeColor: '#4f46e5', // indigo-600
 }
 
-export default function ListeningLandingPage() {
+// ISR: 60秒ごとに再検証
+export const revalidate = 60
+
+export default async function ListeningLandingPage() {
+  // 最新のブログ記事を3件取得
+  const { contents: blogs } = await getBlogs({ limit: 3 })
+
   return (
     <div className={`min-h-screen text-[#3A405A] ${notoSansJP.className} overflow-x-hidden bg-indigo-600`}>
 
@@ -474,6 +482,42 @@ export default function ListeningLandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Blog Section */}
+      {blogs.length > 0 && (
+        <section className="py-20 px-4 bg-white">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-bold mb-4">
+                <BookOpen className="w-4 h-4" />
+                ブログ
+              </div>
+              <h2 className="text-4xl font-black mb-4">
+                最新の<span className="text-indigo-600">ブログ記事</span>
+              </h2>
+              <p className="text-lg opacity-70">
+                受験勉強のコツやRoopyの使い方をお届けします
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {blogs.map((blog) => (
+                <BlogCard key={blog.id} blog={blog} />
+              ))}
+            </div>
+
+            <div className="text-center">
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 text-indigo-600 font-bold hover:gap-3 transition-all"
+              >
+                すべての記事を見る
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Final CTA - 豪華版 */}
       <section className="relative py-24 px-4 overflow-hidden">
