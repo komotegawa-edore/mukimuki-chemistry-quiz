@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
+  const next = requestUrl.searchParams.get('next') || '/'
   const origin = requestUrl.origin
 
   if (code) {
@@ -41,6 +42,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // ログイン成功、ホームへリダイレクト
-  return NextResponse.redirect(`${origin}/`)
+  // ログイン成功、指定先またはホームへリダイレクト
+  return NextResponse.redirect(`${origin}${next}`)
 }
