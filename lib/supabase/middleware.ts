@@ -46,6 +46,7 @@ export async function updateSession(request: NextRequest) {
     '/terms',
     '/roopy-roadmap',
     '/mbti',
+    '/try',
   ]
 
   const isPublicPath = publicPaths.some(path =>
