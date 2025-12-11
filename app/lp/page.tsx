@@ -2,7 +2,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
-import { Beaker, RotateCcw, Coins, Trophy, Gift, BarChart3, Sparkles, Headphones, FlaskConical } from 'lucide-react'
+import { Beaker, RotateCcw, Coins, Trophy, Gift, BarChart3, Sparkles, Headphones, FlaskConical, ArrowRight } from 'lucide-react'
+import BlogCard from '@/components/BlogCard'
+import { getBlogs } from '@/lib/microcms'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -20,7 +22,13 @@ export const metadata: Metadata = {
   },
 }
 
-export default function LandingPage() {
+// ISR: 60秒ごとに再検証
+export const revalidate = 60
+
+export default async function LandingPage() {
+  // 最新のブログ記事を3件取得
+  const { contents: blogs } = await getBlogs({ limit: 3 })
+
   return (
     <div className={`min-h-screen bg-[#F4F9F7] text-[#3A405A] ${notoSansJP.className}`}
       style={{
@@ -221,6 +229,36 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Blog Section */}
+      {blogs.length > 0 && (
+        <section className="max-w-[1200px] mx-auto my-16 px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold mb-4">
+              最新のブログ記事
+            </h2>
+            <p className="text-lg opacity-80">
+              受験勉強のコツやRoopyの使い方をお届けします
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {blogs.map((blog) => (
+              <BlogCard key={blog.id} blog={blog} />
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 text-[#5DDFC3] font-bold hover:gap-3 transition-all"
+            >
+              すべての記事を見る
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Footer CTA */}
       <section className="bg-gradient-to-b from-[#F4F9F7] to-white rounded-t-[40px] py-16 px-4 text-center mt-20">
