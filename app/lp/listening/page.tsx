@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import {
   Headphones, Play, CheckCircle, Clock, Target, Zap, Volume2, BarChart3, Repeat,
@@ -22,6 +22,10 @@ export const metadata: Metadata = {
     description: '共通テスト対策に最適！90問の音声付きリスニング問題で耳を鍛える。毎日5分から始められる無料の英語リスニングトレーニング。',
     type: 'website',
   },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#4f46e5', // indigo-600
 }
 
 export default function ListeningLandingPage() {
