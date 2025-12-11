@@ -3,7 +3,10 @@
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Coins } from 'lucide-react'
+import { Coins, Mic } from 'lucide-react'
+
+// リスニング章のID範囲（subject_id = 3）
+const LISTENING_CHAPTER_IDS = Array.from({ length: 30 }, (_, i) => 47 + i) // 47-76
 
 export default function ResultPage({
   params,
@@ -18,6 +21,8 @@ export default function ResultPage({
   const percentage = Math.round((score / total) * 100)
   const pointsAwarded = searchParams.get('points') === '1'
   const missionCompleted = searchParams.get('mission') === '1'
+  const chapterId = parseInt(params.chapterId)
+  const isListeningChapter = LISTENING_CHAPTER_IDS.includes(chapterId)
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F4F9F7] px-4">
@@ -83,6 +88,15 @@ export default function ResultPage({
           )}
 
           <div className="space-y-3">
+            {isListeningChapter && (
+              <Link
+                href={`/shadowing/${params.chapterId}`}
+                className="flex items-center justify-center gap-2 w-full py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+              >
+                <Mic className="w-5 h-5" />
+                シャドーイング練習
+              </Link>
+            )}
             <button
               onClick={() => router.push(`/quiz/${params.chapterId}`)}
               className="w-full py-3 bg-[#5DDFC3] text-white rounded-lg font-semibold hover:bg-[#4ECFB3] transition-colors"
