@@ -387,6 +387,24 @@ export default async function ListeningLandingPage() {
               </div>
             ))}
           </div>
+
+          {/* CTAボタン */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12">
+            <Link
+              href="/try/listening"
+              className="group inline-flex items-center gap-2 bg-white text-indigo-600 text-lg font-bold py-4 px-8 rounded-full hover:bg-opacity-90 hover:scale-105 transition-all shadow-xl"
+            >
+              <Headphones className="w-5 h-5 group-hover:animate-bounce" />
+              まずはお試し（3問）
+            </Link>
+            <Link
+              href="/signup"
+              className="group inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-lg font-bold py-4 px-8 rounded-full hover:scale-105 transition-all shadow-xl"
+            >
+              <Play className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              無料で始める
+            </Link>
+          </div>
         </div>
       </section>
 
