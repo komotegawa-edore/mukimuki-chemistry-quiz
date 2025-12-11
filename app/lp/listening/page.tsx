@@ -323,30 +323,23 @@ export default function ListeningLandingPage() {
             </h2>
           </div>
 
-          <div className="relative">
-            {/* 接続線 */}
-            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-200 via-purple-200 to-pink-200 -translate-x-1/2" />
-
-            <div className="space-y-8">
-              {[
-                { num: 1, title: 'セットを選ぶ', desc: '30セットから好きなものを選択（各3問）', color: 'indigo' },
-                { num: 2, title: '音声を聞いて解答', desc: '再生ボタンを押して、4択から選択', color: 'purple' },
-                { num: 3, title: '結果確認 & シャドーイング', desc: '正答率を確認して、シャドーイングで発音練習', color: 'pink' },
-              ].map((step, i) => (
-                <div key={i} className={`flex ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-8`}>
-                  <div className={`flex-1 ${i % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                    <div className={`inline-block bg-white rounded-2xl shadow-lg p-6 border border-gray-100`}>
-                      <h3 className="font-bold text-xl mb-2 text-[#3A405A]">{step.title}</h3>
-                      <p className="opacity-70 text-[#3A405A]">{step.desc}</p>
-                    </div>
-                  </div>
-                  <div className={`relative z-10 w-16 h-16 bg-gradient-to-r from-${step.color}-500 to-${step.color}-600 text-white rounded-full flex items-center justify-center font-black text-2xl shadow-lg shrink-0`}>
-                    {step.num}
-                  </div>
-                  <div className="flex-1 hidden md:block" />
+          {/* スマホ用：縦並び */}
+          <div className="space-y-6">
+            {[
+              { num: 1, title: 'セットを選ぶ', desc: '30セットから好きなものを選択（各3問）' },
+              { num: 2, title: '音声を聞いて解答', desc: '再生ボタンを押して、4択から選択' },
+              { num: 3, title: '結果確認 & シャドーイング', desc: '正答率を確認して、シャドーイングで発音練習' },
+            ].map((step, i) => (
+              <div key={i} className="flex items-start gap-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl flex items-center justify-center font-black text-xl shadow-lg shrink-0">
+                  {step.num}
                 </div>
-              ))}
-            </div>
+                <div className="flex-1 bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
+                  <h3 className="font-bold text-lg mb-1 text-[#3A405A]">{step.title}</h3>
+                  <p className="opacity-70 text-[#3A405A] text-sm">{step.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
