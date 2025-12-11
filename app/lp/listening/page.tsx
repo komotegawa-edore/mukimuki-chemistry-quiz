@@ -103,6 +103,50 @@ export default function ListeningLandingPage() {
         </div>
       </header>
 
+      {/* Screenshot Section */}
+      <section className="max-w-[900px] mx-auto my-16 px-4">
+        <h2 className="text-3xl font-bold text-center mb-4">
+          スマホでサクサク、リスニング練習
+        </h2>
+        <p className="text-center mb-12 text-lg opacity-70">
+          音声を聞いて4択で回答。シャドーイングで発音も鍛える
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-8 max-w-[700px] mx-auto">
+          {/* リスニング問題画面 */}
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div className="aspect-[9/16] relative">
+              <Image
+                src="/listening-quiz.png"
+                alt="リスニング問題画面 - 音声を聞いて4択で回答"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="p-4 text-center">
+              <h3 className="font-bold text-lg mb-1 text-[#3A405A]">リスニング問題</h3>
+              <p className="text-sm opacity-70 text-[#3A405A]">音声を聞いて4択から選択</p>
+            </div>
+          </div>
+
+          {/* シャドーイング画面 */}
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div className="aspect-[9/16] relative">
+              <Image
+                src="/shadowing.png"
+                alt="シャドーイング画面 - スクリプトを見ながら発音練習"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="p-4 text-center">
+              <h3 className="font-bold text-lg mb-1 text-[#3A405A]">シャドーイング</h3>
+              <p className="text-sm opacity-70 text-[#3A405A]">スクリプトを見ながら発音練習</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Problem Section */}
       <section className="max-w-[860px] mx-auto my-16 px-4">
         <div className="bg-white rounded-2xl shadow-sm p-8 md:p-12">
