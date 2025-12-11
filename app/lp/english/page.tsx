@@ -8,9 +8,8 @@ import {
   Award, Users, BookOpen, ArrowRight, Newspaper, Globe, Coffee, Briefcase, Train,
   Check, Crown
 } from 'lucide-react'
-import BlogCard from '@/components/BlogCard'
-import { getBlogs } from '@/lib/microcms'
 import TryNewsPlayer from '@/components/TryNewsPlayer'
+import EnglishPricingSection from '@/components/EnglishPricingSection'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700', '900'],
@@ -20,10 +19,10 @@ const notoSansJP = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: '英語ニュースリスニング | Roopy English',
-  description: '毎朝届く英語ニュースで、通勤時間を学習時間に。AIが生成するNHK World風の英語ニュースで、ビジネス英語力を毎日アップ。',
+  description: '毎朝届く英語ニュースで、通勤時間を学習時間に。AIが生成する英語ニュースで、ビジネス英語力を毎日アップ。',
   openGraph: {
     title: '英語ニュースリスニング | Roopy English',
-    description: '毎朝届く英語ニュースで、通勤時間を学習時間に。AIが生成するNHK World風の英語ニュースで、ビジネス英語力を毎日アップ。',
+    description: '毎朝届く英語ニュースで、通勤時間を学習時間に。AIが生成する英語ニュースで、ビジネス英語力を毎日アップ。',
     type: 'website',
   },
 }
@@ -35,10 +34,7 @@ export const viewport: Viewport = {
 // ISR: 60秒ごとに再検証
 export const revalidate = 60
 
-export default async function EnglishLandingPage() {
-  // 最新のブログ記事を3件取得
-  const { contents: blogs } = await getBlogs({ limit: 3 })
-
+export default function EnglishLandingPage() {
   return (
     <div className={`min-h-screen text-[#3A405A] ${notoSansJP.className} overflow-x-hidden bg-cyan-600`}>
 
@@ -109,7 +105,7 @@ export default async function EnglishLandingPage() {
 
           <p className="text-xl md:text-2xl mb-10 leading-relaxed opacity-90 font-medium">
             AIが毎朝、日本のニュースを英語でお届け<br className="hidden md:block" />
-            NHK World風の音声で、自然なビジネス英語が身につく
+            自然な音声で、ビジネス英語が身につく
           </p>
 
           {/* 統計バッジ */}
@@ -323,7 +319,7 @@ export default async function EnglishLandingPage() {
               { icon: Newspaper, title: '毎朝10本の新着ニュース', desc: 'テクノロジー、ビジネス、スポーツなど多様なジャンル', color: 'cyan' },
               { icon: Clock, title: '1本2-3分', desc: '通勤電車の中でサクッと聞ける長さ', color: 'teal' },
               { icon: Globe, title: '日本のニュースを英語で', desc: '背景知識があるから理解しやすい', color: 'emerald' },
-              { icon: Volume2, title: 'NHK World風の音声', desc: 'AIが自然な英語音声を毎日生成', color: 'cyan' },
+              { icon: Volume2, title: 'AIネイティブ音声', desc: 'AIが自然な英語音声を毎日生成', color: 'cyan' },
               { icon: BookOpen, title: '字幕 & 重要単語', desc: '日本語字幕とビジネス英語の語彙を同時に習得', color: 'teal' },
               { icon: Repeat, title: '速度調整機能', desc: '0.75x〜1.25xで自分のレベルに合わせて', color: 'emerald' },
             ].map((feature, i) => (
@@ -429,122 +425,7 @@ export default async function EnglishLandingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-[1000px] mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-4 py-2 rounded-full text-sm font-bold mb-4">
-              <Crown className="w-4 h-4" />
-              料金プラン
-            </div>
-            <h2 className="text-4xl font-black mb-4">
-              シンプルな<span className="text-cyan-600">料金体系</span>
-            </h2>
-            <p className="text-lg opacity-70">
-              お得な年間プランもご用意しています
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 max-w-[800px] mx-auto">
-            {/* 月額プラン */}
-            <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-200 p-8 relative">
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-bold text-[#3A405A] mb-2">月額プラン</h3>
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-5xl font-black text-[#3A405A]">¥980</span>
-                  <span className="text-gray-500">/月</span>
-                </div>
-              </div>
-
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-cyan-600 shrink-0" />
-                  <span className="text-[#3A405A]">毎朝10本のニュース配信</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-cyan-600 shrink-0" />
-                  <span className="text-[#3A405A]">英語・日本語字幕</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-cyan-600 shrink-0" />
-                  <span className="text-[#3A405A]">重要単語リスト</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-cyan-600 shrink-0" />
-                  <span className="text-[#3A405A]">速度調整機能</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-cyan-600 shrink-0" />
-                  <span className="text-[#3A405A]">いつでも解約可能</span>
-                </li>
-              </ul>
-
-              <Link
-                href="/english/signup"
-                className="block w-full py-4 bg-gray-100 text-[#3A405A] text-center rounded-full font-bold hover:bg-gray-200 transition-colors"
-              >
-                月額プランで始める
-              </Link>
-            </div>
-
-            {/* 年間プラン */}
-            <div className="bg-gradient-to-br from-cyan-600 to-teal-600 rounded-3xl shadow-xl p-8 text-white relative">
-              {/* おすすめバッジ */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
-                  2ヶ月分お得！
-                </div>
-              </div>
-
-              <div className="text-center mb-6 pt-4">
-                <h3 className="text-xl font-bold mb-2">年間プラン</h3>
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-5xl font-black">¥9,800</span>
-                  <span className="opacity-80">/年</span>
-                </div>
-                <p className="text-sm opacity-80 mt-2">
-                  月あたり約¥817（17%OFF）
-                </p>
-              </div>
-
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-yellow-300 shrink-0" />
-                  <span>毎朝10本のニュース配信</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-yellow-300 shrink-0" />
-                  <span>英語・日本語字幕</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-yellow-300 shrink-0" />
-                  <span>重要単語リスト</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-yellow-300 shrink-0" />
-                  <span>速度調整機能</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-yellow-300 shrink-0" />
-                  <span>いつでも解約可能</span>
-                </li>
-              </ul>
-
-              <Link
-                href="/english/signup"
-                className="block w-full py-4 bg-white text-cyan-600 text-center rounded-full font-bold hover:bg-opacity-90 transition-colors shadow-lg"
-              >
-                年間プランで始める
-              </Link>
-            </div>
-          </div>
-
-          {/* 補足 */}
-          <div className="text-center mt-8 text-sm text-gray-500">
-            <p>※ 決済にはクレジットカードが必要です</p>
-            <p>※ 解約後も契約期間終了まで利用可能です</p>
-          </div>
-        </div>
-      </section>
+      <EnglishPricingSection />
 
       {/* Social Proof */}
       <section className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white">
@@ -638,42 +519,6 @@ export default async function EnglishLandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Blog Section */}
-      {blogs.length > 0 && (
-        <section className="py-20 px-4 bg-white">
-          <div className="max-w-[1200px] mx-auto">
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-4 py-2 rounded-full text-sm font-bold mb-4">
-                <BookOpen className="w-4 h-4" />
-                ブログ
-              </div>
-              <h2 className="text-4xl font-black mb-4">
-                最新の<span className="text-cyan-600">ブログ記事</span>
-              </h2>
-              <p className="text-lg opacity-70">
-                英語学習のコツやRoopyの使い方をお届けします
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {blogs.map((blog) => (
-                <BlogCard key={blog.id} blog={blog} />
-              ))}
-            </div>
-
-            <div className="text-center">
-              <Link
-                href="/blog"
-                className="inline-flex items-center gap-2 text-cyan-600 font-bold hover:gap-3 transition-all"
-              >
-                すべての記事を見る
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Final CTA */}
       <section className="relative py-24 px-4 overflow-hidden">
