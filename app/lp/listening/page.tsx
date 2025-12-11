@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
-import { Headphones, Play, CheckCircle, Clock, Target, Zap, Volume2, BarChart3, Repeat } from 'lucide-react'
+import { Headphones, Play, CheckCircle, Clock, Target, Zap, Volume2, BarChart3, Repeat, HelpCircle, Frown, Timer, AlertCircle, ArrowDown, Star } from 'lucide-react'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -112,26 +112,27 @@ export default function ListeningLandingPage() {
 
           <div className="space-y-4 max-w-[600px] mx-auto">
             <div className="flex items-start gap-3 bg-red-50 p-4 rounded-xl">
-              <span className="text-red-500 text-xl">😰</span>
+              <HelpCircle className="w-6 h-6 text-red-500 shrink-0 mt-0.5" />
               <p className="text-[#3A405A]">リスニングの勉強法がわからない...</p>
             </div>
             <div className="flex items-start gap-3 bg-red-50 p-4 rounded-xl">
-              <span className="text-red-500 text-xl">😓</span>
+              <Frown className="w-6 h-6 text-red-500 shrink-0 mt-0.5" />
               <p className="text-[#3A405A]">音声教材を用意するのが面倒...</p>
             </div>
             <div className="flex items-start gap-3 bg-red-50 p-4 rounded-xl">
-              <span className="text-red-500 text-xl">😞</span>
+              <Timer className="w-6 h-6 text-red-500 shrink-0 mt-0.5" />
               <p className="text-[#3A405A]">まとまった時間が取れない...</p>
             </div>
             <div className="flex items-start gap-3 bg-red-50 p-4 rounded-xl">
-              <span className="text-red-500 text-xl">😫</span>
+              <AlertCircle className="w-6 h-6 text-red-500 shrink-0 mt-0.5" />
               <p className="text-[#3A405A]">続けられるか不安...</p>
             </div>
           </div>
 
           <div className="mt-8 text-center">
-            <div className="inline-block bg-indigo-100 text-indigo-700 px-6 py-3 rounded-full font-bold">
-              👇 Roopyならすべて解決！
+            <div className="inline-flex items-center gap-2 bg-indigo-100 text-indigo-700 px-6 py-3 rounded-full font-bold">
+              <ArrowDown className="w-5 h-5" />
+              Roopyならすべて解決！
             </div>
           </div>
         </div>
@@ -299,8 +300,10 @@ export default function ListeningLandingPage() {
 
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl shadow-sm p-6">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-yellow-400">⭐⭐⭐⭐⭐</span>
+            <div className="flex items-center gap-1 mb-3">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+              ))}
             </div>
             <p className="mb-4 text-[#3A405A]">
               「通学中の電車で毎日やってます。1セット3問だから続けやすい！」
@@ -309,8 +312,10 @@ export default function ListeningLandingPage() {
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm p-6">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-yellow-400">⭐⭐⭐⭐⭐</span>
+            <div className="flex items-center gap-1 mb-3">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+              ))}
             </div>
             <p className="mb-4 text-[#3A405A]">
               「リスニングの勉強ってハードル高かったけど、これなら気軽にできる」
