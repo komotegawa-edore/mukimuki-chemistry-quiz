@@ -96,6 +96,14 @@ export default function QuizRunner({
   const handleSubmitAnswer = () => {
     if (!selectedAnswer) return
     setShowAnswer(true)
+
+    // 正解時に効果音を再生
+    if (selectedAnswer === currentQuestion.correct_answer) {
+      const correctSound = new Audio('/正解6.mp3')
+      correctSound.play().catch(() => {
+        // 自動再生がブロックされた場合は無視
+      })
+    }
   }
 
   const handleNext = () => {
