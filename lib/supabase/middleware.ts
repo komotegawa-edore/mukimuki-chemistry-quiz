@@ -47,6 +47,9 @@ export async function updateSession(request: NextRequest) {
     '/roopy-roadmap',
     '/mbti',
     '/try',
+    '/english/login',
+    '/english/signup',
+    '/english/news',
   ]
 
   const isPublicPath = publicPaths.some(path =>
@@ -62,10 +65,12 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // 認証済みユーザーが/loginまたは/signupにアクセスした場合はリダイレクト
-  if (user && (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup')) {
+  // 認証済みユーザーがログイン/登録ページにアクセスした場合はリダイレクト
+  const loginPaths = ['/login', '/signup', '/english/login', '/english/signup']
+  if (user && loginPaths.includes(request.nextUrl.pathname)) {
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+    // /english系からのアクセスは/english/newsへ、それ以外は/へ
+    url.pathname = request.nextUrl.pathname.startsWith('/english') ? '/english/news' : '/'
     return NextResponse.redirect(url)
   }
 
