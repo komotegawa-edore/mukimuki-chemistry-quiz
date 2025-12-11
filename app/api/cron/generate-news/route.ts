@@ -59,12 +59,16 @@ async function generateDailyNews() {
 
   const newsItems: any[] = []
 
-  // 各カテゴリから1件ずつ取得
+  // 各カテゴリから2件ずつ取得（合計10件）
+  const ITEMS_PER_CATEGORY = 2
+
   for (const [category, url] of Object.entries(RSS_FEEDS)) {
     try {
       const feed = await parser.parseURL(url)
-      if (feed.items.length > 0) {
-        const item = feed.items[0]
+      const itemsToTake = Math.min(ITEMS_PER_CATEGORY, feed.items.length)
+
+      for (let i = 0; i < itemsToTake; i++) {
+        const item = feed.items[i]
         newsItems.push({
           title: item.title || '',
           description: item.contentSnippet || '',
