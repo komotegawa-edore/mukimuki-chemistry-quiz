@@ -207,11 +207,11 @@ export default function NewsPlayerPage() {
           </Link>
           <div className="flex items-center gap-2">
             <Image
-              src="/Roopy-icon.png"
-              alt="Roopy"
+              src="/english/favicon-48x48.png"
+              alt="Roopy English"
               width={32}
               height={32}
-              className="rounded-full"
+              className="rounded-lg"
             />
             <span className="font-bold text-gray-800">Roopy English</span>
           </div>

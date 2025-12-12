@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
 import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
-import Header from '@/components/Header'
+import EnglishHeader from '@/components/EnglishHeader'
+import EnglishFooter from '@/components/EnglishFooter'
 import EnglishInstallPrompt from '@/components/EnglishInstallPrompt'
 import EnglishBottomNav from '@/components/EnglishBottomNav'
 import { Newspaper, Headphones, TrendingUp, Calendar } from 'lucide-react'
@@ -10,24 +11,13 @@ export default async function EnglishPage() {
   const profile = await getCurrentProfile()
 
   if (!profile) {
-    redirect('/login')
+    redirect('/english/login')
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
       <EnglishInstallPrompt />
-      <Header
-        rightContent={
-          <>
-            <Link
-              href="/"
-              className="px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded font-medium"
-            >
-              受験対策へ
-            </Link>
-          </>
-        }
-      />
+      <EnglishHeader />
 
       <main className="max-w-4xl mx-auto px-4 py-8">
         {/* Hero Section */}
@@ -110,9 +100,10 @@ export default async function EnglishPage() {
         </div>
 
         {/* ナビゲーションバー用の余白 */}
-        <div className="h-20" />
+        <div className="h-24" />
       </main>
 
+      <EnglishFooter />
       <EnglishBottomNav />
     </div>
   )

@@ -96,11 +96,11 @@ function LoginForm() {
           <div className="mb-8 text-center">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Image
-                src="/Roopy-icon.png"
+                src="/english/favicon-48x48.png"
                 alt="Roopy English"
                 width={48}
                 height={48}
-                className="rounded-full"
+                className="rounded-lg"
                 priority
               />
               <span className="text-2xl font-bold text-[#3A405A]">Roopy English</span>

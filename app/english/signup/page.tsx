@@ -83,11 +83,11 @@ export default function EnglishSignupPage() {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Image
-              src="/Roopy-icon.png"
+              src="/english/favicon-48x48.png"
               alt="Roopy English"
               width={56}
               height={56}
-              className="rounded-full"
+              className="rounded-lg"
               priority
             />
             <span className="text-3xl font-bold text-[#3A405A]">Roopy English</span>
