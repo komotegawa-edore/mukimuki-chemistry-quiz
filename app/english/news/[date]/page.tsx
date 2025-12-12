@@ -37,6 +37,37 @@ const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
   sports: { label: 'スポーツ', color: 'bg-orange-100 text-orange-700' },
   entertainment: { label: 'エンタメ', color: 'bg-pink-100 text-pink-700' },
   world: { label: '国際', color: 'bg-purple-100 text-purple-700' },
+  science: { label: '科学', color: 'bg-cyan-100 text-cyan-700' },
+  health: { label: '健康', color: 'bg-red-100 text-red-700' },
+  politics: { label: '政治', color: 'bg-slate-100 text-slate-700' },
+  economy: { label: '経済', color: 'bg-emerald-100 text-emerald-700' },
+  automotive: { label: '自動車', color: 'bg-amber-100 text-amber-700' },
+}
+
+// テキストを段落に分割してレンダリング
+function renderParagraphs(text: string, className: string) {
+  const paragraphs = text.split(/\n\n+/).filter(p => p.trim())
+  if (paragraphs.length <= 1) {
+    // 段落分けがない場合は文単位で適度に区切る
+    const sentences = text.split(/(?<=[.!?])\s+/)
+    const chunks: string[] = []
+    let current = ''
+    for (const sentence of sentences) {
+      if (current.length + sentence.length > 200 && current) {
+        chunks.push(current.trim())
+        current = sentence
+      } else {
+        current += (current ? ' ' : '') + sentence
+      }
+    }
+    if (current) chunks.push(current.trim())
+    return chunks.map((chunk, i) => (
+      <p key={i} className={className}>{chunk}</p>
+    ))
+  }
+  return paragraphs.map((p, i) => (
+    <p key={i} className={className}>{p.trim()}</p>
+  ))
 }
 
 type SubtitleMode = 'english' | 'japanese' | 'both' | 'none'
@@ -310,29 +341,35 @@ export default function NewsPlayerPage() {
             <div className="space-y-6">
               {(subtitleMode === 'english' || subtitleMode === 'both') && (
                 <div>
-                  <h3 className="text-sm font-medium text-blue-600 mb-2 flex items-center gap-2">
+                  <h3 className="text-sm font-medium text-blue-600 mb-4 flex items-center gap-2">
                     <BookOpen className="w-4 h-4" />
                     English Script
                   </h3>
-                  <p className="text-gray-800 leading-relaxed text-lg">
-                    {currentNews.english_script}
-                  </p>
+                  <div className="space-y-4">
+                    {renderParagraphs(
+                      currentNews.english_script,
+                      "text-gray-800 leading-[1.9] text-[17px] tracking-wide"
+                    )}
+                  </div>
                 </div>
               )}
 
               {subtitleMode === 'both' && (
-                <hr className="border-gray-200" />
+                <hr className="border-gray-200 my-6" />
               )}
 
               {(subtitleMode === 'japanese' || subtitleMode === 'both') && (
                 <div>
-                  <h3 className="text-sm font-medium text-green-600 mb-2 flex items-center gap-2">
+                  <h3 className="text-sm font-medium text-green-600 mb-4 flex items-center gap-2">
                     <BookOpen className="w-4 h-4" />
                     日本語訳
                   </h3>
-                  <p className="text-gray-800 leading-relaxed">
-                    {currentNews.japanese_translation}
-                  </p>
+                  <div className="space-y-4">
+                    {renderParagraphs(
+                      currentNews.japanese_translation,
+                      "text-gray-700 leading-[1.9] text-[15px]"
+                    )}
+                  </div>
                 </div>
               )}
             </div>
