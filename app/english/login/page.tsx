@@ -183,7 +183,7 @@ function LoginForm() {
 
           <div className="mt-4 text-center">
             <Link
-              href="/forgot-password"
+              href="/english/forgot-password"
               className="text-sm text-[#3A405A] opacity-70 hover:text-cyan-500 hover:opacity-100 transition-colors"
             >
               パスワードを忘れた方はこちら
