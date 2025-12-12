@@ -1,0 +1,100 @@
+name: Generate Daily News
+
+on:
+  schedule:
+    # JST 7:00 = UTC 22:00 (前日)
+    - cron: '0 22 * * *'
+  workflow_dispatch: # 手動実行用
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Generate news batch 1 (technology)
+        run: |
+          curl -X GET "${{ secrets.APP_URL }}/api/cron/generate-news?batch=1" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 300
+
+      - name: Wait 10 seconds
+        run: sleep 10
+
+      - name: Generate news batch 2 (business)
+        run: |
+          curl -X GET "${{ secrets.APP_URL }}/api/cron/generate-news?batch=2" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 300
+
+      - name: Wait 10 seconds
+        run: sleep 10
+
+      - name: Generate news batch 3 (sports)
+        run: |
+          curl -X GET "${{ secrets.APP_URL }}/api/cron/generate-news?batch=3" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 300
+
+      - name: Wait 10 seconds
+        run: sleep 10
+
+      - name: Generate news batch 4 (entertainment)
+        run: |
+          curl -X GET "${{ secrets.APP_URL }}/api/cron/generate-news?batch=4" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 300
+
+      - name: Wait 10 seconds
+        run: sleep 10
+
+      - name: Generate news batch 5 (world)
+        run: |
+          curl -X GET "${{ secrets.APP_URL }}/api/cron/generate-news?batch=5" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 300
+
+      - name: Wait 10 seconds
+        run: sleep 10
+
+      - name: Generate news batch 6 (science)
+        run: |
+          curl -X GET "${{ secrets.APP_URL }}/api/cron/generate-news?batch=6" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 300
+
+      - name: Wait 10 seconds
+        run: sleep 10
+
+      - name: Generate news batch 7 (health)
+        run: |
+          curl -X GET "${{ secrets.APP_URL }}/api/cron/generate-news?batch=7" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 300
+
+      - name: Wait 10 seconds
+        run: sleep 10
+
+      - name: Generate news batch 8 (politics)
+        run: |
+          curl -X GET "${{ secrets.APP_URL }}/api/cron/generate-news?batch=8" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 300
+
+      - name: Wait 10 seconds
+        run: sleep 10
+
+      - name: Generate news batch 9 (economy)
+        run: |
+          curl -X GET "${{ secrets.APP_URL }}/api/cron/generate-news?batch=9" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 300
+
+      - name: Wait 10 seconds
+        run: sleep 10
+
+      - name: Generate news batch 10 (automotive)
+        run: |
+          curl -X GET "${{ secrets.APP_URL }}/api/cron/generate-news?batch=10" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 300

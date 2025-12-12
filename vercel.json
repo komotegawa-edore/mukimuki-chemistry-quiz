@@ -1,19 +1,7 @@
 {
-  "crons": [
-    { "path": "/api/cron/generate-news?batch=1", "schedule": "0 22 * * *" },
-    { "path": "/api/cron/generate-news?batch=2", "schedule": "5 22 * * *" },
-    { "path": "/api/cron/generate-news?batch=3", "schedule": "10 22 * * *" },
-    { "path": "/api/cron/generate-news?batch=4", "schedule": "15 22 * * *" },
-    { "path": "/api/cron/generate-news?batch=5", "schedule": "20 22 * * *" },
-    { "path": "/api/cron/generate-news?batch=6", "schedule": "25 22 * * *" },
-    { "path": "/api/cron/generate-news?batch=7", "schedule": "30 22 * * *" },
-    { "path": "/api/cron/generate-news?batch=8", "schedule": "35 22 * * *" },
-    { "path": "/api/cron/generate-news?batch=9", "schedule": "40 22 * * *" },
-    { "path": "/api/cron/generate-news?batch=10", "schedule": "45 22 * * *" }
-  ],
   "functions": {
     "app/api/cron/generate-news/route.ts": {
-      "maxDuration": 120
+      "maxDuration": 300
     }
   }
 }
