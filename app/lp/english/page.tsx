@@ -318,7 +318,7 @@ export default function EnglishLandingPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: Newspaper, title: '毎朝20本の新着ニュース', desc: '10カテゴリから厳選した多様なジャンル', color: 'cyan' },
+              { icon: Newspaper, title: '毎朝届く新着ニュース', desc: '様々なジャンルから厳選してお届け', color: 'cyan' },
               { icon: Clock, title: '1本2-3分', desc: '通勤電車の中でサクッと聞ける長さ', color: 'teal' },
               { icon: Globe, title: '日本のニュースを英語で', desc: '背景知識があるから理解しやすい', color: 'emerald' },
               { icon: Volume2, title: 'AIネイティブ音声', desc: 'AIが自然な英語音声を毎日生成', color: 'cyan' },
@@ -356,7 +356,7 @@ export default function EnglishLandingPage() {
           {/* スマホ用：縦並び */}
           <div className="space-y-6">
             {[
-              { num: 1, title: 'ニュースを選ぶ', desc: '今日のニュース20本から興味のあるものを選択' },
+              { num: 1, title: 'ニュースを選ぶ', desc: '今日届いたニュースから興味のあるものを選択' },
               { num: 2, title: '音声を聞く', desc: '字幕を見ながら英語音声を聞く。速度調整も可能' },
               { num: 3, title: '語彙をチェック', desc: '重要単語を確認して、ビジネス英語力アップ' },
             ].map((step, i) => (
@@ -504,7 +504,7 @@ export default function EnglishLandingPage() {
               { q: '料金はいくらですか？', a: '月額980円または年間9,800円でご利用いただけます。年間プランは2ヶ月分お得です。' },
               { q: 'どのレベルの英語ですか？', a: 'CEFR A2〜B1レベル（英検準2級〜2級程度）を想定しています。日本語字幕付きなので、初心者でも安心して始められます。' },
               { q: 'スマホだけで使えますか？', a: 'はい、スマホのブラウザだけで利用できます。アプリのインストールは不要です。' },
-              { q: '毎日何本のニュースが配信されますか？', a: '毎朝7時に20本の新着ニュースが配信されます。テクノロジー、ビジネス、スポーツ、エンタメ、国際、科学、健康、政治、経済、自動車の各カテゴリから2本ずつです。' },
+              { q: '毎日何本のニュースが配信されますか？', a: '毎朝7時頃に20本ほどの新着ニュースが配信されます。その日の話題に応じて、様々なジャンルのニュースをお届けします。' },
             ].map((faq, i) => (
               <details key={i} className="group bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                 <summary className="p-6 font-bold cursor-pointer list-none flex items-center justify-between hover:bg-gray-50 transition-colors">
