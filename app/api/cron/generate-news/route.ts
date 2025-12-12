@@ -107,7 +107,8 @@ async function generateBatchNews(batchNum: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1
         newsItems.push({
           title: item.title || '',
           description: item.contentSnippet || '',
-          source: (item as any).source?.['$']?.url || 'Unknown',
+          // Google News RSSのlinkを元記事URLとして使用
+          source: item.link || 'Unknown',
           category,
         })
       }
@@ -188,7 +189,8 @@ async function generateDailyNews() {
         newsItems.push({
           title: item.title || '',
           description: item.contentSnippet || '',
-          source: (item as any).source?.['$']?.url || 'Unknown',
+          // Google News RSSのlinkを元記事URLとして使用
+          source: item.link || 'Unknown',
           category,
         })
       }
