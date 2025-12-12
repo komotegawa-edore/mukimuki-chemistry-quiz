@@ -255,14 +255,20 @@ function generateNewsId(date: Date, index: number): string {
 }
 
 async function generateScript(openai: OpenAI, news: any) {
-  const prompt = `You are a professional news writer for NHK World, creating English listening material for Japanese working adults.
+  const prompt = `You are an English language educator creating ORIGINAL educational listening material for Japanese working adults.
 
-The following is a Japanese news headline. Create an ENGLISH NEWS BROADCAST SCRIPT based on this news.
+IMPORTANT COPYRIGHT NOTICE:
+- You are NOT copying or translating the original news article
+- You are creating a COMPLETELY ORIGINAL educational script INSPIRED BY the news topic
+- Use only the FACTS and TOPIC from the headline - do NOT reproduce any original text
+- Write in your own words as an educator explaining current events
 
-Japanese News:
-Title: ${news.title}
-Description: ${news.description}
+News Topic (for reference only):
+Topic: ${news.title}
 Category: ${news.category}
+
+Your Task:
+Create an ORIGINAL English educational broadcast script about this topic. You are teaching English through current events, not reproducing news content.
 
 Requirements for the English script:
 - Length: 300-400 words (approximately 2-3 minutes when read aloud)
@@ -270,14 +276,14 @@ Requirements for the English script:
 - Structure: Opening → Background/Context → Main details → Impact/Implications → Closing
 - Use CEFR A2-B1 level vocabulary (business English suitable for Japanese working adults)
 - Explain any technical terms or cultural context that international audiences might need
-- Make it sound like a professional NHK World broadcast
-- Include relevant details to make the story complete and engaging
+- Write as an EDUCATOR explaining a topic, not as a news reporter
+- Add your own educational perspective and context
 - End with a brief conclusion or future outlook
 - IMPORTANT: Divide the script into 3-5 paragraphs separated by "\\n\\n" (double newlines) for readability. Each paragraph should be 60-100 words.
 
 Requirements for Japanese translation:
 - Provide the Japanese translation of your English script
-- Natural, fluent Japanese that matches Japanese news broadcast style
+- Natural, fluent Japanese that matches educational broadcast style
 - Keep the same paragraph structure as the English script (use \\n\\n between paragraphs)
 
 Requirements for vocabulary:

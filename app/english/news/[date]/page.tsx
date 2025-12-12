@@ -227,7 +227,14 @@ export default function NewsPlayerPage() {
             {currentNews.original_title}
           </h1>
           {currentNews.source && (
-            <p className="text-sm text-gray-500 mt-2">Source: {currentNews.source}</p>
+            <a
+              href={currentNews.source}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 hover:underline mt-2"
+            >
+              元記事を読む →
+            </a>
           )}
         </div>
 
@@ -381,6 +388,26 @@ export default function NewsPlayerPage() {
               <p>字幕を非表示にしています</p>
             </div>
           )}
+
+          {/* 出典・免責事項 */}
+          <div className="mt-6 pt-4 border-t border-gray-100">
+            <p className="text-xs text-gray-400 leading-relaxed">
+              ※このスクリプトは報道内容を基に作成した英語学習教材です。事実関係の詳細は元記事をご確認ください。
+              {currentNews.source && (
+                <>
+                  {' '}
+                  <a
+                    href={currentNews.source}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    元記事はこちら
+                  </a>
+                </>
+              )}
+            </p>
+          </div>
         </div>
 
         {/* Vocabulary */}
