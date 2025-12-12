@@ -166,12 +166,13 @@ export default function EnglishLandingPage() {
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity" />
               <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-                <div className="aspect-[9/16] relative bg-gradient-to-br from-cyan-50 to-teal-50 flex items-center justify-center">
-                  <div className="text-center p-8">
-                    <Newspaper className="w-16 h-16 text-cyan-600 mx-auto mb-4" />
-                    <p className="text-lg font-bold text-[#3A405A]">ニュース一覧</p>
-                    <p className="text-sm opacity-70 mt-2">テクノロジー、ビジネス、スポーツなど</p>
-                  </div>
+                <div className="aspect-[9/16] relative">
+                  <Image
+                    src="/RoopyEnglish1.png"
+                    alt="Roopy English ニュース一覧画面"
+                    fill
+                    className="object-cover object-top"
+                  />
                 </div>
                 <div className="p-6 text-center bg-gradient-to-r from-cyan-50 to-teal-50">
                   <div className="inline-flex items-center gap-2 bg-cyan-600 text-white px-3 py-1 rounded-full text-sm font-bold mb-2">
@@ -188,12 +189,13 @@ export default function EnglishLandingPage() {
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity" />
               <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-                <div className="aspect-[9/16] relative bg-gradient-to-br from-teal-50 to-emerald-50 flex items-center justify-center">
-                  <div className="text-center p-8">
-                    <Headphones className="w-16 h-16 text-teal-600 mx-auto mb-4" />
-                    <p className="text-lg font-bold text-[#3A405A]">英語音声 + 字幕</p>
-                    <p className="text-sm opacity-70 mt-2">速度調整・字幕ON/OFF可能</p>
-                  </div>
+                <div className="aspect-[9/16] relative">
+                  <Image
+                    src="/RoopyEnglish2.png"
+                    alt="Roopy English 再生画面"
+                    fill
+                    className="object-cover object-top"
+                  />
                 </div>
                 <div className="p-6 text-center bg-gradient-to-r from-teal-50 to-emerald-50">
                   <div className="inline-flex items-center gap-2 bg-teal-600 text-white px-3 py-1 rounded-full text-sm font-bold mb-2">
