@@ -153,6 +153,13 @@ async function createMissionForSubject(
     return null
   }
 
+  // 既にミッションが存在する場合は再取得する（競合対策）
+  const existing = await fetchMissionsForDate(supabase, userId, date)
+  const existingForSubject = existing.find((m) => m.chapter?.subject_id === subjectId)
+  if (existingForSubject) {
+    return existingForSubject
+  }
+
   const { data, error } = await supabase
     .from('mukimuki_daily_missions')
     .insert({
@@ -180,10 +187,13 @@ async function createMissionForSubject(
     .single()
 
   if (error) {
+    // UNIQUE違反は競合時に発生するので、再取得して返す
+    if (error.code === '23505') {
+      const missions = await fetchMissionsForDate(supabase, userId, date)
+      return missions.find((mission) => mission.chapter?.subject_id === subjectId) ?? null
+    }
     console.error('Failed to insert daily mission:', error)
-    // UNIQUE違反などで挿入できない場合は最新の状態を再取得
-    const missions = await fetchMissionsForDate(supabase, userId, date)
-    return missions.find((mission) => mission.chapter?.subject_id === subjectId) ?? null
+    throw error
   }
 
   return data as unknown as MissionRow

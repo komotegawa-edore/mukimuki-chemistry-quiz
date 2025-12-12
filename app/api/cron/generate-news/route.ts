@@ -6,17 +6,18 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 // バッチ設定: 10バッチ × 2本 = 20本/日（各バッチ約30秒で完了）
+// feedOffset: RSSフィード内のアイテム取得開始位置（重複防止）
 const BATCH_CONFIG = {
-  1: { categories: ['technology'], itemsPerCategory: 2, startIndex: 0 },
-  2: { categories: ['business'], itemsPerCategory: 2, startIndex: 2 },
-  3: { categories: ['sports'], itemsPerCategory: 2, startIndex: 4 },
-  4: { categories: ['entertainment'], itemsPerCategory: 2, startIndex: 6 },
-  5: { categories: ['world'], itemsPerCategory: 2, startIndex: 8 },
-  6: { categories: ['science'], itemsPerCategory: 2, startIndex: 10 },
-  7: { categories: ['health'], itemsPerCategory: 2, startIndex: 12 },
-  8: { categories: ['politics'], itemsPerCategory: 2, startIndex: 14 },
-  9: { categories: ['economy'], itemsPerCategory: 2, startIndex: 16 },
-  10: { categories: ['automotive'], itemsPerCategory: 2, startIndex: 18 },
+  1: { categories: ['technology'], itemsPerCategory: 2, startIndex: 0, feedOffset: 0 },
+  2: { categories: ['business'], itemsPerCategory: 2, startIndex: 2, feedOffset: 0 },
+  3: { categories: ['sports'], itemsPerCategory: 2, startIndex: 4, feedOffset: 0 },
+  4: { categories: ['entertainment'], itemsPerCategory: 2, startIndex: 6, feedOffset: 0 },
+  5: { categories: ['world'], itemsPerCategory: 2, startIndex: 8, feedOffset: 0 },
+  6: { categories: ['science'], itemsPerCategory: 2, startIndex: 10, feedOffset: 0 },
+  7: { categories: ['health'], itemsPerCategory: 2, startIndex: 12, feedOffset: 0 },
+  8: { categories: ['headlines'], itemsPerCategory: 2, startIndex: 14, feedOffset: 0 },
+  9: { categories: ['economy'], itemsPerCategory: 2, startIndex: 16, feedOffset: 4 },
+  10: { categories: ['lifestyle'], itemsPerCategory: 2, startIndex: 18, feedOffset: 6 },
 } as const
 
 // Vercel Cronからのリクエストを認証
@@ -64,6 +65,7 @@ export async function GET(request: NextRequest) {
 }
 
 // Google News Japan RSS - 10カテゴリ
+// Note: Some topic-specific feeds don't work for Japan locale, so we use alternatives
 const RSS_FEEDS: Record<string, string> = {
   technology: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGRqTVhZU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
   business: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
@@ -72,9 +74,11 @@ const RSS_FEEDS: Record<string, string> = {
   world: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
   science: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFp0Y1RjU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
   health: 'https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNR3QwTlRFU0FtcGhLQUFQAQ?hl=ja&gl=JP&ceid=JP:ja',
-  politics: 'https://news.google.com/rss/topics/CAAqJQgKIh9DQkFTRVFvSUwyMHZNRFZ4ZERBU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
-  economy: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
-  automotive: 'https://news.google.com/rss/topics/CAAqJQgKIh9DQkFTRVFvSUwyMHZNRE5pYXpBU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
+  // politics/automotive feeds don't work for Japan, use top stories (contains political/general news)
+  headlines: 'https://news.google.com/rss?hl=ja&gl=JP&ceid=JP:ja',
+  // Use technology feed with offset for variety (economy was duplicate of business)
+  economy: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGRqTVhZU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
+  lifestyle: 'https://news.google.com/rss?hl=ja&gl=JP&ceid=JP:ja',
 }
 
 // バッチ生成（特定カテゴリのみ）
@@ -100,10 +104,12 @@ async function generateBatchNews(batchNum: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1
 
     try {
       const feed = await parser.parseURL(url)
-      const itemsToTake = Math.min(config.itemsPerCategory, feed.items.length)
+      const feedOffset = config.feedOffset || 0
+      const availableItems = feed.items.slice(feedOffset)
+      const itemsToTake = Math.min(config.itemsPerCategory, availableItems.length)
 
       for (let i = 0; i < itemsToTake; i++) {
-        const item = feed.items[i]
+        const item = availableItems[i]
         newsItems.push({
           title: item.title || '',
           description: item.contentSnippet || '',
