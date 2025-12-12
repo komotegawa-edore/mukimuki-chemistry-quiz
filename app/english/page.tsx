@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
 import Header from '@/components/Header'
+import EnglishInstallPrompt from '@/components/EnglishInstallPrompt'
+import EnglishBottomNav from '@/components/EnglishBottomNav'
 import { Newspaper, Headphones, TrendingUp, Calendar } from 'lucide-react'
 
 export default async function EnglishPage() {
@@ -13,6 +15,7 @@ export default async function EnglishPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <EnglishInstallPrompt />
       <Header
         rightContent={
           <>
@@ -105,7 +108,12 @@ export default async function EnglishPage() {
             </p>
           </div>
         </div>
+
+        {/* ナビゲーションバー用の余白 */}
+        <div className="h-20" />
       </main>
+
+      <EnglishBottomNav />
     </div>
   )
 }

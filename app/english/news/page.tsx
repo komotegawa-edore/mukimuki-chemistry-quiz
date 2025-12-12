@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import { getCurrentProfile } from '@/lib/auth/helpers'
 import Link from 'next/link'
 import Header from '@/components/Header'
+import EnglishInstallPrompt from '@/components/EnglishInstallPrompt'
+import EnglishBottomNav from '@/components/EnglishBottomNav'
 import { Newspaper } from 'lucide-react'
 import NewsSearchList from '@/components/NewsSearchList'
 
@@ -36,6 +38,7 @@ export default async function EnglishNewsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <EnglishInstallPrompt />
       <Header
         rightContent={
           <>
@@ -82,7 +85,12 @@ export default async function EnglishNewsPage() {
         ) : (
           <NewsSearchList news={news as DailyNews[]} />
         )}
+
+        {/* ナビゲーションバー用の余白 */}
+        <div className="h-20" />
       </main>
+
+      <EnglishBottomNav />
     </div>
   )
 }
