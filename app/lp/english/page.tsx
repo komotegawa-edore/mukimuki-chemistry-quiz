@@ -41,13 +41,13 @@ export default function EnglishLandingPage() {
       {/* Navigation Header */}
       <nav className="bg-white/80 backdrop-blur-md border-b border-cyan-100 sticky top-0 z-50">
         <div className="max-w-[1200px] mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/english" className="flex items-center gap-2">
             <Image
-              src="/Roopy-icon.png"
-              alt="Roopy"
+              src="/english/favicon-48x48.png"
+              alt="Roopy English"
               width={40}
               height={40}
-              className="rounded-full"
+              className="rounded-lg"
             />
             <span className="font-bold text-xl text-[#3A405A]">Roopy English</span>
           </Link>
@@ -576,11 +576,11 @@ export default function EnglishLandingPage() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Image
-                  src="/Roopy-icon.png"
-                  alt="Roopy"
+                  src="/english/favicon-48x48.png"
+                  alt="Roopy English"
                   width={32}
                   height={32}
-                  className="rounded-full"
+                  className="rounded-lg"
                 />
                 <span className="font-bold text-lg">Roopy English</span>
               </div>
@@ -593,8 +593,8 @@ export default function EnglishLandingPage() {
               <h3 className="font-bold mb-3">サービス</h3>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link href="/lp" className="opacity-70 hover:opacity-100 transition-opacity">
-                    Roopyトップ
+                  <Link href="/english" className="opacity-70 hover:opacity-100 transition-opacity">
+                    ホーム
                   </Link>
                 </li>
                 <li>
@@ -616,29 +616,31 @@ export default function EnglishLandingPage() {
             </div>
 
             <div>
+              <h3 className="font-bold mb-3">法的情報</h3>
+              <ul className="space-y-2 text-sm mb-4">
+                <li>
+                  <Link href="/english/terms" className="opacity-70 hover:opacity-100 transition-opacity">
+                    利用規約
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/english/privacy" className="opacity-70 hover:opacity-100 transition-opacity">
+                    プライバシーポリシー
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/english/legal" className="opacity-70 hover:opacity-100 transition-opacity">
+                    特定商取引法に基づく表記
+                  </Link>
+                </li>
+              </ul>
               <h3 className="font-bold mb-3">お問い合わせ</h3>
-              <p className="text-sm opacity-70 mb-3">
-                ご質問・ご要望はXのDM、または下記まで
-              </p>
-              <div className="space-y-2">
-                <a
-                  href="https://x.com/Edore_handai"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm opacity-70 hover:opacity-100 transition-opacity"
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                  </svg>
-                  @Edore_handai
-                </a>
-                <a
-                  href="mailto:k.omotegawa@edore-edu.com"
-                  className="block text-sm opacity-70 hover:opacity-100 transition-opacity"
-                >
-                  k.omotegawa@edore-edu.com
-                </a>
-              </div>
+              <a
+                href="mailto:k.omotegawa@edore-edu.com"
+                className="block text-sm opacity-70 hover:opacity-100 transition-opacity"
+              >
+                k.omotegawa@edore-edu.com
+              </a>
             </div>
           </div>
 

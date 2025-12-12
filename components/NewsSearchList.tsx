@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
-import { Calendar, ChevronRight, Newspaper, Clock, Search, X, Filter, Lock, Crown } from 'lucide-react'
+import { Calendar, ChevronRight, Clock, Search, X, Lock } from 'lucide-react'
 import { useSubscription } from '@/hooks/useSubscription'
 
 interface DailyNews {
@@ -41,8 +41,6 @@ interface Props {
 
 export default function NewsSearchList({ news }: Props) {
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [showFilters, setShowFilters] = useState(false)
   const { hasAccess, loading: subscriptionLoading } = useSubscription()
 
   // 今日の日付（JST）
@@ -53,15 +51,20 @@ export default function NewsSearchList({ news }: Props) {
     return jst.toISOString().split('T')[0]
   }, [])
 
-  // フィルタリングされたニュース
+  // 重複排除＆フィルタリングされたニュース
   const filteredNews = useMemo(() => {
-    return news.filter((item) => {
-      // カテゴリフィルタ
-      if (selectedCategory && item.category !== selectedCategory) {
+    // タイトルで重複を排除（同じタイトルの最初の記事のみ残す）
+    const seenTitles = new Set<string>()
+    const deduped = news.filter((item) => {
+      if (seenTitles.has(item.original_title)) {
         return false
       }
+      seenTitles.add(item.original_title)
+      return true
+    })
 
-      // キーワード検索
+    // キーワード検索
+    return deduped.filter((item) => {
       if (searchQuery) {
         const query = searchQuery.toLowerCase()
         const matchesTitle = item.original_title.toLowerCase().includes(query)
@@ -70,10 +73,9 @@ export default function NewsSearchList({ news }: Props) {
           return false
         }
       }
-
       return true
     })
-  }, [news, searchQuery, selectedCategory])
+  }, [news, searchQuery])
 
   // 日付でグループ化
   const newsByDate = useMemo(() => {
@@ -90,20 +92,15 @@ export default function NewsSearchList({ news }: Props) {
 
   const dates = Array.from(newsByDate.keys())
 
-  // アクティブなフィルタの数
-  const activeFilterCount = (selectedCategory ? 1 : 0) + (searchQuery ? 1 : 0)
-
-  const clearFilters = () => {
+  const clearSearch = () => {
     setSearchQuery('')
-    setSelectedCategory(null)
   }
 
   return (
     <div>
-      {/* 検索・フィルタUI */}
+      {/* 検索UI */}
       <div className="bg-white rounded-xl p-4 mb-6 border border-gray-100 shadow-sm">
-        {/* 検索バー */}
-        <div className="relative mb-3">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
@@ -122,62 +119,17 @@ export default function NewsSearchList({ news }: Props) {
           )}
         </div>
 
-        {/* フィルタトグル */}
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600"
-        >
-          <Filter className="w-4 h-4" />
-          カテゴリで絞り込む
-          {activeFilterCount > 0 && (
-            <span className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">
-              {activeFilterCount}
-            </span>
-          )}
-        </button>
-
-        {/* カテゴリフィルタ */}
-        {showFilters && (
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setSelectedCategory(null)}
-                className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
-                  selectedCategory === null
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                すべて
-              </button>
-              {Object.entries(CATEGORY_LABELS).map(([key, { label, color }]) => (
-                <button
-                  key={key}
-                  onClick={() => setSelectedCategory(selectedCategory === key ? null : key)}
-                  className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
-                    selectedCategory === key
-                      ? 'bg-blue-600 text-white'
-                      : `${color} hover:opacity-80`
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* アクティブフィルタ表示 */}
-        {activeFilterCount > 0 && (
+        {/* 検索結果表示 */}
+        {searchQuery && (
           <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
             <span className="text-sm text-gray-600">
               {filteredNews.length}件の記事が見つかりました
             </span>
             <button
-              onClick={clearFilters}
+              onClick={clearSearch}
               className="text-sm text-blue-600 hover:text-blue-700 font-medium"
             >
-              フィルタをクリア
+              クリア
             </button>
           </div>
         )}
@@ -194,10 +146,10 @@ export default function NewsSearchList({ news }: Props) {
             検索条件を変更してお試しください
           </p>
           <button
-            onClick={clearFilters}
+            onClick={clearSearch}
             className="text-blue-600 hover:text-blue-700 font-medium"
           >
-            フィルタをクリア
+            検索をクリア
           </button>
         </div>
       ) : (
@@ -256,11 +208,6 @@ export default function NewsSearchList({ news }: Props) {
                           <div className="flex items-start justify-between gap-4 opacity-50">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
-                                <span
-                                  className={`text-xs px-2 py-1 rounded-full font-medium ${category.color}`}
-                                >
-                                  {category.label}
-                                </span>
                                 <span className="text-xs text-gray-500 flex items-center gap-1">
                                   <Clock className="w-3 h-3" />
                                   約{readingTime}分
@@ -293,11 +240,6 @@ export default function NewsSearchList({ news }: Props) {
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                              <span
-                                className={`text-xs px-2 py-1 rounded-full font-medium ${category.color}`}
-                              >
-                                {category.label}
-                              </span>
                               <span className="text-xs text-gray-500 flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
                                 約{readingTime}分
