@@ -1,13 +1,25 @@
 {
   "crons": [
     {
-      "path": "/api/cron/generate-news",
+      "path": "/api/cron/generate-news?batch=1",
       "schedule": "0 22 * * *"
+    },
+    {
+      "path": "/api/cron/generate-news?batch=2",
+      "schedule": "15 22 * * *"
+    },
+    {
+      "path": "/api/cron/generate-news?batch=3",
+      "schedule": "30 22 * * *"
+    },
+    {
+      "path": "/api/cron/generate-news?batch=4",
+      "schedule": "45 22 * * *"
     }
   ],
   "functions": {
     "app/api/cron/generate-news/route.ts": {
-      "maxDuration": 300
+      "maxDuration": 60
     }
   }
 }
