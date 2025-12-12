@@ -4,5 +4,10 @@
       "path": "/api/cron/generate-news",
       "schedule": "0 22 * * *"
     }
-  ]
+  ],
+  "functions": {
+    "app/api/cron/generate-news/route.ts": {
+      "maxDuration": 300
+    }
+  }
 }
