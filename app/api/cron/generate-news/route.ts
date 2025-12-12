@@ -87,7 +87,8 @@ async function generateBatchNews(batchNum: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  const today = new Date()
+  // 日本時間で日付を取得（UTC 22:00 = JST 7:00 なので翌日の日付になる）
+  const today = getJSTDate()
   const dateStr = today.toISOString().split('T')[0]
 
   const newsItems: any[] = []
@@ -170,7 +171,8 @@ async function generateDailyNews() {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  const today = new Date()
+  // 日本時間で日付を取得
+  const today = getJSTDate()
   const dateStr = today.toISOString().split('T')[0]
 
   const newsItems: any[] = []
@@ -235,6 +237,14 @@ async function generateDailyNews() {
   }
 
   return { date: dateStr, count: results.length }
+}
+
+// 日本時間で日付を取得
+function getJSTDate(): Date {
+  const now = new Date()
+  // UTC+9時間 = JST
+  const jstOffset = 9 * 60 * 60 * 1000
+  return new Date(now.getTime() + jstOffset)
 }
 
 function generateNewsId(date: Date, index: number): string {
