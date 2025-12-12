@@ -5,12 +5,18 @@ import OpenAI from 'openai'
 import * as fs from 'fs'
 import * as path from 'path'
 
-// バッチ設定: 4バッチ × 5本 = 20本/日
+// バッチ設定: 10バッチ × 2本 = 20本/日（各バッチ約30秒で完了）
 const BATCH_CONFIG = {
-  1: { categories: ['technology', 'business', 'sports'], itemsPerCategory: 2, startIndex: 0 },  // 6本 → 5本に調整
-  2: { categories: ['entertainment', 'world', 'science'], itemsPerCategory: 2, startIndex: 5 }, // 6本 → 5本に調整
-  3: { categories: ['health', 'politics'], itemsPerCategory: 2, startIndex: 10 },               // 4本 → 5本に調整
-  4: { categories: ['economy', 'automotive'], itemsPerCategory: 2, startIndex: 15 },            // 4本 → 5本に調整
+  1: { categories: ['technology'], itemsPerCategory: 2, startIndex: 0 },
+  2: { categories: ['business'], itemsPerCategory: 2, startIndex: 2 },
+  3: { categories: ['sports'], itemsPerCategory: 2, startIndex: 4 },
+  4: { categories: ['entertainment'], itemsPerCategory: 2, startIndex: 6 },
+  5: { categories: ['world'], itemsPerCategory: 2, startIndex: 8 },
+  6: { categories: ['science'], itemsPerCategory: 2, startIndex: 10 },
+  7: { categories: ['health'], itemsPerCategory: 2, startIndex: 12 },
+  8: { categories: ['politics'], itemsPerCategory: 2, startIndex: 14 },
+  9: { categories: ['economy'], itemsPerCategory: 2, startIndex: 16 },
+  10: { categories: ['automotive'], itemsPerCategory: 2, startIndex: 18 },
 } as const
 
 // Vercel Cronからのリクエストを認証
@@ -30,9 +36,9 @@ export async function GET(request: NextRequest) {
   const batch = batchParam ? parseInt(batchParam, 10) : null
 
   try {
-    if (batch && batch >= 1 && batch <= 4) {
+    if (batch && batch >= 1 && batch <= 10) {
       // 特定バッチのみ実行
-      const result = await generateBatchNews(batch as 1 | 2 | 3 | 4)
+      const result = await generateBatchNews(batch as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10)
       return NextResponse.json({
         success: true,
         message: `Generated ${result.count} news items (batch ${batch})`,
@@ -72,7 +78,7 @@ const RSS_FEEDS: Record<string, string> = {
 }
 
 // バッチ生成（特定カテゴリのみ）
-async function generateBatchNews(batchNum: 1 | 2 | 3 | 4) {
+async function generateBatchNews(batchNum: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10) {
   const config = BATCH_CONFIG[batchNum]
   const parser = new Parser({ customFields: { item: ['source'] } })
   const openai = new OpenAI()
