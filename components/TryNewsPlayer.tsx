@@ -31,6 +31,11 @@ const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
   sports: { label: 'スポーツ', color: 'bg-orange-100 text-orange-700' },
   entertainment: { label: 'エンタメ', color: 'bg-pink-100 text-pink-700' },
   world: { label: '国際', color: 'bg-purple-100 text-purple-700' },
+  science: { label: '科学', color: 'bg-cyan-100 text-cyan-700' },
+  health: { label: '健康', color: 'bg-red-100 text-red-700' },
+  politics: { label: '政治', color: 'bg-slate-100 text-slate-700' },
+  economy: { label: '経済', color: 'bg-emerald-100 text-emerald-700' },
+  automotive: { label: '自動車', color: 'bg-amber-100 text-amber-700' },
 }
 
 type SubtitleMode = 'english' | 'japanese' | 'both'

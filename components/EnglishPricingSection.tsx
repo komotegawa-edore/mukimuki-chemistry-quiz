@@ -74,7 +74,7 @@ export default function EnglishPricingSection() {
             <ul className="space-y-4 mb-8">
               <li className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-cyan-600 shrink-0" />
-                <span className="text-[#3A405A]">毎朝10本のニュース配信</span>
+                <span className="text-[#3A405A]">毎朝20本のニュース配信</span>
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-cyan-600 shrink-0" />
@@ -133,7 +133,7 @@ export default function EnglishPricingSection() {
             <ul className="space-y-4 mb-8">
               <li className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-yellow-300 shrink-0" />
-                <span>毎朝10本のニュース配信</span>
+                <span>毎朝20本のニュース配信</span>
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-yellow-300 shrink-0" />

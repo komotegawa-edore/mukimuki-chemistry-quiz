@@ -48,18 +48,33 @@ async function generateDailyNews() {
   const today = new Date()
   const dateStr = today.toISOString().split('T')[0]
 
-  // Google News Japan RSS
+  // Google News Japan RSS - 10カテゴリ
   const RSS_FEEDS = {
+    // テクノロジー
     technology: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGRqTVhZU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
+    // ビジネス
     business: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
+    // スポーツ
     sports: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFp1ZEdvU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
+    // エンタメ
     entertainment: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNREpxYW5RU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
+    // 国際
     world: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
+    // 科学
+    science: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFp0Y1RjU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
+    // 健康
+    health: 'https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNR3QwTlRFU0FtcGhLQUFQAQ?hl=ja&gl=JP&ceid=JP:ja',
+    // 政治
+    politics: 'https://news.google.com/rss/topics/CAAqJQgKIh9DQkFTRVFvSUwyMHZNRFZ4ZERBU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
+    // 経済
+    economy: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
+    // 自動車
+    automotive: 'https://news.google.com/rss/topics/CAAqJQgKIh9DQkFTRVFvSUwyMHZNRE5pYXpBU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
   }
 
   const newsItems: any[] = []
 
-  // 各カテゴリから2件ずつ取得（合計10件）
+  // 各カテゴリから2件ずつ取得（合計20件）
   const ITEMS_PER_CATEGORY = 2
 
   for (const [category, url] of Object.entries(RSS_FEEDS)) {
@@ -134,7 +149,7 @@ function generateNewsId(date: Date, index: number): string {
 }
 
 async function generateScript(openai: OpenAI, news: any) {
-  const prompt = `You are a professional news writer for NHK World, creating English listening material for Japanese high school students.
+  const prompt = `You are a professional news writer for NHK World, creating English listening material for Japanese working adults.
 
 The following is a Japanese news headline. Create an ENGLISH NEWS BROADCAST SCRIPT based on this news.
 
@@ -147,18 +162,20 @@ Requirements for the English script:
 - Length: 300-400 words (approximately 2-3 minutes when read aloud)
 - Start with "Good morning" or "Good evening" and introduce the topic naturally
 - Structure: Opening → Background/Context → Main details → Impact/Implications → Closing
-- Use CEFR A2-B1 level vocabulary (simple English suitable for Japanese high school students)
+- Use CEFR A2-B1 level vocabulary (business English suitable for Japanese working adults)
 - Explain any technical terms or cultural context that international audiences might need
 - Make it sound like a professional NHK World broadcast
 - Include relevant details to make the story complete and engaging
 - End with a brief conclusion or future outlook
+- IMPORTANT: Divide the script into 3-5 paragraphs separated by "\\n\\n" (double newlines) for readability. Each paragraph should be 60-100 words.
 
 Requirements for Japanese translation:
 - Provide the Japanese translation of your English script
 - Natural, fluent Japanese that matches Japanese news broadcast style
+- Keep the same paragraph structure as the English script (use \\n\\n between paragraphs)
 
 Requirements for vocabulary:
-- Pick 5-8 key English vocabulary words useful for university entrance exams
+- Pick 5-8 key English vocabulary words useful for business English
 - Include words that appear in the script
 - Provide Japanese meanings
 
