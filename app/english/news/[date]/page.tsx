@@ -16,7 +16,10 @@ import {
   EyeOff,
   BookOpen,
   Headphones,
+  Lock,
+  Crown,
 } from 'lucide-react'
+import { useSubscription } from '@/hooks/useSubscription'
 
 interface DailyNews {
   id: string
@@ -89,6 +92,7 @@ export default function NewsPlayerPage() {
   const [loading, setLoading] = useState(true)
 
   const audioRef = useRef<HTMLAudioElement>(null)
+  const { hasAccess, loading: subscriptionLoading } = useSubscription()
 
   const currentNews = news[currentIndex]
 
@@ -323,23 +327,33 @@ export default function NewsPlayerPage() {
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <span className="text-sm text-gray-600 font-medium">字幕:</span>
           {[
-            { mode: 'english' as const, label: '英語' },
-            { mode: 'japanese' as const, label: '日本語' },
-            { mode: 'both' as const, label: '両方' },
-            { mode: 'none' as const, label: 'なし' },
-          ].map(({ mode, label }) => (
-            <button
-              key={mode}
-              onClick={() => setSubtitleMode(mode)}
-              className={`px-4 py-2 text-sm rounded-full transition-colors ${
-                subtitleMode === mode
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-700 border border-gray-200 hover:border-blue-300'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+            { mode: 'english' as const, label: '英語', premium: false },
+            { mode: 'japanese' as const, label: '日本語', premium: true },
+            { mode: 'both' as const, label: '両方', premium: true },
+            { mode: 'none' as const, label: 'なし', premium: false },
+          ].map(({ mode, label, premium }) => {
+            const isLocked = premium && !hasAccess
+            return (
+              <button
+                key={mode}
+                onClick={() => {
+                  if (isLocked) return
+                  setSubtitleMode(mode)
+                }}
+                disabled={isLocked}
+                className={`px-4 py-2 text-sm rounded-full transition-colors flex items-center gap-1 ${
+                  subtitleMode === mode
+                    ? 'bg-blue-600 text-white'
+                    : isLocked
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-white text-gray-700 border border-gray-200 hover:border-blue-300'
+                }`}
+              >
+                {isLocked && <Lock className="w-3 h-3" />}
+                {label}
+              </button>
+            )
+          })}
         </div>
 
         {/* Script Display */}
@@ -413,20 +427,52 @@ export default function NewsPlayerPage() {
         {/* Vocabulary */}
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
           <button
-            onClick={() => setShowVocabulary(!showVocabulary)}
-            className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-50"
+            onClick={() => {
+              if (!hasAccess) return
+              setShowVocabulary(!showVocabulary)
+            }}
+            className={`w-full p-4 flex items-center justify-between text-left ${
+              hasAccess ? 'hover:bg-gray-50' : 'cursor-not-allowed'
+            }`}
           >
-            <span className="font-bold text-gray-800">
+            <span className="font-bold text-gray-800 flex items-center gap-2">
               重要単語 ({currentNews.key_vocabulary.length}語)
+              {!hasAccess && (
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-amber-100 text-amber-700 rounded-full font-medium">
+                  <Crown className="w-3 h-3" />
+                  プレミアム
+                </span>
+              )}
             </span>
-            <ChevronRight
-              className={`w-5 h-5 text-gray-400 transition-transform ${
-                showVocabulary ? 'rotate-90' : ''
-              }`}
-            />
+            {hasAccess ? (
+              <ChevronRight
+                className={`w-5 h-5 text-gray-400 transition-transform ${
+                  showVocabulary ? 'rotate-90' : ''
+                }`}
+              />
+            ) : (
+              <Lock className="w-5 h-5 text-gray-400" />
+            )}
           </button>
 
-          {showVocabulary && (
+          {!hasAccess && (
+            <div className="px-4 pb-4">
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 text-center">
+                <p className="text-sm text-gray-600 mb-3">
+                  プレミアム会員になると重要単語リストを確認できます
+                </p>
+                <Link
+                  href="/lp/english"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold text-sm hover:shadow-lg transition-shadow"
+                >
+                  <Crown className="w-4 h-4" />
+                  プレミアムに登録
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {hasAccess && showVocabulary && (
             <div className="px-4 pb-4">
               <div className="grid gap-2">
                 {currentNews.key_vocabulary.map((vocab, i) => (

@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
-import { Calendar, ChevronRight, Newspaper, Clock, Search, X, Filter } from 'lucide-react'
+import { Calendar, ChevronRight, Newspaper, Clock, Search, X, Filter, Lock, Crown } from 'lucide-react'
+import { useSubscription } from '@/hooks/useSubscription'
 
 interface DailyNews {
   id: string
@@ -25,7 +26,14 @@ const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
   politics: { label: '政治', color: 'bg-slate-100 text-slate-700' },
   economy: { label: '経済', color: 'bg-emerald-100 text-emerald-700' },
   automotive: { label: '自動車', color: 'bg-amber-100 text-amber-700' },
+  top: { label: 'トップ', color: 'bg-yellow-100 text-yellow-700' },
+  environment: { label: '環境', color: 'bg-teal-100 text-teal-700' },
+  headlines: { label: 'ヘッドライン', color: 'bg-indigo-100 text-indigo-700' },
+  lifestyle: { label: 'ライフスタイル', color: 'bg-rose-100 text-rose-700' },
 }
+
+// 無料で閲覧できる当日ニュースの数
+const FREE_TODAY_LIMIT = 2
 
 interface Props {
   news: DailyNews[]
@@ -35,6 +43,15 @@ export default function NewsSearchList({ news }: Props) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
+  const { hasAccess, loading: subscriptionLoading } = useSubscription()
+
+  // 今日の日付（JST）
+  const today = useMemo(() => {
+    const now = new Date()
+    const jstOffset = 9 * 60 * 60 * 1000
+    const jst = new Date(now.getTime() + jstOffset)
+    return jst.toISOString().split('T')[0]
+  }, [])
 
   // フィルタリングされたニュース
   const filteredNews = useMemo(() => {
@@ -210,7 +227,7 @@ export default function NewsSearchList({ news }: Props) {
                 </div>
 
                 <div className="grid gap-4">
-                  {items.map((item) => {
+                  {items.map((item, itemIndex) => {
                     const category = CATEGORY_LABELS[item.category] || {
                       label: item.category,
                       color: 'bg-gray-100 text-gray-700',
@@ -221,6 +238,51 @@ export default function NewsSearchList({ news }: Props) {
                     // ニュースIDからインデックスを取得
                     const allItemsForDate = news.filter(n => n.news_date === date)
                     const index = allItemsForDate.findIndex(n => n.id === item.id)
+
+                    // アクセス制限チェック
+                    // - 有料会員: 全記事アクセス可能
+                    // - 無料会員: 当日の最初の2記事のみ
+                    const isLocked = !hasAccess && (
+                      !isToday || itemIndex >= FREE_TODAY_LIMIT
+                    )
+
+                    if (isLocked) {
+                      return (
+                        <div
+                          key={item.id}
+                          className="bg-white/60 rounded-xl p-5 border border-gray-200 relative overflow-hidden"
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 to-transparent backdrop-blur-[2px]" />
+                          <div className="flex items-start justify-between gap-4 opacity-50">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <span
+                                  className={`text-xs px-2 py-1 rounded-full font-medium ${category.color}`}
+                                >
+                                  {category.label}
+                                </span>
+                                <span className="text-xs text-gray-500 flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  約{readingTime}分
+                                </span>
+                              </div>
+                              <h3 className="font-bold text-gray-800 mb-1 line-clamp-2">
+                                {item.original_title}
+                              </h3>
+                            </div>
+                          </div>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Link
+                              href="/lp/english"
+                              className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold shadow-lg hover:shadow-xl transition-shadow"
+                            >
+                              <Lock className="w-4 h-4" />
+                              プレミアムで解放
+                            </Link>
+                          </div>
+                        </div>
+                      )
+                    }
 
                     return (
                       <Link
@@ -240,6 +302,11 @@ export default function NewsSearchList({ news }: Props) {
                                 <Clock className="w-3 h-3" />
                                 約{readingTime}分
                               </span>
+                              {itemIndex < FREE_TODAY_LIMIT && isToday && !hasAccess && (
+                                <span className="text-xs px-2 py-1 rounded-full font-medium bg-green-100 text-green-700">
+                                  無料
+                                </span>
+                              )}
                             </div>
                             <h3 className="font-bold text-gray-800 mb-1 group-hover:text-blue-600 transition-colors line-clamp-2">
                               {item.original_title}
