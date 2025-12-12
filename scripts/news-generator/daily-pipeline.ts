@@ -105,6 +105,14 @@ async function generateDailyNews(): Promise<DailyNewsItem[]> {
 
 // メイン実行
 async function main() {
+  console.log('⚠️  WARNING: This local script is deprecated!')
+  console.log('⚠️  Use Vercel Cron instead: /api/cron/generate-news?batch=1')
+  console.log('⚠️  Running this may overwrite existing data with wrong IDs!')
+  console.log('')
+  console.log('Press Ctrl+C to cancel, or wait 5 seconds to continue...')
+
+  await new Promise(resolve => setTimeout(resolve, 5000))
+
   console.log('🚀 Daily News Generator')
   console.log('='.repeat(50))
 
