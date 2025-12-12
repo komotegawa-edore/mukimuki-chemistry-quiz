@@ -2,8 +2,8 @@ name: Generate Daily News
 
 on:
   schedule:
-    # JST 7:00 = UTC 22:00 (前日)
-    - cron: '0 22 * * *'
+    # JST 6:30 = UTC 21:30 (前日) - 7時には完成している状態に
+    - cron: '30 21 * * *'
   workflow_dispatch: # 手動実行用
 
 jobs:
@@ -75,7 +75,7 @@ jobs:
       - name: Wait 10 seconds
         run: sleep 10
 
-      - name: Generate news batch 8 (politics)
+      - name: Generate news batch 8 (headlines)
         run: |
           curl -X GET "${{ secrets.APP_URL }}/api/cron/generate-news?batch=8" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
@@ -93,7 +93,7 @@ jobs:
       - name: Wait 10 seconds
         run: sleep 10
 
-      - name: Generate news batch 10 (automotive)
+      - name: Generate news batch 10 (lifestyle)
         run: |
           curl -X GET "${{ secrets.APP_URL }}/api/cron/generate-news?batch=10" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \

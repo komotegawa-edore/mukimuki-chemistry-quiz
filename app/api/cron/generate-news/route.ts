@@ -1,24 +1,62 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import Parser from 'rss-parser'
 import OpenAI from 'openai'
 import * as fs from 'fs'
 import * as path from 'path'
 
 // バッチ設定: 10バッチ × 2本 = 20本/日（各バッチ約30秒で完了）
-// feedOffset: RSSフィード内のアイテム取得開始位置（重複防止）
 const BATCH_CONFIG = {
-  1: { categories: ['technology'], itemsPerCategory: 2, startIndex: 0, feedOffset: 0 },
-  2: { categories: ['business'], itemsPerCategory: 2, startIndex: 2, feedOffset: 0 },
-  3: { categories: ['sports'], itemsPerCategory: 2, startIndex: 4, feedOffset: 0 },
-  4: { categories: ['entertainment'], itemsPerCategory: 2, startIndex: 6, feedOffset: 0 },
-  5: { categories: ['world'], itemsPerCategory: 2, startIndex: 8, feedOffset: 0 },
-  6: { categories: ['science'], itemsPerCategory: 2, startIndex: 10, feedOffset: 0 },
-  7: { categories: ['health'], itemsPerCategory: 2, startIndex: 12, feedOffset: 0 },
-  8: { categories: ['headlines'], itemsPerCategory: 2, startIndex: 14, feedOffset: 0 },
-  9: { categories: ['economy'], itemsPerCategory: 2, startIndex: 16, feedOffset: 4 },
-  10: { categories: ['lifestyle'], itemsPerCategory: 2, startIndex: 18, feedOffset: 6 },
+  1: { categories: ['technology'], itemsPerCategory: 2, startIndex: 0 },
+  2: { categories: ['business'], itemsPerCategory: 2, startIndex: 2 },
+  3: { categories: ['sports'], itemsPerCategory: 2, startIndex: 4 },
+  4: { categories: ['entertainment'], itemsPerCategory: 2, startIndex: 6 },
+  5: { categories: ['world'], itemsPerCategory: 2, startIndex: 8 },
+  6: { categories: ['science'], itemsPerCategory: 2, startIndex: 10 },
+  7: { categories: ['health'], itemsPerCategory: 2, startIndex: 12 },
+  8: { categories: ['top'], itemsPerCategory: 2, startIndex: 14 },
+  9: { categories: ['politics'], itemsPerCategory: 2, startIndex: 16 },
+  10: { categories: ['environment'], itemsPerCategory: 2, startIndex: 18 },
 } as const
+
+// NewsData.io カテゴリマッピング（内部カテゴリ → NewsData.ioカテゴリ）
+// https://newsdata.io/documentation - supported categories
+const NEWSDATA_CATEGORIES: Record<string, string> = {
+  technology: 'technology',
+  business: 'business',
+  sports: 'sports',
+  entertainment: 'entertainment',
+  world: 'world',
+  science: 'science',
+  health: 'health',
+  top: 'top',
+  politics: 'politics',
+  environment: 'environment',
+}
+
+interface NewsDataArticle {
+  article_id: string
+  title: string
+  link: string
+  keywords: string[] | null
+  creator: string[] | null
+  video_url: string | null
+  description: string | null
+  content: string | null
+  pubDate: string
+  image_url: string | null
+  source_id: string
+  source_priority: number
+  country: string[]
+  category: string[]
+  language: string
+}
+
+interface NewsDataResponse {
+  status: string
+  totalResults: number
+  results: NewsDataArticle[]
+  nextPage: string | null
+}
 
 // Vercel Cronからのリクエストを認証
 export async function GET(request: NextRequest) {
@@ -64,27 +102,46 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Google News Japan RSS - 10カテゴリ
-// Note: Some topic-specific feeds don't work for Japan locale, so we use alternatives
-const RSS_FEEDS: Record<string, string> = {
-  technology: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGRqTVhZU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
-  business: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
-  sports: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFp1ZEdvU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
-  entertainment: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNREpxYW5RU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
-  world: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
-  science: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFp0Y1RjU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
-  health: 'https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNR3QwTlRFU0FtcGhLQUFQAQ?hl=ja&gl=JP&ceid=JP:ja',
-  // politics/automotive feeds don't work for Japan, use top stories (contains political/general news)
-  headlines: 'https://news.google.com/rss?hl=ja&gl=JP&ceid=JP:ja',
-  // Use technology feed with offset for variety (economy was duplicate of business)
-  economy: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGRqTVhZU0FtcGhHZ0pLVUNnQVAB?hl=ja&gl=JP&ceid=JP:ja',
-  lifestyle: 'https://news.google.com/rss?hl=ja&gl=JP&ceid=JP:ja',
+// NewsData.io APIからニュースを取得
+async function fetchNewsFromNewsData(category: string, limit: number = 5): Promise<any[]> {
+  const apiKey = process.env.NEWSDATA_API_KEY
+  if (!apiKey) {
+    console.error('NEWSDATA_API_KEY is not set')
+    return []
+  }
+
+  const newsDataCategory = NEWSDATA_CATEGORIES[category] || 'top'
+  const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&country=jp&language=ja&category=${newsDataCategory}`
+
+  try {
+    const response = await fetch(url)
+    if (!response.ok) {
+      console.error(`NewsData.io API error: ${response.status} ${response.statusText}`)
+      return []
+    }
+
+    const data: NewsDataResponse = await response.json()
+
+    if (data.status !== 'success' || !data.results) {
+      console.error('NewsData.io returned invalid response:', data)
+      return []
+    }
+
+    return data.results.slice(0, limit).map((article) => ({
+      title: article.title || '',
+      description: article.description || '',
+      source: article.link || 'Unknown',
+      category,
+    }))
+  } catch (error) {
+    console.error(`Failed to fetch news from NewsData.io for ${category}:`, error)
+    return []
+  }
 }
 
 // バッチ生成（特定カテゴリのみ）
 async function generateBatchNews(batchNum: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10) {
   const config = BATCH_CONFIG[batchNum]
-  const parser = new Parser({ customFields: { item: ['source'] } })
   const openai = new OpenAI()
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -97,27 +154,11 @@ async function generateBatchNews(batchNum: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1
 
   const newsItems: any[] = []
 
-  // 指定カテゴリからニュース取得
+  // 指定カテゴリからニュース取得（NewsData.io API）
   for (const category of config.categories) {
-    const url = RSS_FEEDS[category]
-    if (!url) continue
-
     try {
-      const feed = await parser.parseURL(url)
-      const feedOffset = config.feedOffset || 0
-      const availableItems = feed.items.slice(feedOffset)
-      const itemsToTake = Math.min(config.itemsPerCategory, availableItems.length)
-
-      for (let i = 0; i < itemsToTake; i++) {
-        const item = availableItems[i]
-        newsItems.push({
-          title: item.title || '',
-          description: item.contentSnippet || '',
-          // Google News RSSのlinkを元記事URLとして使用
-          source: item.link || 'Unknown',
-          category,
-        })
-      }
+      const items = await fetchNewsFromNewsData(category, config.itemsPerCategory)
+      newsItems.push(...items)
     } catch (error) {
       console.error(`Failed to fetch ${category} news:`, error)
     }
@@ -166,11 +207,8 @@ async function generateBatchNews(batchNum: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1
 }
 
 // ニュース生成ロジック（全カテゴリ - 開発用）
+// 注意: NewsData.io無料枠は200クレジット/日。全カテゴリ実行は10リクエスト消費
 async function generateDailyNews() {
-  const parser = new Parser({
-    customFields: { item: ['source'] },
-  })
-
   const openai = new OpenAI()
 
   const supabase = createClient(
@@ -185,21 +223,12 @@ async function generateDailyNews() {
   const newsItems: any[] = []
   const ITEMS_PER_CATEGORY = 2
 
-  for (const [category, url] of Object.entries(RSS_FEEDS)) {
+  // 全カテゴリからニュース取得（NewsData.io API）
+  const categories = Object.keys(NEWSDATA_CATEGORIES)
+  for (const category of categories) {
     try {
-      const feed = await parser.parseURL(url)
-      const itemsToTake = Math.min(ITEMS_PER_CATEGORY, feed.items.length)
-
-      for (let i = 0; i < itemsToTake; i++) {
-        const item = feed.items[i]
-        newsItems.push({
-          title: item.title || '',
-          description: item.contentSnippet || '',
-          // Google News RSSのlinkを元記事URLとして使用
-          source: item.link || 'Unknown',
-          category,
-        })
-      }
+      const items = await fetchNewsFromNewsData(category, ITEMS_PER_CATEGORY)
+      newsItems.push(...items)
     } catch (error) {
       console.error(`Failed to fetch ${category} news:`, error)
     }
