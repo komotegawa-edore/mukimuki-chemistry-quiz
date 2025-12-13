@@ -1,12 +1,33 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Crown, Check, Loader2, Smartphone } from 'lucide-react'
+import { Crown, Check, Loader2, Smartphone, Sparkles } from 'lucide-react'
+
+interface EarlyDiscount {
+  available: boolean
+  remaining: number
+  discountedPrice: number
+  originalPrice: number
+}
 
 export default function EnglishPricingSection() {
   const [loading, setLoading] = useState<'monthly' | 'yearly' | null>(null)
+  const [earlyDiscount, setEarlyDiscount] = useState<EarlyDiscount | null>(null)
   const router = useRouter()
+
+  useEffect(() => {
+    async function checkEarlyDiscount() {
+      try {
+        const res = await fetch('/api/english/early-discount')
+        const data = await res.json()
+        setEarlyDiscount(data)
+      } catch (error) {
+        console.error('Failed to check early discount:', error)
+      }
+    }
+    checkEarlyDiscount()
+  }, [])
 
   const handleSubscribe = async (priceType: 'monthly' | 'yearly') => {
     setLoading(priceType)
@@ -63,12 +84,36 @@ export default function EnglishPricingSection() {
         <div className="grid md:grid-cols-2 gap-8 max-w-[800px] mx-auto">
           {/* 月額プラン */}
           <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-200 p-8 relative">
+            {/* 先着割引バッジ */}
+            {earlyDiscount?.available && (
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg flex items-center gap-1 whitespace-nowrap">
+                  <Sparkles className="w-4 h-4" />
+                  {earlyDiscount.remaining <= 20
+                    ? `残り${earlyDiscount.remaining}名様！`
+                    : '先着100名様限定！'}
+                </div>
+              </div>
+            )}
             <div className="text-center mb-6">
               <h3 className="text-xl font-bold text-[#3A405A] mb-2">月額プラン</h3>
-              <div className="flex items-baseline justify-center gap-1">
-                <span className="text-5xl font-black text-[#3A405A]">¥980</span>
-                <span className="text-gray-500">/月</span>
-              </div>
+              {earlyDiscount?.available ? (
+                <div>
+                  <div className="flex items-baseline justify-center gap-2">
+                    <span className="text-2xl text-gray-400 line-through">¥980</span>
+                    <span className="text-5xl font-black text-rose-500">¥{earlyDiscount.discountedPrice}</span>
+                    <span className="text-gray-500">/月</span>
+                  </div>
+                  <p className="text-sm text-rose-500 font-medium mt-1">
+                    54%OFF（ずっとこの価格！）
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-baseline justify-center gap-1">
+                  <span className="text-5xl font-black text-[#3A405A]">¥980</span>
+                  <span className="text-gray-500">/月</span>
+                </div>
+              )}
             </div>
 
             <ul className="space-y-4 mb-8">

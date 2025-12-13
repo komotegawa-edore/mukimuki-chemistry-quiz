@@ -84,6 +84,21 @@ export async function POST(request: NextRequest) {
       ? STRIPE_PRICES.monthly
       : STRIPE_PRICES.yearly
 
+    // 先着100名割引のチェック（月額プランのみ）
+    let discounts: { coupon: string }[] | undefined
+    if (priceType === 'monthly' && process.env.STRIPE_EARLY_COUPON_ID) {
+      // アクティブなサブスクリプション数をカウント
+      const { count } = await supabaseAdmin
+        .from('mukimuki_english_subscriptions')
+        .select('*', { count: 'exact', head: true })
+        .in('status', ['active', 'trialing'])
+
+      // 100人以下なら割引を適用
+      if (count !== null && count < 100) {
+        discounts = [{ coupon: process.env.STRIPE_EARLY_COUPON_ID }]
+      }
+    }
+
     // Checkout Sessionを作成
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -95,6 +110,7 @@ export async function POST(request: NextRequest) {
           quantity: 1,
         },
       ],
+      ...(discounts && { discounts }),
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/english/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/lp/english`,
       metadata: {

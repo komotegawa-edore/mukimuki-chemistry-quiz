@@ -37,12 +37,30 @@ export async function POST() {
     }
 
     // Stripe Customer Portalセッションを作成
-    const portalSession = await stripe.billingPortal.sessions.create({
-      customer: subscription.stripe_customer_id,
-      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/english/account`,
-    })
+    try {
+      const portalSession = await stripe.billingPortal.sessions.create({
+        customer: subscription.stripe_customer_id,
+        return_url: `${process.env.NEXT_PUBLIC_APP_URL}/english/account`,
+      })
 
-    return NextResponse.json({ url: portalSession.url })
+      return NextResponse.json({ url: portalSession.url })
+    } catch (stripeError: unknown) {
+      // Stripe顧客が見つからない場合、DBのサブスクリプション情報をクリア
+      if (stripeError && typeof stripeError === 'object' && 'code' in stripeError && stripeError.code === 'resource_missing') {
+        console.error('Stripe customer not found, clearing subscription data')
+
+        await supabaseAdmin
+          .from('mukimuki_english_subscriptions')
+          .delete()
+          .eq('user_id', user.id)
+
+        return NextResponse.json(
+          { error: 'Subscription data was invalid and has been cleared. Please subscribe again.' },
+          { status: 404 }
+        )
+      }
+      throw stripeError
+    }
   } catch (error) {
     console.error('Portal error:', error)
     return NextResponse.json(

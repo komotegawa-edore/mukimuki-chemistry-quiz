@@ -45,6 +45,10 @@ export default function AccountPage() {
 
       if (data.url) {
         window.location.href = data.url
+      } else if (res.status === 404) {
+        // サブスクリプションデータが無効だった場合、ページをリロード
+        alert('サブスクリプション情報が見つかりませんでした。ページを更新します。')
+        window.location.reload()
       } else {
         alert('サブスクリプション管理ページを開けませんでした')
       }
