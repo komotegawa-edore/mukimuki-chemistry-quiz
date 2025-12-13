@@ -2,32 +2,32 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Newspaper, Calendar, BookOpen } from 'lucide-react'
+import { Newspaper, User } from 'lucide-react'
 
 export default function EnglishBottomNav() {
   const pathname = usePathname()
 
   // 現在のタブを判定
   const getActiveTab = () => {
-    if (pathname === '/english') return 'home'
     if (pathname?.startsWith('/english/news')) return 'news'
-    return 'home'
+    if (pathname?.startsWith('/english/account')) return 'account'
+    return 'news'
   }
 
   const currentTab = getActiveTab()
 
   const navItems = [
     {
-      id: 'home',
-      href: '/english',
-      icon: Home,
-      label: 'ホーム',
-    },
-    {
       id: 'news',
       href: '/english/news',
       icon: Newspaper,
       label: 'ニュース',
+    },
+    {
+      id: 'account',
+      href: '/english/account',
+      icon: User,
+      label: 'アカウント',
     },
   ]
 
