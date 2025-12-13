@@ -96,7 +96,7 @@ export default function EnglishSignupPage() {
             毎朝の通勤を、英語学習タイムに
           </h1>
           <p className="text-lg text-[#3A405A] opacity-80">
-            すべて無料・登録後すぐに始められます
+            無料で今すぐ始められます
           </p>
         </div>
 
@@ -286,7 +286,7 @@ export default function EnglishSignupPage() {
             <div className="bg-white rounded-2xl shadow-lg p-6">
               <h3 className="text-xl font-bold text-[#3A405A] mb-4 flex items-center gap-2">
                 <CheckCircle className="w-6 h-6 text-cyan-500" />
-                登録すると使える機能
+                Roopy Englishの特徴
               </h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
@@ -294,7 +294,7 @@ export default function EnglishSignupPage() {
                     <Newspaper className="w-5 h-5 text-cyan-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-[#3A405A] mb-1">毎朝5本の新着ニュース</h4>
+                    <h4 className="font-semibold text-[#3A405A] mb-1">毎朝約20本の新着ニュース</h4>
                     <p className="text-sm text-[#3A405A] opacity-70">
                       テクノロジー、ビジネス、スポーツなど多様なジャンル
                     </p>
@@ -306,9 +306,9 @@ export default function EnglishSignupPage() {
                     <Headphones className="w-5 h-5 text-cyan-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-[#3A405A] mb-1">NHK World風の英語音声</h4>
+                    <h4 className="font-semibold text-[#3A405A] mb-1">自然な英語音声</h4>
                     <p className="text-sm text-[#3A405A] opacity-70">
-                      AIが自然な英語音声を毎日生成
+                      AIが毎日ニュースを読み上げ
                     </p>
                   </div>
                 </div>
@@ -318,9 +318,9 @@ export default function EnglishSignupPage() {
                     <Globe className="w-5 h-5 text-cyan-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-[#3A405A] mb-1">字幕 & 重要単語</h4>
+                    <h4 className="font-semibold text-[#3A405A] mb-1">英語スクリプト付き</h4>
                     <p className="text-sm text-[#3A405A] opacity-70">
-                      日本語字幕とビジネス英語の語彙を同時に習得
+                      聞き取れなかった部分も確認できる
                     </p>
                   </div>
                 </div>
@@ -340,26 +340,29 @@ export default function EnglishSignupPage() {
             </div>
 
             <div className="bg-gradient-to-br from-cyan-500 to-teal-500 rounded-2xl shadow-lg p-6 text-white">
-              <h3 className="text-xl font-bold mb-3">完全無料で使えます</h3>
+              <h3 className="text-xl font-bold mb-3">無料で始められます</h3>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4" />
-                  料金は一切かかりません
+                  毎日2本のニュースが無料
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4" />
-                  全ての機能が使い放題
+                  英語音声 & スクリプト付き
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4" />
-                  面倒な手続き一切なし
+                  登録は1分で完了
                 </li>
               </ul>
+              <p className="text-xs opacity-80 mt-3">
+                ※全ニュース見放題は月額980円〜
+              </p>
             </div>
 
             <div className="text-center">
               <Link
-                href="/lp/english"
+                href="/english"
                 className="text-sm text-[#3A405A] opacity-70 hover:text-cyan-500 hover:opacity-100 transition-colors"
               >
                 ← Roopy Englishについて詳しく見る
