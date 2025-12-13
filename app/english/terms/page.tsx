@@ -6,11 +6,11 @@ export default function TermsPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-3xl mx-auto px-4 py-8">
         <Link
-          href="/english"
-          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 mb-6"
+          href="/lp/english"
+          className="inline-flex items-center gap-1 text-cyan-600 hover:text-cyan-700 mb-6"
         >
           <ChevronLeft className="w-4 h-4" />
-          戻る
+          ホームへ戻る
         </Link>
 
         <h1 className="text-3xl font-bold text-gray-800 mb-8">利用規約</h1>
