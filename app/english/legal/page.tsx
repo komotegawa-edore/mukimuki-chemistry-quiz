@@ -29,7 +29,7 @@ export default function LegalPage() {
                 <th className="py-4 pr-4 text-left font-bold text-gray-800 align-top">
                   運営責任者
                 </th>
-                <td className="py-4">表川 和</td>
+                <td className="py-4">表川 知由</td>
               </tr>
 
               <tr>
