@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Crown, Check, Loader2 } from 'lucide-react'
+import { Crown, Check, Loader2, Smartphone } from 'lucide-react'
 
 export default function EnglishPricingSection() {
   const [loading, setLoading] = useState<'monthly' | 'yearly' | null>(null)
@@ -89,6 +89,10 @@ export default function EnglishPricingSection() {
                 <span className="text-[#3A405A]">速度調整機能</span>
               </li>
               <li className="flex items-center gap-3">
+                <Smartphone className="w-5 h-5 text-cyan-600 shrink-0" />
+                <span className="text-[#3A405A]">バックグラウンド再生</span>
+              </li>
+              <li className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-cyan-600 shrink-0" />
                 <span className="text-[#3A405A]">いつでも解約可能</span>
               </li>
@@ -146,6 +150,10 @@ export default function EnglishPricingSection() {
               <li className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-yellow-300 shrink-0" />
                 <span>速度調整機能</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Smartphone className="w-5 h-5 text-yellow-300 shrink-0" />
+                <span>バックグラウンド再生</span>
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-5 h-5 text-yellow-300 shrink-0" />

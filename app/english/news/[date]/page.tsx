@@ -106,6 +106,82 @@ export default function NewsPlayerPage() {
     }
   }, [playbackRate, currentIndex])
 
+  // Media Session API（有料ユーザーのみバックグラウンド再生対応）
+  useEffect(() => {
+    if (!('mediaSession' in navigator) || !hasAccess || !currentNews) {
+      return
+    }
+
+    // メタデータを設定
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: currentNews.original_title,
+      artist: 'Roopy English',
+      album: `${date} - News ${currentIndex + 1}/${news.length}`,
+      artwork: [
+        { src: '/english/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+        { src: '/english/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+      ],
+    })
+
+    // アクションハンドラーを設定
+    navigator.mediaSession.setActionHandler('play', () => {
+      audioRef.current?.play()
+      setIsPlaying(true)
+    })
+
+    navigator.mediaSession.setActionHandler('pause', () => {
+      audioRef.current?.pause()
+      setIsPlaying(false)
+    })
+
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+      if (currentIndex > 0) {
+        setCurrentIndex(currentIndex - 1)
+        setIsPlaying(false)
+      }
+    })
+
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      if (currentIndex < news.length - 1) {
+        setCurrentIndex(currentIndex + 1)
+        setIsPlaying(false)
+      }
+    })
+
+    navigator.mediaSession.setActionHandler('seekto', (details) => {
+      if (audioRef.current && details.seekTime !== undefined) {
+        audioRef.current.currentTime = details.seekTime
+        setCurrentTime(details.seekTime)
+      }
+    })
+
+    // クリーンアップ
+    return () => {
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', null)
+        navigator.mediaSession.setActionHandler('pause', null)
+        navigator.mediaSession.setActionHandler('previoustrack', null)
+        navigator.mediaSession.setActionHandler('nexttrack', null)
+        navigator.mediaSession.setActionHandler('seekto', null)
+      }
+    }
+  }, [hasAccess, currentNews, currentIndex, news.length, date])
+
+  // 再生位置をMedia Sessionに同期（有料ユーザーのみ）
+  useEffect(() => {
+    if (!('mediaSession' in navigator) || !hasAccess) {
+      return
+    }
+
+    if ('setPositionState' in navigator.mediaSession && duration > 0) {
+      navigator.mediaSession.setPositionState({
+        duration: duration,
+        playbackRate: playbackRate,
+        position: currentTime,
+      })
+    }
+  }, [hasAccess, currentTime, duration, playbackRate])
+
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
