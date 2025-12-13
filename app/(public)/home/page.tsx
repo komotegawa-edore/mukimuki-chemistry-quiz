@@ -6,7 +6,7 @@ import {
   Beaker, RotateCcw, Coins, Trophy, Gift, BarChart3,
   Sparkles, BookOpen, Brain, Target, CheckCircle2,
   Clock, Zap, Users, ArrowRight, Menu, Smartphone, TrendingDown,
-  HelpCircle, Map, Compass, Calendar, Route
+  HelpCircle, Map, Compass, Calendar, Route, Headphones
 } from 'lucide-react'
 import BlogHeader from '@/components/BlogHeader'
 import BlogCard from '@/components/BlogCard'
@@ -78,6 +78,30 @@ export default async function HomePage() {
           </p>
         </div>
       </header>
+
+      {/* Roopy English Banner */}
+      <section className="py-6 px-4">
+        <div className="max-w-[900px] mx-auto">
+          <Link
+            href="/english"
+            className="block bg-gradient-to-r from-cyan-500 to-teal-500 rounded-2xl p-6 text-white hover:shadow-xl transition-all group"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="bg-white/20 rounded-full p-3">
+                  <Headphones className="w-8 h-8" />
+                </div>
+                <div>
+                  <div className="text-sm opacity-90 mb-1">NEW</div>
+                  <h3 className="text-xl font-bold">Roopy English</h3>
+                  <p className="text-sm opacity-90">毎朝届く英語ニュースでリスニング力UP</p>
+                </div>
+              </div>
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+        </div>
+      </section>
 
       {/* Problem Section */}
       <section className="py-16 px-4 bg-white">

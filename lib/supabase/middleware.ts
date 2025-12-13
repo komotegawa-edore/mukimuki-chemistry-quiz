@@ -47,9 +47,9 @@ export async function updateSession(request: NextRequest) {
     '/roopy-roadmap',
     '/mbti',
     '/try',
-    '/english/login',
-    '/english/signup',
-    '/english/news',
+    '/english',  // Roopy Englishホームページ（公開）
+    '/forgot-password',
+    '/reset-password',
   ]
 
   const isPublicPath = publicPaths.some(path =>

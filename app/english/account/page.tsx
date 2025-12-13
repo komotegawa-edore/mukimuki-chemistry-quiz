@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { useSubscription } from '@/hooks/useSubscription'
 import EnglishHeader from '@/components/EnglishHeader'
 import EnglishFooter from '@/components/EnglishFooter'
 import EnglishBottomNav from '@/components/EnglishBottomNav'
+import SubscriptionModal from '@/components/SubscriptionModal'
 import { User, Crown, Calendar, CreditCard, ExternalLink, Loader2 } from 'lucide-react'
 
 export default function AccountPage() {
@@ -16,6 +16,7 @@ export default function AccountPage() {
   const [user, setUser] = useState<{ email?: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [portalLoading, setPortalLoading] = useState(false)
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
 
   useEffect(() => {
     async function getUser() {
@@ -165,13 +166,13 @@ export default function AccountPage() {
                 現在フリープランをご利用中です。<br />
                 プレミアムにアップグレードして、すべてのニュースにアクセスしましょう。
               </p>
-              <Link
-                href="/lp/english"
-                className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors"
+              <button
+                onClick={() => setShowSubscriptionModal(true)}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition-opacity"
               >
                 <Crown className="w-5 h-5" />
                 プレミアムにアップグレード
-              </Link>
+              </button>
             </div>
           )}
         </div>
@@ -182,6 +183,12 @@ export default function AccountPage() {
 
       <EnglishFooter />
       <EnglishBottomNav />
+
+      {/* サブスクリプションモーダル */}
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+      />
     </div>
   )
 }
