@@ -41,6 +41,22 @@ export async function POST(request: NextRequest) {
 
     let customerId = existingSub?.stripe_customer_id
 
+    // Stripe顧客の存在確認・作成
+    if (customerId) {
+      try {
+        // 既存の顧客IDがStripeに存在するか確認
+        await stripe.customers.retrieve(customerId)
+      } catch (err: any) {
+        // 顧客が存在しない場合（テスト→本番切り替え時など）
+        if (err.code === 'resource_missing') {
+          console.log('Customer not found in Stripe, creating new one...')
+          customerId = null
+        } else {
+          throw err
+        }
+      }
+    }
+
     // Stripe顧客が存在しない場合は作成
     if (!customerId) {
       const customer = await stripe.customers.create({
