@@ -292,6 +292,29 @@ function generateNewsId(date: Date, index: number): string {
 }
 
 async function generateScript(openai: OpenAI, news: any) {
+  // 元記事の長さに応じてスクリプトの目標語数を決定
+  const sourceLength = (news.description || '').length
+  let targetWords: string
+  let targetParagraphs: string
+  let vocabCount: string
+
+  if (sourceLength < 100) {
+    // 短い記事: 100-150語
+    targetWords = '100-150 words (approximately 1 minute when read aloud)'
+    targetParagraphs = '2-3 paragraphs'
+    vocabCount = '3-5'
+  } else if (sourceLength < 200) {
+    // 中程度の記事: 150-250語
+    targetWords = '150-250 words (approximately 1-2 minutes when read aloud)'
+    targetParagraphs = '2-4 paragraphs'
+    vocabCount = '4-6'
+  } else {
+    // 長い記事: 250-350語
+    targetWords = '250-350 words (approximately 2-3 minutes when read aloud)'
+    targetParagraphs = '3-5 paragraphs'
+    vocabCount = '5-8'
+  }
+
   const prompt = `You are an English language educator creating ORIGINAL educational listening material for Japanese working adults.
 
 IMPORTANT COPYRIGHT NOTICE:
@@ -302,21 +325,23 @@ IMPORTANT COPYRIGHT NOTICE:
 
 News Topic (for reference only):
 Topic: ${news.title}
+Summary: ${news.description || 'No description available'}
 Category: ${news.category}
 
 Your Task:
 Create an ORIGINAL English educational broadcast script about this topic. You are teaching English through current events, not reproducing news content.
 
+IMPORTANT: Match your script length to the depth of information available. If the source summary is brief, keep your script concise. Do not pad with filler content.
+
 Requirements for the English script:
-- Length: 300-400 words (approximately 2-3 minutes when read aloud)
+- Length: ${targetWords}
 - Start with "Good morning" or "Good evening" and introduce the topic naturally
-- Structure: Opening → Background/Context → Main details → Impact/Implications → Closing
+- Structure: Opening → Main details → Closing (adjust based on available information)
 - Use CEFR A2-B1 level vocabulary (business English suitable for Japanese working adults)
 - Explain any technical terms or cultural context that international audiences might need
 - Write as an EDUCATOR explaining a topic, not as a news reporter
-- Add your own educational perspective and context
 - End with a brief conclusion or future outlook
-- IMPORTANT: Divide the script into 3-5 paragraphs separated by "\\n\\n" (double newlines) for readability. Each paragraph should be 60-100 words.
+- IMPORTANT: Divide the script into ${targetParagraphs} separated by "\\n\\n" (double newlines) for readability.
 
 Requirements for Japanese translation:
 - Provide the Japanese translation of your English script
@@ -324,7 +349,7 @@ Requirements for Japanese translation:
 - Keep the same paragraph structure as the English script (use \\n\\n between paragraphs)
 
 Requirements for vocabulary:
-- Pick 5-8 key English vocabulary words useful for business English
+- Pick ${vocabCount} key English vocabulary words useful for business English
 - Include words that appear in the script
 - Provide Japanese meanings
 
