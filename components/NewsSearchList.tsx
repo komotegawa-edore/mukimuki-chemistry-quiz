@@ -2,8 +2,9 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { Calendar, ChevronRight, Clock, Search, X, Lock, Sparkles, Headphones } from 'lucide-react'
+import { Calendar, ChevronRight, Clock, Search, X, Lock, Sparkles, Headphones, Crown } from 'lucide-react'
 import { useSubscription } from '@/hooks/useSubscription'
+import SubscriptionModal from './SubscriptionModal'
 
 interface DailyNews {
   id: string
@@ -42,6 +43,7 @@ interface Props {
 
 export default function NewsSearchList({ news }: Props) {
   const [searchQuery, setSearchQuery] = useState('')
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
   const { hasAccess, loading: subscriptionLoading } = useSubscription()
 
   // 今日の日付（JST）
@@ -149,6 +151,27 @@ export default function NewsSearchList({ news }: Props) {
         )}
       </div>
 
+      {/* プレミアムへの誘導バナー（非購読者向け） */}
+      {!hasAccess && !subscriptionLoading && !searchQuery && (
+        <button
+          onClick={() => setShowSubscriptionModal(true)}
+          className="w-full mb-6 p-4 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-xl text-white hover:from-cyan-600 hover:to-teal-600 transition-all shadow-md hover:shadow-lg"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-white/20 rounded-full p-2">
+                <Crown className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <div className="font-bold">プレミアムプランで全て見放題</div>
+                <div className="text-sm opacity-90">過去記事・日本語字幕・単語リスト</div>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5" />
+          </div>
+        </button>
+      )}
+
       {/* 今日のおすすめ */}
       {recommendedItem && !searchQuery && (
         <div className="mb-8">
@@ -163,6 +186,12 @@ export default function NewsSearchList({ news }: Props) {
           />
         </div>
       )}
+
+      {/* サブスクリプションモーダル */}
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+      />
 
       {/* ニュース一覧 */}
       {dates.length === 0 ? (
@@ -229,9 +258,10 @@ export default function NewsSearchList({ news }: Props) {
 
                     if (isLocked) {
                       return (
-                        <div
+                        <button
                           key={item.id}
-                          className="bg-white/60 rounded-xl p-4 border border-gray-200 relative overflow-hidden"
+                          onClick={() => setShowSubscriptionModal(true)}
+                          className="bg-white/60 rounded-xl p-4 border border-gray-200 relative overflow-hidden text-left w-full"
                         >
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 to-transparent backdrop-blur-[2px]" />
                           <div className="opacity-50">
@@ -246,15 +276,12 @@ export default function NewsSearchList({ news }: Props) {
                             </h3>
                           </div>
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <Link
-                              href="/lp/english"
-                              className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1.5 rounded-full font-bold text-sm shadow-lg hover:shadow-xl transition-shadow"
-                            >
+                            <span className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1.5 rounded-full font-bold text-sm shadow-lg hover:shadow-xl transition-shadow">
                               <Lock className="w-3 h-3" />
                               プレミアム
-                            </Link>
+                            </span>
                           </div>
-                        </div>
+                        </button>
                       )
                     }
 
