@@ -5,6 +5,7 @@ import EnglishHeader from '@/components/EnglishHeader'
 import EnglishFooter from '@/components/EnglishFooter'
 import EnglishInstallPrompt from '@/components/EnglishInstallPrompt'
 import EnglishBottomNav from '@/components/EnglishBottomNav'
+import EnglishRequestForm from '@/components/EnglishRequestForm'
 import { Newspaper } from 'lucide-react'
 import NewsSearchList from '@/components/NewsSearchList'
 
@@ -53,6 +54,11 @@ export default async function EnglishNewsPage() {
           <p className="text-gray-600 mt-2">
             毎日更新される英語ニュースを聞いて、リスニング力を鍛えましょう
           </p>
+        </div>
+
+        {/* リクエストフォーム */}
+        <div className="mb-6">
+          <EnglishRequestForm />
         </div>
 
         {!news || news.length === 0 ? (
