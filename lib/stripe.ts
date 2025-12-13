@@ -10,6 +10,7 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy
 // 価格ID（Stripeダッシュボードで作成後に設定）
 export const STRIPE_PRICES = {
   monthly: process.env.STRIPE_PRICE_MONTHLY!,
+  monthlyEarly: process.env.STRIPE_PRICE_MONTHLY_EARLY, // 先着100名用 450円
   yearly: process.env.STRIPE_PRICE_YEARLY!,
 }
 

@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js'
 
 export async function GET() {
   try {
-    // クーポンが設定されていない場合は対象外
-    if (!process.env.STRIPE_EARLY_COUPON_ID) {
+    // 割引価格が設定されていない場合は対象外
+    if (!process.env.STRIPE_PRICE_MONTHLY_EARLY) {
       return NextResponse.json({ available: false })
     }
 

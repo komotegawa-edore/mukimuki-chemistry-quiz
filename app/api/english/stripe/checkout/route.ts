@@ -80,22 +80,21 @@ export async function POST(request: NextRequest) {
     }
 
     // 価格IDを取得
-    const priceId = priceType === 'monthly'
+    let priceId = priceType === 'monthly'
       ? STRIPE_PRICES.monthly
       : STRIPE_PRICES.yearly
 
     // 先着100名割引のチェック（月額プランのみ）
-    let discounts: { coupon: string }[] | undefined
-    if (priceType === 'monthly' && process.env.STRIPE_EARLY_COUPON_ID) {
+    if (priceType === 'monthly' && STRIPE_PRICES.monthlyEarly) {
       // アクティブなサブスクリプション数をカウント
       const { count } = await supabaseAdmin
         .from('mukimuki_english_subscriptions')
         .select('*', { count: 'exact', head: true })
         .in('status', ['active', 'trialing'])
 
-      // 100人以下なら割引を適用
+      // 100人以下なら割引価格を適用
       if (count !== null && count < 100) {
-        discounts = [{ coupon: process.env.STRIPE_EARLY_COUPON_ID }]
+        priceId = STRIPE_PRICES.monthlyEarly
       }
     }
 
@@ -110,7 +109,6 @@ export async function POST(request: NextRequest) {
           quantity: 1,
         },
       ],
-      ...(discounts && { discounts }),
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/english/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/lp/english`,
       metadata: {
