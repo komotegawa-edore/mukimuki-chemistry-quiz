@@ -79,24 +79,43 @@ export async function POST(request: NextRequest) {
         })
     }
 
-    // 価格IDを取得
-    let priceId = priceType === 'monthly'
-      ? STRIPE_PRICES.monthly
-      : STRIPE_PRICES.yearly
-
-    // 先着100名割引のチェック（月額プランのみ）
-    if (priceType === 'monthly' && STRIPE_PRICES.monthlyEarly) {
+    // 先着100名無料のチェック（月額プランのみ）
+    if (priceType === 'monthly') {
       // アクティブなサブスクリプション数をカウント
       const { count } = await supabaseAdmin
         .from('mukimuki_english_subscriptions')
         .select('*', { count: 'exact', head: true })
         .in('status', ['active', 'trialing'])
 
-      // 100人以下なら割引価格を適用
+      // 100人以下なら無料で登録（Stripeを通さない）
       if (count !== null && count < 100) {
-        priceId = STRIPE_PRICES.monthlyEarly
+        // 直接DBにサブスクリプションを登録
+        await supabaseAdmin
+          .from('mukimuki_english_subscriptions')
+          .upsert({
+            user_id: user.id,
+            stripe_customer_id: customerId,
+            stripe_subscription_id: `early_free_${user.id}`,
+            status: 'active',
+            plan_type: 'monthly',
+            current_period_end: '2099-12-31T23:59:59Z', // 永久有効
+            cancel_at_period_end: false,
+          }, {
+            onConflict: 'user_id',
+          })
+
+        // 成功ページにリダイレクト
+        return NextResponse.json({
+          url: `${process.env.NEXT_PUBLIC_APP_URL}/english/subscription/success?free=true`,
+          free: true,
+        })
       }
     }
+
+    // 価格IDを取得
+    const priceId = priceType === 'monthly'
+      ? STRIPE_PRICES.monthly
+      : STRIPE_PRICES.yearly
 
     // Checkout Sessionを作成
     const session = await stripe.checkout.sessions.create({

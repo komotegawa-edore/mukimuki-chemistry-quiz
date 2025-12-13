@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { X, Crown, Check, Loader2, Sparkles } from 'lucide-react'
 
@@ -9,9 +9,25 @@ interface SubscriptionModalProps {
   onClose: () => void
 }
 
+interface EarlyDiscount {
+  available: boolean
+  remaining: number
+  isFree: boolean
+}
+
 export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
   const [loading, setLoading] = useState<'monthly' | 'yearly' | null>(null)
+  const [earlyDiscount, setEarlyDiscount] = useState<EarlyDiscount | null>(null)
   const router = useRouter()
+
+  useEffect(() => {
+    if (isOpen) {
+      fetch('/api/english/early-discount')
+        .then(res => res.json())
+        .then(data => setEarlyDiscount(data))
+        .catch(() => {})
+    }
+  }, [isOpen])
 
   if (!isOpen) return null
 
@@ -146,16 +162,32 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
             <button
               onClick={() => handleSubscribe('monthly')}
               disabled={loading !== null}
-              className="w-full p-4 bg-gray-100 text-[#3A405A] rounded-xl hover:bg-gray-200 transition-all disabled:opacity-50"
+              className={`w-full p-4 rounded-xl transition-all disabled:opacity-50 relative overflow-hidden ${
+                earlyDiscount?.available
+                  ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:from-rose-600 hover:to-pink-600'
+                  : 'bg-gray-100 text-[#3A405A] hover:bg-gray-200'
+              }`}
             >
+              {earlyDiscount?.available && (
+                <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-bl-lg">
+                  {earlyDiscount.remaining <= 20 ? `残り${earlyDiscount.remaining}名` : '先着100名'}
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <div className="text-left">
                   <div className="font-bold">月額プラン</div>
-                  <div className="text-xs text-gray-500">いつでも解約可能</div>
+                  <div className={`text-xs ${earlyDiscount?.available ? 'opacity-80' : 'text-gray-500'}`}>
+                    {earlyDiscount?.available ? 'ずっと無料で使える！' : 'いつでも解約可能'}
+                  </div>
                 </div>
                 <div className="text-right">
                   {loading === 'monthly' ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : earlyDiscount?.available ? (
+                    <>
+                      <div className="text-sm line-through opacity-60">¥980/月</div>
+                      <div className="text-2xl font-black">永久無料</div>
+                    </>
                   ) : (
                     <>
                       <div className="text-2xl font-black">¥980</div>

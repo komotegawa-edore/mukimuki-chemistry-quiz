@@ -116,8 +116,8 @@ export default function EnglishLandingPage() {
             <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full border border-white/30">
               <span className="font-bold">1本2-3分</span> で聞ける
             </div>
-            <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full border border-white/30">
-              <span className="font-bold">月額980円</span> から
+            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 px-4 py-2 rounded-full border border-white/30 animate-pulse">
+              <span className="font-bold">先着100名</span> 永久無料
             </div>
           </div>
 

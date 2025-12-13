@@ -26,8 +26,9 @@ export async function GET() {
     return NextResponse.json({
       available,
       remaining,
-      discountedPrice: 450,
+      discountedPrice: 0,
       originalPrice: 980,
+      isFree: true,
     })
   } catch (error) {
     console.error('Early discount check error:', error)
