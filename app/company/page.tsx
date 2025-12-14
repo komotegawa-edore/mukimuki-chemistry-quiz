@@ -8,6 +8,7 @@ import {
   Sparkles, BookOpen, Users, Rocket, ChevronRight, Menu, X
 } from 'lucide-react'
 import CompanyHeader from '@/components/company/CompanyHeader'
+import ContactForm from '@/components/company/ContactForm'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '500', '700', '900'],
@@ -396,45 +397,61 @@ export default function CompanyPage() {
 
       {/* Contact Section */}
       <section id="contact" className="py-24 px-4 bg-gradient-to-br from-[#3A405A] via-[#4A506A] to-[#5A607A] text-white">
-        <div className="max-w-[700px] mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-bold mb-8 border border-white/30">
-            <Mail className="w-4 h-4" />
-            CONTACT
+        <div className="max-w-[800px] mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-bold mb-8 border border-white/30">
+              <Mail className="w-4 h-4" />
+              CONTACT
+            </div>
+
+            <h2 className="text-4xl font-black mb-6">
+              お問い合わせ
+            </h2>
+            <p className="text-lg mb-10 opacity-90">
+              サービスに関するご質問、取材依頼、<br className="hidden md:block" />
+              その他ご相談はお気軽にお問い合わせください。
+            </p>
           </div>
 
-          <h2 className="text-4xl font-black mb-6">
-            お問い合わせ
-          </h2>
-          <p className="text-lg mb-10 opacity-90">
-            サービスに関するご質問、取材依頼、<br className="hidden md:block" />
-            その他ご相談はお気軽にお問い合わせください。
-          </p>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* フォーム */}
+            <div className="md:col-span-2">
+              <ContactForm />
+            </div>
 
-          <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
+            {/* 連絡先情報 */}
             <div className="space-y-6">
-              <div>
-                <h3 className="font-bold mb-2">メールでのお問い合わせ</h3>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <h3 className="font-bold mb-3">メール</h3>
                 <a
                   href="mailto:k.omotegawa@edore-edu.com"
-                  className="text-[#5DDFC3] text-xl font-bold hover:underline"
+                  className="text-[#5DDFC3] font-medium hover:underline break-all"
                 >
                   k.omotegawa@edore-edu.com
                 </a>
               </div>
 
-              <div className="border-t border-white/20 pt-6">
-                <h3 className="font-bold mb-2">SNS</h3>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <h3 className="font-bold mb-3">SNS</h3>
                 <a
                   href="https://x.com/Edore_handai"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-white hover:text-[#5DDFC3] transition-colors"
                 >
-                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                   </svg>
                   @Edore_handai
                 </a>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <h3 className="font-bold mb-3">対応時間</h3>
+                <p className="text-sm opacity-80">
+                  平日 10:00 - 18:00<br />
+                  ※土日祝は翌営業日対応
+                </p>
               </div>
             </div>
           </div>
