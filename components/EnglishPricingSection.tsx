@@ -69,21 +69,39 @@ export default function EnglishPricingSection() {
     <section className="py-20 px-4 bg-white">
       <div className="max-w-[1000px] mx-auto">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-4 py-2 rounded-full text-sm font-bold mb-4">
-            <Crown className="w-4 h-4" />
-            料金プラン
-          </div>
-          <h2 className="text-4xl font-black mb-4">
-            シンプルな<span className="text-cyan-600">料金体系</span>
-          </h2>
-          <p className="text-lg opacity-70">
-            お得な年間プランもご用意しています
-          </p>
+          {earlyDiscount?.available ? (
+            <>
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white px-6 py-3 rounded-full text-sm font-bold mb-4 animate-pulse">
+                <Sparkles className="w-5 h-5" />
+                先着100名様限定キャンペーン中！
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <h2 className="text-4xl font-black mb-4">
+                今なら<span className="text-rose-500">月額450円</span>
+              </h2>
+              <p className="text-lg text-rose-600 font-bold">
+                残り{earlyDiscount.remaining}名様！入会で永久にこの価格
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-4 py-2 rounded-full text-sm font-bold mb-4">
+                <Crown className="w-4 h-4" />
+                料金プラン
+              </div>
+              <h2 className="text-4xl font-black mb-4">
+                シンプルな<span className="text-cyan-600">料金体系</span>
+              </h2>
+              <p className="text-lg opacity-70">
+                お得な年間プランもご用意しています
+              </p>
+            </>
+          )}
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-[800px] mx-auto">
           {/* 月額プラン */}
-          <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-200 p-8 relative">
+          <div className={`bg-white rounded-3xl shadow-xl p-8 relative ${earlyDiscount?.available ? 'border-4 border-rose-400 ring-4 ring-rose-100' : 'border-2 border-gray-200'}`}>
             {/* 先着割引バッジ */}
             {earlyDiscount?.available && (
               <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -152,13 +170,19 @@ export default function EnglishPricingSection() {
             <button
               onClick={() => handleSubscribe('monthly')}
               disabled={loading !== null}
-              className="block w-full py-4 bg-gray-100 text-[#3A405A] text-center rounded-full font-bold hover:bg-gray-200 transition-colors disabled:opacity-50"
+              className={`block w-full py-4 text-center rounded-full font-bold transition-colors disabled:opacity-50 ${
+                earlyDiscount?.available
+                  ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:opacity-90 shadow-lg'
+                  : 'bg-gray-100 text-[#3A405A] hover:bg-gray-200'
+              }`}
             >
               {loading === 'monthly' ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 className="w-5 h-5 animate-spin" />
                   処理中...
                 </span>
+              ) : earlyDiscount?.available ? (
+                '450円で始める'
               ) : (
                 '月額プランで始める'
               )}
