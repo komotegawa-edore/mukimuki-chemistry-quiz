@@ -329,13 +329,13 @@ export default function CompanyPage() {
                 </ul>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-500">生徒1名 100円/月〜</span>
-                  <a
-                    href="#contact"
+                  <Link
+                    href="/lp/manabee"
                     className="inline-flex items-center gap-2 text-amber-500 font-bold text-sm hover:gap-3 transition-all"
                   >
-                    お問い合わせ
+                    詳しく見る
                     <ArrowRight className="w-4 h-4" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
