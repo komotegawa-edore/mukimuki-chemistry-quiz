@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Newspaper, Headphones, Globe, Clock, CheckCircle, Mail } from 'lucide-react'
+import { Newspaper, Headphones, Globe, Clock, CheckCircle, Mail, X, ArrowRight } from 'lucide-react'
 
 export default function EnglishSignupPage() {
   const [name, setName] = useState('')
@@ -13,6 +13,15 @@ export default function EnglishSignupPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [showFlowModal, setShowFlowModal] = useState(false)
+
+  // LPから来た場合にモーダルを表示
+  useEffect(() => {
+    const fromLP = document.referrer.includes('/lp/')
+    if (fromLP) {
+      setShowFlowModal(true)
+    }
+  }, [])
 
   const handleGoogleSignup = async () => {
     setIsLoading(true)
@@ -23,7 +32,7 @@ export default function EnglishSignupPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=/english/news`,
+          redirectTo: `${window.location.origin}/english/auth/callback`,
         },
       })
 
@@ -49,7 +58,7 @@ export default function EnglishSignupPage() {
         email,
         password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/english/news`,
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/english/auth/callback`,
           data: {
             name,
             role: 'student',
@@ -78,6 +87,83 @@ export default function EnglishSignupPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-teal-50 px-4 py-12">
+      {/* 登録フローモーダル */}
+      {showFlowModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative animate-in fade-in zoom-in duration-300">
+            <button
+              onClick={() => setShowFlowModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Image
+                  src="/english/favicon-48x48.png"
+                  alt="Roopy English"
+                  width={40}
+                  height={40}
+                  className="rounded-lg"
+                />
+                <span className="text-xl font-bold text-[#3A405A]">Roopy English</span>
+              </div>
+              <h2 className="text-2xl font-bold text-[#3A405A]">登録の流れ</h2>
+              <p className="text-sm text-gray-500 mt-1">30秒で完了します</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-cyan-500 text-white rounded-full flex items-center justify-center font-bold shrink-0">
+                  1
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#3A405A]">アカウント作成</h3>
+                  <p className="text-sm text-gray-500">Googleまたはメールで登録</p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center">
+                <ArrowRight className="w-5 h-5 text-gray-300" />
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-cyan-500 text-white rounded-full flex items-center justify-center font-bold shrink-0">
+                  2
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#3A405A]">メール認証</h3>
+                  <p className="text-sm text-gray-500">届いたメールのリンクをクリック</p>
+                  <p className="text-xs text-cyan-600 mt-1">※Googleログインの場合は不要</p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center">
+                <ArrowRight className="w-5 h-5 text-gray-300" />
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-cyan-500 text-white rounded-full flex items-center justify-center font-bold shrink-0">
+                  3
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#3A405A]">利用開始！</h3>
+                  <p className="text-sm text-gray-500">すぐにニュースを聞けます</p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowFlowModal(false)}
+              className="w-full mt-6 py-3 bg-cyan-500 text-white rounded-lg font-bold hover:bg-cyan-600 transition-colors"
+            >
+              登録を始める
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-5xl mx-auto">
         {/* ヘッダー */}
         <div className="text-center mb-12">
