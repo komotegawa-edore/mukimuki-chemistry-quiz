@@ -6,8 +6,9 @@ import Image from 'next/image'
 import { Noto_Sans_JP } from 'next/font/google'
 import {
   Headphones, Play, Volume2, Clock, AlertCircle,
-  Check, ArrowRight, Briefcase, Train,
-  BookOpen, Newspaper, Star, Timer, Zap, X
+  Check, ArrowRight, Flame, Gift,
+  BookOpen, Newspaper, Star, Timer, Zap, X,
+  AlertTriangle, Sparkles, PartyPopper
 } from 'lucide-react'
 import TryNewsPlayer from '@/components/TryNewsPlayer'
 
@@ -26,7 +27,6 @@ export default function EnglishTimerPage() {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
-    // タイマー開始
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -43,7 +43,6 @@ export default function EnglishTimerPage() {
     }
   }, [])
 
-  // 残り30秒でモーダル表示
   useEffect(() => {
     if (timeLeft === 30 && !isExpired) {
       setShowModal(true)
@@ -56,352 +55,371 @@ export default function EnglishTimerPage() {
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
-  const timerColor = timeLeft <= 30 ? 'text-red-500' : timeLeft <= 60 ? 'text-orange-500' : 'text-emerald-500'
-  const timerBg = timeLeft <= 30 ? 'bg-red-500' : timeLeft <= 60 ? 'bg-orange-500' : 'bg-emerald-500'
+  const isUrgent = timeLeft <= 60
 
   return (
-    <div className={`min-h-screen bg-white ${notoSansJP.className}`}>
+    <div className={`min-h-screen text-white ${notoSansJP.className} overflow-x-hidden`}>
 
-      {/* タイマーバー - 固定 */}
-      <div className={`sticky top-0 z-50 ${isExpired ? 'bg-slate-600' : timerBg} text-white py-3 px-4 transition-colors duration-500`}>
-        <div className="max-w-[1000px] mx-auto flex items-center justify-center gap-4">
+      {/* 緊急タイマーバー */}
+      <div className={`sticky top-0 z-50 py-4 px-4 ${isExpired ? 'bg-slate-700' : isUrgent ? 'bg-gradient-to-r from-red-600 via-pink-600 to-red-600 animate-pulse' : 'bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600'}`}>
+        <div className="max-w-[1000px] mx-auto flex items-center justify-center gap-3">
           {isExpired ? (
-            <p className="font-bold text-center">
-              特別オファーの期限が終了しました
-            </p>
+            <p className="font-bold text-center">特別オファー終了</p>
           ) : (
             <>
-              <Timer className="w-5 h-5 animate-pulse" />
-              <p className="font-bold">
-                <span className="hidden sm:inline">このページ限定！</span>
-                <span className="font-mono text-2xl mx-2">{formatTime(timeLeft)}</span>
-                以内の登録で<span className="underline">初月無料</span>
-              </p>
+              <Flame className="w-6 h-6 animate-bounce" />
+              <div className="text-center">
+                <span className="font-black text-2xl md:text-3xl font-mono bg-black/30 px-4 py-1 rounded-lg">
+                  {formatTime(timeLeft)}
+                </span>
+              </div>
+              <span className="font-bold text-sm md:text-base">
+                以内の登録で<span className="text-yellow-300 text-lg md:text-xl">初月無料！</span>
+              </span>
+              <Flame className="w-6 h-6 animate-bounce" />
             </>
           )}
         </div>
       </div>
 
-      {/* Hero */}
-      <section className="py-16 px-4 bg-gradient-to-b from-slate-900 to-slate-800 text-white">
-        <div className="max-w-[800px] mx-auto text-center">
-          {/* タイマー大表示 */}
+      {/* Hero - 超ド派手 */}
+      <header className={`relative min-h-screen flex items-center justify-center overflow-hidden ${isExpired ? 'bg-slate-800' : 'bg-gradient-to-br from-purple-900 via-red-800 to-orange-700'}`}>
+        {/* 背景エフェクト */}
+        {!isExpired && (
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-10 left-10 w-72 h-72 bg-yellow-400/30 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-20 right-10 w-96 h-96 bg-red-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }} />
+            <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+
+            {/* キラキラ */}
+            {[...Array(30)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 bg-yellow-300 rounded-full animate-ping"
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 2}s`,
+                  animationDuration: `${1 + Math.random() * 2}s`,
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="relative z-10 max-w-[900px] mx-auto px-4 text-center">
+          {/* 緊急バッジ */}
+          {!isExpired && (
+            <div className={`inline-flex items-center gap-2 ${isUrgent ? 'bg-red-500 animate-bounce' : 'bg-yellow-500'} text-black px-6 py-3 rounded-full text-lg font-black mb-6 shadow-2xl`}>
+              {isUrgent ? (
+                <>
+                  <AlertTriangle className="w-6 h-6" />
+                  緊急！残りわずか！
+                  <AlertTriangle className="w-6 h-6" />
+                </>
+              ) : (
+                <>
+                  <Gift className="w-6 h-6" />
+                  このページ限定特典
+                  <Gift className="w-6 h-6" />
+                </>
+              )}
+            </div>
+          )}
+
+          {/* 巨大タイマー */}
           {!isExpired && (
             <div className="mb-8">
-              <p className="text-slate-400 text-sm mb-2">特別オファー終了まで</p>
-              <div className={`inline-flex items-center gap-3 ${timerColor} text-6xl md:text-8xl font-mono font-bold`}>
-                <Clock className="w-12 h-12 md:w-16 md:h-16 animate-pulse" />
-                {formatTime(timeLeft)}
+              <div className={`inline-block ${isUrgent ? 'bg-red-600/50 border-red-400' : 'bg-black/30 border-yellow-400/50'} backdrop-blur-md rounded-3xl p-8 border-4`}>
+                <p className="text-sm opacity-80 mb-2">特典終了まで</p>
+                <div className={`font-mono text-7xl md:text-9xl font-black ${isUrgent ? 'text-red-300 animate-pulse' : 'text-yellow-400'}`}>
+                  {formatTime(timeLeft)}
+                </div>
               </div>
             </div>
           )}
 
-          <h1 className="text-3xl md:text-5xl font-black mb-6 leading-tight">
-            今だけ、<span className="text-emerald-400">初月無料</span>で<br />
-            英語リスニング習慣を始める
+          {/* メインコピー */}
+          <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
+            {isExpired ? (
+              '特典は終了しました'
+            ) : (
+              <>
+                今だけ<br />
+                <span className="relative inline-block">
+                  <span className="text-5xl md:text-8xl bg-gradient-to-r from-yellow-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                    初月無料
+                  </span>
+                  {isUrgent && (
+                    <span className="absolute -top-4 -right-4 bg-red-500 text-white text-sm px-3 py-1 rounded-full font-bold animate-bounce">
+                      急いで！
+                    </span>
+                  )}
+                </span>
+              </>
+            )}
           </h1>
 
-          <p className="text-slate-300 text-lg mb-8 max-w-[600px] mx-auto">
-            毎朝、日本のニュースを英語で。<br />
-            通勤時間を学習時間に変えませんか？
+          <p className="text-xl md:text-2xl mb-8 opacity-90">
+            英語ニュースリスニング<br className="md:hidden" />
+            <span className="font-bold">通常980円/月が最初の1ヶ月0円</span>
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {/* CTA */}
+          <div className="flex flex-col items-center gap-4">
             <Link
               href="/english/signup"
-              className={`inline-flex items-center gap-2 ${isExpired ? 'bg-slate-600' : 'bg-emerald-500 hover:bg-emerald-600'} text-white px-8 py-4 rounded-xl font-bold transition-colors text-lg`}
+              className={`group relative inline-flex items-center gap-3 ${isExpired ? 'bg-slate-600' : 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500'} text-black text-xl md:text-2xl font-black py-6 px-12 rounded-full hover:scale-110 transition-all shadow-2xl`}
             >
-              {isExpired ? (
-                '通常価格で始める'
-              ) : (
-                <>
-                  <Zap className="w-5 h-5" />
-                  初月無料で始める
-                </>
+              <Zap className="w-8 h-8" />
+              {isExpired ? '通常価格で始める' : '初月無料で始める'}
+              <Zap className="w-8 h-8" />
+
+              {!isExpired && (
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-shimmer overflow-hidden" />
               )}
             </Link>
+
+            {!isExpired && (
+              <p className="text-yellow-300 font-bold animate-pulse">
+                ※ このページを閉じると特典は消えます
+              </p>
+            )}
           </div>
-
-          {!isExpired && (
-            <p className="text-emerald-400 text-sm mt-4 font-medium">
-              ※ このページを閉じると特典は無効になります
-            </p>
-          )}
         </div>
-      </section>
+      </header>
 
-      {/* 特典説明 */}
+      {/* 特典詳細 */}
       {!isExpired && (
-        <section className="py-12 px-4 bg-emerald-50 border-y-4 border-emerald-500">
+        <section className={`py-12 px-4 ${isUrgent ? 'bg-red-600' : 'bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-500'} text-black`}>
           <div className="max-w-[800px] mx-auto">
             <div className="flex flex-col md:flex-row items-center justify-center gap-8">
               <div className="text-center md:text-left">
-                <p className="text-emerald-700 font-bold text-sm mb-2">このページ限定特典</p>
-                <h2 className="text-3xl font-black text-slate-800 mb-2">
-                  初月<span className="text-emerald-600">完全無料</span>
+                <div className="flex items-center gap-2 justify-center md:justify-start mb-2">
+                  <PartyPopper className="w-6 h-6" />
+                  <span className="font-black text-lg">このページ限定！</span>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black">
+                  初月<span className="bg-black text-yellow-400 px-3 py-1 rounded-lg ml-2">完全無料</span>
                 </h2>
-                <p className="text-slate-600">
-                  通常980円/月 → 最初の1ヶ月は0円でお試し
-                </p>
               </div>
-              <div className="text-center">
-                <div className={`${timerColor} font-mono text-5xl font-bold`}>
+              <div className="text-center bg-black/20 rounded-2xl p-6">
+                <p className="text-sm font-bold mb-1">残り時間</p>
+                <div className={`font-mono text-5xl font-black ${isUrgent ? 'text-white animate-pulse' : ''}`}>
                   {formatTime(timeLeft)}
                 </div>
-                <p className="text-slate-500 text-sm mt-1">残り時間</p>
               </div>
             </div>
           </div>
         </section>
       )}
 
-      {/* サービス説明 */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-[800px] mx-auto">
-          <h2 className="text-2xl font-bold text-slate-800 text-center mb-12">
-            Roopy Englishの特徴
-          </h2>
+      {/* サービス内容 */}
+      <section className="py-20 px-4 bg-gradient-to-b from-slate-900 to-black">
+        <div className="max-w-[1000px] mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-cyan-600 px-4 py-2 rounded-full text-sm font-bold mb-4">
+              <Sparkles className="w-4 h-4" />
+              サービス内容
+            </div>
+            <h2 className="text-4xl font-black">
+              毎朝の通勤を<span className="text-yellow-400">学習時間</span>に
+            </h2>
+          </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
             {[
-              {
-                icon: Newspaper,
-                title: '日本のニュースを英語で',
-                desc: '背景知識があるから理解できる',
-              },
-              {
-                icon: BookOpen,
-                title: '英語・日本語字幕',
-                desc: 'わからない部分もすぐ確認',
-              },
-              {
-                icon: Headphones,
-                title: 'バックグラウンド再生',
-                desc: '通勤中に聞き流せる',
-              },
+              { icon: Newspaper, title: '毎朝約20本', desc: '日本のニュースを英語で配信' },
+              { icon: BookOpen, title: '日本語字幕', desc: '内容を理解しながら聞ける' },
+              { icon: Headphones, title: 'バックグラウンド再生', desc: '画面オフでも再生OK' },
+              { icon: Volume2, title: '速度調整', desc: '0.7x〜1.0xで自分のペースで' },
+              { icon: Clock, title: '1本約3分', desc: '通勤中にサクッと聞ける' },
+              { icon: Star, title: '重要単語リスト', desc: 'ニュースの単語を学習' },
             ].map((feature, i) => (
-              <div key={i} className="text-center">
-                <div className="inline-flex items-center justify-center w-14 h-14 bg-slate-100 rounded-2xl mb-4">
-                  <feature.icon className="w-7 h-7 text-slate-700" />
-                </div>
-                <h3 className="font-bold text-slate-800 mb-2">{feature.title}</h3>
-                <p className="text-slate-500 text-sm">{feature.desc}</p>
+              <div
+                key={i}
+                className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-yellow-400/50 hover:bg-white/10 transition-all"
+              >
+                <feature.icon className="w-10 h-10 text-yellow-400 mb-4" />
+                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                <p className="opacity-70">{feature.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* お試し再生 */}
-      <section className="py-16 px-4 bg-slate-50">
+      {/* お試し */}
+      <section className="py-20 px-4 bg-gradient-to-b from-black to-slate-900">
         <div className="max-w-[600px] mx-auto">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-2">
-              実際に聞いてみる
+            <div className="inline-flex items-center gap-2 bg-yellow-500 text-black px-4 py-2 rounded-full text-sm font-bold mb-4">
+              <Play className="w-4 h-4" />
+              今すぐ体験
+            </div>
+            <h2 className="text-4xl font-black mb-4">
+              まず<span className="text-yellow-400">聞いて</span>みる
             </h2>
-            <p className="text-slate-500 text-sm">
-              登録不要ですぐに再生できます
-            </p>
           </div>
 
-          <TryNewsPlayer useSample />
+          <div className="bg-white/5 rounded-3xl p-6 border border-white/10">
+            <TryNewsPlayer useSample />
+          </div>
         </div>
       </section>
 
       {/* 口コミ */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-[800px] mx-auto">
-          <h2 className="text-2xl font-bold text-slate-800 text-center mb-12">
-            利用者の声
-          </h2>
+      <section className="py-20 px-4 bg-gradient-to-b from-slate-900 to-black">
+        <div className="max-w-[900px] mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-black">
+              利用者の<span className="text-yellow-400">声</span>
+            </h2>
+          </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             {[
-              {
-                name: 'T.K',
-                role: 'IT企業・38歳',
-                text: '日本のニュースなら内容がわかるので、純粋に英語に集中できます。毎朝の通勤が楽しみになりました。',
-              },
-              {
-                name: 'M.S',
-                role: 'メーカー・42歳',
-                text: '英語学習アプリは何度も挫折しましたが、これは続いてます。字幕があるので安心感があります。',
-              },
+              { name: 'Tさん', job: 'IT企業・30代', text: '毎朝の通勤電車で聞いてます。日本のニュースだから理解しやすく、続けられてます！' },
+              { name: 'Mさん', job: 'メーカー・40代', text: '海外ニュースは挫折したけど、これなら理解できる。字幕があるのも助かる。' },
             ].map((review, i) => (
-              <div key={i} className="bg-slate-50 rounded-2xl p-6">
-                <div className="flex items-center gap-1 mb-3">
+              <div key={i} className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                <div className="flex items-center gap-1 mb-4">
                   {[...Array(5)].map((_, j) => (
-                    <Star key={j} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    <Star key={j} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                   ))}
                 </div>
-                <p className="text-slate-600 text-sm mb-4">{review.text}</p>
+                <p className="mb-4 opacity-90">「{review.text}」</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center text-slate-600 font-bold text-sm">
+                  <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-teal-400 rounded-full flex items-center justify-center font-bold">
                     {review.name[0]}
                   </div>
                   <div>
-                    <p className="font-medium text-slate-800 text-sm">{review.name}</p>
-                    <p className="text-slate-400 text-xs">{review.role}</p>
+                    <p className="font-bold">{review.name}</p>
+                    <p className="text-sm opacity-60">{review.job}</p>
                   </div>
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 料金 */}
-      <section className="py-16 px-4 bg-slate-50">
-        <div className="max-w-[500px] mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg border-2 border-emerald-500 p-8 relative overflow-hidden">
-            {!isExpired && (
-              <div className="absolute top-0 right-0 bg-emerald-500 text-white px-4 py-1 text-sm font-bold">
-                限定特典
-              </div>
-            )}
-
-            <div className="text-center mb-6">
-              {!isExpired ? (
-                <>
-                  <p className="text-emerald-600 font-bold mb-2">初月無料キャンペーン</p>
-                  <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-slate-400 line-through text-xl">¥980</span>
-                    <span className="text-5xl font-black text-emerald-600">¥0</span>
-                  </div>
-                  <p className="text-slate-500 text-sm mt-2">
-                    2ヶ月目以降 980円/月
-                  </p>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-4xl font-bold text-slate-800">¥980</span>
-                    <span className="text-slate-500">/月</span>
-                  </div>
-                </>
-              )}
-            </div>
-
-            <ul className="space-y-3 mb-6">
-              {[
-                '毎朝約20本のニュース配信',
-                '英語・日本語字幕',
-                '速度調整機能',
-                'バックグラウンド再生',
-                'いつでも解約可能',
-              ].map((feature, i) => (
-                <li key={i} className="flex items-center gap-3 text-sm text-slate-600">
-                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-
-            <Link
-              href="/english/signup"
-              className={`block w-full py-4 ${isExpired ? 'bg-slate-700' : 'bg-emerald-600 hover:bg-emerald-700'} text-white text-center rounded-xl font-bold transition-colors`}
-            >
-              {isExpired ? '登録する' : '初月無料で始める'}
-            </Link>
-
-            {!isExpired && (
-              <div className="mt-4 text-center">
-                <p className={`${timerColor} font-bold`}>
-                  残り {formatTime(timeLeft)} で特典終了
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </section>
 
       {/* 最終CTA */}
-      <section className={`py-20 px-4 ${isExpired ? 'bg-slate-700' : 'bg-emerald-600'} text-white transition-colors duration-500`}>
-        <div className="max-w-[600px] mx-auto text-center">
+      <section className={`py-24 px-4 relative overflow-hidden ${isExpired ? 'bg-slate-700' : 'bg-gradient-to-r from-red-700 via-orange-600 to-yellow-600'}`}>
+        {/* 背景エフェクト */}
+        {!isExpired && (
+          <div className="absolute inset-0">
+            {[...Array(40)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 bg-white rounded-full animate-ping"
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 3}s`,
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="relative z-10 max-w-[800px] mx-auto text-center">
           {!isExpired ? (
             <>
-              <div className={`${timerColor} bg-white inline-block px-6 py-3 rounded-full mb-6`}>
-                <span className="font-mono text-4xl font-bold">{formatTime(timeLeft)}</span>
+              <div className={`inline-flex items-center gap-2 ${isUrgent ? 'bg-red-500' : 'bg-yellow-400'} text-black px-6 py-3 rounded-full text-lg font-black mb-6 animate-bounce`}>
+                <Flame className="w-6 h-6" />
+                {isUrgent ? '今すぐ決断を！' : 'ラストチャンス'}
+                <Flame className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl md:text-3xl font-black mb-4">
-                初月無料は今だけ
+
+              <div className={`${isUrgent ? 'bg-red-600/50' : 'bg-black/30'} backdrop-blur-sm rounded-3xl p-8 mb-8 inline-block`}>
+                <p className="text-sm opacity-80 mb-2">特典終了まで</p>
+                <div className={`font-mono text-6xl md:text-8xl font-black ${isUrgent ? 'text-red-300 animate-pulse' : 'text-yellow-400'}`}>
+                  {formatTime(timeLeft)}
+                </div>
+              </div>
+
+              <h2 className="text-4xl md:text-5xl font-black mb-8">
+                <span className="text-yellow-300">初月無料</span>は<br />今だけです
               </h2>
-              <p className="text-emerald-100 mb-8">
-                このページを閉じると特典は無効になります
-              </p>
             </>
           ) : (
-            <>
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                特典は終了しましたが...
-              </h2>
-              <p className="text-slate-300 mb-8">
-                まだ月額980円でお得に始められます
-              </p>
-            </>
+            <h2 className="text-3xl font-bold mb-8">
+              特典は終了しましたが<br />まだ始められます
+            </h2>
           )}
 
           <Link
             href="/english/signup"
-            className="inline-flex items-center gap-2 bg-white text-slate-800 px-8 py-4 rounded-xl font-bold hover:bg-slate-100 transition-colors"
+            className={`group inline-flex items-center gap-3 ${isExpired ? 'bg-white text-slate-700' : 'bg-gradient-to-r from-yellow-400 to-orange-500 text-black'} text-2xl font-black py-6 px-16 rounded-full hover:scale-110 transition-all shadow-2xl`}
           >
+            <Zap className="w-8 h-8" />
             {isExpired ? '登録する' : '初月無料で始める'}
-            <ArrowRight className="w-5 h-5" />
           </Link>
+
+          {!isExpired && (
+            <p className="mt-6 text-yellow-200 font-bold">
+              ページを閉じると特典は消えます
+            </p>
+          )}
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-8 px-4">
-        <div className="max-w-[1000px] mx-auto text-center">
+      <footer className="bg-black text-white py-8 px-4">
+        <div className="max-w-[1200px] mx-auto text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Image
               src="/english/favicon-48x48.png"
               alt="Roopy English"
-              width={24}
-              height={24}
-              className="rounded"
+              width={32}
+              height={32}
+              className="rounded-lg"
             />
-            <span className="font-medium text-sm">Roopy English</span>
+            <span className="font-bold text-lg">Roopy English</span>
           </div>
-          <div className="flex items-center justify-center gap-4 text-xs text-slate-500 mb-4">
+          <div className="flex items-center justify-center gap-4 text-sm opacity-70 mb-4">
             <Link href="/english/terms">利用規約</Link>
             <Link href="/english/privacy">プライバシーポリシー</Link>
             <Link href="/english/legal">特定商取引法</Link>
           </div>
-          <p className="text-xs text-slate-600">&copy; 2025 Edore. All rights reserved.</p>
+          <p className="text-sm opacity-50">&copy; 2025 Edore. All rights reserved.</p>
         </div>
       </footer>
 
-      {/* 残り30秒モーダル */}
+      {/* 残り30秒モーダル - 超緊急演出 */}
       {showModal && !isExpired && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-2xl max-w-[400px] w-full p-8 relative animate-bounce-in">
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[100] p-4">
+          <div className="bg-gradient-to-br from-red-600 to-red-800 rounded-3xl max-w-[450px] w-full p-8 relative border-4 border-yellow-400 shadow-2xl animate-bounce-in">
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
+              className="absolute top-4 right-4 text-white/70 hover:text-white"
             >
               <X className="w-6 h-6" />
             </button>
 
             <div className="text-center">
-              <div className="text-red-500 mb-4">
-                <AlertCircle className="w-16 h-16 mx-auto animate-pulse" />
+              <div className="mb-4">
+                <AlertTriangle className="w-20 h-20 mx-auto text-yellow-400 animate-bounce" />
               </div>
-              <h3 className="text-2xl font-black text-slate-800 mb-2">
-                あと30秒！
+              <h3 className="text-3xl font-black text-white mb-4">
+                待って！<br />あと30秒！
               </h3>
-              <p className="text-slate-600 mb-6">
-                初月無料の特典がまもなく終了します
-              </p>
 
-              <div className="text-red-500 font-mono text-5xl font-bold mb-6">
-                {formatTime(timeLeft)}
+              <div className="bg-black/30 rounded-2xl p-6 mb-6">
+                <div className="text-yellow-400 font-mono text-6xl font-black animate-pulse">
+                  {formatTime(timeLeft)}
+                </div>
               </div>
+
+              <p className="text-white/90 mb-6 text-lg">
+                <span className="text-yellow-300 font-bold">初月無料</span>の特典が<br />
+                まもなく終了します！
+              </p>
 
               <Link
                 href="/english/signup"
-                className="block w-full py-4 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition-colors"
+                className="block w-full py-5 bg-gradient-to-r from-yellow-400 to-orange-500 text-black rounded-2xl font-black text-xl hover:scale-105 transition-transform"
                 onClick={() => setShowModal(false)}
               >
                 今すぐ初月無料で始める
@@ -413,13 +431,21 @@ export default function EnglishTimerPage() {
 
       {/* CSS */}
       <style jsx>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%) skewX(-12deg); }
+          100% { transform: translateX(200%) skewX(-12deg); }
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite;
+        }
         @keyframes bounce-in {
-          0% { transform: scale(0.5); opacity: 0; }
-          70% { transform: scale(1.05); }
+          0% { transform: scale(0.3); opacity: 0; }
+          50% { transform: scale(1.1); }
+          70% { transform: scale(0.95); }
           100% { transform: scale(1); opacity: 1; }
         }
         .animate-bounce-in {
-          animation: bounce-in 0.4s ease-out;
+          animation: bounce-in 0.5s ease-out;
         }
       `}</style>
     </div>
