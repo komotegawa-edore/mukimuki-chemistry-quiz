@@ -71,7 +71,7 @@ const SAMPLE_NEWS: DailyNews = {
   id: 'sample',
   news_date: new Date().toISOString().split('T')[0],
   category: 'economy',
-  original_title: 'Bank of Japan Maintains Interest Rate Policy Amid Economic Concerns',
+  original_title: '日銀、景気懸念の中で金利政策を維持',
   english_script: `The Bank of Japan has decided to maintain its current interest rate policy, keeping rates unchanged amid growing concerns about the global economic outlook.
 
 Governor Ueda emphasized that the central bank will carefully monitor inflation trends and wage growth before considering any further policy adjustments.
