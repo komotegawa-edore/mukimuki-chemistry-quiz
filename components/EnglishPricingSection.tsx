@@ -104,9 +104,14 @@ export default function EnglishPricingSection() {
                     <span className="text-5xl font-black text-rose-500">¥450</span>
                     <span className="text-gray-500">/月</span>
                   </div>
-                  <p className="text-sm text-rose-500 font-medium mt-1">
-                    54%OFF（ずっとこの価格！）
-                  </p>
+                  <div className="mt-3 bg-rose-50 border border-rose-200 rounded-lg p-3">
+                    <p className="text-sm text-rose-600 font-bold">
+                      🎉 今入会で永久に月額450円！
+                    </p>
+                    <p className="text-xs text-rose-500 mt-1">
+                      ※ 解約するまでずっとこの価格が適用されます
+                    </p>
+                  </div>
                 </div>
               ) : (
                 <div className="flex items-baseline justify-center gap-1">
