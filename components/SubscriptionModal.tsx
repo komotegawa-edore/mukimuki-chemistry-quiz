@@ -12,7 +12,7 @@ interface SubscriptionModalProps {
 interface EarlyDiscount {
   available: boolean
   remaining: number
-  isFree: boolean
+  discountedPrice: number
 }
 
 export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
@@ -177,7 +177,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                 <div className="text-left">
                   <div className="font-bold">月額プラン</div>
                   <div className={`text-xs ${earlyDiscount?.available ? 'opacity-80' : 'text-gray-500'}`}>
-                    {earlyDiscount?.available ? 'ずっと無料で使える！' : 'いつでも解約可能'}
+                    {earlyDiscount?.available ? 'ずっとこの価格！' : 'いつでも解約可能'}
                   </div>
                 </div>
                 <div className="text-right">
@@ -185,8 +185,9 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : earlyDiscount?.available ? (
                     <>
-                      <div className="text-sm line-through opacity-60">¥980/月</div>
-                      <div className="text-2xl font-black">永久無料</div>
+                      <div className="text-sm line-through opacity-60">¥980</div>
+                      <div className="text-2xl font-black">¥{earlyDiscount.discountedPrice}</div>
+                      <div className="text-xs opacity-80">/月（ずっと）</div>
                     </>
                   ) : (
                     <>

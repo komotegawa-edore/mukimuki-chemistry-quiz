@@ -100,13 +100,12 @@ export default function EnglishPricingSection() {
               {earlyDiscount?.available ? (
                 <div>
                   <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-2xl text-gray-400 line-through">¥980/月</span>
-                  </div>
-                  <div className="text-5xl font-black text-rose-500 mt-1">
-                    永久無料
+                    <span className="text-2xl text-gray-400 line-through">¥980</span>
+                    <span className="text-5xl font-black text-rose-500">¥450</span>
+                    <span className="text-gray-500">/月</span>
                   </div>
                   <p className="text-sm text-rose-500 font-medium mt-1">
-                    100%OFF（ずっと無料！）
+                    54%OFF（ずっとこの価格！）
                   </p>
                 </div>
               ) : (
