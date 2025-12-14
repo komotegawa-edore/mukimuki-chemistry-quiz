@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { X, Crown, Check, Loader2, Sparkles } from 'lucide-react'
+import { analytics } from '@/lib/analytics'
 
 interface SubscriptionModalProps {
   isOpen: boolean
@@ -33,6 +34,10 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
 
   const handleSubscribe = async (priceType: 'monthly' | 'yearly') => {
     setLoading(priceType)
+
+    // トラッキング: チェックアウト開始
+    const price = priceType === 'yearly' ? 9800 : (earlyDiscount?.available ? earlyDiscount.discountedPrice : 980)
+    analytics.initiateCheckout({ value: price, plan_type: priceType })
 
     try {
       const response = await fetch('/api/english/stripe/checkout', {

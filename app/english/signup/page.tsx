@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Newspaper, Headphones, Globe, Clock, CheckCircle, Mail, X, ArrowRight } from 'lucide-react'
+import { analytics } from '@/lib/analytics'
 
 export default function EnglishSignupPage() {
   const [name, setName] = useState('')
@@ -75,6 +76,9 @@ export default function EnglishSignupPage() {
         setError('ユーザーの作成に失敗しました')
         return
       }
+
+      // トラッキング: サインアップ完了
+      analytics.signup(authData.user.id, email)
 
       setIsSuccess(true)
       setIsLoading(false)

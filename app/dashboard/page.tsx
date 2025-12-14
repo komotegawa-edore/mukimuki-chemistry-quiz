@@ -6,7 +6,7 @@ import CSVImport from '@/components/CSVImport'
 import DashboardContent from '@/components/DashboardContent'
 import DailyMissionSettings from '@/components/DailyMissionSettings'
 import Header from '@/components/Header'
-import { BookOpen, ArrowRight, Trophy, Bell, Zap, Layers, Library, Brain, Users } from 'lucide-react'
+import { BookOpen, ArrowRight, Trophy, Bell, Zap, Layers, Library, Brain, Users, BarChart3 } from 'lucide-react'
 
 export default async function DashboardPage() {
   const profile = await getCurrentProfile()
@@ -197,6 +197,24 @@ export default async function DashboardPage() {
                 </h2>
                 <p className="text-white opacity-90 text-sm">
                   新規ユーザーの流入元を確認
+                </p>
+              </div>
+              <ArrowRight className="w-6 h-6 text-white" />
+            </div>
+          </Link>
+
+          <Link
+            href="/dashboard/ads-analytics"
+            className="block bg-gradient-to-r from-pink-500 to-pink-600 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  Roopy English 広告分析
+                </h2>
+                <p className="text-white opacity-90 text-sm">
+                  TikTok広告のコンバージョン・ROIを分析
                 </p>
               </div>
               <ArrowRight className="w-6 h-6 text-white" />

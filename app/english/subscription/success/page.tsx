@@ -1,7 +1,31 @@
+'use client'
+
 import Link from 'next/link'
 import { CheckCircle, Headphones, ArrowRight } from 'lucide-react'
+import { useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { analytics } from '@/lib/analytics'
 
 export default function SubscriptionSuccessPage() {
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    // Stripeからのリダイレクト時にセッションIDがある場合、コンバージョンを記録
+    const sessionId = searchParams.get('session_id')
+    const planType = searchParams.get('plan') || 'monthly'
+
+    if (sessionId) {
+      // トラッキング: サブスクリプション完了
+      const value = planType === 'yearly' ? 9800 : planType === 'early_discount' ? 450 : 980
+      // ユーザーIDはWebhookで処理されるため、ここでは簡易的にトラック
+      analytics.custom('subscription_start', {
+        plan_type: planType,
+        value,
+        session_id: sessionId,
+      })
+    }
+  }, [searchParams])
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-white flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
