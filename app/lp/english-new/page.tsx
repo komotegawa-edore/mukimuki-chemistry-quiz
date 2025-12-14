@@ -151,7 +151,7 @@ export default function EnglishNewLandingPage() {
             </Link>
           </div>
 
-          <p className="mt-6 text-sm opacity-70">
+          <p className="mt-6 mb-24 text-sm opacity-70">
             クレジットカードで30秒登録 / いつでも解約可能
           </p>
         </div>
@@ -223,23 +223,29 @@ export default function EnglishNewLandingPage() {
         </div>
       </section>
 
-      {/* Try Player Section */}
+      {/* Try Player Section - english-campaign style */}
       <section className="py-20 px-4 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-[600px] mx-auto">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 px-4 py-2 rounded-full text-sm font-bold mb-4">
-              <Headphones className="w-4 h-4" />
-              お試し
+            <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full text-sm font-bold mb-4">
+              <Play className="w-4 h-4" />
+              今すぐ体験
             </div>
             <h2 className="text-4xl font-black mb-4">
-              今日のニュースを<span className="text-cyan-600">聞いてみる</span>
+              <span className="text-cyan-600">無料</span>で聞いてみる
             </h2>
             <p className="text-lg opacity-70">
               登録不要・今すぐ再生できます
             </p>
           </div>
 
-          <TryNewsPlayer />
+          <div className="bg-gray-50 rounded-3xl p-6 border border-gray-200 shadow-lg">
+            <TryNewsPlayer useSample />
+          </div>
+
+          <p className="text-center mt-6 text-cyan-600 font-bold">
+            ↑ これが毎朝届きます！
+          </p>
         </div>
       </section>
 
