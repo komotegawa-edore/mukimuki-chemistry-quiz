@@ -300,7 +300,13 @@ export default function CompanyPage() {
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <School className="w-5 h-5 text-amber-500" />
+                  <Image
+                    src="/manabee-logo.png"
+                    alt="まなビーくん"
+                    width={24}
+                    height={24}
+                    className="rounded-full"
+                  />
                   <span className="text-xs font-bold text-amber-500">学習塾DX支援</span>
                 </div>
                 <h3 className="text-xl font-bold mb-2">MANABEE（まなビーくん）</h3>
