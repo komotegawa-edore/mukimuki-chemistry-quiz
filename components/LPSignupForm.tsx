@@ -31,7 +31,7 @@ export default function LPSignupForm({
     setLoading(true)
 
     try {
-      // 1. アカウント作成
+      // 1. アカウント作成を試行
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -42,7 +42,7 @@ export default function LPSignupForm({
 
       if (authError) {
         if (authError.message.includes('already registered')) {
-          // 既存ユーザーの場合はログイン試行
+          // 既存ユーザーの場合はログイン
           const { error: signInError } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -52,6 +52,18 @@ export default function LPSignupForm({
           }
         } else {
           throw authError
+        }
+      } else {
+        // 新規登録の場合、セッションがない可能性があるのでログインも実行
+        // （メール確認が不要な設定の場合でも確実にセッションを取得）
+        if (!authData.session) {
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          })
+          if (signInError) {
+            throw new Error('アカウント作成後のログインに失敗しました。もう一度お試しください。')
+          }
         }
       }
 
