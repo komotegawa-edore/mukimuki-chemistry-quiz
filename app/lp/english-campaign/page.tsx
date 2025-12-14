@@ -10,6 +10,7 @@ import {
   Users, BookOpen, Newspaper, Globe, Coffee, Briefcase, Train,
   Check, Crown, Zap, Gift, PartyPopper, Flame, AlertTriangle
 } from 'lucide-react'
+import TryNewsPlayer from '@/components/TryNewsPlayer'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700', '900'],
@@ -234,8 +235,34 @@ export default function EnglishCampaignPage() {
         </div>
       </section>
 
-      {/* 比較表 */}
+      {/* お試し再生 */}
       <section className="py-20 px-4 bg-gradient-to-b from-gray-900 to-black">
+        <div className="max-w-[600px] mx-auto">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-yellow-500 text-yellow-900 px-4 py-2 rounded-full text-sm font-bold mb-4">
+              <Play className="w-4 h-4" />
+              今すぐ体験
+            </div>
+            <h2 className="text-4xl font-black mb-4">
+              <span className="text-yellow-400">無料</span>で聞いてみる
+            </h2>
+            <p className="opacity-70">
+              登録不要・今すぐ再生できます
+            </p>
+          </div>
+
+          <div className="bg-white/5 rounded-3xl p-6 border border-white/10">
+            <TryNewsPlayer />
+          </div>
+
+          <p className="text-center mt-6 text-yellow-400 font-bold">
+            ↑ これが毎朝届きます！
+          </p>
+        </div>
+      </section>
+
+      {/* 比較表 */}
+      <section className="py-20 px-4 bg-gradient-to-b from-black to-gray-900">
         <div className="max-w-[800px] mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-black mb-4">
