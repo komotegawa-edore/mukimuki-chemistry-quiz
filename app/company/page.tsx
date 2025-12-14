@@ -5,7 +5,8 @@ import { Noto_Sans_JP } from 'next/font/google'
 import {
   GraduationCap, Headphones, Mail, MapPin, Building2,
   Lightbulb, Heart, Target, ArrowRight, ExternalLink,
-  Sparkles, BookOpen, Users, Rocket, ChevronRight, Menu, X
+  Sparkles, BookOpen, Users, Rocket, ChevronRight, Menu, X,
+  School, Zap, BarChart3, Settings
 } from 'lucide-react'
 import CompanyHeader from '@/components/company/CompanyHeader'
 import ContactForm from '@/components/company/ContactForm'
@@ -165,7 +166,7 @@ export default function CompanyPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Roopy 大学受験版 */}
             <div className="group bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
               <div className="aspect-video relative bg-gradient-to-br from-[#5DDFC3]/20 to-[#E0F7F1]">
@@ -179,35 +180,35 @@ export default function CompanyPage() {
                   />
                 </div>
               </div>
-              <div className="p-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <GraduationCap className="w-6 h-6 text-[#5DDFC3]" />
-                  <span className="text-sm font-bold text-[#5DDFC3]">大学受験向け</span>
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <GraduationCap className="w-5 h-5 text-[#5DDFC3]" />
+                  <span className="text-xs font-bold text-[#5DDFC3]">大学受験向け</span>
                 </div>
-                <h3 className="text-2xl font-bold mb-3">Roopy（るーぴー）</h3>
-                <p className="opacity-70 mb-6 leading-relaxed">
-                  大学受験を"毎日つづけられる"ゲームにする。無機化学・リスニング・英単語など、受験に必要な知識をサクサク身につける学習アプリ。
+                <h3 className="text-xl font-bold mb-2">Roopy（るーぴー）</h3>
+                <p className="opacity-70 mb-4 leading-relaxed text-sm">
+                  大学受験を"毎日つづけられる"ゲームにする学習アプリ。
                 </p>
-                <ul className="space-y-2 mb-6 text-sm">
+                <ul className="space-y-1.5 mb-4 text-xs">
                   <li className="flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-[#5DDFC3]" />
-                    無機化学・リスニング・英単語ドリル
+                    <BookOpen className="w-3.5 h-3.5 text-[#5DDFC3]" />
+                    無機化学・リスニング・英単語
                   </li>
                   <li className="flex items-center gap-2">
-                    <Target className="w-4 h-4 text-[#5DDFC3]" />
+                    <Target className="w-3.5 h-3.5 text-[#5DDFC3]" />
                     ポイント機能＆ランキング
                   </li>
                   <li className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-[#5DDFC3]" />
+                    <Users className="w-3.5 h-3.5 text-[#5DDFC3]" />
                     完全無料で利用可能
                   </li>
                 </ul>
                 <Link
                   href="/lp"
-                  className="inline-flex items-center gap-2 text-[#5DDFC3] font-bold hover:gap-3 transition-all"
+                  className="inline-flex items-center gap-2 text-[#5DDFC3] font-bold text-sm hover:gap-3 transition-all"
                 >
                   詳しく見る
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </div>
@@ -216,48 +217,93 @@ export default function CompanyPage() {
             <div className="group bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
               <div className="aspect-video relative bg-gradient-to-br from-cyan-500/20 to-teal-500/10">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <Image
                       src="/english/favicon-48x48.png"
                       alt="Roopy English"
-                      width={48}
-                      height={48}
+                      width={40}
+                      height={40}
                       className="rounded-lg"
                     />
-                    <span className="text-3xl font-black text-[#3A405A]">Roopy English</span>
+                    <span className="text-2xl font-black text-[#3A405A]">Roopy English</span>
                   </div>
                 </div>
               </div>
-              <div className="p-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <Headphones className="w-6 h-6 text-cyan-500" />
-                  <span className="text-sm font-bold text-cyan-500">英語ニュースリスニング</span>
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Headphones className="w-5 h-5 text-cyan-500" />
+                  <span className="text-xs font-bold text-cyan-500">英語ニュースリスニング</span>
                 </div>
-                <h3 className="text-2xl font-bold mb-3">Roopy English</h3>
-                <p className="opacity-70 mb-6 leading-relaxed">
-                  毎朝届く英語ニュースで、通勤時間を学習時間に。日本のニュースを英語でリスニングすることで、ビジネス英語力を毎日アップ。
+                <h3 className="text-xl font-bold mb-2">Roopy English</h3>
+                <p className="opacity-70 mb-4 leading-relaxed text-sm">
+                  毎朝届く英語ニュースで、通勤時間を学習時間に。
                 </p>
-                <ul className="space-y-2 mb-6 text-sm">
+                <ul className="space-y-1.5 mb-4 text-xs">
                   <li className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-cyan-500" />
-                    毎朝約20本の英語ニュースを配信
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-500" />
+                    毎朝約20本の英語ニュース配信
                   </li>
                   <li className="flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-cyan-500" />
+                    <BookOpen className="w-3.5 h-3.5 text-cyan-500" />
                     日本語字幕＆重要単語リスト
                   </li>
                   <li className="flex items-center gap-2">
-                    <Target className="w-4 h-4 text-cyan-500" />
-                    AIネイティブ音声・速度調整機能
+                    <Target className="w-3.5 h-3.5 text-cyan-500" />
+                    AIネイティブ音声・速度調整
                   </li>
                 </ul>
                 <Link
                   href="/lp/english"
-                  className="inline-flex items-center gap-2 text-cyan-500 font-bold hover:gap-3 transition-all"
+                  className="inline-flex items-center gap-2 text-cyan-500 font-bold text-sm hover:gap-3 transition-all"
                 >
                   詳しく見る
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
+              </div>
+            </div>
+
+            {/* 学習塾DX支援 */}
+            <div className="group bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+              <div className="aspect-video relative bg-gradient-to-br from-purple-500/20 to-indigo-500/10">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                      <School className="w-6 h-6 text-white" />
+                    </div>
+                    <span className="text-2xl font-black text-[#3A405A]">塾DX</span>
+                  </div>
+                </div>
+              </div>
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap className="w-5 h-5 text-purple-500" />
+                  <span className="text-xs font-bold text-purple-500">学習塾向け</span>
+                </div>
+                <h3 className="text-xl font-bold mb-2">学習塾DX支援</h3>
+                <p className="opacity-70 mb-4 leading-relaxed text-sm">
+                  塾の業務効率化と生徒の学習体験向上をテクノロジーで支援。
+                </p>
+                <ul className="space-y-1.5 mb-4 text-xs">
+                  <li className="flex items-center gap-2">
+                    <BarChart3 className="w-3.5 h-3.5 text-purple-500" />
+                    学習進捗の可視化・分析
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Settings className="w-3.5 h-3.5 text-purple-500" />
+                    業務効率化ツール導入支援
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+                    オリジナル教材アプリ開発
+                  </li>
+                </ul>
+                <a
+                  href="#contact"
+                  className="inline-flex items-center gap-2 text-purple-500 font-bold text-sm hover:gap-3 transition-all"
+                >
+                  お問い合わせ
+                  <ArrowRight className="w-4 h-4" />
+                </a>
               </div>
             </div>
           </div>
