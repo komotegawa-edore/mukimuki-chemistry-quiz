@@ -252,7 +252,7 @@ export default function EnglishCampaignPage() {
           </div>
 
           <div className="bg-white/5 rounded-3xl p-6 border border-white/10">
-            <TryNewsPlayer />
+            <TryNewsPlayer useSample />
           </div>
 
           <p className="text-center mt-6 text-yellow-400 font-bold">

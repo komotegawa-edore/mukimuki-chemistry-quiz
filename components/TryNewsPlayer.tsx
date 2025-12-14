@@ -66,20 +66,54 @@ function renderParagraphs(text: string, className: string) {
   ))
 }
 
-export default function TryNewsPlayer() {
-  const [news, setNews] = useState<DailyNews | null>(null)
+// LP用のサンプルデータ（ElevenLabsで生成した音声）
+const SAMPLE_NEWS: DailyNews = {
+  id: 'sample',
+  news_date: new Date().toISOString().split('T')[0],
+  category: 'technology',
+  original_title: 'Sony Announces $2 Billion AI Investment',
+  english_script: `Japanese tech giant Sony has announced a major investment in artificial intelligence research, committing over two billion dollars to develop next-generation AI technologies over the next five years.
+
+The company plans to focus on areas such as robotics, entertainment, and healthcare applications. Sony's CEO stated that AI will be central to the company's growth strategy, and they aim to create innovative products that combine their expertise in hardware with advanced AI capabilities.
+
+This announcement comes as competition in the AI sector intensifies among global technology companies, with many racing to develop more sophisticated machine learning systems.`,
+  japanese_translation: `日本の大手テクノロジー企業ソニーは、人工知能研究への大規模な投資を発表し、今後5年間で次世代AI技術の開発に20億ドル以上を投じることを表明しました。
+
+同社はロボティクス、エンターテインメント、ヘルスケアアプリケーションなどの分野に注力する予定です。ソニーのCEOは、AIが同社の成長戦略の中心となると述べ、ハードウェアの専門知識と高度なAI機能を組み合わせた革新的な製品を創出することを目指しています。
+
+この発表は、グローバルなテクノロジー企業間でAI分野の競争が激化し、多くの企業がより高度な機械学習システムの開発を競っている中で行われました。`,
+  key_vocabulary: [
+    { word: 'artificial intelligence', meaning: '人工知能' },
+    { word: 'investment', meaning: '投資' },
+    { word: 'next-generation', meaning: '次世代の' },
+    { word: 'expertise', meaning: '専門知識' },
+    { word: 'intensify', meaning: '激化する' },
+  ],
+  level: 'intermediate',
+  audio_url: '/audio/sample/lp-sample.mp3',
+  source: null,
+}
+
+interface TryNewsPlayerProps {
+  useSample?: boolean
+}
+
+export default function TryNewsPlayer({ useSample = false }: TryNewsPlayerProps) {
+  const [news, setNews] = useState<DailyNews | null>(useSample ? SAMPLE_NEWS : null)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [playbackRate, setPlaybackRate] = useState(0.85)
+  const [playbackRate, setPlaybackRate] = useState(1.0)
   const [subtitleMode, setSubtitleMode] = useState<SubtitleMode>('both')
   const [showVocabulary, setShowVocabulary] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!useSample)
 
   const audioRef = useRef<HTMLAudioElement>(null)
 
-  // 今日のニュースの1本目を取得
+  // 今日のニュースの1本目を取得（サンプルモードでない場合）
   useEffect(() => {
+    if (useSample) return
+
     async function fetchNews() {
       try {
         const res = await fetch('/api/english/news')
@@ -94,7 +128,7 @@ export default function TryNewsPlayer() {
       }
     }
     fetchNews()
-  }, [])
+  }, [useSample])
 
   // 再生速度の変更
   useEffect(() => {
