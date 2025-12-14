@@ -287,49 +287,50 @@ export default function CompanyPage() {
             </div>
             </FadeInSection>
 
-            {/* 学習塾DX支援 */}
+            {/* 学習塾DX支援 - MANABEE */}
             <FadeInSection delay={300} direction="up">
             <div className="group bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-              <div className="aspect-video relative bg-gradient-to-br from-purple-500/20 to-indigo-500/10">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center">
-                      <School className="w-6 h-6 text-white" />
-                    </div>
-                    <span className="text-2xl font-black text-[#3A405A]">塾DX</span>
-                  </div>
-                </div>
+              <div className="aspect-video relative bg-gradient-to-br from-amber-500/20 to-orange-500/10">
+                <Image
+                  src="/manabee.png"
+                  alt="MANABEE - LINE出席管理アプリ"
+                  fill
+                  className="object-cover object-top"
+                />
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <Zap className="w-5 h-5 text-purple-500" />
-                  <span className="text-xs font-bold text-purple-500">学習塾向け</span>
+                  <School className="w-5 h-5 text-amber-500" />
+                  <span className="text-xs font-bold text-amber-500">学習塾DX支援</span>
                 </div>
-                <h3 className="text-xl font-bold mb-2">学習塾DX支援</h3>
+                <h3 className="text-xl font-bold mb-2">MANABEE（まなビーくん）</h3>
                 <p className="opacity-70 mb-4 leading-relaxed text-sm">
-                  塾の業務効率化と生徒の学習体験向上をテクノロジーで支援。
+                  LINEで完結する出席管理。アプリ不要、導入5分で今日から使える。
                 </p>
                 <ul className="space-y-1.5 mb-4 text-xs">
                   <li className="flex items-center gap-2">
-                    <BarChart3 className="w-3.5 h-3.5 text-purple-500" />
-                    学習進捗の可視化・分析
+                    <Zap className="w-3.5 h-3.5 text-amber-500" />
+                    LINEでワンタップ出席
                   </li>
                   <li className="flex items-center gap-2">
-                    <Settings className="w-3.5 h-3.5 text-purple-500" />
-                    業務効率化ツール導入支援
+                    <BarChart3 className="w-3.5 h-3.5 text-amber-500" />
+                    スプレッドシートに自動反映
                   </li>
                   <li className="flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-purple-500" />
-                    オリジナル教材アプリ開発
+                    <Settings className="w-3.5 h-3.5 text-amber-500" />
+                    座席表をリアルタイム更新
                   </li>
                 </ul>
-                <a
-                  href="#contact"
-                  className="inline-flex items-center gap-2 text-purple-500 font-bold text-sm hover:gap-3 transition-all"
-                >
-                  お問い合わせ
-                  <ArrowRight className="w-4 h-4" />
-                </a>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500">生徒1名 100円/月〜</span>
+                  <a
+                    href="#contact"
+                    className="inline-flex items-center gap-2 text-amber-500 font-bold text-sm hover:gap-3 transition-all"
+                  >
+                    お問い合わせ
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
             </div>
             </FadeInSection>
