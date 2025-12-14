@@ -117,7 +117,7 @@ export default function EnglishLandingPage() {
               <span className="font-bold">1本2-3分</span> で聞ける
             </div>
             <div className="bg-gradient-to-r from-yellow-400 to-orange-500 px-4 py-2 rounded-full border border-white/30 animate-pulse">
-              <span className="font-bold">先着100名</span> 永久450円/月
+              <span className="font-bold">先着100名</span> <span className="line-through opacity-70">980円</span>→<span className="font-bold">450円</span>/月
             </div>
           </div>
 
