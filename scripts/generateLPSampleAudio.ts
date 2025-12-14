@@ -21,17 +21,20 @@ const ELEVENLABS_API_URL = 'https://api.elevenlabs.io/v1/text-to-speech'
 // Rachel (アメリカ英語の女性ボイス) - クリアで聞き取りやすい
 const VOICE_ID = '21m00Tcm4TlvDq8ikWAM'
 
-// LPサンプル用の英語スクリプト
+// LPサンプル用の英語スクリプト（ビジネスマン向け：日本経済・政治）
 const SAMPLE_SCRIPT = `
-Japanese tech giant Sony has announced a major investment in artificial intelligence research,
-committing over two billion dollars to develop next-generation AI technologies over the next five years.
+The Bank of Japan has decided to maintain its current interest rate policy,
+keeping rates unchanged amid growing concerns about the global economic outlook.
 
-The company plans to focus on areas such as robotics, entertainment, and healthcare applications.
-Sony's CEO stated that AI will be central to the company's growth strategy,
-and they aim to create innovative products that combine their expertise in hardware with advanced AI capabilities.
+Governor Ueda emphasized that the central bank will carefully monitor inflation trends
+and wage growth before considering any further policy adjustments.
 
-This announcement comes as competition in the AI sector intensifies among global technology companies,
-with many racing to develop more sophisticated machine learning systems.
+Meanwhile, the Japanese government announced a new economic stimulus package
+worth approximately fifty trillion yen, aimed at supporting small and medium-sized businesses
+and accelerating the country's digital transformation efforts.
+
+Economists suggest that these measures could help boost domestic consumption
+and strengthen Japan's competitiveness in the global market.
 `.trim()
 
 async function generateAudio(): Promise<void> {

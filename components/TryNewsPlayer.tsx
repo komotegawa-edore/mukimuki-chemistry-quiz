@@ -70,24 +70,28 @@ function renderParagraphs(text: string, className: string) {
 const SAMPLE_NEWS: DailyNews = {
   id: 'sample',
   news_date: new Date().toISOString().split('T')[0],
-  category: 'technology',
-  original_title: 'Sony Announces $2 Billion AI Investment',
-  english_script: `Japanese tech giant Sony has announced a major investment in artificial intelligence research, committing over two billion dollars to develop next-generation AI technologies over the next five years.
+  category: 'economy',
+  original_title: 'Bank of Japan Maintains Interest Rate Policy Amid Economic Concerns',
+  english_script: `The Bank of Japan has decided to maintain its current interest rate policy, keeping rates unchanged amid growing concerns about the global economic outlook.
 
-The company plans to focus on areas such as robotics, entertainment, and healthcare applications. Sony's CEO stated that AI will be central to the company's growth strategy, and they aim to create innovative products that combine their expertise in hardware with advanced AI capabilities.
+Governor Ueda emphasized that the central bank will carefully monitor inflation trends and wage growth before considering any further policy adjustments.
 
-This announcement comes as competition in the AI sector intensifies among global technology companies, with many racing to develop more sophisticated machine learning systems.`,
-  japanese_translation: `日本の大手テクノロジー企業ソニーは、人工知能研究への大規模な投資を発表し、今後5年間で次世代AI技術の開発に20億ドル以上を投じることを表明しました。
+Meanwhile, the Japanese government announced a new economic stimulus package worth approximately fifty trillion yen, aimed at supporting small and medium-sized businesses and accelerating the country's digital transformation efforts.
 
-同社はロボティクス、エンターテインメント、ヘルスケアアプリケーションなどの分野に注力する予定です。ソニーのCEOは、AIが同社の成長戦略の中心となると述べ、ハードウェアの専門知識と高度なAI機能を組み合わせた革新的な製品を創出することを目指しています。
+Economists suggest that these measures could help boost domestic consumption and strengthen Japan's competitiveness in the global market.`,
+  japanese_translation: `日本銀行は、世界経済の見通しに対する懸念が高まる中、現行の金利政策を維持し、金利を据え置くことを決定しました。
 
-この発表は、グローバルなテクノロジー企業間でAI分野の競争が激化し、多くの企業がより高度な機械学習システムの開発を競っている中で行われました。`,
+植田総裁は、今後の政策調整を検討する前に、インフレ動向と賃金上昇を注意深く監視していく方針を強調しました。
+
+一方、日本政府は中小企業の支援とデジタルトランスフォーメーションの加速を目的とした、約50兆円規模の新たな経済対策パッケージを発表しました。
+
+エコノミストらは、これらの施策が国内消費を押し上げ、グローバル市場における日本の競争力を強化する可能性があると指摘しています。`,
   key_vocabulary: [
-    { word: 'artificial intelligence', meaning: '人工知能' },
-    { word: 'investment', meaning: '投資' },
-    { word: 'next-generation', meaning: '次世代の' },
-    { word: 'expertise', meaning: '専門知識' },
-    { word: 'intensify', meaning: '激化する' },
+    { word: 'interest rate', meaning: '金利' },
+    { word: 'economic outlook', meaning: '経済見通し' },
+    { word: 'stimulus package', meaning: '景気刺激策' },
+    { word: 'domestic consumption', meaning: '国内消費' },
+    { word: 'competitiveness', meaning: '競争力' },
   ],
   level: 'intermediate',
   audio_url: '/audio/sample/lp-sample.mp3',
