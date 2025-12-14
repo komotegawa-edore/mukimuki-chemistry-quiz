@@ -6,7 +6,7 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { priceType } = await request.json()
+    const { priceType, promo } = await request.json()
 
     if (!priceType || !['monthly', 'yearly'].includes(priceType)) {
       return NextResponse.json(
@@ -98,6 +98,9 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // 初月無料プロモの場合はトライアル期間を設定
+    const trialDays = promo === 'first-month-free' ? 30 : undefined
+
     // Checkout Sessionを作成
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -114,12 +117,15 @@ export async function POST(request: NextRequest) {
       metadata: {
         user_id: user.id,
         plan_type: priceType,
+        promo: promo || '',
       },
       subscription_data: {
         metadata: {
           user_id: user.id,
           plan_type: priceType,
+          promo: promo || '',
         },
+        ...(trialDays && { trial_period_days: trialDays }),
       },
       locale: 'ja',
     })

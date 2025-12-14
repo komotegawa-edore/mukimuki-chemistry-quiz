@@ -11,6 +11,7 @@ import {
   AlertTriangle, Sparkles, PartyPopper
 } from 'lucide-react'
 import TryNewsPlayer from '@/components/TryNewsPlayer'
+import LPSignupForm from '@/components/LPSignupForm'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700', '900'],
@@ -165,23 +166,18 @@ export default function EnglishTimerPage() {
             <span className="font-bold">通常980円/月が最初の1ヶ月0円</span>
           </p>
 
-          {/* CTA */}
-          <div className="flex flex-col items-center gap-4">
-            <Link
-              href="/english/signup"
-              className={`group relative inline-flex items-center gap-3 ${isExpired ? 'bg-slate-600' : 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500'} text-black text-xl md:text-2xl font-black py-6 px-12 rounded-full hover:scale-110 transition-all shadow-2xl`}
-            >
-              <Zap className="w-8 h-8" />
-              {isExpired ? '通常価格で始める' : '初月無料で始める'}
-              <Zap className="w-8 h-8" />
-
-              {!isExpired && (
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-shimmer overflow-hidden" />
-              )}
-            </Link>
+          {/* サインアップフォーム */}
+          <div className="w-full max-w-[400px] mx-auto">
+            <div className={`${isExpired ? 'bg-slate-700/50' : 'bg-black/30'} backdrop-blur-md rounded-2xl p-6 border ${isExpired ? 'border-slate-600' : 'border-yellow-400/30'}`}>
+              <LPSignupForm
+                promo={isExpired ? undefined : 'first-month-free'}
+                buttonText={isExpired ? '通常価格で始める' : '初月無料で始める'}
+                theme="dark"
+              />
+            </div>
 
             {!isExpired && (
-              <p className="text-yellow-300 font-bold animate-pulse">
+              <p className="text-yellow-300 font-bold animate-pulse text-center mt-4">
                 ※ このページを閉じると特典は消えます
               </p>
             )}
@@ -349,13 +345,15 @@ export default function EnglishTimerPage() {
             </h2>
           )}
 
-          <Link
-            href="/english/signup"
-            className={`group inline-flex items-center gap-3 ${isExpired ? 'bg-white text-slate-700' : 'bg-gradient-to-r from-yellow-400 to-orange-500 text-black'} text-2xl font-black py-6 px-16 rounded-full hover:scale-110 transition-all shadow-2xl`}
-          >
-            <Zap className="w-8 h-8" />
-            {isExpired ? '登録する' : '初月無料で始める'}
-          </Link>
+          <div className="w-full max-w-[400px] mx-auto">
+            <div className={`${isExpired ? 'bg-white/10' : 'bg-black/30'} backdrop-blur-md rounded-2xl p-6`}>
+              <LPSignupForm
+                promo={isExpired ? undefined : 'first-month-free'}
+                buttonText={isExpired ? '登録する' : '初月無料で始める'}
+                theme="dark"
+              />
+            </div>
+          </div>
 
           {!isExpired && (
             <p className="mt-6 text-yellow-200 font-bold">
@@ -417,13 +415,11 @@ export default function EnglishTimerPage() {
                 まもなく終了します！
               </p>
 
-              <Link
-                href="/english/signup"
-                className="block w-full py-5 bg-gradient-to-r from-yellow-400 to-orange-500 text-black rounded-2xl font-black text-xl hover:scale-105 transition-transform"
-                onClick={() => setShowModal(false)}
-              >
-                今すぐ初月無料で始める
-              </Link>
+              <LPSignupForm
+                promo="first-month-free"
+                buttonText="今すぐ初月無料で始める"
+                theme="dark"
+              />
             </div>
           </div>
         </div>
