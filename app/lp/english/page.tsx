@@ -542,7 +542,7 @@ export default function EnglishLandingPage() {
             今日から、<span className="text-yellow-300">通勤を学習に</span>。
           </h2>
           <p className="text-xl mb-10 opacity-90">
-            月額980円から・Googleで30秒ログイン<br />
+            <span className="font-bold">先着100名 <span className="line-through opacity-70">980円</span>→450円/月</span>・Googleで30秒ログイン<br />
             スマホ1つで始められます。
           </p>
 
