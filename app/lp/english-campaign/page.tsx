@@ -11,7 +11,6 @@ import {
   Check, Crown, Zap, Gift, PartyPopper, Flame, AlertTriangle
 } from 'lucide-react'
 import TryNewsPlayer from '@/components/TryNewsPlayer'
-import LPSignupForm from '@/components/LPSignupForm'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700', '900'],
@@ -129,15 +128,23 @@ export default function EnglishCampaignPage() {
             </div>
           )}
 
-          {/* サインアップフォーム */}
-          <div className="w-full max-w-[400px] mx-auto">
-            <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-yellow-400/30">
-              <LPSignupForm
-                promo="early-450"
-                buttonText="今すぐ450円で始める"
-                theme="dark"
-              />
-            </div>
+          {/* CTAボタン */}
+          <div className="flex flex-col items-center gap-4">
+            <Link
+              href="/english/signup"
+              className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-black text-xl md:text-2xl font-black py-6 px-12 rounded-full hover:scale-110 transition-all shadow-2xl"
+            >
+              <Zap className="w-8 h-8 group-hover:animate-spin" />
+              今すぐ450円で始める
+              <Zap className="w-8 h-8 group-hover:animate-spin" />
+
+              {/* 光るエフェクト */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-shimmer overflow-hidden" />
+            </Link>
+
+            <p className="text-sm opacity-70">
+              クレジットカードで30秒登録 / いつでも解約可能
+            </p>
           </div>
         </div>
 
@@ -388,15 +395,17 @@ export default function EnglishCampaignPage() {
             </p>
           )}
 
-          <div className="w-full max-w-[400px] mx-auto">
-            <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6">
-              <LPSignupForm
-                promo="early-450"
-                buttonText="今すぐ登録する"
-                theme="dark"
-              />
-            </div>
-          </div>
+          <Link
+            href="/english/signup"
+            className="group inline-flex items-center gap-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-black text-2xl font-black py-6 px-16 rounded-full hover:scale-110 transition-all shadow-2xl"
+          >
+            <Zap className="w-8 h-8" />
+            今すぐ登録する
+          </Link>
+
+          <p className="mt-6 opacity-70">
+            30秒で登録完了 / いつでも解約可能
+          </p>
         </div>
       </section>
 
