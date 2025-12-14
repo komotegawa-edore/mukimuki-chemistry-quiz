@@ -10,6 +10,8 @@ import {
 } from 'lucide-react'
 import CompanyHeader from '@/components/company/CompanyHeader'
 import ContactForm from '@/components/company/ContactForm'
+import TypeWriter from '@/components/company/TypeWriter'
+import FadeInSection from '@/components/company/FadeInSection'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '500', '700', '900'],
@@ -98,76 +100,96 @@ export default function CompanyPage() {
       </section>
 
       {/* Concept Section */}
-      <section id="concept" className="py-24 px-4 bg-white">
+      <section id="concept" className="py-24 px-4 bg-white overflow-hidden">
         <div className="max-w-[900px] mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#E0F7F1] text-[#3A405A] px-4 py-2 rounded-full text-sm font-bold mb-4">
-              <Lightbulb className="w-4 h-4 text-[#5DDFC3]" />
-              CONCEPT
+          <FadeInSection>
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 bg-[#E0F7F1] text-[#3A405A] px-4 py-2 rounded-full text-sm font-bold mb-4">
+                <Lightbulb className="w-4 h-4 text-[#5DDFC3]" />
+                CONCEPT
+              </div>
+              <h2 className="text-4xl font-black mb-6">
+                コンセプト
+              </h2>
             </div>
-            <h2 className="text-4xl font-black mb-6">
-              コンセプト
-            </h2>
-          </div>
+          </FadeInSection>
 
-          <div className="bg-gradient-to-br from-[#F4F9F7] to-white rounded-3xl p-8 md:p-12 shadow-lg border border-[#E0F7F1]">
-            <p className="text-xl md:text-2xl leading-relaxed text-center mb-12 font-medium">
-              「続かない」を「続けられる」に変える。<br />
-              学習の壁を取り除き、<br />
-              誰もが自分のペースで成長できる世界を。
-            </p>
+          <FadeInSection delay={200}>
+            <div className="bg-gradient-to-br from-[#F4F9F7] to-white rounded-3xl p-8 md:p-12 shadow-lg border border-[#E0F7F1]">
+              <div className="text-xl md:text-2xl leading-relaxed text-center mb-12 font-medium min-h-[120px] md:min-h-[100px]">
+                <TypeWriter
+                  texts={[
+                    '「続かない」を「続けられる」に変える。',
+                    '学習の壁を取り除き、誰もが自分のペースで成長できる世界を。',
+                    '教育×テクノロジーで、学びをもっと楽しく。',
+                  ]}
+                  speed={80}
+                  deleteSpeed={40}
+                  pauseTime={3000}
+                />
+              </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-[#5DDFC3]/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Heart className="w-8 h-8 text-[#5DDFC3]" />
-                </div>
-                <h3 className="font-bold text-lg mb-2">楽しさを設計する</h3>
-                <p className="text-sm opacity-70">
-                  ゲーム要素やUI/UXデザインで、学習を続けたくなる体験を
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-cyan-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Target className="w-8 h-8 text-cyan-500" />
-                </div>
-                <h3 className="font-bold text-lg mb-2">成果を可視化する</h3>
-                <p className="text-sm opacity-70">
-                  努力が数値や成長として見える仕組みでモチベーションを維持
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-teal-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Rocket className="w-8 h-8 text-teal-500" />
-                </div>
-                <h3 className="font-bold text-lg mb-2">習慣化を支援する</h3>
-                <p className="text-sm opacity-70">
-                  毎日続けられる仕掛けで、学習を生活の一部に
-                </p>
+              <div className="grid md:grid-cols-3 gap-8">
+                <FadeInSection delay={100} direction="up">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-[#5DDFC3]/20 rounded-2xl flex items-center justify-center mx-auto mb-4 hover:scale-110 hover:rotate-3 transition-transform">
+                      <Heart className="w-8 h-8 text-[#5DDFC3]" />
+                    </div>
+                    <h3 className="font-bold text-lg mb-2">楽しさを設計する</h3>
+                    <p className="text-sm opacity-70">
+                      ゲーム要素やUI/UXデザインで、学習を続けたくなる体験を
+                    </p>
+                  </div>
+                </FadeInSection>
+                <FadeInSection delay={200} direction="up">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-cyan-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 hover:scale-110 hover:rotate-3 transition-transform">
+                      <Target className="w-8 h-8 text-cyan-500" />
+                    </div>
+                    <h3 className="font-bold text-lg mb-2">成果を可視化する</h3>
+                    <p className="text-sm opacity-70">
+                      努力が数値や成長として見える仕組みでモチベーションを維持
+                    </p>
+                  </div>
+                </FadeInSection>
+                <FadeInSection delay={300} direction="up">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-teal-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 hover:scale-110 hover:rotate-3 transition-transform">
+                      <Rocket className="w-8 h-8 text-teal-500" />
+                    </div>
+                    <h3 className="font-bold text-lg mb-2">習慣化を支援する</h3>
+                    <p className="text-sm opacity-70">
+                      毎日続けられる仕掛けで、学習を生活の一部に
+                    </p>
+                  </div>
+                </FadeInSection>
               </div>
             </div>
-          </div>
+          </FadeInSection>
         </div>
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-24 px-4 bg-gradient-to-b from-gray-50 to-white">
+      <section id="services" className="py-24 px-4 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
         <div className="max-w-[1100px] mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#5DDFC3]/20 text-[#3A405A] px-4 py-2 rounded-full text-sm font-bold mb-4">
-              <Sparkles className="w-4 h-4 text-[#5DDFC3]" />
-              SERVICES
+          <FadeInSection>
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 bg-[#5DDFC3]/20 text-[#3A405A] px-4 py-2 rounded-full text-sm font-bold mb-4">
+                <Sparkles className="w-4 h-4 text-[#5DDFC3]" />
+                SERVICES
+              </div>
+              <h2 className="text-4xl font-black mb-4">
+                サービス
+              </h2>
+              <p className="text-lg opacity-70">
+                学習者一人ひとりに寄り添うプロダクトを提供しています
+              </p>
             </div>
-            <h2 className="text-4xl font-black mb-4">
-              サービス
-            </h2>
-            <p className="text-lg opacity-70">
-              学習者一人ひとりに寄り添うプロダクトを提供しています
-            </p>
-          </div>
+          </FadeInSection>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Roopy 大学受験版 */}
+            <FadeInSection delay={100} direction="up">
             <div className="group bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
               <div className="aspect-video relative bg-gradient-to-br from-[#5DDFC3]/20 to-[#E0F7F1]">
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -212,8 +234,10 @@ export default function CompanyPage() {
                 </Link>
               </div>
             </div>
+            </FadeInSection>
 
             {/* Roopy English */}
+            <FadeInSection delay={200} direction="up">
             <div className="group bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
               <div className="aspect-video relative bg-gradient-to-br from-cyan-500/20 to-teal-500/10">
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -261,8 +285,10 @@ export default function CompanyPage() {
                 </Link>
               </div>
             </div>
+            </FadeInSection>
 
             {/* 学習塾DX支援 */}
+            <FadeInSection delay={300} direction="up">
             <div className="group bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
               <div className="aspect-video relative bg-gradient-to-br from-purple-500/20 to-indigo-500/10">
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -306,23 +332,27 @@ export default function CompanyPage() {
                 </a>
               </div>
             </div>
+            </FadeInSection>
           </div>
         </div>
       </section>
 
       {/* Profile Section */}
-      <section id="profile" className="py-24 px-4 bg-white">
+      <section id="profile" className="py-24 px-4 bg-white overflow-hidden">
         <div className="max-w-[900px] mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-gray-100 text-[#3A405A] px-4 py-2 rounded-full text-sm font-bold mb-4">
-              <Users className="w-4 h-4" />
-              PROFILE
+          <FadeInSection>
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 bg-gray-100 text-[#3A405A] px-4 py-2 rounded-full text-sm font-bold mb-4">
+                <Users className="w-4 h-4" />
+                PROFILE
+              </div>
+              <h2 className="text-4xl font-black mb-4">
+                代表プロフィール
+              </h2>
             </div>
-            <h2 className="text-4xl font-black mb-4">
-              代表プロフィール
-            </h2>
-          </div>
+          </FadeInSection>
 
+          <FadeInSection delay={200} direction="left">
           <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 md:p-12 shadow-lg border border-gray-100">
             <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
               {/* プロフィール写真（プレースホルダー） */}
@@ -365,22 +395,26 @@ export default function CompanyPage() {
               </div>
             </div>
           </div>
+          </FadeInSection>
         </div>
       </section>
 
       {/* Company Info Section */}
-      <section id="company" className="py-24 px-4 bg-gradient-to-b from-gray-50 to-white">
+      <section id="company" className="py-24 px-4 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
         <div className="max-w-[800px] mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#3A405A]/10 text-[#3A405A] px-4 py-2 rounded-full text-sm font-bold mb-4">
-              <Building2 className="w-4 h-4" />
-              COMPANY
+          <FadeInSection>
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 bg-[#3A405A]/10 text-[#3A405A] px-4 py-2 rounded-full text-sm font-bold mb-4">
+                <Building2 className="w-4 h-4" />
+                COMPANY
+              </div>
+              <h2 className="text-4xl font-black mb-4">
+                会社概要
+              </h2>
             </div>
-            <h2 className="text-4xl font-black mb-4">
-              会社概要
-            </h2>
-          </div>
+          </FadeInSection>
 
+          <FadeInSection delay={200}>
           <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
             <table className="w-full">
               <tbody className="divide-y divide-gray-100">
@@ -438,26 +472,29 @@ export default function CompanyPage() {
               </tbody>
             </table>
           </div>
+          </FadeInSection>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-24 px-4 bg-gradient-to-br from-[#3A405A] via-[#4A506A] to-[#5A607A] text-white">
+      <section id="contact" className="py-24 px-4 bg-gradient-to-br from-[#3A405A] via-[#4A506A] to-[#5A607A] text-white overflow-hidden">
         <div className="max-w-[800px] mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-bold mb-8 border border-white/30">
-              <Mail className="w-4 h-4" />
-              CONTACT
-            </div>
+          <FadeInSection>
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-bold mb-8 border border-white/30">
+                <Mail className="w-4 h-4" />
+                CONTACT
+              </div>
 
-            <h2 className="text-4xl font-black mb-6">
-              お問い合わせ
-            </h2>
-            <p className="text-lg mb-10 opacity-90">
-              サービスに関するご質問、取材依頼、<br className="hidden md:block" />
-              その他ご相談はお気軽にお問い合わせください。
-            </p>
-          </div>
+              <h2 className="text-4xl font-black mb-6">
+                お問い合わせ
+              </h2>
+              <p className="text-lg mb-10 opacity-90">
+                サービスに関するご質問、取材依頼、<br className="hidden md:block" />
+                その他ご相談はお気軽にお問い合わせください。
+              </p>
+            </div>
+          </FadeInSection>
 
           <div className="grid md:grid-cols-3 gap-8">
             {/* フォーム */}
