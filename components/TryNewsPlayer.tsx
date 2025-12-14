@@ -202,7 +202,7 @@ export default function TryNewsPlayer({ useSample = false }: TryNewsPlayerProps)
       {/* Header */}
       <div className="bg-gradient-to-r from-cyan-500 to-teal-500 text-white p-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium opacity-90">今日のニュース（お試し）</span>
+          <span className="text-sm font-medium opacity-90">{useSample ? '過去のニュースから（お試し）' : '今日のニュース（お試し）'}</span>
           <span className={`text-xs px-2 py-1 rounded-full bg-white/20`}>
             {category.label}
           </span>
