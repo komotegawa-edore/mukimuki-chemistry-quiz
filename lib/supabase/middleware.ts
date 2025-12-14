@@ -50,6 +50,7 @@ export async function updateSession(request: NextRequest) {
     '/english',  // Roopy Englishホームページ（公開）
     '/forgot-password',
     '/reset-password',
+    '/company',  // 会社ホームページ（公開）
   ]
 
   const isPublicPath = publicPaths.some(path =>
