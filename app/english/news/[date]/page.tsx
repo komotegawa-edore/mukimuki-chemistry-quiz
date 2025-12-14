@@ -20,6 +20,7 @@ import {
   Crown,
 } from 'lucide-react'
 import { useSubscription } from '@/hooks/useSubscription'
+import SubscriptionModal from '@/components/SubscriptionModal'
 
 interface DailyNews {
   id: string
@@ -74,6 +75,7 @@ export default function NewsPlayerPage() {
   const [playbackRate, setPlaybackRate] = useState(1.0)
   const [subtitleMode, setSubtitleMode] = useState<SubtitleMode>('english')
   const [showVocabulary, setShowVocabulary] = useState(false)
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -516,13 +518,13 @@ export default function NewsPlayerPage() {
                 <p className="text-sm text-gray-600 mb-3">
                   プレミアム会員になると重要単語リストを確認できます
                 </p>
-                <Link
-                  href="/lp/english"
+                <button
+                  onClick={() => setShowSubscriptionModal(true)}
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold text-sm hover:shadow-lg transition-shadow"
                 >
                   <Crown className="w-4 h-4" />
                   プレミアムに登録
-                </Link>
+                </button>
               </div>
             </div>
           )}
@@ -565,6 +567,12 @@ export default function NewsPlayerPage() {
           </button>
         </div>
       </main>
+
+      {/* Subscription Modal */}
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+      />
     </div>
   )
 }
