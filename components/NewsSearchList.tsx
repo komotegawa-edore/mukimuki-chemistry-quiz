@@ -43,8 +43,15 @@ interface Props {
 
 export default function NewsSearchList({ news }: Props) {
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedDate, setSelectedDate] = useState<string>('')
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
   const { hasAccess, loading: subscriptionLoading } = useSubscription()
+
+  // 利用可能な日付一覧を取得
+  const availableDates = useMemo(() => {
+    const dates = new Set(news.map(item => item.news_date))
+    return Array.from(dates).sort((a, b) => b.localeCompare(a))
+  }, [news])
 
   // 今日の日付（JST）
   const today = useMemo(() => {
@@ -76,8 +83,13 @@ export default function NewsSearchList({ news }: Props) {
       return indexA - indexB
     })
 
-    // キーワード検索
+    // 日付フィルター + キーワード検索
     return sorted.filter((item) => {
+      // 日付フィルター
+      if (selectedDate && item.news_date !== selectedDate) {
+        return false
+      }
+      // キーワード検索
       if (searchQuery) {
         const query = searchQuery.toLowerCase()
         const matchesTitle = item.original_title.toLowerCase().includes(query)
@@ -88,7 +100,7 @@ export default function NewsSearchList({ news }: Props) {
       }
       return true
     })
-  }, [news, searchQuery])
+  }, [news, searchQuery, selectedDate])
 
   // 日付でグループ化
   const newsByDate = useMemo(() => {
@@ -117,42 +129,71 @@ export default function NewsSearchList({ news }: Props) {
     <div>
       {/* 検索UI */}
       <div className="bg-white rounded-xl p-4 mb-6 border border-gray-100 shadow-sm">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="キーワードで検索..."
-            className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+        <div className="flex flex-col sm:flex-row gap-3">
+          {/* キーワード検索 */}
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="キーワードで検索..."
+              className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+
+          {/* 日付フィルター */}
+          <div className="relative sm:w-48">
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+            <select
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent appearance-none bg-white cursor-pointer"
             >
-              <X className="w-5 h-5" />
-            </button>
-          )}
+              <option value="">すべての日付</option>
+              {availableDates.map((date) => {
+                const dateObj = new Date(date)
+                const isToday = date === today
+                return (
+                  <option key={date} value={date}>
+                    {dateObj.toLocaleDateString('ja-JP', {
+                      month: 'short',
+                      day: 'numeric',
+                    })}
+                    {isToday ? ' (今日)' : ''}
+                  </option>
+                )
+              })}
+            </select>
+            <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 rotate-90 pointer-events-none" />
+          </div>
         </div>
 
-        {searchQuery && (
+        {(searchQuery || selectedDate) && (
           <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
             <span className="text-sm text-gray-600">
               {filteredNews.length}件の記事が見つかりました
             </span>
             <button
-              onClick={clearSearch}
+              onClick={() => { setSearchQuery(''); setSelectedDate(''); }}
               className="text-sm text-blue-600 hover:text-blue-700 font-medium"
             >
-              クリア
+              フィルターをクリア
             </button>
           </div>
         )}
       </div>
 
       {/* プレミアムへの誘導バナー（非購読者向け） */}
-      {!hasAccess && !subscriptionLoading && !searchQuery && (
+      {!hasAccess && !subscriptionLoading && !searchQuery && !selectedDate && (
         <button
           onClick={() => setShowSubscriptionModal(true)}
           className="w-full mb-6 p-4 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-xl text-white hover:from-cyan-600 hover:to-teal-600 transition-all shadow-md hover:shadow-lg"
@@ -173,7 +214,7 @@ export default function NewsSearchList({ news }: Props) {
       )}
 
       {/* 今日のおすすめ */}
-      {recommendedItem && !searchQuery && (
+      {recommendedItem && !searchQuery && !selectedDate && (
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-amber-500" />
