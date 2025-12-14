@@ -2,11 +2,11 @@
 
 import Link from 'next/link'
 import { CheckCircle, Headphones, ArrowRight } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { analytics } from '@/lib/analytics'
 
-export default function SubscriptionSuccessPage() {
+function SuccessContent() {
   const searchParams = useSearchParams()
 
   useEffect(() => {
@@ -59,5 +59,17 @@ export default function SubscriptionSuccessPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SubscriptionSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-white flex items-center justify-center">
+        <div className="animate-pulse text-cyan-600">読み込み中...</div>
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   )
 }
