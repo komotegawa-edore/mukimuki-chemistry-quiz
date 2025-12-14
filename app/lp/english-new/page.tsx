@@ -192,7 +192,7 @@ export default function EnglishNewLandingPage() {
                     STEP 1
                   </div>
                   <h3 className="font-bold text-xl mb-1 text-[#3A405A]">ニュースを選ぶ</h3>
-                  <p className="text-sm opacity-70 text-[#3A405A]">興味のあるカテゴリから選択</p>
+                  <p className="text-sm opacity-70 text-[#3A405A]">興味のあるニュースを選択</p>
                 </div>
               </div>
             </div>
