@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Crown, Check, Loader2, Smartphone, Sparkles } from 'lucide-react'
+import { Crown, Check, Loader2, Smartphone, Sparkles, PartyPopper } from 'lucide-react'
 
 interface EarlyDiscount {
   available: boolean
@@ -105,8 +105,9 @@ export default function EnglishPricingSection() {
                     <span className="text-gray-500">/月</span>
                   </div>
                   <div className="mt-3 bg-rose-50 border border-rose-200 rounded-lg p-3">
-                    <p className="text-sm text-rose-600 font-bold">
-                      🎉 今入会で永久に月額450円！
+                    <p className="text-sm text-rose-600 font-bold flex items-center justify-center gap-1">
+                      <PartyPopper className="w-4 h-4" />
+                      今入会で永久に月額450円！
                     </p>
                     <p className="text-xs text-rose-500 mt-1">
                       ※ 解約するまでずっとこの価格が適用されます
