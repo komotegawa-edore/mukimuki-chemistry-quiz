@@ -171,7 +171,9 @@ async function generateBatchNews(batchNum: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1
     const newsId = generateNewsId(today, config.startIndex + i)
 
     try {
-      const script = await generateScript(openai, news)
+      // 半々で短いニュース（偶数インデックス）と通常ニュース（奇数インデックス）を生成
+      const isShort = i % 2 === 0
+      const script = await generateScript(openai, news, isShort)
       const audioUrl = await generateAudio(openai, script.englishScript, newsId, supabase)
 
       results.push({
@@ -182,7 +184,7 @@ async function generateBatchNews(batchNum: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1
         english_script: script.englishScript,
         japanese_translation: script.japaneseTranslation,
         key_vocabulary: script.keyVocabulary,
-        level: script.level || 'intermediate',
+        level: script.level || (isShort ? 'beginner' : 'intermediate'),
         audio_url: audioUrl,
         source: news.source,
         is_published: true,
@@ -241,7 +243,9 @@ async function generateDailyNews() {
     const newsId = generateNewsId(today, i)
 
     try {
-      const script = await generateScript(openai, news)
+      // 半々で短いニュース（偶数インデックス）と通常ニュース（奇数インデックス）を生成
+      const isShort = i % 2 === 0
+      const script = await generateScript(openai, news, isShort)
       const audioUrl = await generateAudio(openai, script.englishScript, newsId, supabase)
 
       results.push({
@@ -252,7 +256,7 @@ async function generateDailyNews() {
         english_script: script.englishScript,
         japanese_translation: script.japaneseTranslation,
         key_vocabulary: script.keyVocabulary,
-        level: script.level || 'intermediate',
+        level: script.level || (isShort ? 'beginner' : 'intermediate'),
         audio_url: audioUrl,
         source: news.source,
         is_published: true,
@@ -291,28 +295,25 @@ function generateNewsId(date: Date, index: number): string {
   return `N${year}${month}${day}_${index + 1}`
 }
 
-async function generateScript(openai: OpenAI, news: any) {
-  // 元記事の長さに応じてスクリプトの目標語数を決定
-  const sourceLength = (news.description || '').length
+async function generateScript(openai: OpenAI, news: any, isShort: boolean = false) {
+  // 短いニュースと通常ニュースを半々で生成
   let targetWords: string
   let targetParagraphs: string
   let vocabCount: string
+  let level: string
 
-  if (sourceLength < 100) {
-    // 短い記事: 100-150語
-    targetWords = '100-150 words (approximately 1 minute when read aloud)'
-    targetParagraphs = '2-3 paragraphs'
-    vocabCount = '3-5'
-  } else if (sourceLength < 200) {
-    // 中程度の記事: 150-250語
-    targetWords = '150-250 words (approximately 1-2 minutes when read aloud)'
-    targetParagraphs = '2-4 paragraphs'
-    vocabCount = '4-6'
+  if (isShort) {
+    // 短いニュース: 80-120語（約1分）- 初心者向け
+    targetWords = '80-120 words (approximately 45-60 seconds when read aloud)'
+    targetParagraphs = '2 paragraphs'
+    vocabCount = '3-4'
+    level = 'beginner'
   } else {
-    // 長い記事: 250-350語
-    targetWords = '250-350 words (approximately 2-3 minutes when read aloud)'
-    targetParagraphs = '3-5 paragraphs'
-    vocabCount = '5-8'
+    // 通常ニュース: 200-300語（約2-3分）
+    targetWords = '200-300 words (approximately 2-3 minutes when read aloud)'
+    targetParagraphs = '3-4 paragraphs'
+    vocabCount = '5-7'
+    level = 'intermediate'
   }
 
   const prompt = `You are an English language educator creating ORIGINAL educational listening material for Japanese working adults.

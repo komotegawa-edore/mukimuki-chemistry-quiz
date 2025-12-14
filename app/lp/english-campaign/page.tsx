@@ -36,7 +36,7 @@ export default function EnglishCampaignPage() {
     <div className={`min-h-screen text-white ${notoSansJP.className} overflow-x-hidden`}>
 
       {/* 緊急バナー - 画面上部固定 */}
-      <div className="bg-gradient-to-r from-red-600 via-pink-600 to-red-600 py-3 px-4 text-center animate-pulse sticky top-0 z-50">
+      <div className="bg-gradient-to-r from-red-600 via-pink-600 to-red-600 py-3 px-4 text-center animate-pulse fixed top-0 left-0 right-0 z-50">
         <p className="text-sm md:text-base font-bold flex items-center justify-center gap-2 flex-wrap">
           <Flame className="w-5 h-5" />
           <span>【期間限定】先着100名様 永久54%OFF キャンペーン実施中！</span>
@@ -45,7 +45,7 @@ export default function EnglishCampaignPage() {
       </div>
 
       {/* Hero Section - ド派手バージョン */}
-      <header className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-pink-800 to-red-700">
+      <header className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-pink-800 to-red-700 pt-12">
         {/* 装飾的な背景 */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-10 left-10 w-72 h-72 bg-yellow-400/20 rounded-full blur-3xl animate-pulse" />

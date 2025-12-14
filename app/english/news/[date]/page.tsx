@@ -73,7 +73,7 @@ export default function NewsPlayerPage() {
   const [currentIndex, setCurrentIndex] = useState(initialIndex)
   const [isPlaying, setIsPlaying] = useState(false)
   const [playbackRate, setPlaybackRate] = useState(1.0)
-  const [subtitleMode, setSubtitleMode] = useState<SubtitleMode>('english')
+  const [subtitleMode, setSubtitleMode] = useState<SubtitleMode>('both')
   const [showVocabulary, setShowVocabulary] = useState(false)
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
