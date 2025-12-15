@@ -35,6 +35,7 @@ export default async function JukuSitePage({ params }: PageProps) {
     <JukuSiteRenderer
       site={site as JukuSite}
       sections={(sections || []) as JukuSection[]}
+      slug={slug}
     />
   )
 }

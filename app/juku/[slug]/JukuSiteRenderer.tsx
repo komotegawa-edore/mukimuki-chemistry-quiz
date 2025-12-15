@@ -15,9 +15,10 @@ import {
 interface Props {
   site: JukuSite
   sections: JukuSection[]
+  slug: string
 }
 
-export function JukuSiteRenderer({ site, sections }: Props) {
+export function JukuSiteRenderer({ site, sections, slug }: Props) {
   const renderSection = (section: JukuSection) => {
     const commonProps = {
       primaryColor: site.primary_color,
@@ -113,6 +114,7 @@ export function JukuSiteRenderer({ site, sections }: Props) {
           </a>
           <nav className="hidden md:flex items-center gap-6 text-sm">
             <a href="#access" className="text-gray-600 hover:text-gray-900 transition-colors">アクセス</a>
+            <a href={`/juku/${slug}/blog`} className="text-gray-600 hover:text-gray-900 transition-colors">お知らせ</a>
             {site.phone && (
               <a
                 href={`tel:${site.phone}`}
