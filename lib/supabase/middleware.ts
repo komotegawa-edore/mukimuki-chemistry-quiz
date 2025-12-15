@@ -51,6 +51,8 @@ export async function updateSession(request: NextRequest) {
     '/forgot-password',
     '/reset-password',
     '/company',  // 会社ホームページ（公開）
+    '/juku',     // 塾サイトビルダー（公開）
+    '/juku-admin',  // 塾サイトエディタ（後で認証追加）
   ]
 
   const isPublicPath = publicPaths.some(path =>
