@@ -43,10 +43,11 @@ export default function JukuAdminDashboard() {
       setProfile(profileData)
     }
 
-    // サイト一覧取得（RLSでowner_id = auth.uid()のみ取得される）
+    // サイト一覧取得（自分が所有するサイトのみ）
     const { data: sitesData } = await supabase
       .from('juku_sites')
       .select('*')
+      .eq('owner_id', user.id)
       .order('created_at', { ascending: false })
 
     setSites((sitesData || []) as JukuSite[])

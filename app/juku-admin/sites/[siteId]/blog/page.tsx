@@ -34,11 +34,12 @@ export default function SiteBlogPage({ params }: PageProps) {
       return
     }
 
-    // サイト取得
+    // サイト取得（自分が所有するサイトのみ）
     const { data: siteData, error: siteError } = await supabase
       .from('juku_sites')
       .select('*')
       .eq('id', siteId)
+      .eq('owner_id', user.id)
       .single()
 
     if (siteError || !siteData) {
