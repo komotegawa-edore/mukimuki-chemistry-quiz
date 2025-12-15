@@ -30,6 +30,7 @@ export function SiteSettings({ site, onUpdate }: Props) {
     primary_color: site.primary_color,
     secondary_color: site.secondary_color,
     logo_url: site.logo_url || '',
+    favicon_url: site.favicon_url || '',
     line_url: site.line_url || '',
     instagram_url: site.instagram_url || '',
     twitter_url: site.twitter_url || '',
@@ -88,7 +89,7 @@ export function SiteSettings({ site, onUpdate }: Props) {
         {/* ロゴ */}
         <div className="p-6 border-b border-gray-100">
           <h3 className="font-bold text-gray-800 mb-4">ロゴ</h3>
-          <p className="text-sm text-gray-500 mb-4">ロゴ画像をアップロードすると、ヘッダーとfaviconに表示されます。</p>
+          <p className="text-sm text-gray-500 mb-4">ヘッダーに表示されるロゴ画像をアップロードしてください。</p>
           <ImageUploader
             siteId={site.id}
             currentImage={formData.logo_url}
@@ -96,6 +97,26 @@ export function SiteSettings({ site, onUpdate }: Props) {
             aspectRatio="free"
             label=""
           />
+        </div>
+
+        {/* Favicon */}
+        <div className="p-6 border-b border-gray-100">
+          <h3 className="font-bold text-gray-800 mb-4">Favicon</h3>
+          <p className="text-sm text-gray-500 mb-4">
+            ブラウザのタブに表示されるアイコンです。正方形の画像（512x512px推奨）をアップロードしてください。
+          </p>
+          <ImageUploader
+            siteId={site.id}
+            currentImage={formData.favicon_url}
+            onUpload={(url) => handleChange('favicon_url', url)}
+            aspectRatio="square"
+            label=""
+          />
+          {!formData.favicon_url && formData.logo_url && (
+            <p className="text-xs text-gray-400 mt-2">
+              ※ 未設定の場合、ロゴ画像がFaviconとして使用されます
+            </p>
+          )}
         </div>
 
         {/* 連絡先 */}

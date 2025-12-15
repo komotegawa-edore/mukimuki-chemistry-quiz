@@ -11,6 +11,7 @@ export interface JukuSite {
   secondary_color: string
   font_family: string
   logo_url: string | null
+  favicon_url: string | null
 
   // 基本情報
   tagline: string | null

@@ -142,7 +142,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   const { data: site } = await supabase
     .from('juku_sites')
-    .select('name')
+    .select('name, logo_url, favicon_url')
     .eq('slug', slug)
     .eq('is_published', true)
     .single()
@@ -151,8 +151,16 @@ export async function generateMetadata({ params }: PageProps) {
     return { title: 'ページが見つかりません' }
   }
 
+  const faviconUrl = site.favicon_url || site.logo_url
+
   return {
     title: `お知らせ・ブログ | ${site.name}`,
     description: `${site.name}からの最新情報、教室の様子、学習のヒントなどをお届けします。`,
+    ...(faviconUrl && {
+      icons: {
+        icon: faviconUrl,
+        apple: faviconUrl,
+      },
+    }),
   }
 }
