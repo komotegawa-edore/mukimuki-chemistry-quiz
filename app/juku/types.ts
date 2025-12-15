@@ -10,6 +10,7 @@ export interface JukuSite {
   primary_color: string
   secondary_color: string
   font_family: string
+  logo_url: string | null
 
   // 基本情報
   tagline: string | null

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { JukuSite } from '../../juku/types'
+import { ImageUploader } from './ImageUploader'
 
 interface Props {
   site: JukuSite
@@ -28,6 +29,7 @@ export function SiteSettings({ site, onUpdate }: Props) {
     business_hours: site.business_hours || '',
     primary_color: site.primary_color,
     secondary_color: site.secondary_color,
+    logo_url: site.logo_url || '',
     line_url: site.line_url || '',
     instagram_url: site.instagram_url || '',
     twitter_url: site.twitter_url || '',
@@ -80,6 +82,19 @@ export function SiteSettings({ site, onUpdate }: Props) {
               />
             </div>
           </div>
+        </div>
+
+        {/* ロゴ */}
+        <div className="p-6 border-b border-gray-100">
+          <h3 className="font-bold text-gray-800 mb-4">ロゴ</h3>
+          <p className="text-sm text-gray-500 mb-4">ロゴ画像をアップロードすると、ヘッダーとfaviconに表示されます。</p>
+          <ImageUploader
+            siteId={site.id}
+            currentImage={formData.logo_url}
+            onUpload={(url) => handleChange('logo_url', url)}
+            aspectRatio="free"
+            label=""
+          />
         </div>
 
         {/* 連絡先 */}

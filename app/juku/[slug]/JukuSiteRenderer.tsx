@@ -100,8 +100,16 @@ export function JukuSiteRenderer({ site, sections }: Props) {
       {/* ヘッダー */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <a href="#" className="text-xl font-bold text-gray-800">
-            {site.name}
+          <a href="#" className="flex items-center gap-3">
+            {site.logo_url ? (
+              <img
+                src={site.logo_url}
+                alt={site.name}
+                className="h-10 w-auto object-contain"
+              />
+            ) : (
+              <span className="text-xl font-bold text-gray-800">{site.name}</span>
+            )}
           </a>
           <nav className="hidden md:flex items-center gap-6 text-sm">
             <a href="#access" className="text-gray-600 hover:text-gray-900 transition-colors">アクセス</a>
@@ -147,7 +155,15 @@ export function JukuSiteRenderer({ site, sections }: Props) {
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             {/* ロゴ・塾名 */}
             <div>
-              <h3 className="text-xl font-bold mb-4">{site.name}</h3>
+              {site.logo_url ? (
+                <img
+                  src={site.logo_url}
+                  alt={site.name}
+                  className="h-12 w-auto object-contain mb-4 brightness-0 invert"
+                />
+              ) : (
+                <h3 className="text-xl font-bold mb-4">{site.name}</h3>
+              )}
               {site.tagline && (
                 <p className="text-white/80 text-sm">{site.tagline}</p>
               )}
