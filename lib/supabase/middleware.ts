@@ -29,6 +29,35 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
+  // =============================================
+  // カスタムドメイン処理
+  // =============================================
+  const host = request.headers.get('host') || ''
+  const mainDomains = ['edore-edu.com', 'www.edore-edu.com', 'localhost', '127.0.0.1']
+  const isMainDomain = mainDomains.some(d => host.includes(d)) || host.includes('vercel.app')
+
+  // カスタムドメインからのアクセスの場合
+  if (!isMainDomain && host) {
+    // ドメインからサイトを検索
+    const { data: site } = await supabase
+      .from('juku_sites')
+      .select('slug, is_published')
+      .eq('custom_domain', host.replace(/^www\./, ''))  // www.を除去して検索
+      .single()
+
+    if (site && site.is_published) {
+      // /juku/[slug] にリライト（URLは変わらない）
+      const url = request.nextUrl.clone()
+      url.pathname = `/juku/${site.slug}${request.nextUrl.pathname}`
+      return NextResponse.rewrite(url)
+    }
+
+    // サイトが見つからない場合は404的な対応（メインサイトへリダイレクト）
+    if (!site) {
+      return NextResponse.redirect(new URL('https://edore-edu.com'))
+    }
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser()

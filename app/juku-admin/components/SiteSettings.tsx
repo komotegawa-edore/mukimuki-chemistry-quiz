@@ -33,6 +33,7 @@ export function SiteSettings({ site, onUpdate }: Props) {
     line_url: site.line_url || '',
     instagram_url: site.instagram_url || '',
     twitter_url: site.twitter_url || '',
+    custom_domain: site.custom_domain || '',
   })
 
   const handleChange = (key: string, value: string) => {
@@ -275,6 +276,61 @@ export function SiteSettings({ site, onUpdate }: Props) {
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
+          </div>
+        </div>
+
+        {/* カスタムドメイン */}
+        <div className="p-6 border-b border-gray-100">
+          <h3 className="font-bold text-gray-800 mb-4">カスタムドメイン</h3>
+          <p className="text-sm text-gray-500 mb-4">
+            独自ドメインでサイトを公開できます。設定後、DNS設定が必要です。
+          </p>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">ドメイン名</label>
+              <input
+                type="text"
+                value={formData.custom_domain}
+                onChange={(e) => handleChange('custom_domain', e.target.value.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/.*$/, ''))}
+                placeholder="example.com"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                「https://」や「www.」は不要です
+              </p>
+            </div>
+
+            {formData.custom_domain && (
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                <h4 className="font-medium text-blue-800 mb-2 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  DNS設定が必要です
+                </h4>
+                <p className="text-sm text-blue-700 mb-3">
+                  ドメイン管理画面で以下のレコードを追加してください：
+                </p>
+                <div className="bg-white rounded-lg p-3 font-mono text-sm">
+                  <div className="flex justify-between items-center mb-2 pb-2 border-b border-blue-100">
+                    <span className="text-gray-500">タイプ</span>
+                    <span className="font-bold">CNAME</span>
+                  </div>
+                  <div className="flex justify-between items-center mb-2 pb-2 border-b border-blue-100">
+                    <span className="text-gray-500">ホスト名</span>
+                    <span className="font-bold">@</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">値</span>
+                    <span className="font-bold text-blue-600">cname.vercel-dns.com</span>
+                  </div>
+                </div>
+                <p className="text-xs text-blue-600 mt-3">
+                  ※ 設定後、反映まで最大48時間かかる場合があります
+                </p>
+              </div>
+            )}
           </div>
         </div>
 

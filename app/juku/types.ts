@@ -25,6 +25,9 @@ export interface JukuSite {
   instagram_url: string | null
   twitter_url: string | null
 
+  // カスタムドメイン
+  custom_domain: string | null
+
   is_published: boolean
   created_at: string
   updated_at: string
