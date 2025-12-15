@@ -32,7 +32,7 @@ export function SectionEditor({ section, site, onUpdate }: Props) {
       case 'pricing':
         return <PricingEditor content={content as PricingContent} onChange={handleChange} />
       case 'teachers':
-        return <TeachersEditor content={content as TeachersContent} onChange={handleChange} />
+        return <TeachersEditor content={content as TeachersContent} onChange={handleChange} siteId={site.id} />
       case 'results':
         return <ResultsEditor content={content as ResultsContent} onChange={handleChange} />
       case 'access':
@@ -412,7 +412,7 @@ function PricingEditor({ content, onChange }: { content: PricingContent; onChang
 }
 
 // 講師エディタ
-function TeachersEditor({ content, onChange }: { content: TeachersContent; onChange: (updates: Partial<TeachersContent>) => void }) {
+function TeachersEditor({ content, onChange, siteId }: { content: TeachersContent; onChange: (updates: Partial<TeachersContent>) => void; siteId: string }) {
   const updateTeacher = (index: number, updates: Partial<TeachersContent['teachers'][0]>) => {
     const newTeachers = [...content.teachers]
     newTeachers[index] = { ...newTeachers[index], ...updates }
@@ -440,6 +440,30 @@ function TeachersEditor({ content, onChange }: { content: TeachersContent; onCha
         placeholder="講師紹介"
       />
 
+      {/* レイアウト選択 */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">レイアウト</label>
+        <div className="flex gap-3">
+          {[
+            { value: 'grid', label: 'グリッド' },
+            { value: 'carousel', label: 'カルーセル（横スライド）' },
+          ].map((layout) => (
+            <button
+              key={layout.value}
+              type="button"
+              onClick={() => onChange({ layout: layout.value as TeachersContent['layout'] })}
+              className={`flex-1 py-3 px-4 rounded-xl border-2 transition-all text-sm ${
+                (content.layout || 'grid') === layout.value
+                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              {layout.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="mt-6">
         <label className="block text-sm font-medium text-gray-700 mb-3">講師一覧</label>
         <div className="space-y-4">
@@ -447,15 +471,25 @@ function TeachersEditor({ content, onChange }: { content: TeachersContent; onCha
             <div key={index} className="p-4 bg-gray-50 rounded-xl">
               <div className="flex items-start justify-between mb-3">
                 <span className="text-xs text-gray-500">講師 {index + 1}</span>
-                {content.teachers.length > 1 && (
-                  <button
-                    onClick={() => removeTeacher(index)}
-                    className="text-red-500 hover:text-red-600 text-sm"
-                  >
-                    削除
-                  </button>
-                )}
+                <button
+                  onClick={() => removeTeacher(index)}
+                  className="text-red-500 hover:text-red-600 text-sm"
+                >
+                  削除
+                </button>
               </div>
+
+              {/* 写真アップロード */}
+              <div className="mb-3">
+                <label className="block text-xs text-gray-500 mb-1">写真</label>
+                <ImageUploader
+                  siteId={siteId}
+                  currentImage={teacher.photo}
+                  onUpload={(url) => updateTeacher(index, { photo: url || undefined })}
+                  aspectRatio="square"
+                />
+              </div>
+
               <div className="grid grid-cols-2 gap-3 mb-3">
                 <div>
                   <label className="block text-xs text-gray-500 mb-1">名前</label>

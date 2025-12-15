@@ -102,6 +102,7 @@ export interface TeachersContent {
   title: string
   subtitle?: string
   teachers: Teacher[]
+  layout?: 'grid' | 'carousel'
 }
 
 export interface ResultItem {
@@ -214,9 +215,9 @@ export const defaultSectionContent: Record<SectionType, SectionContent> = {
   features: {
     title: '選ばれる3つの理由',
     items: [
-      { icon: '👨‍🏫', title: '完全個別指導', description: '一人ひとりの理解度に合わせた丁寧な指導' },
-      { icon: '📚', title: '定期テスト対策', description: '学校の進度に合わせた予習・復習で成績アップ' },
-      { icon: '🏠', title: '地域密着20年', description: '地元の学校を熟知した講師陣がサポート' },
+      { icon: 'teacher', title: '完全個別指導', description: '一人ひとりの理解度に合わせた丁寧な指導' },
+      { icon: 'book', title: '定期テスト対策', description: '学校の進度に合わせた予習・復習で成績アップ' },
+      { icon: 'home', title: '地域密着20年', description: '地元の学校を熟知した講師陣がサポート' },
     ],
   },
   pricing: {
