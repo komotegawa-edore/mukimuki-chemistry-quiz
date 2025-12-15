@@ -241,16 +241,13 @@ export default function CompanyPage() {
             <div className="group bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
               <div className="aspect-video relative bg-gradient-to-br from-cyan-500/20 to-teal-500/10">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src="/english/favicon-48x48.png"
-                      alt="Roopy English"
-                      width={40}
-                      height={40}
-                      className="rounded-lg"
-                    />
-                    <span className="text-2xl font-black text-[#3A405A]">Roopy English</span>
-                  </div>
+                  <Image
+                    src="/RoopyEnglish.png"
+                    alt="Roopy English"
+                    width={200}
+                    height={80}
+                    className="object-contain"
+                  />
                 </div>
               </div>
               <div className="p-6">
