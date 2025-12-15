@@ -187,21 +187,24 @@ function FeaturesEditor({ content, onChange }: { content: FeaturesContent; onCha
     { value: 'academic', label: '学術' },
   ]
 
+  // itemsがundefinedの場合のガード
+  const items = content.items || []
+
   const updateItem = (index: number, updates: Partial<FeaturesContent['items'][0]>) => {
-    const newItems = [...content.items]
+    const newItems = [...items]
     newItems[index] = { ...newItems[index], ...updates }
     onChange({ items: newItems })
   }
 
   const addItem = () => {
     onChange({
-      items: [...content.items, { icon: 'star', title: '', description: '' }]
+      items: [...items, { icon: 'star', title: '', description: '' }]
     })
   }
 
   const removeItem = (index: number) => {
     onChange({
-      items: content.items.filter((_, i) => i !== index)
+      items: items.filter((_, i) => i !== index)
     })
   }
 
@@ -217,11 +220,11 @@ function FeaturesEditor({ content, onChange }: { content: FeaturesContent; onCha
       <div className="mt-6">
         <label className="block text-sm font-medium text-gray-700 mb-3">特徴項目</label>
         <div className="space-y-4">
-          {content.items.map((item, index) => (
+          {items.map((item, index) => (
             <div key={index} className="p-4 bg-gray-50 rounded-xl">
               <div className="flex items-start justify-between mb-3">
                 <span className="text-xs text-gray-500">項目 {index + 1}</span>
-                {content.items.length > 1 && (
+                {items.length > 1 && (
                   <button
                     onClick={() => removeItem(index)}
                     className="text-red-500 hover:text-red-600 text-sm"
@@ -280,21 +283,24 @@ function FeaturesEditor({ content, onChange }: { content: FeaturesContent; onCha
 
 // 料金エディタ
 function PricingEditor({ content, onChange }: { content: PricingContent; onChange: (updates: Partial<PricingContent>) => void }) {
+  // plansがundefinedの場合のガード
+  const plans = content.plans || []
+
   const updatePlan = (index: number, updates: Partial<PricingContent['plans'][0]>) => {
-    const newPlans = [...content.plans]
+    const newPlans = [...plans]
     newPlans[index] = { ...newPlans[index], ...updates }
     onChange({ plans: newPlans })
   }
 
   const addPlan = () => {
     onChange({
-      plans: [...content.plans, { name: '', target: '', price: '', period: '', features: [], isPopular: false }]
+      plans: [...plans, { name: '', target: '', price: '', period: '', features: [], isPopular: false }]
     })
   }
 
   const removePlan = (index: number) => {
     onChange({
-      plans: content.plans.filter((_, i) => i !== index)
+      plans: plans.filter((_, i) => i !== index)
     })
   }
 
@@ -310,7 +316,7 @@ function PricingEditor({ content, onChange }: { content: PricingContent; onChang
       <div className="mt-6">
         <label className="block text-sm font-medium text-gray-700 mb-3">コース一覧</label>
         <div className="space-y-4">
-          {content.plans.map((plan, index) => (
+          {plans.map((plan, index) => (
             <div key={index} className="p-4 bg-gray-50 rounded-xl">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
@@ -325,7 +331,7 @@ function PricingEditor({ content, onChange }: { content: PricingContent; onChang
                     人気
                   </label>
                 </div>
-                {content.plans.length > 1 && (
+                {plans.length > 1 && (
                   <button
                     onClick={() => removePlan(index)}
                     className="text-red-500 hover:text-red-600 text-sm"
@@ -413,21 +419,24 @@ function PricingEditor({ content, onChange }: { content: PricingContent; onChang
 
 // 講師エディタ
 function TeachersEditor({ content, onChange, siteId }: { content: TeachersContent; onChange: (updates: Partial<TeachersContent>) => void; siteId: string }) {
+  // teachersがundefinedの場合のガード
+  const teachers = content.teachers || []
+
   const updateTeacher = (index: number, updates: Partial<TeachersContent['teachers'][0]>) => {
-    const newTeachers = [...content.teachers]
+    const newTeachers = [...teachers]
     newTeachers[index] = { ...newTeachers[index], ...updates }
     onChange({ teachers: newTeachers })
   }
 
   const addTeacher = () => {
     onChange({
-      teachers: [...content.teachers, { name: '', role: '', subjects: [], message: '' }]
+      teachers: [...teachers, { name: '', role: '', subjects: [], message: '' }]
     })
   }
 
   const removeTeacher = (index: number) => {
     onChange({
-      teachers: content.teachers.filter((_, i) => i !== index)
+      teachers: teachers.filter((_, i) => i !== index)
     })
   }
 
@@ -467,7 +476,7 @@ function TeachersEditor({ content, onChange, siteId }: { content: TeachersConten
       <div className="mt-6">
         <label className="block text-sm font-medium text-gray-700 mb-3">講師一覧</label>
         <div className="space-y-4">
-          {content.teachers.map((teacher, index) => (
+          {teachers.map((teacher, index) => (
             <div key={index} className="p-4 bg-gray-50 rounded-xl">
               <div className="flex items-start justify-between mb-3">
                 <span className="text-xs text-gray-500">講師 {index + 1}</span>
@@ -548,21 +557,24 @@ function TeachersEditor({ content, onChange, siteId }: { content: TeachersConten
 
 // 合格実績エディタ
 function ResultsEditor({ content, onChange }: { content: ResultsContent; onChange: (updates: Partial<ResultsContent>) => void }) {
+  // itemsがundefinedの場合のガード
+  const items = content.items || []
+
   const updateItem = (index: number, updates: Partial<ResultsContent['items'][0]>) => {
-    const newItems = [...content.items]
+    const newItems = [...items]
     newItems[index] = { ...newItems[index], ...updates }
     onChange({ items: newItems })
   }
 
   const addItem = () => {
     onChange({
-      items: [...content.items, { year: new Date().getFullYear().toString(), school: '', count: 0 }]
+      items: [...items, { year: new Date().getFullYear().toString(), school: '', count: 0 }]
     })
   }
 
   const removeItem = (index: number) => {
     onChange({
-      items: content.items.filter((_, i) => i !== index)
+      items: items.filter((_, i) => i !== index)
     })
   }
 
@@ -584,7 +596,7 @@ function ResultsEditor({ content, onChange }: { content: ResultsContent; onChang
       <div className="mt-6">
         <label className="block text-sm font-medium text-gray-700 mb-3">合格校一覧</label>
         <div className="space-y-3">
-          {content.items.map((item, index) => (
+          {items.map((item, index) => (
             <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
               <input
                 type="text"
@@ -601,7 +613,7 @@ function ResultsEditor({ content, onChange }: { content: ResultsContent; onChang
                 placeholder="0"
               />
               <span className="text-sm text-gray-500">名</span>
-              {content.items.length > 1 && (
+              {items.length > 1 && (
                 <button
                   onClick={() => removeItem(index)}
                   className="text-red-500 hover:text-red-600"
@@ -687,11 +699,14 @@ function AccessEditor({ content, onChange }: { content: AccessContent; onChange:
 
 // お問い合わせエディタ
 function ContactEditor({ content, onChange }: { content: ContactContent; onChange: (updates: Partial<ContactContent>) => void }) {
+  // formFieldsがundefinedの場合のガード
+  const formFields = content.formFields || []
+
   return (
     <div>
       <InputField
         label="セクションタイトル"
-        value={content.title}
+        value={content.title || ''}
         onChange={(title) => onChange({ title })}
         placeholder="お問い合わせ・無料体験"
       />
@@ -703,7 +718,7 @@ function ContactEditor({ content, onChange }: { content: ContactContent; onChang
       />
       <InputField
         label="送信ボタンテキスト"
-        value={content.submitText}
+        value={content.submitText || ''}
         onChange={(submitText) => onChange({ submitText })}
         placeholder="送信する"
       />
@@ -723,12 +738,12 @@ function ContactEditor({ content, onChange }: { content: ContactContent; onChang
               <label key={field} className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  checked={content.formFields.includes(field as any)}
+                  checked={formFields.includes(field as any)}
                   onChange={(e) => {
                     if (e.target.checked) {
-                      onChange({ formFields: [...content.formFields, field as any] })
+                      onChange({ formFields: [...formFields, field as any] })
                     } else {
-                      onChange({ formFields: content.formFields.filter(f => f !== field) })
+                      onChange({ formFields: formFields.filter(f => f !== field) })
                     }
                   }}
                   className="rounded"
