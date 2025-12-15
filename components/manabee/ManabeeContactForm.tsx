@@ -1,13 +1,19 @@
 'use client'
 
-import { useState } from 'react'
-import { Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Send, CheckCircle, AlertCircle, Loader2, Download } from 'lucide-react'
 
 type FormState = 'idle' | 'loading' | 'success' | 'error'
+type InquiryType = 'trial' | 'document'
 
-export default function ManabeeContactForm() {
+type Props = {
+  initialType?: InquiryType
+}
+
+export default function ManabeeContactForm({ initialType = 'trial' }: Props) {
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [inquiryType, setInquiryType] = useState<InquiryType>(initialType)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,6 +22,10 @@ export default function ManabeeContactForm() {
     studentCount: '',
     message: '',
   })
+
+  useEffect(() => {
+    setInquiryType(initialType)
+  }, [initialType])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
@@ -30,13 +40,14 @@ export default function ManabeeContactForm() {
     setErrorMessage('')
 
     try {
+      const subjectText = inquiryType === 'document' ? 'MANABEE 資料請求' : 'MANABEE 無料体験申込'
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          subject: 'MANABEE お問い合わせ',
-          message: `【塾名・教室名】${formData.company}\n【電話番号】${formData.phone}\n【生徒数】${formData.studentCount}\n\n${formData.message}`,
+          subject: subjectText,
+          message: `【お問い合わせ種別】${inquiryType === 'document' ? '資料請求' : '無料体験申込'}\n【塾名・教室名】${formData.company}\n【電話番号】${formData.phone}\n【生徒数】${formData.studentCount}\n\n${formData.message}`,
         }),
       })
 
@@ -66,17 +77,33 @@ export default function ManabeeContactForm() {
         <div className="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
           <CheckCircle className="w-8 h-8 text-white" />
         </div>
-        <h3 className="text-2xl font-bold mb-2 text-[#3A405A]">送信完了</h3>
+        <h3 className="text-2xl font-bold mb-2 text-[#3A405A]">
+          {inquiryType === 'document' ? '資料請求完了' : '送信完了'}
+        </h3>
         <p className="opacity-70 mb-6 text-[#3A405A]">
           お問い合わせありがとうございます。<br />
           担当者より2営業日以内にご連絡いたします。
         </p>
-        <button
-          onClick={() => setFormState('idle')}
-          className="text-amber-600 font-bold hover:underline"
-        >
-          新しいお問い合わせを送る
-        </button>
+
+        {inquiryType === 'document' && (
+          <a
+            href="/manabee-document.pdf"
+            download
+            className="inline-flex items-center gap-2 bg-amber-500 text-white font-bold py-3 px-8 rounded-full hover:bg-amber-600 transition-colors mb-4"
+          >
+            <Download className="w-5 h-5" />
+            資料をダウンロード
+          </a>
+        )}
+
+        <div className="mt-4">
+          <button
+            onClick={() => setFormState('idle')}
+            className="text-amber-600 font-bold hover:underline"
+          >
+            新しいお問い合わせを送る
+          </button>
+        </div>
       </div>
     )
   }
@@ -84,6 +111,41 @@ export default function ManabeeContactForm() {
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-8 shadow-lg">
       <div className="space-y-5">
+        {/* お問い合わせ種別 */}
+        <div>
+          <label className="block text-sm font-bold mb-2 text-[#3A405A]">
+            お問い合わせ種別 <span className="text-red-500">*</span>
+          </label>
+          <div className="flex gap-4">
+            <label className={`flex-1 flex items-center justify-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${inquiryType === 'trial' ? 'border-amber-500 bg-amber-50' : 'border-gray-200 hover:border-amber-300'}`}>
+              <input
+                type="radio"
+                name="inquiryType"
+                value="trial"
+                checked={inquiryType === 'trial'}
+                onChange={() => setInquiryType('trial')}
+                className="sr-only"
+              />
+              <span className={`font-bold ${inquiryType === 'trial' ? 'text-amber-600' : 'text-gray-600'}`}>
+                無料体験申込
+              </span>
+            </label>
+            <label className={`flex-1 flex items-center justify-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${inquiryType === 'document' ? 'border-amber-500 bg-amber-50' : 'border-gray-200 hover:border-amber-300'}`}>
+              <input
+                type="radio"
+                name="inquiryType"
+                value="document"
+                checked={inquiryType === 'document'}
+                onChange={() => setInquiryType('document')}
+                className="sr-only"
+              />
+              <span className={`font-bold ${inquiryType === 'document' ? 'text-amber-600' : 'text-gray-600'}`}>
+                資料ダウンロード
+              </span>
+            </label>
+          </div>
+        </div>
+
         {/* 名前 */}
         <div>
           <label htmlFor="name" className="block text-sm font-bold mb-2 text-[#3A405A]">
@@ -209,6 +271,11 @@ export default function ManabeeContactForm() {
               <Loader2 className="w-5 h-5 animate-spin" />
               送信中...
             </>
+          ) : inquiryType === 'document' ? (
+            <>
+              <Download className="w-5 h-5" />
+              資料をダウンロード
+            </>
           ) : (
             <>
               <Send className="w-5 h-5" />
@@ -218,7 +285,10 @@ export default function ManabeeContactForm() {
         </button>
 
         <p className="text-xs text-center opacity-60 text-[#3A405A]">
-          送信後、2営業日以内に担当者よりご連絡いたします
+          {inquiryType === 'document'
+            ? '送信後、資料のダウンロードが可能になります'
+            : '送信後、2営業日以内に担当者よりご連絡いたします'
+          }
         </p>
       </div>
     </form>

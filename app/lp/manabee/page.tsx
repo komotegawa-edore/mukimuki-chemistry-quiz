@@ -6,7 +6,7 @@ import {
   MessageCircle, BarChart3, Users, Clock, Zap, CheckCircle,
   ArrowRight, Smartphone, Monitor, School
 } from 'lucide-react'
-import ManabeeContactForm from '@/components/manabee/ManabeeContactForm'
+import ManabeeContactFormWrapper from '@/components/manabee/ManabeeContactFormWrapper'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700', '900'],
@@ -88,13 +88,12 @@ export default function ManabeeLandingPage() {
             >
               無料で試してみる
             </Link>
-            <a
-              href="/manabee-document.pdf"
-              download
+            <Link
+              href="?type=document#contact"
               className="inline-flex items-center justify-center gap-2 bg-white text-amber-600 text-lg font-bold py-4 px-10 rounded-full shadow-lg border-2 border-amber-500 hover:bg-amber-50 hover:-translate-y-1 transition-all"
             >
               資料ダウンロード
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -287,7 +286,7 @@ export default function ManabeeLandingPage() {
             </p>
           </div>
 
-          <ManabeeContactForm />
+          <ManabeeContactFormWrapper />
         </div>
       </section>
 
