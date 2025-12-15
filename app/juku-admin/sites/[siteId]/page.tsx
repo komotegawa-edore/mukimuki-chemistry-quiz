@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { JukuSite, JukuSection, SectionType, sectionTypeLabels, defaultSectionContent } from '../../../juku/types'
@@ -12,12 +12,9 @@ import { PreviewFrame } from '../../components/PreviewFrame'
 
 type Tab = 'sections' | 'settings' | 'preview'
 
-interface PageProps {
-  params: Promise<{ siteId: string }>
-}
-
-export default function SiteEditorPage({ params }: PageProps) {
-  const { siteId } = use(params)
+export default function SiteEditorPage() {
+  const params = useParams()
+  const siteId = params.siteId as string
   const [site, setSite] = useState<JukuSite | null>(null)
   const [sections, setSections] = useState<JukuSection[]>([])
   const [selectedSection, setSelectedSection] = useState<JukuSection | null>(null)

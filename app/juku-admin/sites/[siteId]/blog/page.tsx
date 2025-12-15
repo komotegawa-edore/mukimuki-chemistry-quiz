@@ -1,18 +1,15 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { JukuSite, JukuBlogPost } from '../../../../juku/types'
 import { BlogEditor } from '../../../blog/BlogEditor'
 
-interface PageProps {
-  params: Promise<{ siteId: string }>
-}
-
-export default function SiteBlogPage({ params }: PageProps) {
-  const { siteId } = use(params)
+export default function SiteBlogPage() {
+  const params = useParams()
+  const siteId = params.siteId as string
   const [site, setSite] = useState<JukuSite | null>(null)
   const [posts, setPosts] = useState<JukuBlogPost[]>([])
   const [selectedPost, setSelectedPost] = useState<JukuBlogPost | null>(null)
