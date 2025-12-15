@@ -54,8 +54,8 @@ export async function POST(request: Request) {
     // メール通知を送信
     try {
       await resend.emails.send({
-        from: 'Edore お問い合わせ <noreply@edore.co.jp>',
-        to: 'contact@edore.co.jp',
+        from: 'Edore お問い合わせ <noreply@edore-edu.com>',
+        to: 'contact@edore-edu.com',
         subject: `【お問い合わせ】${subject} - ${name}様`,
         html: `
           <h2>新しいお問い合わせがありました</h2>

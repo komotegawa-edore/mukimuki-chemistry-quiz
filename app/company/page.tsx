@@ -455,10 +455,10 @@ export default function CompanyPage() {
                   <th className="px-6 py-5 bg-gray-50 text-left font-bold">メールアドレス</th>
                   <td className="px-6 py-5">
                     <a
-                      href="mailto:k.omotegawa@edore-edu.com"
+                      href="mailto:contact@edore-edu.com"
                       className="text-[#5DDFC3] hover:underline"
                     >
-                      k.omotegawa@edore-edu.com
+                      contact@edore-edu.com
                     </a>
                   </td>
                 </tr>
@@ -514,10 +514,10 @@ export default function CompanyPage() {
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
                 <h3 className="font-bold mb-3">メール</h3>
                 <a
-                  href="mailto:k.omotegawa@edore-edu.com"
+                  href="mailto:contact@edore-edu.com"
                   className="text-[#5DDFC3] font-medium hover:underline break-all"
                 >
-                  k.omotegawa@edore-edu.com
+                  contact@edore-edu.com
                 </a>
               </div>
 
