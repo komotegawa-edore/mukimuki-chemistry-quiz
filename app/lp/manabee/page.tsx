@@ -6,6 +6,7 @@ import {
   MessageCircle, BarChart3, Users, Clock, Zap, CheckCircle,
   ArrowRight, Smartphone, Monitor, School
 } from 'lucide-react'
+import ManabeeContactForm from '@/components/manabee/ManabeeContactForm'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700', '900'],
@@ -40,7 +41,7 @@ export default function ManabeeLandingPage() {
             <span className="font-bold text-xl text-[#3A405A]">MANABEE</span>
           </Link>
           <Link
-            href="/company#contact"
+            href="#contact"
             className="bg-amber-500 text-white px-6 py-2 rounded-full font-bold hover:bg-amber-600 transition-colors"
           >
             お問い合わせ
@@ -80,12 +81,21 @@ export default function ManabeeLandingPage() {
             </div>
           </div>
 
-          <Link
-            href="/company#contact"
-            className="inline-block bg-amber-500 text-white text-lg font-bold py-4 px-10 rounded-full shadow-lg hover:bg-amber-600 hover:-translate-y-1 transition-all"
-          >
-            無料で試してみる
-          </Link>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link
+              href="#contact"
+              className="inline-block bg-amber-500 text-white text-lg font-bold py-4 px-10 rounded-full shadow-lg hover:bg-amber-600 hover:-translate-y-1 transition-all"
+            >
+              無料で試してみる
+            </Link>
+            <a
+              href="/manabee-document.pdf"
+              download
+              className="inline-flex items-center justify-center gap-2 bg-white text-amber-600 text-lg font-bold py-4 px-10 rounded-full shadow-lg border-2 border-amber-500 hover:bg-amber-50 hover:-translate-y-1 transition-all"
+            >
+              資料ダウンロード
+            </a>
+          </div>
         </div>
       </header>
 
@@ -249,7 +259,7 @@ export default function ManabeeLandingPage() {
             </ul>
 
             <Link
-              href="/company#contact"
+              href="#contact"
               className="inline-block bg-white text-amber-600 font-bold py-3 px-8 rounded-full hover:bg-opacity-90 transition-colors"
             >
               無料体験を申し込む
@@ -258,31 +268,26 @@ export default function ManabeeLandingPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-16 px-4 bg-amber-50">
-        <div className="max-w-[600px] mx-auto text-center">
-          <Image
-            src="/manabee-logo.png"
-            alt="まなビーくん"
-            width={80}
-            height={80}
-            className="mx-auto mb-6"
-          />
-          <h2 className="text-3xl font-bold mb-4">
-            今日から出席管理を<br />ラクにしませんか？
-          </h2>
-          <p className="mb-8 opacity-70">
-            導入5分、1週間無料体験。<br />
-            お気軽にお問い合わせください。
-          </p>
+      {/* Contact Form */}
+      <section id="contact" className="py-16 px-4 bg-amber-50">
+        <div className="max-w-[500px] mx-auto">
+          <div className="text-center mb-8">
+            <Image
+              src="/manabee-logo.png"
+              alt="まなビーくん"
+              width={80}
+              height={80}
+              className="mx-auto mb-4"
+            />
+            <h2 className="text-3xl font-bold mb-2">
+              無料体験のお申し込み
+            </h2>
+            <p className="opacity-70">
+              1週間無料でお試しいただけます
+            </p>
+          </div>
 
-          <Link
-            href="/company#contact"
-            className="inline-flex items-center gap-2 bg-amber-500 text-white text-lg font-bold py-4 px-10 rounded-full shadow-lg hover:bg-amber-600 hover:-translate-y-1 transition-all"
-          >
-            お問い合わせ
-            <ArrowRight className="w-5 h-5" />
-          </Link>
+          <ManabeeContactForm />
         </div>
       </section>
 
@@ -302,7 +307,7 @@ export default function ManabeeLandingPage() {
             </div>
             <div className="flex gap-6 text-sm">
               <Link href="/company" className="opacity-70 hover:opacity-100">会社概要</Link>
-              <Link href="/company#contact" className="opacity-70 hover:opacity-100">お問い合わせ</Link>
+              <Link href="#contact" className="opacity-70 hover:opacity-100">お問い合わせ</Link>
             </div>
           </div>
           <div className="text-center text-sm opacity-60">
