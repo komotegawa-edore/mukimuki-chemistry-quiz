@@ -608,7 +608,7 @@ export default async function ListeningLandingPage() {
               <h3 className="font-bold mb-3">サービス</h3>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link href="/lp" className="opacity-70 hover:opacity-100 transition-opacity">
+                  <Link href="/lp/roopy" className="opacity-70 hover:opacity-100 transition-opacity">
                     Roopyトップ
                   </Link>
                 </li>

@@ -226,7 +226,7 @@ export default function CompanyPage() {
                   </li>
                 </ul>
                 <Link
-                  href="/lp"
+                  href="/lp/roopy"
                   className="inline-flex items-center gap-2 text-[#5DDFC3] font-bold text-sm hover:gap-3 transition-all"
                 >
                   詳しく見る
@@ -566,7 +566,7 @@ export default function CompanyPage() {
               <h3 className="font-bold mb-4">サービス</h3>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link href="/lp" className="opacity-70 hover:opacity-100 hover:text-[#5DDFC3] transition-colors">
+                  <Link href="/lp/roopy" className="opacity-70 hover:opacity-100 hover:text-[#5DDFC3] transition-colors">
                     Roopy（大学受験版）
                   </Link>
                 </li>
