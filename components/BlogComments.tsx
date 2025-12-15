@@ -84,7 +84,7 @@ export default function BlogComments({ blogSlug }: Props) {
     e.preventDefault()
 
     if (!userId) {
-      window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname)
+      window.location.href = '/signup?redirect=' + encodeURIComponent(window.location.pathname)
       return
     }
 
