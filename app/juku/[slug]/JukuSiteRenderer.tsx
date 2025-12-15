@@ -1,6 +1,6 @@
 'use client'
 
-import { JukuSite, JukuSection, SectionType, HeroContent, FeaturesContent, PricingContent, TeachersContent, ResultsContent, AccessContent, ContactContent } from '../types'
+import { JukuSite, JukuSection, SectionType, HeroContent, FeaturesContent, PricingContent, TeachersContent, ResultsContent, AccessContent, ContactContent, GalleryContent } from '../types'
 import {
   HeroSection,
   FeaturesSection,
@@ -9,6 +9,7 @@ import {
   ResultsSection,
   AccessSection,
   ContactSection,
+  GallerySection,
 } from '../components/sections'
 
 interface Props {
@@ -78,6 +79,14 @@ export function JukuSiteRenderer({ site, sections }: Props) {
           <ContactSection
             key={section.id}
             content={section.content as ContactContent}
+            {...commonProps}
+          />
+        )
+      case 'gallery':
+        return (
+          <GallerySection
+            key={section.id}
+            content={section.content as GalleryContent}
             {...commonProps}
           />
         )

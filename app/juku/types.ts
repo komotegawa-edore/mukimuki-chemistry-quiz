@@ -40,6 +40,7 @@ export type SectionType =
   | 'blog'
   | 'schedule'
   | 'faq'
+  | 'gallery'
 
 export interface JukuSection {
   id: string
@@ -162,6 +163,18 @@ export interface BlogContent {
   showCount: number
 }
 
+export interface GalleryImage {
+  url: string
+  caption?: string
+}
+
+export interface GalleryContent {
+  title: string
+  subtitle?: string
+  images: GalleryImage[]
+  layout: 'grid' | 'masonry' | 'slider'
+}
+
 export type SectionContent =
   | HeroContent
   | FeaturesContent
@@ -173,6 +186,7 @@ export type SectionContent =
   | ScheduleContent
   | FAQContent
   | BlogContent
+  | GalleryContent
 
 // セクションタイプのラベル
 export const sectionTypeLabels: Record<SectionType, string> = {
@@ -186,6 +200,7 @@ export const sectionTypeLabels: Record<SectionType, string> = {
   blog: 'ブログ',
   schedule: '時間割',
   faq: 'よくある質問',
+  gallery: '塾内ギャラリー',
 }
 
 // デフォルトコンテンツ
@@ -255,6 +270,12 @@ export const defaultSectionContent: Record<SectionType, SectionContent> = {
   blog: {
     title: 'お知らせ・ブログ',
     showCount: 3,
+  },
+  gallery: {
+    title: '塾内の様子',
+    subtitle: '明るく清潔な学習環境をご覧ください',
+    images: [],
+    layout: 'grid',
   },
 }
 

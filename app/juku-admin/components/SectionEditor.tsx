@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { JukuSection, JukuSite, SectionType, sectionTypeLabels, HeroContent, FeaturesContent, PricingContent, TeachersContent, ResultsContent, AccessContent, ContactContent } from '../../juku/types'
+import { JukuSection, JukuSite, SectionType, sectionTypeLabels, HeroContent, FeaturesContent, PricingContent, TeachersContent, ResultsContent, AccessContent, ContactContent, GalleryContent } from '../../juku/types'
+import { ImageUploader, MultiImageUploader } from './ImageUploader'
 
 interface Props {
   section: JukuSection
@@ -25,7 +26,7 @@ export function SectionEditor({ section, site, onUpdate }: Props) {
   const renderEditor = () => {
     switch (section.type as SectionType) {
       case 'hero':
-        return <HeroEditor content={content as HeroContent} onChange={handleChange} primaryColor={site.primary_color} />
+        return <HeroEditor content={content as HeroContent} onChange={handleChange} primaryColor={site.primary_color} siteId={site.id} />
       case 'features':
         return <FeaturesEditor content={content as FeaturesContent} onChange={handleChange} />
       case 'pricing':
@@ -38,6 +39,8 @@ export function SectionEditor({ section, site, onUpdate }: Props) {
         return <AccessEditor content={content as AccessContent} onChange={handleChange} />
       case 'contact':
         return <ContactEditor content={content as ContactContent} onChange={handleChange} />
+      case 'gallery':
+        return <GalleryEditor content={content as GalleryContent} onChange={handleChange} siteId={site.id} />
       default:
         return <div className="text-gray-500">このセクションの編集機能は準備中です</div>
     }
@@ -92,7 +95,7 @@ function InputField({ label, value, onChange, multiline, placeholder }: {
 }
 
 // ヒーローエディタ
-function HeroEditor({ content, onChange, primaryColor }: { content: HeroContent; onChange: (updates: Partial<HeroContent>) => void; primaryColor: string }) {
+function HeroEditor({ content, onChange, primaryColor, siteId }: { content: HeroContent; onChange: (updates: Partial<HeroContent>) => void; primaryColor: string; siteId?: string }) {
   return (
     <div>
       <InputField
@@ -123,16 +126,49 @@ function HeroEditor({ content, onChange, primaryColor }: { content: HeroContent;
         />
       </div>
 
+      {/* 背景画像 */}
+      {siteId && (
+        <div className="mt-6">
+          <ImageUploader
+            siteId={siteId}
+            label="背景画像（任意）"
+            currentImage={content.backgroundImage}
+            onUpload={(url) => onChange({ backgroundImage: url || undefined })}
+            aspectRatio="video"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            塾の外観や教室の写真を設定すると、より印象的なトップページになります
+          </p>
+        </div>
+      )}
+
       {/* プレビュー */}
-      <div className="mt-6 p-6 rounded-xl" style={{ backgroundColor: `${primaryColor}10` }}>
-        <p className="text-xs text-gray-500 mb-3">プレビュー</p>
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">{content.title || 'タイトルを入力'}</h3>
-        <p className="text-gray-600 mb-4">{content.subtitle || 'サブタイトルを入力'}</p>
-        {content.ctaText && (
-          <span className="inline-block px-4 py-2 rounded-full text-white text-sm" style={{ backgroundColor: primaryColor }}>
-            {content.ctaText}
-          </span>
+      <div
+        className="mt-6 p-6 rounded-xl relative overflow-hidden"
+        style={{
+          backgroundColor: content.backgroundImage ? 'transparent' : `${primaryColor}10`,
+          backgroundImage: content.backgroundImage ? `url(${content.backgroundImage})` : undefined,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        {content.backgroundImage && (
+          <div className="absolute inset-0 bg-black/40" />
         )}
+        <div className="relative z-10">
+          <p className="text-xs text-gray-500 mb-3">プレビュー</p>
+          <h3 className={`text-2xl font-bold mb-2 ${content.backgroundImage ? 'text-white' : 'text-gray-800'}`}>
+            {content.title || 'タイトルを入力'}
+          </h3>
+          <p className={`mb-4 ${content.backgroundImage ? 'text-gray-100' : 'text-gray-600'}`}>
+            {content.subtitle || 'サブタイトルを入力'}
+          </p>
+          {content.ctaText && (
+            <span className="inline-block px-4 py-2 rounded-full text-white text-sm" style={{ backgroundColor: primaryColor }}>
+              {content.ctaText}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -668,6 +704,65 @@ function ContactEditor({ content, onChange }: { content: ContactContent; onChang
             )
           })}
         </div>
+      </div>
+    </div>
+  )
+}
+
+// ギャラリーエディタ
+function GalleryEditor({ content, onChange, siteId }: { content: GalleryContent; onChange: (updates: Partial<GalleryContent>) => void; siteId: string }) {
+  return (
+    <div>
+      <InputField
+        label="セクションタイトル"
+        value={content.title}
+        onChange={(title) => onChange({ title })}
+        placeholder="塾内の様子"
+      />
+      <InputField
+        label="サブタイトル"
+        value={content.subtitle || ''}
+        onChange={(subtitle) => onChange({ subtitle })}
+        placeholder="明るく清潔な学習環境をご覧ください"
+      />
+
+      {/* レイアウト選択 */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">レイアウト</label>
+        <div className="flex gap-3">
+          {[
+            { value: 'grid', label: 'グリッド', icon: '▦' },
+            { value: 'masonry', label: 'メイソンリー', icon: '▥' },
+            { value: 'slider', label: 'スライダー', icon: '◂▸' },
+          ].map((layout) => (
+            <button
+              key={layout.value}
+              type="button"
+              onClick={() => onChange({ layout: layout.value as GalleryContent['layout'] })}
+              className={`flex-1 py-3 px-4 rounded-xl border-2 transition-all ${
+                content.layout === layout.value
+                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <div className="text-xl mb-1">{layout.icon}</div>
+              <div className="text-sm">{layout.label}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 画像アップロード */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-3">画像</label>
+        <MultiImageUploader
+          siteId={siteId}
+          images={content.images}
+          onChange={(images) => onChange({ images })}
+        />
+        <p className="text-xs text-gray-500 mt-2">
+          教室、自習室、ロビーなど塾内の写真をアップロードしてください（5MBまで/枚）
+        </p>
       </div>
     </div>
   )
