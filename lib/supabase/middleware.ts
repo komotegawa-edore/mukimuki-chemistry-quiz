@@ -52,14 +52,42 @@ export async function updateSession(request: NextRequest) {
     '/reset-password',
     '/company',  // 会社ホームページ（公開）
     '/juku',     // 塾サイトビルダー（公開）
-    '/juku-admin',  // 塾サイトエディタ（後で認証追加）
+  ]
+
+  // juku-admin の公開ページ（ログイン/登録/認証コールバック）
+  const jukuAdminPublicPaths = [
+    '/juku-admin/login',
+    '/juku-admin/signup',
+    '/juku-admin/auth',
   ]
 
   const isPublicPath = publicPaths.some(path =>
     request.nextUrl.pathname.startsWith(path)
   ) ||
+    jukuAdminPublicPaths.some(path =>
+      request.nextUrl.pathname.startsWith(path)
+    ) ||
     request.nextUrl.pathname === '/sitemap.xml' ||
     request.nextUrl.pathname === '/robots.txt'
+
+  // juku-admin へのアクセスは認証必須（ログイン/登録ページ除く）
+  const isJukuAdminPath = request.nextUrl.pathname.startsWith('/juku-admin')
+  const isJukuAdminAuthPath = jukuAdminPublicPaths.some(path =>
+    request.nextUrl.pathname.startsWith(path)
+  )
+
+  if (isJukuAdminPath && !isJukuAdminAuthPath && !user) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/juku-admin/login'
+    return NextResponse.redirect(url)
+  }
+
+  // 認証済みユーザーがjuku-adminログインページにアクセスした場合はダッシュボードへ
+  if (isJukuAdminAuthPath && user && !request.nextUrl.pathname.includes('/auth/')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/juku-admin'
+    return NextResponse.redirect(url)
+  }
 
   // 未認証ユーザーを/homeにリダイレクト
   if (!user && !isPublicPath) {

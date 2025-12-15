@@ -1,44 +1,61 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { JukuSite, JukuBlogPost } from '../../juku/types'
-import { BlogEditor } from './BlogEditor'
+import { JukuSite, JukuBlogPost } from '../../../../juku/types'
+import { BlogEditor } from '../../../blog/BlogEditor'
 
-export default function BlogAdminPage() {
+interface PageProps {
+  params: Promise<{ siteId: string }>
+}
+
+export default function SiteBlogPage({ params }: PageProps) {
+  const { siteId } = use(params)
   const [site, setSite] = useState<JukuSite | null>(null)
   const [posts, setPosts] = useState<JukuBlogPost[]>([])
   const [selectedPost, setSelectedPost] = useState<JukuBlogPost | null>(null)
   const [isCreating, setIsCreating] = useState(false)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   const supabase = createClient()
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, [siteId])
 
   async function loadData() {
-    // デモサイトを取得
-    const { data: siteData } = await supabase
-      .from('juku_sites')
-      .select('*')
-      .eq('slug', 'demo')
-      .single()
+    const { data: { user } } = await supabase.auth.getUser()
 
-    if (siteData) {
-      setSite(siteData as JukuSite)
-
-      const { data: postsData } = await supabase
-        .from('juku_blog_posts')
-        .select('*')
-        .eq('site_id', siteData.id)
-        .order('created_at', { ascending: false })
-
-      setPosts((postsData || []) as JukuBlogPost[])
+    if (!user) {
+      router.push('/juku-admin/login')
+      return
     }
 
+    // サイト取得
+    const { data: siteData, error: siteError } = await supabase
+      .from('juku_sites')
+      .select('*')
+      .eq('id', siteId)
+      .single()
+
+    if (siteError || !siteData) {
+      router.push('/juku-admin')
+      return
+    }
+
+    setSite(siteData as JukuSite)
+
+    // ブログ記事取得
+    const { data: postsData } = await supabase
+      .from('juku_blog_posts')
+      .select('*')
+      .eq('site_id', siteId)
+      .order('created_at', { ascending: false })
+
+    setPosts((postsData || []) as JukuBlogPost[])
     setLoading(false)
   }
 
@@ -128,20 +145,34 @@ export default function BlogAdminPage() {
     )
   }
 
+  if (!site) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-gray-500">サイトが見つかりません</div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* ヘッダー */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/juku-admin" className="text-gray-500 hover:text-gray-700">
+            <Link
+              href={`/juku-admin/sites/${siteId}`}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </Link>
-            <h1 className="text-lg font-bold text-gray-800">
-              ブログ管理
-            </h1>
+            <div>
+              <h1 className="text-lg font-bold text-gray-800">
+                ブログ管理
+              </h1>
+              <p className="text-xs text-gray-500">{site.name}</p>
+            </div>
           </div>
 
           <button
@@ -209,7 +240,7 @@ export default function BlogAdminPage() {
 
           {/* エディタ */}
           <div className="col-span-8">
-            {(selectedPost || isCreating) && site ? (
+            {(selectedPost || isCreating) ? (
               <BlogEditor
                 post={selectedPost}
                 siteId={site.id}
