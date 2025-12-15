@@ -51,6 +51,24 @@ function LoginForm() {
         return
       }
 
+      // ログイン成功時、juku_owner_profiles が無ければ作成
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: profile } = await supabase
+          .from('juku_owner_profiles')
+          .select('id')
+          .eq('id', user.id)
+          .single()
+
+        if (!profile) {
+          await supabase.from('juku_owner_profiles').insert({
+            id: user.id,
+            name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'オーナー',
+            email: user.email || '',
+          })
+        }
+      }
+
       // セッションが確立されるまで少し待つ
       await new Promise(resolve => setTimeout(resolve, 500))
 
