@@ -8,6 +8,7 @@ interface Props {
   primaryColor: string
   secondaryColor: string
   siteName: string
+  siteId?: string
 }
 
 const fieldLabels: Record<string, { label: string; type: string; placeholder: string }> = {
@@ -25,20 +26,44 @@ const gradeOptions = [
   'その他'
 ]
 
-export function ContactSection({ content, primaryColor, siteName }: Props) {
+export function ContactSection({ content, primaryColor, siteName, siteId }: Props) {
   const [formData, setFormData] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError(null)
 
-    // TODO: 実際のフォーム送信処理
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    try {
+      const response = await fetch('/api/juku/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          siteId,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          grade: formData.grade,
+          message: formData.message,
+        }),
+      })
 
-    setIsSubmitting(false)
-    setIsSubmitted(true)
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || '送信に失敗しました')
+      }
+
+      setIsSubmitted(true)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '送信に失敗しました')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (isSubmitted) {
@@ -146,6 +171,13 @@ export function ContactSection({ content, primaryColor, siteName }: Props) {
               </span>
             </label>
           </div>
+
+          {/* エラー表示 */}
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+              {error}
+            </div>
+          )}
 
           {/* 送信ボタン */}
           <button

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { JukuSection, JukuSite, SectionType, sectionTypeLabels, HeroContent, FeaturesContent, PricingContent, TeachersContent, ResultsContent, AccessContent, ContactContent, GalleryContent } from '../../juku/types'
+import { JukuSection, JukuSite, SectionType, sectionTypeLabels, HeroContent, FeaturesContent, PricingContent, TeachersContent, ResultsContent, AccessContent, ContactContent, GalleryContent, FAQContent, ScheduleContent } from '../../juku/types'
 import { ImageUploader, MultiImageUploader } from './ImageUploader'
 
 interface Props {
@@ -41,6 +41,10 @@ export function SectionEditor({ section, site, onUpdate }: Props) {
         return <ContactEditor content={content as ContactContent} onChange={handleChange} />
       case 'gallery':
         return <GalleryEditor content={content as GalleryContent} onChange={handleChange} siteId={site.id} />
+      case 'faq':
+        return <FAQEditor content={content as FAQContent} onChange={handleChange} />
+      case 'schedule':
+        return <ScheduleEditor content={content as ScheduleContent} onChange={handleChange} />
       default:
         return <div className="text-gray-500">このセクションの編集機能は準備中です</div>
     }
@@ -812,6 +816,220 @@ function GalleryEditor({ content, onChange, siteId }: { content: GalleryContent;
         <p className="text-xs text-gray-500 mt-2">
           教室、自習室、ロビーなど塾内の写真をアップロードしてください（5MBまで/枚）
         </p>
+      </div>
+    </div>
+  )
+}
+
+// FAQエディタ
+function FAQEditor({ content, onChange }: { content: FAQContent; onChange: (updates: Partial<FAQContent>) => void }) {
+  const items = content.items || []
+
+  const updateItem = (index: number, updates: Partial<FAQContent['items'][0]>) => {
+    const newItems = [...items]
+    newItems[index] = { ...newItems[index], ...updates }
+    onChange({ items: newItems })
+  }
+
+  const addItem = () => {
+    onChange({
+      items: [...items, { question: '', answer: '' }]
+    })
+  }
+
+  const removeItem = (index: number) => {
+    onChange({
+      items: items.filter((_, i) => i !== index)
+    })
+  }
+
+  const moveItem = (index: number, direction: 'up' | 'down') => {
+    const newItems = [...items]
+    const targetIndex = direction === 'up' ? index - 1 : index + 1
+    if (targetIndex < 0 || targetIndex >= items.length) return
+    ;[newItems[index], newItems[targetIndex]] = [newItems[targetIndex], newItems[index]]
+    onChange({ items: newItems })
+  }
+
+  return (
+    <div>
+      <InputField
+        label="セクションタイトル"
+        value={content.title}
+        onChange={(title) => onChange({ title })}
+        placeholder="よくある質問"
+      />
+
+      <div className="mt-6">
+        <label className="block text-sm font-medium text-gray-700 mb-3">質問と回答</label>
+        <div className="space-y-4">
+          {items.map((item, index) => (
+            <div key={index} className="p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-start justify-between mb-3">
+                <span className="text-xs text-gray-500">Q{index + 1}</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => moveItem(index, 'up')}
+                    disabled={index === 0}
+                    className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => moveItem(index, 'down')}
+                    disabled={index === items.length - 1}
+                    className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => removeItem(index)}
+                    className="text-red-500 hover:text-red-600 text-sm"
+                  >
+                    削除
+                  </button>
+                </div>
+              </div>
+              <div className="mb-3">
+                <label className="block text-xs text-gray-500 mb-1">質問</label>
+                <input
+                  type="text"
+                  value={item.question}
+                  onChange={(e) => updateItem(index, { question: e.target.value })}
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg"
+                  placeholder="体験授業はありますか？"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">回答</label>
+                <textarea
+                  value={item.answer}
+                  onChange={(e) => updateItem(index, { answer: e.target.value })}
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg resize-none"
+                  rows={3}
+                  placeholder="はい、無料体験授業を実施しています。お気軽にお問い合わせください。"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={addItem}
+          className="mt-3 w-full py-2 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors text-sm"
+        >
+          + 質問を追加
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// 時間割エディタ
+function ScheduleEditor({ content, onChange }: { content: ScheduleContent; onChange: (updates: Partial<ScheduleContent>) => void }) {
+  const items = content.items || []
+
+  const updateItem = (index: number, updates: Partial<ScheduleContent['items'][0]>) => {
+    const newItems = [...items]
+    newItems[index] = { ...newItems[index], ...updates }
+    onChange({ items: newItems })
+  }
+
+  const addItem = () => {
+    onChange({
+      items: [...items, { day: '', time: '', subject: '', target: '' }]
+    })
+  }
+
+  const removeItem = (index: number) => {
+    onChange({
+      items: items.filter((_, i) => i !== index)
+    })
+  }
+
+  return (
+    <div>
+      <InputField
+        label="セクションタイトル"
+        value={content.title}
+        onChange={(title) => onChange({ title })}
+        placeholder="時間割"
+      />
+      <InputField
+        label="サブタイトル"
+        value={content.subtitle || ''}
+        onChange={(subtitle) => onChange({ subtitle })}
+        placeholder="お好きな時間帯をお選びいただけます"
+      />
+
+      <div className="mt-6">
+        <label className="block text-sm font-medium text-gray-700 mb-3">時間割</label>
+        <div className="space-y-3">
+          {items.map((item, index) => (
+            <div key={index} className="p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-gray-500">項目 {index + 1}</span>
+                <button
+                  onClick={() => removeItem(index)}
+                  className="text-red-500 hover:text-red-600 text-sm"
+                >
+                  削除
+                </button>
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">曜日</label>
+                  <input
+                    type="text"
+                    value={item.day}
+                    onChange={(e) => updateItem(index, { day: e.target.value })}
+                    className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-lg"
+                    placeholder="月曜"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">時間</label>
+                  <input
+                    type="text"
+                    value={item.time}
+                    onChange={(e) => updateItem(index, { time: e.target.value })}
+                    className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-lg"
+                    placeholder="17:00-18:30"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">科目</label>
+                  <input
+                    type="text"
+                    value={item.subject}
+                    onChange={(e) => updateItem(index, { subject: e.target.value })}
+                    className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-lg"
+                    placeholder="数学"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">対象</label>
+                  <input
+                    type="text"
+                    value={item.target}
+                    onChange={(e) => updateItem(index, { target: e.target.value })}
+                    className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-lg"
+                    placeholder="中学生"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={addItem}
+          className="mt-3 w-full py-2 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors text-sm"
+        >
+          + 時間割を追加
+        </button>
       </div>
     </div>
   )

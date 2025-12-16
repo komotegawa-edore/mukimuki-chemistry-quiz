@@ -1,6 +1,6 @@
 'use client'
 
-import { JukuSite, JukuSection, SectionType, HeroContent, FeaturesContent, PricingContent, TeachersContent, ResultsContent, AccessContent, ContactContent, GalleryContent } from '../types'
+import { JukuSite, JukuSection, SectionType, HeroContent, FeaturesContent, PricingContent, TeachersContent, ResultsContent, AccessContent, ContactContent, GalleryContent, FAQContent, ScheduleContent } from '../types'
 import {
   HeroSection,
   FeaturesSection,
@@ -10,6 +10,8 @@ import {
   AccessSection,
   ContactSection,
   GallerySection,
+  FAQSection,
+  ScheduleSection,
 } from '../components/sections'
 
 interface Props {
@@ -80,6 +82,7 @@ export function JukuSiteRenderer({ site, sections, slug }: Props) {
           <ContactSection
             key={section.id}
             content={section.content as ContactContent}
+            siteId={site.id}
             {...commonProps}
           />
         )
@@ -89,6 +92,22 @@ export function JukuSiteRenderer({ site, sections, slug }: Props) {
             key={section.id}
             content={section.content as GalleryContent}
             {...commonProps}
+          />
+        )
+      case 'faq':
+        return (
+          <FAQSection
+            key={section.id}
+            content={section.content as FAQContent}
+            site={site}
+          />
+        )
+      case 'schedule':
+        return (
+          <ScheduleSection
+            key={section.id}
+            content={section.content as ScheduleContent}
+            site={site}
           />
         )
       default:
