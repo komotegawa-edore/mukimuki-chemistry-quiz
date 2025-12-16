@@ -124,14 +124,23 @@ export default async function BlogListPage({ params }: PageProps) {
   )
 }
 
-// コンテンツから抜粋を取得
-function getExcerpt(content: any[]): string {
-  if (!content || !Array.isArray(content)) return ''
+// コンテンツから抜粋を取得（HTML形式と旧ブロック形式の両方に対応）
+function getExcerpt(content: string | any[]): string {
+  if (!content) return ''
 
-  const textBlock = content.find(block => block.type === 'paragraph')
-  if (textBlock?.data?.text) {
-    return textBlock.data.text.replace(/<[^>]*>/g, '').slice(0, 100)
+  // HTML形式の場合
+  if (typeof content === 'string') {
+    return content.replace(/<[^>]*>/g, '').slice(0, 100)
   }
+
+  // 旧ブロック形式の場合
+  if (Array.isArray(content)) {
+    const textBlock = content.find(block => block.type === 'paragraph')
+    if (textBlock?.data?.text) {
+      return textBlock.data.text.replace(/<[^>]*>/g, '').slice(0, 100)
+    }
+  }
+
   return ''
 }
 

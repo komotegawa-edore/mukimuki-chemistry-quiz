@@ -292,7 +292,7 @@ export interface JukuBlogPost {
   site_id: string
   title: string
   slug: string
-  content: any[] // Editor.js blocks
+  content: string | any[] // HTML文字列 or Editor.js blocks (後方互換)
   featured_image: string | null
   is_published: boolean
   published_at: string | null

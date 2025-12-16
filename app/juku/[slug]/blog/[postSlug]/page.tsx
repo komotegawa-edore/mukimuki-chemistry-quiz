@@ -129,9 +129,25 @@ export default async function BlogPostPage({ params }: PageProps) {
   )
 }
 
-// ブログコンテンツレンダラー（Editor.js形式）
-function BlogContent({ content }: { content: any[] }) {
-  if (!content || !Array.isArray(content)) {
+// ブログコンテンツレンダラー（HTML形式 + 旧Editor.js形式の両方に対応）
+function BlogContent({ content }: { content: any }) {
+  // コンテンツがない場合
+  if (!content) {
+    return <p className="text-gray-500">記事の内容がありません</p>
+  }
+
+  // 新しいHTML形式の場合
+  if (typeof content === 'string') {
+    return (
+      <div
+        className="prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-a:text-blue-600 prose-img:rounded-xl prose-blockquote:border-l-4 prose-blockquote:border-gray-300 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-gray-600"
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+    )
+  }
+
+  // 旧ブロック形式の場合（後方互換性）
+  if (!Array.isArray(content)) {
     return <p className="text-gray-500">記事の内容がありません</p>
   }
 
@@ -234,7 +250,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   return {
     title: `${post.title} | ${site.name}`,
-    description: getExcerpt(post.content as any[]),
+    description: getExcerpt(post.content),
     ...(faviconUrl && {
       icons: {
         icon: faviconUrl,
@@ -244,11 +260,21 @@ export async function generateMetadata({ params }: PageProps) {
   }
 }
 
-function getExcerpt(content: any[]): string {
-  if (!content || !Array.isArray(content)) return ''
-  const textBlock = content.find(block => block.type === 'paragraph')
-  if (textBlock?.data?.text) {
-    return textBlock.data.text.replace(/<[^>]*>/g, '').slice(0, 160)
+function getExcerpt(content: any): string {
+  if (!content) return ''
+
+  // HTML形式の場合
+  if (typeof content === 'string') {
+    return content.replace(/<[^>]*>/g, '').slice(0, 160)
   }
+
+  // 旧ブロック形式の場合
+  if (Array.isArray(content)) {
+    const textBlock = content.find(block => block.type === 'paragraph')
+    if (textBlock?.data?.text) {
+      return textBlock.data.text.replace(/<[^>]*>/g, '').slice(0, 160)
+    }
+  }
+
   return ''
 }
