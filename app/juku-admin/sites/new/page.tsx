@@ -4,10 +4,12 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { siteTemplates, generateSectionsFromTemplate, SiteTemplate } from '../../../juku/templates'
+import { siteTemplates, generateSectionsFromTemplate, SiteTemplate, getTemplatesByTheme } from '../../../juku/templates'
+import { themes, ThemeId } from '../../../juku/themes'
 
 export default function NewSitePage() {
-  const [step, setStep] = useState<'template' | 'details'>('template')
+  const [step, setStep] = useState<'theme' | 'template' | 'details'>('theme')
+  const [selectedTheme, setSelectedTheme] = useState<ThemeId>('default')
   const [selectedTemplate, setSelectedTemplate] = useState<SiteTemplate>(siteTemplates[0])
   const [name, setName] = useState('')
   const [slug, setSlug] = useState('')
@@ -17,6 +19,8 @@ export default function NewSitePage() {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
+
+  const templatesByTheme = getTemplatesByTheme()
 
   const generateSlug = (text: string) => {
     return text
@@ -34,8 +38,18 @@ export default function NewSitePage() {
     }
   }
 
+  const handleThemeSelect = (themeId: ThemeId) => {
+    setSelectedTheme(themeId)
+    // そのテーマの最初のテンプレートを選択
+    const templatesForTheme = templatesByTheme[themeId]
+    if (templatesForTheme && templatesForTheme.length > 0) {
+      handleTemplateSelect(templatesForTheme[0])
+    }
+  }
+
   const handleTemplateSelect = (template: SiteTemplate) => {
     setSelectedTemplate(template)
+    setSelectedTheme(template.theme)
     setPrimaryColor(template.primaryColor)
     setSecondaryColor(template.secondaryColor)
   }
@@ -81,9 +95,10 @@ export default function NewSitePage() {
           name,
           slug: finalSlug,
           owner_id: user.id,
+          theme: selectedTheme,
           primary_color: primaryColor,
           secondary_color: secondaryColor,
-          font_family: 'Noto Sans JP',
+          font_family: themes[selectedTheme].styles.fontFamily,
           is_published: false,
         })
         .select()
@@ -134,21 +149,116 @@ export default function NewSitePage() {
           <div>
             <h1 className="text-lg font-bold text-gray-800">新規サイト作成</h1>
             <p className="text-xs text-gray-500">
-              {step === 'template' ? 'ステップ 1/2: テンプレートを選択' : 'ステップ 2/2: 基本情報を入力'}
+              {step === 'theme' && 'ステップ 1/3: テーマを選択'}
+              {step === 'template' && 'ステップ 2/3: テンプレートを選択'}
+              {step === 'details' && 'ステップ 3/3: 基本情報を入力'}
             </p>
           </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto p-6">
-        {step === 'template' ? (
-          // ステップ1: テンプレート選択
+        {step === 'theme' ? (
+          // ステップ1: テーマ選択
+          <div>
+            <h2 className="text-xl font-bold text-gray-800 mb-2">テーマを選択</h2>
+            <p className="text-gray-600 mb-6">サイト全体の雰囲気を決めるテーマを選んでください。</p>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+              {(Object.keys(themes) as ThemeId[]).map((themeId) => {
+                const theme = themes[themeId]
+                return (
+                  <button
+                    key={themeId}
+                    type="button"
+                    onClick={() => handleThemeSelect(themeId)}
+                    className={`text-left rounded-2xl border-2 overflow-hidden transition-all ${
+                      selectedTheme === themeId
+                        ? 'border-blue-500 shadow-lg'
+                        : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                    }`}
+                  >
+                    {/* テーマプレビュー */}
+                    <div
+                      className="h-24 p-4 flex flex-col justify-between"
+                      style={{
+                        backgroundColor: theme.preview.background,
+                        color: theme.preview.text,
+                        fontFamily: theme.styles.fontFamily,
+                      }}
+                    >
+                      <div className="text-sm font-bold" style={{ color: theme.preview.text }}>
+                        サンプルタイトル
+                      </div>
+                      <div className="flex gap-2">
+                        <div
+                          className="px-3 py-1 text-xs text-white rounded"
+                          style={{
+                            backgroundColor: theme.preview.primary,
+                            borderRadius: theme.styles.borderRadius.medium,
+                          }}
+                        >
+                          ボタン
+                        </div>
+                        <div
+                          className="px-3 py-1 text-xs text-white rounded"
+                          style={{
+                            backgroundColor: theme.preview.secondary,
+                            borderRadius: theme.styles.borderRadius.medium,
+                          }}
+                        >
+                          アクセント
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* テーマ情報 */}
+                    <div className="p-4 bg-white">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-bold text-gray-800">{theme.name}</h3>
+                          <p className="text-xs text-gray-500 mt-0.5">{theme.description}</p>
+                        </div>
+                        {selectedTheme === themeId && (
+                          <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <Link
+                href="/juku-admin"
+                className="px-6 py-3 border border-gray-200 text-gray-600 font-medium rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                キャンセル
+              </Link>
+              <button
+                type="button"
+                onClick={() => setStep('template')}
+                className="px-6 py-3 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 transition-colors"
+              >
+                次へ
+              </button>
+            </div>
+          </div>
+        ) : step === 'template' ? (
+          // ステップ2: テンプレート選択
           <div>
             <h2 className="text-xl font-bold text-gray-800 mb-2">テンプレートを選択</h2>
-            <p className="text-gray-600 mb-6">サイトの構成を選んでください。後から変更可能です。</p>
+            <p className="text-gray-600 mb-6">
+              「{themes[selectedTheme].name}」テーマのテンプレートから選んでください。
+            </p>
 
             <div className="grid md:grid-cols-2 gap-4 mb-8">
-              {siteTemplates.map((template) => (
+              {templatesByTheme[selectedTheme]?.map((template) => (
                 <button
                   key={template.id}
                   type="button"
@@ -174,14 +284,14 @@ export default function NewSitePage() {
                       <h3 className="font-bold text-gray-800 mb-1">{template.name}</h3>
                       <p className="text-sm text-gray-600 mb-3">{template.description}</p>
 
-                      {/* セクション一覧 */}
+                      {/* タグ */}
                       <div className="flex flex-wrap gap-1">
-                        {template.sections.map((section) => (
+                        {template.tags.map((tag) => (
                           <span
-                            key={section}
+                            key={tag}
                             className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full"
                           >
-                            {sectionLabels[section]}
+                            {tag}
                           </span>
                         ))}
                       </div>
@@ -203,12 +313,13 @@ export default function NewSitePage() {
             </div>
 
             <div className="flex justify-end gap-3">
-              <Link
-                href="/juku-admin"
+              <button
+                type="button"
+                onClick={() => setStep('theme')}
                 className="px-6 py-3 border border-gray-200 text-gray-600 font-medium rounded-xl hover:bg-gray-50 transition-colors"
               >
-                キャンセル
-              </Link>
+                戻る
+              </button>
               <button
                 type="button"
                 onClick={() => setStep('details')}
@@ -219,25 +330,39 @@ export default function NewSitePage() {
             </div>
           </div>
         ) : (
-          // ステップ2: 詳細入力
+          // ステップ3: 詳細入力
           <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-6 space-y-6">
-            {/* 選択中のテンプレート表示 */}
+            {/* 選択中のテーマ・テンプレート表示 */}
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
+                {/* テーマプレビュー */}
                 <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-                  style={{ backgroundColor: selectedTemplate.primaryColor }}
+                  className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-bold text-sm overflow-hidden"
+                  style={{
+                    backgroundColor: themes[selectedTheme].preview.background,
+                    border: selectedTheme === 'premium' ? '1px solid #333' : 'none',
+                  }}
                 >
-                  {selectedTemplate.sections.length}
+                  <div
+                    className="w-6 h-6 rounded"
+                    style={{
+                      backgroundColor: themes[selectedTheme].preview.primary,
+                      borderRadius: themes[selectedTheme].styles.borderRadius.small,
+                    }}
+                  />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-800">{selectedTemplate.name}</p>
-                  <p className="text-xs text-gray-500">{selectedTemplate.sections.length}セクション</p>
+                  <p className="font-medium text-gray-800">
+                    {themes[selectedTheme].name} / {selectedTemplate.name}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {selectedTemplate.sections.length}セクション
+                  </p>
                 </div>
               </div>
               <button
                 type="button"
-                onClick={() => setStep('template')}
+                onClick={() => setStep('theme')}
                 className="text-sm text-blue-500 hover:text-blue-600"
               >
                 変更
@@ -370,18 +495,4 @@ export default function NewSitePage() {
       </main>
     </div>
   )
-}
-
-const sectionLabels: Record<string, string> = {
-  hero: 'ヒーロー',
-  features: '特徴',
-  pricing: '料金',
-  teachers: '講師',
-  results: '実績',
-  access: 'アクセス',
-  contact: 'お問い合わせ',
-  blog: 'ブログ',
-  schedule: '時間割',
-  faq: 'FAQ',
-  gallery: 'ギャラリー',
 }

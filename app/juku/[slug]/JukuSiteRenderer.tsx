@@ -13,6 +13,8 @@ import {
   FAQSection,
   ScheduleSection,
 } from '../components/sections'
+import { themes, ThemeId } from '../themes'
+import '../theme-styles.css'
 
 interface Props {
   site: JukuSite
@@ -21,6 +23,9 @@ interface Props {
 }
 
 export function JukuSiteRenderer({ site, sections, slug }: Props) {
+  const themeId = (site.theme || 'default') as ThemeId
+  const theme = themes[themeId] || themes.default
+
   const renderSection = (section: JukuSection) => {
     const commonProps = {
       primaryColor: site.primary_color,
@@ -115,8 +120,15 @@ export function JukuSiteRenderer({ site, sections, slug }: Props) {
     }
   }
 
+  // テーマ用のCSS変数
+  const themeStyle = {
+    '--theme-primary': site.primary_color,
+    '--theme-secondary': site.secondary_color,
+    fontFamily: theme.styles.fontFamily,
+  } as React.CSSProperties
+
   return (
-    <main className="min-h-screen" style={{ fontFamily: site.font_family }}>
+    <main className={`min-h-screen theme-${themeId}`} style={themeStyle}>
       {/* ヘッダー */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">

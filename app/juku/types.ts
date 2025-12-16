@@ -7,6 +7,7 @@ export interface JukuSite {
   owner_id: string | null
 
   // テーマ
+  theme: string
   primary_color: string
   secondary_color: string
   font_family: string

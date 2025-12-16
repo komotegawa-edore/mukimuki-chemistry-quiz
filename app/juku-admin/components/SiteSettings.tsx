@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { JukuSite } from '../../juku/types'
 import { ImageUploader } from './ImageUploader'
+import { themes, ThemeId } from '../../juku/themes'
 
 interface Props {
   site: JukuSite
@@ -27,6 +28,7 @@ export function SiteSettings({ site, onUpdate }: Props) {
     email: site.email || '',
     address: site.address || '',
     business_hours: site.business_hours || '',
+    theme: (site.theme || 'default') as ThemeId,
     primary_color: site.primary_color,
     secondary_color: site.secondary_color,
     logo_url: site.logo_url || '',
@@ -115,6 +117,74 @@ export function SiteSettings({ site, onUpdate }: Props) {
           {!formData.favicon_url && formData.logo_url && (
             <p className="text-xs text-gray-400 mt-2">
               ※ 未設定の場合、ロゴ画像がFaviconとして使用されます
+            </p>
+          )}
+        </div>
+
+        {/* テーマ選択 */}
+        <div className="p-6 border-b border-gray-100">
+          <h3 className="font-bold text-gray-800 mb-4">テーマ</h3>
+          <p className="text-sm text-gray-500 mb-4">
+            サイト全体の雰囲気を決めるテーマを選択してください。
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+            {(Object.keys(themes) as ThemeId[]).map((themeId) => {
+              const theme = themes[themeId]
+              return (
+                <button
+                  key={themeId}
+                  type="button"
+                  onClick={() => handleChange('theme', themeId)}
+                  className={`rounded-xl border-2 overflow-hidden transition-all ${
+                    formData.theme === themeId
+                      ? 'border-blue-500 shadow-md'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  {/* テーマプレビュー */}
+                  <div
+                    className="h-16 p-2 flex flex-col justify-between"
+                    style={{
+                      backgroundColor: theme.preview.background,
+                      fontFamily: theme.styles.fontFamily,
+                    }}
+                  >
+                    <div
+                      className="text-xs font-bold truncate"
+                      style={{ color: theme.preview.text }}
+                    >
+                      サンプル
+                    </div>
+                    <div className="flex gap-1">
+                      <div
+                        className="w-4 h-4 rounded"
+                        style={{
+                          backgroundColor: theme.preview.primary,
+                          borderRadius: theme.styles.borderRadius.small,
+                        }}
+                      />
+                      <div
+                        className="w-4 h-4 rounded"
+                        style={{
+                          backgroundColor: theme.preview.secondary,
+                          borderRadius: theme.styles.borderRadius.small,
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="p-2 bg-white text-center">
+                    <span className="text-xs font-medium text-gray-700">{theme.name}</span>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+          {formData.theme !== site.theme && (
+            <p className="text-xs text-amber-600 mt-3 flex items-center gap-1">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              テーマを変更すると、サイトの見た目が大きく変わります
             </p>
           )}
         </div>
