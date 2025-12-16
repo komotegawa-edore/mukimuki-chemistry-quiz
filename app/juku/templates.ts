@@ -56,6 +56,15 @@ export const siteTemplates: SiteTemplate[] = [
     secondaryColor: '#ef4444',
     sections: ['hero', 'features', 'contact'],
   },
+  {
+    id: 'prep-school',
+    name: '予備校スタイル',
+    description: '大学受験予備校向け。時間割・アクセス重視の本格派',
+    thumbnail: '/templates/prep-school.png',
+    primaryColor: '#04384c',
+    secondaryColor: '#d30062',
+    sections: ['hero', 'features', 'schedule', 'teachers', 'results', 'pricing', 'gallery', 'faq', 'access', 'contact'],
+  },
 ]
 
 // テンプレートからセクションコンテンツを生成
