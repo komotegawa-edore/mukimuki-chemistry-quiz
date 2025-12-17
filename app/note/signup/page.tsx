@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
-import { PenLine, BookOpen, Target, MessageCircle, CheckCircle, Mail } from 'lucide-react'
+import { PenLine, BookOpen, Target, MessageCircle, CheckCircle, Mail, Search } from 'lucide-react'
+import { UNIVERSITY_GROUPS, UNIVERSITIES } from '@/data/universities'
 
 export default function NoteSignupPage() {
   const [name, setName] = useState('')
@@ -14,6 +15,21 @@ export default function NoteSignupPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [universitySearch, setUniversitySearch] = useState('')
+  const [showUniversityDropdown, setShowUniversityDropdown] = useState(false)
+
+  // 検索フィルタリング
+  const filteredUniversities = universitySearch
+    ? UNIVERSITIES.filter(u =>
+        u.name.toLowerCase().includes(universitySearch.toLowerCase())
+      )
+    : []
+
+  const handleSelectUniversity = (name: string) => {
+    setTargetUniversity(name)
+    setUniversitySearch('')
+    setShowUniversityDropdown(false)
+  }
 
   const handleGoogleSignup = async () => {
     setIsLoading(true)
@@ -198,17 +214,62 @@ export default function NoteSignupPage() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <div>
+                    <div className="relative">
                       <label className="block text-sm font-semibold mb-2 text-gray-700">
                         志望校（任意）
                       </label>
-                      <input
-                        type="text"
-                        value={targetUniversity}
-                        onChange={(e) => setTargetUniversity(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-400 focus:border-transparent"
-                        placeholder="東京大学"
-                      />
+                      {targetUniversity ? (
+                        <div className="flex items-center gap-2">
+                          <span className="flex-1 p-3 bg-amber-50 border border-amber-300 rounded-lg text-sm text-gray-800">
+                            {targetUniversity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setTargetUniversity('')}
+                            className="p-2 text-gray-400 hover:text-gray-600"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <input
+                              type="text"
+                              value={universitySearch}
+                              onChange={(e) => {
+                                setUniversitySearch(e.target.value)
+                                setShowUniversityDropdown(true)
+                              }}
+                              onFocus={() => setShowUniversityDropdown(true)}
+                              className="w-full pl-9 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-400 focus:border-transparent text-sm"
+                              placeholder="大学名で検索..."
+                            />
+                          </div>
+                          {showUniversityDropdown && universitySearch && (
+                            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                              {filteredUniversities.length > 0 ? (
+                                filteredUniversities.slice(0, 10).map((u) => (
+                                  <button
+                                    key={u.id}
+                                    type="button"
+                                    onClick={() => handleSelectUniversity(u.name)}
+                                    className="w-full px-3 py-2 text-left text-sm hover:bg-amber-50 flex items-center justify-between"
+                                  >
+                                    <span>{u.name}</span>
+                                    <span className="text-xs text-gray-400">{u.category}</span>
+                                  </button>
+                                ))
+                              ) : (
+                                <div className="px-3 py-2 text-sm text-gray-400">
+                                  該当する大学がありません
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-semibold mb-2 text-gray-700">
