@@ -222,17 +222,17 @@ export default async function DashboardPage() {
           </Link>
 
           <Link
-            href="/dashboard/juku-leads"
+            href="/dashboard/juku-owners"
             className="block bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
           >
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
                   <Building2 className="w-5 h-5" />
-                  塾リードソース管理
+                  学習塾リスト管理
                 </h2>
                 <p className="text-white opacity-90 text-sm">
-                  塾サイトビルダーからのリード・お問い合わせを管理
+                  登録した塾オーナーの営業ステータスを管理
                 </p>
               </div>
               <ArrowRight className="w-6 h-6 text-white" />
