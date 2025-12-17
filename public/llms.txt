@@ -1,0 +1,90 @@
+# Roopy（るーぴー）
+
+> 大学受験生のための無料学習アプリ。ゲーム感覚で毎日続けられる。
+
+Roopyは株式会社Edoreが提供する大学受験向け学習プラットフォームです。無機化学・英単語・古文単語などのクイズやドリルを通じて、効率的な学習をサポートします。
+
+## サービス一覧
+
+### Roopy（メイン学習アプリ）
+- URL: https://edore-edu.com/
+- 無機化学33章分のクイズ
+- 英単語ドリル（シス単・ターゲット1900）
+- 古文単語ドリル（古文単語315・ゴロゴプレミアム）
+- リスニング問題（30セット×3問）
+- シャドーイング機能
+- 学習履歴・進捗管理
+- ランキング機能
+
+### Roopy English
+- URL: https://edore-edu.com/english
+- 英語ニュースリスニングサービス
+- 毎朝20本のニュース配信（10カテゴリ）
+- AIによるスクリプト生成・音声生成
+- ビジネス英語・TOEIC対策に最適
+
+### RoopyNote
+- URL: https://roopynote.com/
+- 受験生向け学習記録アプリ
+- 学習日記・目標設定
+- 学習時間トラッキング
+- タイムライン機能で仲間と共有
+
+### MANABEE（学習塾DX支援）
+- URL: https://edore-edu.com/lp/manabee
+- 学習塾向けDXソリューション
+- 塾サイトビルダー
+- 生徒管理システム
+
+## ブログ
+- URL: https://edore-edu.com/blog
+- 大学受験の勉強法
+- 学習のコツ
+- Roopyの使い方
+
+## 受験生タイプ診断（MBTI）
+- URL: https://edore-edu.com/mbti
+- 12問の診断で16タイプに分類
+- 自分に合った学習スタイルを発見
+
+## 会社情報
+- 運営: 株式会社Edore
+- URL: https://edore-edu.com/company
+- お問い合わせ: コンタクトフォームあり
+
+## 主要ページ
+
+- [トップページ](https://edore-edu.com/)
+- [ログイン](https://edore-edu.com/login)
+- [新規登録](https://edore-edu.com/signup)
+- [ブログ](https://edore-edu.com/blog)
+- [受験生タイプ診断](https://edore-edu.com/mbti)
+- [Roopy English](https://edore-edu.com/english)
+- [MANABEE](https://edore-edu.com/lp/manabee)
+- [会社情報](https://edore-edu.com/company)
+- [利用規約](https://edore-edu.com/terms)
+- [プライバシーポリシー](https://edore-edu.com/privacy)
+
+## 技術スタック
+
+- Next.js 14（App Router）
+- TypeScript
+- Tailwind CSS
+- Supabase（認証・データベース）
+- microCMS（ブログ）
+- Vercel（ホスティング）
+
+## 対象ユーザー
+
+- 大学受験生（高校生・浪人生）
+- 英語学習者（ビジネスパーソン含む）
+- 学習塾経営者
+- 教育関係者
+
+## 特徴
+
+1. **完全無料** - 基本機能はすべて無料で利用可能
+2. **ゲーミフィケーション** - ポイント・ランキングで学習を継続
+3. **スマホ対応** - いつでもどこでも学習可能
+4. **科目横断** - 理科・英語・古文を1つのアプリで
+5. **講師管理** - 講師が問題を自由に追加・編集可能
