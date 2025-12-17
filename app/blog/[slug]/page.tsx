@@ -3,11 +3,12 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import { notFound } from 'next/navigation'
-import { getBlogBySlug, getAllBlogSlugs, type Blog } from '@/lib/microcms'
+import { getBlogBySlug, getAllBlogSlugs, getRelatedBlogs, type Blog } from '@/lib/microcms'
 import { Calendar, ArrowLeft } from 'lucide-react'
 import BlogHeader from '@/components/BlogHeader'
 import BlogLikeButton from '@/components/BlogLikeButton'
 import BlogComments from '@/components/BlogComments'
+import RelatedBlogs from '@/components/RelatedBlogs'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -116,6 +117,9 @@ export default async function BlogDetailPage({
     notFound()
   }
 
+  // 関連記事を取得
+  const relatedBlogs = await getRelatedBlogs(blog, 3)
+
   return (
     <div className={`min-h-screen bg-[#F4F9F7] text-[#3A405A] ${notoSansJP.className}`}>
       <JsonLd blog={blog} />
@@ -215,6 +219,9 @@ export default async function BlogDetailPage({
         <div className="mt-12 pt-8 border-t border-[#E0F7F1]">
           <BlogComments blogSlug={blog.slug} />
         </div>
+
+        {/* 関連記事 */}
+        <RelatedBlogs blogs={relatedBlogs} />
       </article>
 
       {/* CTA */}
