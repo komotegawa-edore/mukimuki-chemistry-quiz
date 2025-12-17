@@ -337,6 +337,53 @@ export default function CompanyPage() {
               </div>
             </div>
             </FadeInSection>
+
+            {/* 塾サイトビルダー */}
+            <FadeInSection delay={400} direction="up">
+            <div className="group bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+              <div className="aspect-video relative bg-gradient-to-br from-cyan-500/20 to-teal-500/10">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-20 h-20 bg-gradient-to-br from-cyan-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg">
+                    <School className="w-10 h-10 text-white" />
+                  </div>
+                </div>
+              </div>
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <School className="w-5 h-5 text-cyan-500" />
+                  <span className="text-xs font-bold text-cyan-500">塾サイト作成</span>
+                </div>
+                <h3 className="text-xl font-bold mb-2">塾サイトビルダー</h3>
+                <p className="opacity-70 mb-4 leading-relaxed text-sm">
+                  学習塾専用のホームページ作成サービス。無料でプロ品質のサイトが作れます。
+                </p>
+                <ul className="space-y-1.5 mb-4 text-xs">
+                  <li className="flex items-center gap-2">
+                    <Zap className="w-3.5 h-3.5 text-cyan-500" />
+                    完全無料で利用可能
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-500" />
+                    テンプレート選択で簡単作成
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Target className="w-3.5 h-3.5 text-cyan-500" />
+                    スマホ対応＆SEO対策済み
+                  </li>
+                </ul>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500">完全無料</span>
+                  <Link
+                    href="/lp/juku-site"
+                    className="inline-flex items-center gap-2 text-cyan-500 font-bold text-sm hover:gap-3 transition-all"
+                  >
+                    詳しく見る
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+            </FadeInSection>
           </div>
         </div>
       </section>
@@ -570,6 +617,16 @@ export default function CompanyPage() {
                 <li>
                   <Link href="/lp/english" className="opacity-70 hover:opacity-100 hover:text-[#5DDFC3] transition-colors">
                     Roopy English
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/lp/manabee" className="opacity-70 hover:opacity-100 hover:text-[#5DDFC3] transition-colors">
+                    MANABEE
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/lp/juku-site" className="opacity-70 hover:opacity-100 hover:text-[#5DDFC3] transition-colors">
+                    塾サイトビルダー
                   </Link>
                 </li>
               </ul>
