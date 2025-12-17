@@ -71,9 +71,11 @@ export default function PostCard({ post, isLiked, onLike, currentUserId }: PostC
           </div>
 
           {/* コンテンツ */}
-          <p className="text-gray-700 mt-1 whitespace-pre-wrap text-sm">
-            {post.content}
-          </p>
+          <Link href={`/note/timeline/${post.id}`}>
+            <p className="text-gray-700 mt-1 whitespace-pre-wrap text-sm hover:text-gray-600">
+              {post.content}
+            </p>
+          </Link>
 
           {/* 画像 */}
           {post.image_url && (
