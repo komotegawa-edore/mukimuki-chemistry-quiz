@@ -17,6 +17,8 @@ export default function JukuAdminDashboard() {
   const [profile, setProfile] = useState<OwnerProfile | null>(null)
   const [sites, setSites] = useState<JukuSite[]>([])
   const [loading, setLoading] = useState(true)
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -59,6 +61,39 @@ export default function JukuAdminDashboard() {
     router.push('/juku-admin/login')
   }
 
+  const handleDeleteSite = async (siteId: string) => {
+    setDeleting(true)
+    try {
+      // 関連するセクションを削除
+      await supabase
+        .from('juku_sections')
+        .delete()
+        .eq('site_id', siteId)
+
+      // 関連するブログ記事を削除
+      await supabase
+        .from('juku_blog_posts')
+        .delete()
+        .eq('site_id', siteId)
+
+      // サイトを削除
+      const { error } = await supabase
+        .from('juku_sites')
+        .delete()
+        .eq('id', siteId)
+
+      if (error) throw error
+
+      // ローカルの状態を更新
+      setSites(sites.filter(s => s.id !== siteId))
+      setDeleteConfirm(null)
+    } catch {
+      alert('削除に失敗しました')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -93,6 +128,16 @@ export default function JukuAdminDashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               新規サイト作成
+            </Link>
+            <Link
+              href="/juku-admin/settings"
+              className="px-4 py-2 text-gray-600 text-sm font-medium hover:text-gray-800 transition-colors flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              設定
             </Link>
             <button
               onClick={handleLogout}
@@ -188,10 +233,46 @@ export default function JukuAdminDashboard() {
                     >
                       表示
                     </a>
+                    <button
+                      onClick={() => setDeleteConfirm(site.id)}
+                      className="px-3 py-2 border border-red-200 text-red-600 text-sm font-medium rounded-lg hover:bg-red-50 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* 削除確認モーダル */}
+        {deleteConfirm && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4">
+              <h3 className="text-lg font-bold text-gray-800 mb-2">サイトを削除しますか？</h3>
+              <p className="text-gray-500 text-sm mb-6">
+                この操作は取り消せません。サイトに関連するすべてのデータが削除されます。
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDeleteConfirm(null)}
+                  disabled={deleting}
+                  className="flex-1 py-2 border border-gray-200 text-gray-600 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  キャンセル
+                </button>
+                <button
+                  onClick={() => handleDeleteSite(deleteConfirm)}
+                  disabled={deleting}
+                  className="flex-1 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
+                >
+                  {deleting ? '削除中...' : '削除する'}
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </main>

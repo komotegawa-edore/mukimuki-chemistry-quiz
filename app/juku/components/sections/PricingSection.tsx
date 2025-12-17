@@ -70,7 +70,7 @@ export function PricingSection({ content, primaryColor }: Props) {
 
               {/* 特徴 */}
               <ul className="space-y-3 mb-8">
-                {plan.features.map((feature, i) => (
+                {(plan.features || []).map((feature, i) => (
                   <li key={i} className="flex items-center gap-3 text-gray-600">
                     <svg
                       className="w-5 h-5 flex-shrink-0"

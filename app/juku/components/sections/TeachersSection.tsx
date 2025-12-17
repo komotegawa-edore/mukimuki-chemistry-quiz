@@ -156,7 +156,7 @@ function TeacherCard({ teacher, primaryColor }: { teacher: TeachersContent['teac
 
       {/* 担当科目 */}
       <div className="flex flex-wrap justify-center gap-2 mb-4">
-        {teacher.subjects.map((subject, i) => (
+        {(teacher.subjects || []).map((subject, i) => (
           <span
             key={i}
             className="px-3 py-1 rounded-full text-xs font-medium bg-white text-gray-600 border border-gray-200"

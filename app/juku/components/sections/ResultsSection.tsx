@@ -10,7 +10,8 @@ interface Props {
 
 export function ResultsSection({ content, primaryColor, secondaryColor }: Props) {
   // 学校ごとにグループ化
-  const groupedResults = content.items.reduce((acc, item) => {
+  const items = content.items || []
+  const groupedResults = items.reduce((acc, item) => {
     if (!acc[item.school]) {
       acc[item.school] = 0
     }
