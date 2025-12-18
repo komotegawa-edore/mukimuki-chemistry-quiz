@@ -16,6 +16,22 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // www → non-www リダイレクト
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'www.edore-edu.com',
+          },
+        ],
+        destination: 'https://edore-edu.com/:path*',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
