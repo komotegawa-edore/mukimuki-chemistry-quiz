@@ -422,6 +422,7 @@ export interface CurriculumContent {
     target?: string       // "中3生"
   }[]
   note?: string
+  sideImage?: string      // サイドに表示する講師/生徒写真
 }
 
 // 受講生の声コンテンツ
@@ -447,6 +448,7 @@ export interface BeforeAfterContent {
     after: string         // "78点"
     period?: string       // "3ヶ月で"
   }[]
+  backgroundImage?: string // 背景画像（薄く表示）
 }
 
 // LP用料金コンテンツ
@@ -483,6 +485,7 @@ export interface LPCTAContent {
   buttonLink: string
   phone?: string          // 電話番号も表示
   style: 'simple' | 'urgent' | 'floating'
+  backgroundImage?: string // 背景画像
 }
 
 // LP用申込フォームコンテンツ
@@ -574,6 +577,7 @@ export const defaultLPSectionContent: Record<LPSectionType, LPSectionContent> = 
       { date: '1/5(日)', time: '13:00-17:00', content: '過去問演習② + 総仕上げ', target: '中3生' },
     ],
     note: '※日程は変更になる場合があります',
+    sideImage: '/juku-teacher1.png',
   },
   testimonials: {
     title: '受講生の声',
@@ -591,6 +595,7 @@ export const defaultLPSectionContent: Record<LPSectionType, LPSectionContent> = 
       { label: '数学', before: '42点', after: '78点', period: '5日間で' },
       { label: '英語偏差値', before: '48', after: '58', period: '1ヶ月で' },
     ],
+    backgroundImage: '/juku-group.png',
   },
   lp_pricing: {
     title: '冬期講習 料金',
@@ -632,6 +637,7 @@ export const defaultLPSectionContent: Record<LPSectionType, LPSectionContent> = 
     buttonLink: '#contact',
     phone: '03-0000-0000',
     style: 'urgent',
+    backgroundImage: '/juku-classroom.png',
   },
   lp_contact: {
     title: 'お申し込み・お問い合わせ',
@@ -644,14 +650,7 @@ export const defaultLPSectionContent: Record<LPSectionType, LPSectionContent> = 
   lp_gallery: {
     title: '塾の様子',
     subtitle: '明るく集中できる学習環境',
-    images: [
-      { url: '/juku-classroom.png', caption: '集中できる教室環境', category: '教室' },
-      { url: '/juku-teacher1.png', caption: '丁寧な個別指導', category: '授業' },
-      { url: '/juku-teacher2.png', caption: '笑顔で楽しく学べる', category: '授業' },
-      { url: '/juku-student2.png', caption: '真剣に取り組む生徒', category: '自習' },
-      { url: '/juku-desk.png', caption: '整った学習環境', category: '設備' },
-      { url: '/juku-analytics.png', caption: 'データで成績管理', category: '設備' },
-    ],
+    images: [],
     layout: 'grid',
     showCaptions: true,
   },

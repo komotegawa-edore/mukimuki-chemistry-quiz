@@ -11,8 +11,17 @@ interface Props {
 
 export function BeforeAfterSection({ content, primaryColor, accentColor }: Props) {
   return (
-    <section className="py-16 md:py-24 bg-white">
-      <div className="max-w-5xl mx-auto px-4">
+    <section
+      className="py-16 md:py-24 relative overflow-hidden"
+      style={{
+        background: content.backgroundImage
+          ? `linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url(${content.backgroundImage})`
+          : 'white',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <div className="max-w-5xl mx-auto px-4 relative z-10">
         {/* ヘッダー */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-black mb-4" style={{ color: primaryColor }}>

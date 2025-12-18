@@ -12,7 +12,7 @@ interface Props {
 export function CurriculumSection({ content, primaryColor, accentColor }: Props) {
   return (
     <section className="py-16 md:py-24 bg-white">
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-6xl mx-auto px-4">
         {/* ヘッダー */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-black mb-4" style={{ color: primaryColor }}>
@@ -23,8 +23,33 @@ export function CurriculumSection({ content, primaryColor, accentColor }: Props)
           )}
         </div>
 
-        {/* タイムライン */}
-        <div className="relative">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+          {/* サイド画像 */}
+          {content.sideImage && (
+            <div className="hidden lg:block lg:w-1/3">
+              <div className="sticky top-24">
+                <div className="relative rounded-2xl overflow-hidden shadow-xl">
+                  <img
+                    src={content.sideImage}
+                    alt="講師"
+                    className="w-full h-auto object-cover"
+                  />
+                  <div
+                    className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"
+                  />
+                </div>
+                <p
+                  className="text-center mt-4 text-sm font-medium"
+                  style={{ color: primaryColor }}
+                >
+                  経験豊富な講師が丁寧に指導
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* タイムライン */}
+          <div className={`relative ${content.sideImage ? 'lg:w-2/3' : 'max-w-4xl mx-auto w-full'}`}>
           {/* 縦線 */}
           <div
             className="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 -translate-x-1/2"
@@ -98,6 +123,7 @@ export function CurriculumSection({ content, primaryColor, accentColor }: Props)
               </div>
             </div>
           ))}
+          </div>
         </div>
 
         {/* 注意書き */}

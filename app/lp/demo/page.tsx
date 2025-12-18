@@ -79,7 +79,18 @@ const demoSections: JukuLPSection[] = [
     type: 'lp_gallery',
     order_num: 4,
     is_visible: true,
-    content: defaultLPSectionContent.lp_gallery,
+    content: {
+      ...defaultLPSectionContent.lp_gallery,
+      // デモ用にサンプル画像を表示
+      images: [
+        { url: '/juku-classroom.png', caption: '集中できる教室環境', category: '教室' },
+        { url: '/juku-teacher1.png', caption: '丁寧な個別指導', category: '授業' },
+        { url: '/juku-teacher2.png', caption: '笑顔で楽しく学べる', category: '授業' },
+        { url: '/juku-student2.png', caption: '真剣に取り組む生徒', category: '自習' },
+        { url: '/juku-desk.png', caption: '整った学習環境', category: '設備' },
+        { url: '/juku-analytics.png', caption: 'データで成績管理', category: '設備' },
+      ],
+    },
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },

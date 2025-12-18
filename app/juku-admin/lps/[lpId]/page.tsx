@@ -653,6 +653,7 @@ function SectionEditor({
         <>
           {renderTextInput('badge', 'バッジ（例: 残り10名）')}
           {renderTextInput('ctaText', 'ボタンテキスト')}
+          {renderTextInput('backgroundImage', '背景画像URL')}
         </>
       )}
 
@@ -674,9 +675,174 @@ function SectionEditor({
         </div>
       )}
 
-      <p className="text-xs text-gray-500">
-        ※詳細な編集機能は今後追加予定です
+      {/* ギャラリーセクション */}
+      {section.type === 'lp_gallery' && (
+        <GalleryEditor
+          images={(content.images as Array<{ url: string; caption?: string; category?: string }>) || []}
+          onUpdate={(images) => onUpdate({ images })}
+        />
+      )}
+
+      {section.type !== 'lp_gallery' && (
+        <p className="text-xs text-gray-500">
+          ※詳細な編集機能は今後追加予定です
+        </p>
+      )}
+    </div>
+  )
+}
+
+// ギャラリー画像エディター
+function GalleryEditor({
+  images,
+  onUpdate,
+}: {
+  images: Array<{ url: string; caption?: string; category?: string }>
+  onUpdate: (images: Array<{ url: string; caption?: string; category?: string }>) => void
+}) {
+  const [newUrl, setNewUrl] = useState('')
+  const [newCaption, setNewCaption] = useState('')
+  const [newCategory, setNewCategory] = useState('')
+
+  const addImage = () => {
+    if (!newUrl.trim()) return
+    onUpdate([
+      ...images,
+      { url: newUrl.trim(), caption: newCaption.trim() || undefined, category: newCategory.trim() || undefined },
+    ])
+    setNewUrl('')
+    setNewCaption('')
+    setNewCategory('')
+  }
+
+  const removeImage = (index: number) => {
+    onUpdate(images.filter((_, i) => i !== index))
+  }
+
+  const updateImage = (index: number, updates: Partial<{ url: string; caption?: string; category?: string }>) => {
+    onUpdate(images.map((img, i) => (i === index ? { ...img, ...updates } : img)))
+  }
+
+  const moveImage = (index: number, direction: 'up' | 'down') => {
+    if ((direction === 'up' && index === 0) || (direction === 'down' && index === images.length - 1)) return
+    const newImages = [...images]
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    ;[newImages[index], newImages[newIndex]] = [newImages[newIndex], newImages[index]]
+    onUpdate(newImages)
+  }
+
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-gray-600">
+        塾の様子を写真で紹介します。画像URLを入力して追加してください。
       </p>
+
+      {/* 既存画像一覧 */}
+      {images.length > 0 && (
+        <div className="space-y-3">
+          {images.map((image, index) => (
+            <div key={index} className="flex gap-3 items-start bg-white p-3 rounded-lg border">
+              {/* サムネイル */}
+              <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
+                <img src={image.url} alt="" className="w-full h-full object-cover" />
+              </div>
+
+              {/* 編集 */}
+              <div className="flex-1 space-y-2">
+                <input
+                  type="text"
+                  value={image.url}
+                  onChange={(e) => updateImage(index, { url: e.target.value })}
+                  placeholder="画像URL"
+                  className="w-full px-2 py-1 border rounded text-sm"
+                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={image.caption || ''}
+                    onChange={(e) => updateImage(index, { caption: e.target.value })}
+                    placeholder="キャプション"
+                    className="flex-1 px-2 py-1 border rounded text-sm"
+                  />
+                  <input
+                    type="text"
+                    value={image.category || ''}
+                    onChange={(e) => updateImage(index, { category: e.target.value })}
+                    placeholder="カテゴリ"
+                    className="w-24 px-2 py-1 border rounded text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* 操作ボタン */}
+              <div className="flex flex-col gap-1">
+                <button
+                  onClick={() => moveImage(index, 'up')}
+                  disabled={index === 0}
+                  className="p-1 hover:bg-gray-200 rounded disabled:opacity-30"
+                >
+                  <ChevronUp className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => moveImage(index, 'down')}
+                  disabled={index === images.length - 1}
+                  className="p-1 hover:bg-gray-200 rounded disabled:opacity-30"
+                >
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => removeImage(index)}
+                  className="p-1 hover:bg-red-100 rounded text-red-500"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 新規追加 */}
+      <div className="bg-blue-50 p-4 rounded-lg space-y-3">
+        <p className="text-sm font-medium text-blue-800">新しい画像を追加</p>
+        <input
+          type="text"
+          value={newUrl}
+          onChange={(e) => setNewUrl(e.target.value)}
+          placeholder="画像URL（例: https://...）"
+          className="w-full px-3 py-2 border rounded-lg text-sm"
+        />
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={newCaption}
+            onChange={(e) => setNewCaption(e.target.value)}
+            placeholder="キャプション（任意）"
+            className="flex-1 px-3 py-2 border rounded-lg text-sm"
+          />
+          <input
+            type="text"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            placeholder="カテゴリ（任意）"
+            className="w-32 px-3 py-2 border rounded-lg text-sm"
+          />
+        </div>
+        <button
+          onClick={addImage}
+          disabled={!newUrl.trim()}
+          className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          <Plus className="w-4 h-4" />
+          画像を追加
+        </button>
+      </div>
+
+      {images.length === 0 && (
+        <p className="text-sm text-gray-500 text-center py-4">
+          まだ画像がありません。上のフォームから追加してください。
+        </p>
+      )}
     </div>
   )
 }

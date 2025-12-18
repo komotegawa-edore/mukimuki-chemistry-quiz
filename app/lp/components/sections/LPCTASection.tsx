@@ -27,7 +27,7 @@ export function LPCTASection({ content, primaryColor, accentColor }: Props) {
 
   return (
     <section
-      className={`py-12 md:py-16 ${content.style === 'urgent' ? 'animate-pulse-slow' : ''}`}
+      className={`py-12 md:py-16 relative overflow-hidden ${content.style === 'urgent' ? 'animate-pulse-slow' : ''}`}
       style={{
         background:
           content.style === 'urgent'
@@ -35,7 +35,18 @@ export function LPCTASection({ content, primaryColor, accentColor }: Props) {
             : primaryColor,
       }}
     >
-      <div className="max-w-4xl mx-auto px-4 text-center">
+      {/* 背景画像（さりげなく） */}
+      {content.backgroundImage && (
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `url(${content.backgroundImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+      )}
+      <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
         {/* 緊急アイコン */}
         {content.style === 'urgent' && (
           <div className="flex items-center justify-center gap-2 mb-4">
