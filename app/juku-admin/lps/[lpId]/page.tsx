@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowLeft,
@@ -27,12 +27,9 @@ import {
   defaultLPSectionContent,
 } from '@/app/juku/types'
 
-interface Props {
-  params: Promise<{ lpId: string }>
-}
-
-export default function EditLPPage({ params }: Props) {
-  const { lpId } = use(params)
+export default function EditLPPage() {
+  const params = useParams()
+  const lpId = params.lpId as string
   const [lp, setLp] = useState<JukuLP | null>(null)
   const [sections, setSections] = useState<JukuLPSection[]>([])
   const [activeTab, setActiveTab] = useState<'sections' | 'settings'>('sections')
