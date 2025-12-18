@@ -16,22 +16,8 @@ const nextConfig = {
       },
     ],
   },
-  async redirects() {
-    return [
-      // www → non-www リダイレクト
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'www.edore-edu.com',
-          },
-        ],
-        destination: 'https://edore-edu.com/:path*',
-        permanent: true,
-      },
-    ]
-  },
+  // NOTE: www → non-www リダイレクトはVercelのドメイン設定で行う
+  // Vercel Dashboard → Settings → Domains で edore-edu.com をPrimaryに設定
 }
 
 module.exports = nextConfig
