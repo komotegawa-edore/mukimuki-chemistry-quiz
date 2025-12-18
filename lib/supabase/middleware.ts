@@ -81,6 +81,8 @@ export async function updateSession(request: NextRequest) {
     '/reset-password',
     '/company',  // 会社ホームページ（公開）
     '/juku',     // 塾サイトビルダー（公開）
+    '/note/login',   // RoopyNote ログイン
+    '/note/signup',  // RoopyNote 登録
   ]
 
   // juku-admin の公開ページ（ログイン/登録/認証コールバック）
@@ -131,6 +133,21 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone()
     // /english系からのアクセスは/english/newsへ、それ以外は/へ
     url.pathname = request.nextUrl.pathname.startsWith('/english') ? '/english/news' : '/'
+    return NextResponse.redirect(url)
+  }
+
+  // RoopyNote: 認証済みユーザーがログイン/登録ページにアクセスした場合は/noteへ
+  const noteLoginPaths = ['/note/login', '/note/signup']
+  if (user && noteLoginPaths.includes(request.nextUrl.pathname)) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/note'
+    return NextResponse.redirect(url)
+  }
+
+  // RoopyNote: 未認証で/note（ログイン/登録以外）にアクセスした場合は/note/loginへ
+  if (!user && request.nextUrl.pathname.startsWith('/note') && !noteLoginPaths.includes(request.nextUrl.pathname)) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/note/login'
     return NextResponse.redirect(url)
   }
 
