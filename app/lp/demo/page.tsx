@@ -1,0 +1,160 @@
+import { Metadata } from 'next'
+import { LPRenderer } from '../[slug]/LPRenderer'
+import {
+  JukuLP,
+  JukuLPSection,
+  defaultLPSectionContent,
+  LPSectionType,
+} from '@/app/juku/types'
+
+export const metadata: Metadata = {
+  title: '冬期講習2024 | サンプル学習塾',
+  description: 'この冬、ライバルに差をつける5日間。早期申込で20%OFF！',
+}
+
+// デモ用のLPデータ
+const demoLP: JukuLP = {
+  id: 'demo',
+  slug: 'demo',
+  owner_id: null,
+  lp_type: 'winter',
+  name: '冬期講習2024',
+  juku_name: 'サンプル学習塾',
+  theme: 'default',
+  primary_color: '#dc2626',
+  secondary_color: '#1e3a8a',
+  accent_color: '#f59e0b',
+  logo_url: null,
+  start_date: '2024-12-26',
+  end_date: '2025-01-05',
+  deadline_date: '2024-12-20',
+  phone: '03-1234-5678',
+  email: 'info@sample-juku.com',
+  line_url: null,
+  is_published: true,
+  publish_start: null,
+  publish_end: null,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+}
+
+// デモ用のセクション
+const demoSections: JukuLPSection[] = [
+  {
+    id: '1',
+    lp_id: 'demo',
+    type: 'lp_hero',
+    order_num: 1,
+    is_visible: true,
+    content: defaultLPSectionContent.lp_hero,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: '2',
+    lp_id: 'demo',
+    type: 'countdown',
+    order_num: 2,
+    is_visible: true,
+    content: {
+      ...defaultLPSectionContent.countdown,
+      targetDate: new Date('2024-12-20T23:59:59').toISOString(),
+    },
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: '3',
+    lp_id: 'demo',
+    type: 'campaign',
+    order_num: 3,
+    is_visible: true,
+    content: defaultLPSectionContent.campaign,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: '4',
+    lp_id: 'demo',
+    type: 'lp_gallery',
+    order_num: 4,
+    is_visible: true,
+    content: defaultLPSectionContent.lp_gallery,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: '5',
+    lp_id: 'demo',
+    type: 'curriculum',
+    order_num: 5,
+    is_visible: true,
+    content: defaultLPSectionContent.curriculum,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: '6',
+    lp_id: 'demo',
+    type: 'before_after',
+    order_num: 6,
+    is_visible: true,
+    content: defaultLPSectionContent.before_after,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: '7',
+    lp_id: 'demo',
+    type: 'testimonials',
+    order_num: 7,
+    is_visible: true,
+    content: defaultLPSectionContent.testimonials,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: '8',
+    lp_id: 'demo',
+    type: 'lp_pricing',
+    order_num: 8,
+    is_visible: true,
+    content: defaultLPSectionContent.lp_pricing,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: '9',
+    lp_id: 'demo',
+    type: 'lp_faq',
+    order_num: 9,
+    is_visible: true,
+    content: defaultLPSectionContent.lp_faq,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: '10',
+    lp_id: 'demo',
+    type: 'lp_cta',
+    order_num: 10,
+    is_visible: true,
+    content: defaultLPSectionContent.lp_cta,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: '11',
+    lp_id: 'demo',
+    type: 'lp_contact',
+    order_num: 11,
+    is_visible: true,
+    content: defaultLPSectionContent.lp_contact,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+]
+
+export default function DemoLPPage() {
+  return <LPRenderer lp={demoLP} sections={demoSections} />
+}
