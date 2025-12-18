@@ -5,56 +5,53 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import {
-  ArrowLeft,
-  Save,
-  Eye,
-  Settings,
-  Layers,
-  ExternalLink,
-  Loader2,
-  GripVertical,
-  EyeOff,
-  Trash2,
-  Plus,
-  ChevronDown,
-  ChevronUp,
-} from 'lucide-react'
-import {
   JukuLP,
   JukuLPSection,
   LPSectionType,
-  lpSectionTypeLabels,
   defaultLPSectionContent,
 } from '@/app/juku/types'
+import { LPSectionList } from '../../components/LPSectionList'
+import { LPSectionEditor } from '../../components/LPSectionEditor'
+import { LPSettings } from '../../components/LPSettings'
+import { PreviewFrame } from '../../components/PreviewFrame'
+
+type Tab = 'sections' | 'settings' | 'preview'
 
 export default function EditLPPage() {
   const params = useParams()
   const lpId = params.lpId as string
   const [lp, setLp] = useState<JukuLP | null>(null)
   const [sections, setSections] = useState<JukuLPSection[]>([])
-  const [activeTab, setActiveTab] = useState<'sections' | 'settings'>('sections')
-  const [expandedSection, setExpandedSection] = useState<string | null>(null)
+  const [selectedSection, setSelectedSection] = useState<JukuLPSection | null>(null)
+  const [activeTab, setActiveTab] = useState<Tab>('sections')
+  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
+  const [pendingLPChanges, setPendingLPChanges] = useState<Partial<JukuLP>>({})
+  const [pendingSectionChanges, setPendingSectionChanges] = useState<Record<string, unknown>>({})
+
   const router = useRouter()
   const supabase = createClient()
 
+  // データ読み込み
   useEffect(() => {
-    fetchLP()
+    loadData()
   }, [lpId])
 
-  const fetchLP = async () => {
-    const { data: user } = await supabase.auth.getUser()
-    if (!user.user) {
+  async function loadData() {
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
       router.push('/juku-admin/login')
       return
     }
 
+    // LP取得
     const { data: lpData, error: lpError } = await supabase
       .from('juku_lps')
       .select('*')
       .eq('id', lpId)
-      .eq('owner_id', user.user.id)
+      .eq('owner_id', user.id)
       .single()
 
     if (lpError || !lpData) {
@@ -62,784 +59,325 @@ export default function EditLPPage() {
       return
     }
 
-    setLp(lpData)
+    setLp(lpData as JukuLP)
 
+    // セクション取得
     const { data: sectionsData } = await supabase
       .from('juku_lp_sections')
       .select('*')
       .eq('lp_id', lpId)
-      .order('order_num')
+      .order('order_num', { ascending: true })
 
-    setSections(sectionsData || [])
+    setSections((sectionsData || []) as JukuLPSection[])
+    setLoading(false)
   }
 
-  const handleSave = async () => {
-    if (!lp) return
-    setSaving(true)
-
-    try {
-      // LP保存
-      const { error: lpError } = await supabase
-        .from('juku_lps')
-        .update({
-          name: lp.name,
-          juku_name: lp.juku_name,
-          phone: lp.phone,
-          email: lp.email,
-          primary_color: lp.primary_color,
-          secondary_color: lp.secondary_color,
-          accent_color: lp.accent_color,
-          start_date: lp.start_date,
-          end_date: lp.end_date,
-          deadline_date: lp.deadline_date,
-          is_published: lp.is_published,
-        })
-        .eq('id', lpId)
-
-      if (lpError) throw lpError
-
-      // セクション保存（一括更新）
-      for (const section of sections) {
-        const { error: secError } = await supabase
-          .from('juku_lp_sections')
-          .update({
-            order_num: section.order_num,
-            is_visible: section.is_visible,
-            content: section.content,
-          })
-          .eq('id', section.id)
-
-        if (secError) throw secError
-      }
-
-      setHasChanges(false)
-    } catch (err) {
-      console.error('Save error:', err)
-      alert('保存に失敗しました')
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  const updateSection = (sectionId: string, updates: Partial<JukuLPSection>) => {
-    setSections(
-      sections.map((s) => (s.id === sectionId ? { ...s, ...updates } : s))
-    )
-    setHasChanges(true)
-  }
-
-  const updateSectionContent = (sectionId: string, contentUpdates: Record<string, unknown>) => {
-    setSections(
-      sections.map((s) =>
-        s.id === sectionId
-          ? { ...s, content: { ...s.content, ...contentUpdates } }
-          : s
-      )
-    )
-    setHasChanges(true)
-  }
-
-  const moveSection = (sectionId: string, direction: 'up' | 'down') => {
-    const index = sections.findIndex((s) => s.id === sectionId)
-    if (
-      (direction === 'up' && index === 0) ||
-      (direction === 'down' && index === sections.length - 1)
-    ) {
-      return
-    }
-
-    const newSections = [...sections]
-    const newIndex = direction === 'up' ? index - 1 : index + 1
-    ;[newSections[index], newSections[newIndex]] = [
-      newSections[newIndex],
-      newSections[index],
-    ]
-
-    // order_numを更新
-    newSections.forEach((s, i) => {
-      s.order_num = i + 1
-    })
-
+  // セクションの順序を更新（即座に保存）
+  const handleReorder = async (newSections: JukuLPSection[]) => {
     setSections(newSections)
-    setHasChanges(true)
+
+    for (let i = 0; i < newSections.length; i++) {
+      await supabase
+        .from('juku_lp_sections')
+        .update({ order_num: i + 1 })
+        .eq('id', newSections[i].id)
+    }
   }
 
-  const addSection = async (type: LPSectionType) => {
-    const { data, error } = await supabase
+  // セクションを追加
+  const handleAddSection = async (type: LPSectionType) => {
+    if (!lp) return
+
+    const maxOrder = Math.max(...sections.map(s => s.order_num), 0)
+
+    const { data: newSection } = await supabase
       .from('juku_lp_sections')
       .insert({
-        lp_id: lpId,
+        lp_id: lp.id,
         type,
-        order_num: sections.length + 1,
+        order_num: maxOrder + 1,
         is_visible: true,
         content: defaultLPSectionContent[type],
       })
       .select()
       .single()
 
-    if (!error && data) {
-      setSections([...sections, data])
+    if (newSection) {
+      setSections([...sections, newSection as JukuLPSection])
     }
   }
 
-  const deleteSection = async (sectionId: string) => {
+  // セクションを削除
+  const handleDeleteSection = async (sectionId: string) => {
     if (!confirm('このセクションを削除しますか？')) return
 
-    const { error } = await supabase
-      .from('juku_lp_sections')
-      .delete()
-      .eq('id', sectionId)
+    await supabase.from('juku_lp_sections').delete().eq('id', sectionId)
+    setSections(sections.filter(s => s.id !== sectionId))
+    setSelectedSection(null)
 
-    if (!error) {
-      setSections(sections.filter((s) => s.id !== sectionId))
+    const newPendingChanges = { ...pendingSectionChanges }
+    delete newPendingChanges[sectionId]
+    setPendingSectionChanges(newPendingChanges)
+  }
+
+  // セクションの表示/非表示を切り替え（即座に保存）
+  const handleToggleVisibility = async (section: JukuLPSection) => {
+    const newVisibility = !section.is_visible
+
+    await supabase
+      .from('juku_lp_sections')
+      .update({ is_visible: newVisibility })
+      .eq('id', section.id)
+
+    setSections(sections.map(s =>
+      s.id === section.id ? { ...s, is_visible: newVisibility } : s
+    ))
+  }
+
+  // セクションのコンテンツを変更（保留）
+  const handleUpdateSection = (sectionId: string, content: Record<string, unknown>) => {
+    setPendingSectionChanges({
+      ...pendingSectionChanges,
+      [sectionId]: content,
+    })
+
+    setSections(sections.map(s =>
+      s.id === sectionId ? { ...s, content: content as JukuLPSection['content'] } : s
+    ))
+
+    if (selectedSection?.id === sectionId) {
+      setSelectedSection({ ...selectedSection, content: content as JukuLPSection['content'] })
     }
+
+    setHasChanges(true)
+  }
+
+  // LP設定を変更（保留）
+  const handleUpdateLP = (updates: Partial<JukuLP>) => {
+    setPendingLPChanges({
+      ...pendingLPChanges,
+      ...updates,
+    })
+
+    if (lp) {
+      setLp({ ...lp, ...updates })
+    }
+
+    setHasChanges(true)
+  }
+
+  // すべての変更を保存
+  const handleSaveAll = async () => {
+    if (!lp) return
+    setSaving(true)
+
+    try {
+      // LP設定を保存
+      if (Object.keys(pendingLPChanges).length > 0) {
+        await supabase
+          .from('juku_lps')
+          .update({
+            ...pendingLPChanges,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', lp.id)
+      }
+
+      // セクションの変更を保存
+      for (const [sectionId, content] of Object.entries(pendingSectionChanges)) {
+        await supabase
+          .from('juku_lp_sections')
+          .update({
+            content,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', sectionId)
+      }
+
+      setPendingLPChanges({})
+      setPendingSectionChanges({})
+      setHasChanges(false)
+    } catch (error) {
+      console.error('Save error:', error)
+      alert('保存に失敗しました')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  // 公開/非公開を切り替え
+  const handleTogglePublish = async () => {
+    if (!lp) return
+    setSaving(true)
+
+    const newPublished = !lp.is_published
+
+    await supabase
+      .from('juku_lps')
+      .update({
+        is_published: newPublished,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', lp.id)
+
+    setLp({ ...lp, is_published: newPublished })
+    setSaving(false)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-gray-500">読み込み中...</div>
+      </div>
+    )
   }
 
   if (!lp) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-gray-500">LPが見つかりません</div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-100">
       {/* ヘッダー */}
-      <header className="bg-white border-b sticky top-0 z-20">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/juku-admin/lps" className="text-gray-500 hover:text-gray-700">
-              <ArrowLeft className="w-5 h-5" />
+            <Link
+              href="/juku-admin/lps"
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
             </Link>
             <div>
-              <h1 className="font-bold">{lp.name}</h1>
-              <p className="text-xs text-gray-500">{lp.juku_name}</p>
+              <h1 className="text-lg font-bold text-gray-800">
+                {lp.name}
+              </h1>
+              <p className="text-xs text-gray-500">
+                edore-edu.com/lp/{lp.slug}
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
+            {hasChanges && (
+              <span className="text-xs text-orange-500 flex items-center gap-1">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                未保存の変更あり
+              </span>
+            )}
+            {saving && (
+              <span className="text-sm text-gray-500">保存中...</span>
+            )}
             <a
               href={`/lp/${lp.slug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
             >
-              <ExternalLink className="w-4 h-4" />
-              プレビュー
+              LPを見る
             </a>
-
             <button
-              onClick={() => {
-                setLp({ ...lp, is_published: !lp.is_published })
-                setHasChanges(true)
-              }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
-                lp.is_published
-                  ? 'bg-green-100 text-green-700'
-                  : 'bg-gray-100 text-gray-600'
+              onClick={handleSaveAll}
+              disabled={!hasChanges || saving}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                hasChanges
+                  ? 'bg-blue-500 text-white hover:bg-blue-600'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >
-              {lp.is_published ? (
-                <>
-                  <Eye className="w-4 h-4" />
-                  公開中
-                </>
-              ) : (
-                <>
-                  <EyeOff className="w-4 h-4" />
-                  非公開
-                </>
-              )}
-            </button>
-
-            <button
-              onClick={handleSave}
-              disabled={saving || !hasChanges}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-            >
-              {saving ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Save className="w-4 h-4" />
-              )}
               保存
+            </button>
+            <button
+              onClick={handleTogglePublish}
+              disabled={saving}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                lp.is_published
+                  ? 'bg-green-500 text-white hover:bg-green-600'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              {lp.is_published ? '公開中' : '非公開'}
             </button>
           </div>
         </div>
 
         {/* タブ */}
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex gap-6 border-t">
-            <button
-              onClick={() => setActiveTab('sections')}
-              className={`py-3 border-b-2 font-medium text-sm flex items-center gap-2 ${
-                activeTab === 'sections'
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500'
-              }`}
-            >
-              <Layers className="w-4 h-4" />
-              セクション
-            </button>
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`py-3 border-b-2 font-medium text-sm flex items-center gap-2 ${
-                activeTab === 'settings'
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500'
-              }`}
-            >
-              <Settings className="w-4 h-4" />
-              設定
-            </button>
-          </div>
+        <div className="max-w-7xl mx-auto px-4">
+          <nav className="flex gap-1">
+            {[
+              { id: 'sections', label: 'セクション' },
+              { id: 'settings', label: 'LP設定' },
+              { id: 'preview', label: 'プレビュー' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as Tab)}
+                className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === tab.id
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </nav>
         </div>
       </header>
 
-      {/* メイン */}
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      {/* メインコンテンツ */}
+      <main className="max-w-7xl mx-auto p-4">
         {activeTab === 'sections' && (
-          <div className="space-y-4">
-            {sections.map((section, index) => (
-              <div
-                key={section.id}
-                className={`bg-white rounded-xl border overflow-hidden ${
-                  !section.is_visible ? 'opacity-60' : ''
-                }`}
-              >
-                {/* セクションヘッダー */}
-                <div
-                  className="px-4 py-3 flex items-center gap-3 cursor-pointer hover:bg-gray-50"
-                  onClick={() =>
-                    setExpandedSection(expandedSection === section.id ? null : section.id)
-                  }
-                >
-                  <GripVertical className="w-4 h-4 text-gray-400" />
-                  <span className="font-medium flex-1">
-                    {lpSectionTypeLabels[section.type as LPSectionType]}
-                  </span>
+          <div className="grid grid-cols-12 gap-6">
+            {/* セクションリスト */}
+            <div className="col-span-4">
+              <LPSectionList
+                sections={sections}
+                selectedSection={selectedSection}
+                onSelect={setSelectedSection}
+                onReorder={handleReorder}
+                onAdd={handleAddSection}
+                onDelete={handleDeleteSection}
+                onToggleVisibility={handleToggleVisibility}
+              />
+            </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        moveSection(section.id, 'up')
-                      }}
-                      disabled={index === 0}
-                      className="p-1 hover:bg-gray-200 rounded disabled:opacity-30"
-                    >
-                      <ChevronUp className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        moveSection(section.id, 'down')
-                      }}
-                      disabled={index === sections.length - 1}
-                      className="p-1 hover:bg-gray-200 rounded disabled:opacity-30"
-                    >
-                      <ChevronDown className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        updateSection(section.id, { is_visible: !section.is_visible })
-                      }}
-                      className="p-1 hover:bg-gray-200 rounded"
-                    >
-                      {section.is_visible ? (
-                        <Eye className="w-4 h-4 text-gray-600" />
-                      ) : (
-                        <EyeOff className="w-4 h-4 text-gray-400" />
-                      )}
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        deleteSection(section.id)
-                      }}
-                      className="p-1 hover:bg-red-100 rounded text-red-500"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+            {/* セクションエディタ */}
+            <div className="col-span-8">
+              {selectedSection ? (
+                <LPSectionEditor
+                  section={selectedSection}
+                  lp={lp}
+                  onUpdate={(content) => handleUpdateSection(selectedSection.id, content)}
+                />
+              ) : (
+                <div className="bg-white rounded-xl p-12 text-center text-gray-500">
+                  <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                  <p>左のリストからセクションを選択して編集</p>
                 </div>
-
-                {/* セクション編集 */}
-                {expandedSection === section.id && (
-                  <div className="px-4 py-4 border-t bg-gray-50">
-                    <SectionEditor
-                      section={section}
-                      onUpdate={(updates) => updateSectionContent(section.id, updates)}
-                    />
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {/* セクション追加 */}
-            <div className="bg-white rounded-xl border p-4">
-              <p className="text-sm font-medium text-gray-600 mb-3">セクションを追加</p>
-              <div className="flex flex-wrap gap-2">
-                {(Object.keys(lpSectionTypeLabels) as LPSectionType[]).map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => addSection(type)}
-                    className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center gap-1"
-                  >
-                    <Plus className="w-3 h-3" />
-                    {lpSectionTypeLabels[type]}
-                  </button>
-                ))}
-              </div>
+              )}
             </div>
           </div>
         )}
 
         {activeTab === 'settings' && (
-          <div className="bg-white rounded-xl p-6 space-y-6">
-            {/* 基本情報 */}
-            <div>
-              <h3 className="font-bold mb-4">基本情報</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">LP名</label>
-                  <input
-                    type="text"
-                    value={lp.name}
-                    onChange={(e) => {
-                      setLp({ ...lp, name: e.target.value })
-                      setHasChanges(true)
-                    }}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">塾名</label>
-                  <input
-                    type="text"
-                    value={lp.juku_name}
-                    onChange={(e) => {
-                      setLp({ ...lp, juku_name: e.target.value })
-                      setHasChanges(true)
-                    }}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">電話番号</label>
-                  <input
-                    type="tel"
-                    value={lp.phone || ''}
-                    onChange={(e) => {
-                      setLp({ ...lp, phone: e.target.value })
-                      setHasChanges(true)
-                    }}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    通知メール
-                  </label>
-                  <input
-                    type="email"
-                    value={lp.email || ''}
-                    onChange={(e) => {
-                      setLp({ ...lp, email: e.target.value })
-                      setHasChanges(true)
-                    }}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                </div>
-              </div>
-            </div>
+          <LPSettings lp={lp} onUpdate={handleUpdateLP} />
+        )}
 
-            {/* カラー設定 */}
-            <div>
-              <h3 className="font-bold mb-4">カラー設定</h3>
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    メインカラー
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={lp.primary_color}
-                      onChange={(e) => {
-                        setLp({ ...lp, primary_color: e.target.value })
-                        setHasChanges(true)
-                      }}
-                      className="w-10 h-10 rounded cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={lp.primary_color}
-                      onChange={(e) => {
-                        setLp({ ...lp, primary_color: e.target.value })
-                        setHasChanges(true)
-                      }}
-                      className="flex-1 px-3 py-2 border rounded-lg text-sm"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    サブカラー
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={lp.secondary_color}
-                      onChange={(e) => {
-                        setLp({ ...lp, secondary_color: e.target.value })
-                        setHasChanges(true)
-                      }}
-                      className="w-10 h-10 rounded cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={lp.secondary_color}
-                      onChange={(e) => {
-                        setLp({ ...lp, secondary_color: e.target.value })
-                        setHasChanges(true)
-                      }}
-                      className="flex-1 px-3 py-2 border rounded-lg text-sm"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    アクセントカラー
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={lp.accent_color}
-                      onChange={(e) => {
-                        setLp({ ...lp, accent_color: e.target.value })
-                        setHasChanges(true)
-                      }}
-                      className="w-10 h-10 rounded cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={lp.accent_color}
-                      onChange={(e) => {
-                        setLp({ ...lp, accent_color: e.target.value })
-                        setHasChanges(true)
-                      }}
-                      className="flex-1 px-3 py-2 border rounded-lg text-sm"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 期間設定 */}
-            <div>
-              <h3 className="font-bold mb-4">講習期間</h3>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">開始日</label>
-                  <input
-                    type="date"
-                    value={lp.start_date || ''}
-                    onChange={(e) => {
-                      setLp({ ...lp, start_date: e.target.value || null })
-                      setHasChanges(true)
-                    }}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">終了日</label>
-                  <input
-                    type="date"
-                    value={lp.end_date || ''}
-                    onChange={(e) => {
-                      setLp({ ...lp, end_date: e.target.value || null })
-                      setHasChanges(true)
-                    }}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    申込締切日
-                  </label>
-                  <input
-                    type="date"
-                    value={lp.deadline_date || ''}
-                    onChange={(e) => {
-                      setLp({ ...lp, deadline_date: e.target.value || null })
-                      setHasChanges(true)
-                    }}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* URL */}
-            <div>
-              <h3 className="font-bold mb-4">公開URL</h3>
-              <div className="flex items-center gap-2 p-3 bg-gray-100 rounded-lg">
-                <span className="text-gray-500">edore.jp/lp/</span>
-                <span className="font-mono">{lp.slug}</span>
-                <a
-                  href={`/lp/${lp.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ml-auto text-blue-600 hover:underline flex items-center gap-1"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  開く
-                </a>
-              </div>
-            </div>
-          </div>
+        {activeTab === 'preview' && (
+          <PreviewFrame slug={`lp/${lp.slug}`} />
         )}
       </main>
-    </div>
-  )
-}
-
-// セクションエディター（簡易版）
-function SectionEditor({
-  section,
-  onUpdate,
-}: {
-  section: JukuLPSection
-  onUpdate: (updates: Record<string, unknown>) => void
-}) {
-  const content = section.content as unknown as Record<string, unknown>
-
-  // 共通のテキスト入力
-  const renderTextInput = (key: string, label: string, multiline = false) => (
-    <div key={key}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      {multiline ? (
-        <textarea
-          value={(content[key] as string) || ''}
-          onChange={(e) => onUpdate({ [key]: e.target.value })}
-          rows={3}
-          className="w-full px-3 py-2 border rounded-lg text-sm"
-        />
-      ) : (
-        <input
-          type="text"
-          value={(content[key] as string) || ''}
-          onChange={(e) => onUpdate({ [key]: e.target.value })}
-          className="w-full px-3 py-2 border rounded-lg text-sm"
-        />
-      )}
-    </div>
-  )
-
-  return (
-    <div className="space-y-4">
-      {/* タイトル（ほぼ全セクションに共通） */}
-      {content.title !== undefined && renderTextInput('title', 'タイトル')}
-      {content.subtitle !== undefined && renderTextInput('subtitle', 'サブタイトル')}
-
-      {/* セクション固有の編集UI */}
-      {section.type === 'lp_hero' && (
-        <>
-          {renderTextInput('badge', 'バッジ（例: 残り10名）')}
-          {renderTextInput('ctaText', 'ボタンテキスト')}
-          {renderTextInput('backgroundImage', '背景画像URL')}
-        </>
-      )}
-
-      {section.type === 'countdown' && (
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">締切日時</label>
-          <input
-            type="datetime-local"
-            value={
-              content.targetDate
-                ? new Date(content.targetDate as string).toISOString().slice(0, 16)
-                : ''
-            }
-            onChange={(e) =>
-              onUpdate({ targetDate: new Date(e.target.value).toISOString() })
-            }
-            className="w-full px-3 py-2 border rounded-lg text-sm"
-          />
-        </div>
-      )}
-
-      {/* ギャラリーセクション */}
-      {section.type === 'lp_gallery' && (
-        <GalleryEditor
-          images={(content.images as Array<{ url: string; caption?: string; category?: string }>) || []}
-          onUpdate={(images) => onUpdate({ images })}
-        />
-      )}
-
-      {section.type !== 'lp_gallery' && (
-        <p className="text-xs text-gray-500">
-          ※詳細な編集機能は今後追加予定です
-        </p>
-      )}
-    </div>
-  )
-}
-
-// ギャラリー画像エディター
-function GalleryEditor({
-  images,
-  onUpdate,
-}: {
-  images: Array<{ url: string; caption?: string; category?: string }>
-  onUpdate: (images: Array<{ url: string; caption?: string; category?: string }>) => void
-}) {
-  const [newUrl, setNewUrl] = useState('')
-  const [newCaption, setNewCaption] = useState('')
-  const [newCategory, setNewCategory] = useState('')
-
-  const addImage = () => {
-    if (!newUrl.trim()) return
-    onUpdate([
-      ...images,
-      { url: newUrl.trim(), caption: newCaption.trim() || undefined, category: newCategory.trim() || undefined },
-    ])
-    setNewUrl('')
-    setNewCaption('')
-    setNewCategory('')
-  }
-
-  const removeImage = (index: number) => {
-    onUpdate(images.filter((_, i) => i !== index))
-  }
-
-  const updateImage = (index: number, updates: Partial<{ url: string; caption?: string; category?: string }>) => {
-    onUpdate(images.map((img, i) => (i === index ? { ...img, ...updates } : img)))
-  }
-
-  const moveImage = (index: number, direction: 'up' | 'down') => {
-    if ((direction === 'up' && index === 0) || (direction === 'down' && index === images.length - 1)) return
-    const newImages = [...images]
-    const newIndex = direction === 'up' ? index - 1 : index + 1
-    ;[newImages[index], newImages[newIndex]] = [newImages[newIndex], newImages[index]]
-    onUpdate(newImages)
-  }
-
-  return (
-    <div className="space-y-4">
-      <p className="text-sm text-gray-600">
-        塾の様子を写真で紹介します。画像URLを入力して追加してください。
-      </p>
-
-      {/* 既存画像一覧 */}
-      {images.length > 0 && (
-        <div className="space-y-3">
-          {images.map((image, index) => (
-            <div key={index} className="flex gap-3 items-start bg-white p-3 rounded-lg border">
-              {/* サムネイル */}
-              <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
-                <img src={image.url} alt="" className="w-full h-full object-cover" />
-              </div>
-
-              {/* 編集 */}
-              <div className="flex-1 space-y-2">
-                <input
-                  type="text"
-                  value={image.url}
-                  onChange={(e) => updateImage(index, { url: e.target.value })}
-                  placeholder="画像URL"
-                  className="w-full px-2 py-1 border rounded text-sm"
-                />
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={image.caption || ''}
-                    onChange={(e) => updateImage(index, { caption: e.target.value })}
-                    placeholder="キャプション"
-                    className="flex-1 px-2 py-1 border rounded text-sm"
-                  />
-                  <input
-                    type="text"
-                    value={image.category || ''}
-                    onChange={(e) => updateImage(index, { category: e.target.value })}
-                    placeholder="カテゴリ"
-                    className="w-24 px-2 py-1 border rounded text-sm"
-                  />
-                </div>
-              </div>
-
-              {/* 操作ボタン */}
-              <div className="flex flex-col gap-1">
-                <button
-                  onClick={() => moveImage(index, 'up')}
-                  disabled={index === 0}
-                  className="p-1 hover:bg-gray-200 rounded disabled:opacity-30"
-                >
-                  <ChevronUp className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => moveImage(index, 'down')}
-                  disabled={index === images.length - 1}
-                  className="p-1 hover:bg-gray-200 rounded disabled:opacity-30"
-                >
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => removeImage(index)}
-                  className="p-1 hover:bg-red-100 rounded text-red-500"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* 新規追加 */}
-      <div className="bg-blue-50 p-4 rounded-lg space-y-3">
-        <p className="text-sm font-medium text-blue-800">新しい画像を追加</p>
-        <input
-          type="text"
-          value={newUrl}
-          onChange={(e) => setNewUrl(e.target.value)}
-          placeholder="画像URL（例: https://...）"
-          className="w-full px-3 py-2 border rounded-lg text-sm"
-        />
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={newCaption}
-            onChange={(e) => setNewCaption(e.target.value)}
-            placeholder="キャプション（任意）"
-            className="flex-1 px-3 py-2 border rounded-lg text-sm"
-          />
-          <input
-            type="text"
-            value={newCategory}
-            onChange={(e) => setNewCategory(e.target.value)}
-            placeholder="カテゴリ（任意）"
-            className="w-32 px-3 py-2 border rounded-lg text-sm"
-          />
-        </div>
-        <button
-          onClick={addImage}
-          disabled={!newUrl.trim()}
-          className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          画像を追加
-        </button>
-      </div>
-
-      {images.length === 0 && (
-        <p className="text-sm text-gray-500 text-center py-4">
-          まだ画像がありません。上のフォームから追加してください。
-        </p>
-      )}
     </div>
   )
 }
