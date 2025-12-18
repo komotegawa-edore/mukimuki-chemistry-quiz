@@ -2,6 +2,16 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function updateSession(request: NextRequest) {
+  // =============================================
+  // www → non-www リダイレクト（最優先）
+  // =============================================
+  const host = request.headers.get('host') || ''
+  if (host.startsWith('www.edore-edu.com')) {
+    const url = new URL(request.url)
+    url.host = 'edore-edu.com'
+    return NextResponse.redirect(url, 301)
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -32,7 +42,6 @@ export async function updateSession(request: NextRequest) {
   // =============================================
   // カスタムドメイン処理
   // =============================================
-  const host = request.headers.get('host') || ''
   const mainDomains = ['edore-edu.com', 'www.edore-edu.com', 'localhost', '127.0.0.1']
   const isMainDomain = mainDomains.some(d => host.includes(d)) || host.includes('vercel.app')
 
