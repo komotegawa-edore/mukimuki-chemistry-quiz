@@ -66,6 +66,27 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  // =============================================
+  // サービス公開設定チェック（Roopy English）
+  // =============================================
+  const englishPaths = ['/english', '/lp/english', '/lp/english-new', '/lp/english-business', '/lp/english-campaign']
+  const isEnglishPath = englishPaths.some(path => request.nextUrl.pathname.startsWith(path))
+  const isMaintenancePath = request.nextUrl.pathname === '/english/maintenance'
+
+  if (isEnglishPath && !isMaintenancePath) {
+    const { data: serviceSetting } = await supabase
+      .from('service_settings')
+      .select('is_public')
+      .eq('service_key', 'roopy_english')
+      .single()
+
+    if (serviceSetting && !serviceSetting.is_public) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/english/maintenance'
+      return NextResponse.redirect(url)
+    }
+  }
+
   // 公開ページのパス
   const publicPaths = [
     '/login',
@@ -81,6 +102,7 @@ export async function updateSession(request: NextRequest) {
     '/mbti',
     '/try',
     '/english',  // Roopy Englishホームページ（公開）
+    '/english/maintenance',  // Roopy English メンテナンスページ
     '/forgot-password',
     '/reset-password',
     '/company',  // 会社ホームページ（公開）

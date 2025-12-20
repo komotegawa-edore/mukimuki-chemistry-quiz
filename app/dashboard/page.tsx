@@ -5,6 +5,7 @@ import Link from 'next/link'
 import CSVImport from '@/components/CSVImport'
 import DashboardContent from '@/components/DashboardContent'
 import DailyMissionSettings from '@/components/DailyMissionSettings'
+import ServiceSettings from '@/components/ServiceSettings'
 import Header from '@/components/Header'
 import { BookOpen, ArrowRight, Trophy, Bell, Zap, Layers, Library, Brain, Users, BarChart3, Building2 } from 'lucide-react'
 
@@ -240,10 +241,13 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        {/* デイリーミッション設定 */}
+        {/* システム設定 */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 text-black">システム設定</h2>
-          <DailyMissionSettings />
+          <div className="space-y-4">
+            <ServiceSettings />
+            <DailyMissionSettings />
+          </div>
         </div>
 
         <div className="mb-8">

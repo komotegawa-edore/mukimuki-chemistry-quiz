@@ -142,11 +142,11 @@ export default function EditLPPage() {
     })
 
     setSections(sections.map(s =>
-      s.id === sectionId ? { ...s, content: content as JukuLPSection['content'] } : s
+      s.id === sectionId ? { ...s, content: content as unknown as JukuLPSection['content'] } : s
     ))
 
     if (selectedSection?.id === sectionId) {
-      setSelectedSection({ ...selectedSection, content: content as JukuLPSection['content'] })
+      setSelectedSection({ ...selectedSection, content: content as unknown as JukuLPSection['content'] })
     }
 
     setHasChanges(true)
