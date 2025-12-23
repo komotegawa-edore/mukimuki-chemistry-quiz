@@ -3,7 +3,7 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import {
-  Palette, Smartphone, CheckCircle,
+  Palette, Smartphone, CheckCircle, Globe,
   ArrowRight, Edit3, Image as ImageIcon, Layout, Search,
   Star, MessageCircle, Building2
 } from 'lucide-react'
