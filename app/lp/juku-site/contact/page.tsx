@@ -220,12 +220,14 @@ export default function JukuSiteContactPage() {
                 </ul>
               </div>
 
-              {/* お問い合わせ先 */}
+              {/* 返信について */}
               <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
-                <h3 className="font-bold mb-4">お電話でのお問い合わせ</h3>
-                <p className="text-2xl font-bold mb-2">0120-XXX-XXX</p>
+                <h3 className="font-bold mb-4">メールでご返信</h3>
+                <p className="text-sm text-indigo-100 mb-3">
+                  2営業日以内に担当者よりメールにてご連絡いたします。
+                </p>
                 <p className="text-sm text-indigo-100">
-                  受付時間: 平日 10:00〜18:00
+                  お急ぎの場合はその旨をメッセージ欄にご記載ください。
                 </p>
               </div>
             </div>
@@ -408,7 +410,7 @@ export default function JukuSiteContactPage() {
             className="mx-auto mb-4 brightness-0 invert"
           />
           <p className="text-sm text-gray-400">
-            &copy; 2024 Edore Inc. All rights reserved.
+            &copy; 2025 Edore Inc. All rights reserved.
           </p>
         </div>
       </footer>

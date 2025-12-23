@@ -5,7 +5,7 @@ import { Noto_Sans_JP } from 'next/font/google'
 import {
   Palette, Smartphone, CheckCircle, Globe,
   ArrowRight, Edit3, Image as ImageIcon, Layout, Search,
-  Star, MessageCircle, Building2, FileText, Phone
+  Star, MessageCircle, Building2, FileText, Mail
 } from 'lucide-react'
 
 const notoSansJP = Noto_Sans_JP({
@@ -90,7 +90,7 @@ export default function JukuSiteLandingPage() {
               href="/lp/juku-site/contact"
               className="inline-flex items-center justify-center gap-2 bg-indigo-600 text-white text-lg font-bold py-4 px-10 rounded-full shadow-lg hover:bg-indigo-700 hover:-translate-y-1 transition-all"
             >
-              <Phone className="w-5 h-5" />
+              <Mail className="w-5 h-5" />
               無料相談する
             </Link>
             <Link
@@ -416,7 +416,7 @@ export default function JukuSiteLandingPage() {
               href="/lp/juku-site/contact"
               className="inline-flex items-center justify-center gap-2 bg-white text-indigo-600 text-lg font-bold py-4 px-10 rounded-full shadow-lg hover:bg-opacity-90 hover:-translate-y-1 transition-all"
             >
-              <Phone className="w-5 h-5" />
+              <Mail className="w-5 h-5" />
               無料相談する
             </Link>
             <Link
