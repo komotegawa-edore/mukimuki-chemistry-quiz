@@ -340,6 +340,115 @@ export default function JukubaLPPage() {
         </div>
       </section>
 
+      {/* Video Demo Section */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <AnimatedSection>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                <span className="text-indigo-600">30秒</span>でわかる操作感
+              </h2>
+              <p className="text-lg text-slate-600">
+                実際の管理画面を使った編集の様子をご覧ください
+              </p>
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection delay={200}>
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-slate-900 rounded-2xl p-2 shadow-2xl">
+                <div className="bg-slate-800 rounded-t-xl px-4 py-3 flex items-center gap-2">
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  </div>
+                  <div className="flex-1 mx-4">
+                    <div className="bg-slate-700 rounded-md px-3 py-1.5 text-xs text-slate-400 max-w-md mx-auto text-center">
+                      JUKUBA 管理画面デモ
+                    </div>
+                  </div>
+                </div>
+                <div className="aspect-video bg-slate-800 rounded-b-xl overflow-hidden">
+                  <video
+                    className="w-full h-full object-cover"
+                    controls
+                    playsInline
+                    poster="/JUKUBA-1.png"
+                  >
+                    <source src="/JUKUBA.mov" type="video/quicktime" />
+                    <source src="/JUKUBA.mov" type="video/mp4" />
+                    お使いのブラウザは動画再生に対応していません。
+                  </video>
+                </div>
+              </div>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* Admin Screenshots Section */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <AnimatedSection>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                直感的な<span className="text-indigo-600">管理画面</span>
+              </h2>
+              <p className="text-lg text-slate-600">
+                専門知識がなくても、見たまま編集できます
+              </p>
+            </div>
+          </AnimatedSection>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <AnimatedSection delay={100}>
+              <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div className="bg-slate-100 px-4 py-3 border-b">
+                  <span className="text-sm font-medium text-slate-600">セクション編集画面</span>
+                </div>
+                <div className="relative aspect-[16/10]">
+                  <Image
+                    src="/JUKUBA-1.png"
+                    alt="JUKUBA管理画面 - セクション編集"
+                    fill
+                    className="object-cover object-top"
+                  />
+                </div>
+                <div className="p-5">
+                  <h4 className="font-bold text-slate-800 mb-2">セクションを選んで編集</h4>
+                  <p className="text-sm text-slate-600">
+                    左のリストからセクションを選択し、右側で内容を編集。テキストを入力するだけで更新できます。
+                  </p>
+                </div>
+              </div>
+            </AnimatedSection>
+
+            <AnimatedSection delay={200}>
+              <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div className="bg-slate-100 px-4 py-3 border-b">
+                  <span className="text-sm font-medium text-slate-600">プレビュー画面</span>
+                </div>
+                <div className="relative aspect-[16/10]">
+                  <Image
+                    src="/JUKUBA-2.png"
+                    alt="JUKUBA管理画面 - プレビュー"
+                    fill
+                    className="object-cover object-top"
+                  />
+                </div>
+                <div className="p-5">
+                  <h4 className="font-bold text-slate-800 mb-2">リアルタイムでプレビュー</h4>
+                  <p className="text-sm text-slate-600">
+                    PC・タブレット・スマホの表示を確認しながら編集。公開前に見た目をチェックできます。
+                  </p>
+                </div>
+              </div>
+            </AnimatedSection>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section - Alternating Layout */}
       <section id="features" className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4">
@@ -356,22 +465,15 @@ export default function JukubaLPPage() {
                 title: 'ドラッグ&ドロップで簡単編集',
                 desc: 'セクションの並び替えも、テキストの編集も、すべて直感的な操作で完結。HTMLやCSSの知識は一切不要です。',
                 features: ['リアルタイムプレビュー', '画像のアップロード', 'セクションの追加・削除'],
-                image: '/images/feature-editor.png',
+                image: '/JUKUBA-1.png',
                 reverse: false
               },
               {
-                title: 'お問い合わせフォーム標準装備',
-                desc: '入塾相談のお問い合わせフォームが最初から設置済み。通知メールも自動で届くので、見逃しを防げます。',
-                features: ['自動返信メール', '管理画面で一覧表示', 'スパム対策済み'],
-                image: '/images/feature-form.png',
+                title: 'スマホ・PC両方で確認',
+                desc: '編集中にいつでもプレビュー可能。スマートフォン、タブレット、PCの見た目を切り替えて確認できます。',
+                features: ['デバイス切り替え表示', '公開前チェック', '即時反映'],
+                image: '/JUKUBA-2.png',
                 reverse: true
-              },
-              {
-                title: 'ブログ機能で情報発信',
-                desc: '教室の様子や合格実績、勉強のコツなどを発信。定期的な更新でSEO効果も期待できます。',
-                features: ['カテゴリー分け', '画像挿入', 'SNSシェアボタン'],
-                image: '/images/feature-blog.png',
-                reverse: false
               },
             ].map((feature, i) => (
               <AnimatedSection key={i}>
@@ -389,9 +491,14 @@ export default function JukubaLPPage() {
                     </ul>
                   </div>
                   <div className={feature.reverse ? 'md:order-1' : ''}>
-                    <div className="bg-white rounded-2xl shadow-xl p-4">
-                      <div className="aspect-[4/3] bg-slate-100 rounded-xl flex items-center justify-center">
-                        <span className="text-slate-400">機能スクリーンショット</span>
+                    <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+                      <div className="relative aspect-[4/3]">
+                        <Image
+                          src={feature.image}
+                          alt={feature.title}
+                          fill
+                          className="object-cover object-top"
+                        />
                       </div>
                     </div>
                   </div>
