@@ -203,7 +203,7 @@ export default function JukuSiteContactPage() {
             <div className="md:col-span-1 space-y-6">
               {/* 特典 */}
               <div className="bg-white rounded-2xl p-6 shadow-lg">
-                <h3 className="font-bold text-gray-900 mb-4">お問い合わせ特典</h3>
+                <h3 className="font-bold text-gray-900 mb-4">資料請求で届くもの</h3>
                 <ul className="space-y-3 text-sm">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
@@ -211,11 +211,11 @@ export default function JukuSiteContactPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>塾HP成功事例集</span>
+                    <span>料金プラン詳細</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>無料サイト診断（希望者）</span>
+                    <span>テンプレート一覧</span>
                   </li>
                 </ul>
               </div>
