@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
-  const next = requestUrl.searchParams.get('next') || '/'
+  const next = requestUrl.searchParams.get('next')
   const origin = requestUrl.origin
 
   if (code) {
@@ -19,6 +19,19 @@ export async function GET(request: NextRequest) {
 
     // ユーザーが新規作成された場合、プロフィールを確認/作成
     if (data?.user) {
+      // まず塾オーナーかどうかを確認
+      const { data: jukuOwnerProfile } = await supabase
+        .from('juku_owner_profiles')
+        .select('id')
+        .eq('id', data.user.id)
+        .single()
+
+      // 塾オーナーの場合は juku-admin へリダイレクト
+      if (jukuOwnerProfile) {
+        return NextResponse.redirect(`${origin}/juku-admin`)
+      }
+
+      // Roopyユーザーのプロフィールを確認
       const { data: profile } = await supabase
         .from('profiles')
         .select('id')
@@ -43,5 +56,5 @@ export async function GET(request: NextRequest) {
   }
 
   // ログイン成功、指定先またはホームへリダイレクト
-  return NextResponse.redirect(`${origin}${next}`)
+  return NextResponse.redirect(`${origin}${next || '/'}`)
 }
