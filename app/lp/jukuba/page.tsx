@@ -166,12 +166,13 @@ export default function JukubaLPPage() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/lp/jukuba" className="flex items-center gap-2">
             <Image
-              src="/images/jukuba-logo.png"
+              src="/images/jukuba-icon.png"
               alt="JUKUBA"
-              width={140}
-              height={40}
-              className="h-9 w-auto"
+              width={36}
+              height={36}
+              className="h-9 w-9"
             />
+            <span className="font-bold text-xl text-slate-800">JUKUBA</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm">
             <a href="#features" className="text-slate-600 hover:text-slate-900">機能</a>
@@ -261,14 +262,14 @@ export default function JukubaLPPage() {
                   </div>
                   <div className="flex-1 mx-4">
                     <div className="bg-slate-700 rounded-md px-3 py-1.5 text-xs text-slate-400 max-w-md mx-auto text-center">
-                      edore-edu.com/juku/demo
+                      edore-edu.com/juku/jukuba
                     </div>
                   </div>
                 </div>
                 <div className="aspect-[16/9] bg-slate-100 rounded-b-xl overflow-hidden">
                   {/* Demo site embed or screenshot */}
                   <iframe
-                    src="/juku/demo"
+                    src="https://edore-edu.com/juku/jukuba"
                     className="w-full h-full border-0"
                     title="デモサイト"
                   />
@@ -372,11 +373,11 @@ export default function JukubaLPPage() {
                 <div className="aspect-video bg-slate-800 rounded-b-xl overflow-hidden">
                   <video
                     className="w-full h-full object-cover"
-                    controls
+                    autoPlay
+                    loop
+                    muted
                     playsInline
-                    poster="/JUKUBA-1.png"
                   >
-                    <source src="/JUKUBA.mov" type="video/quicktime" />
                     <source src="/JUKUBA.mov" type="video/mp4" />
                     お使いのブラウザは動画再生に対応していません。
                   </video>
@@ -547,16 +548,21 @@ export default function JukubaLPPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { title: '個別指導塾 サンプルA', desc: 'シンプルで見やすいデザイン', slug: 'demo' },
-              { title: '進学塾 サンプルB', desc: '合格実績を前面に押し出したデザイン', slug: 'demo' },
-              { title: '英語専門塾 サンプルC', desc: '特徴的なカラーリング', slug: 'demo' },
+              { title: '個別指導塾 サンプル', desc: 'シンプルで見やすいデザイン', url: 'https://edore-edu.com/juku/jukuba' },
+              { title: '進学塾 サンプル', desc: '合格実績を前面に押し出したデザイン', url: 'https://edore-edu.com/juku/jukuba' },
+              { title: '英語専門塾 サンプル', desc: '特徴的なカラーリング', url: 'https://edore-edu.com/juku/jukuba' },
             ].map((example, i) => (
               <AnimatedSection key={i} delay={i * 100}>
-                <div className="bg-slate-800 rounded-2xl overflow-hidden group">
+                <a
+                  href={example.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block bg-slate-800 rounded-2xl overflow-hidden group"
+                >
                   <div className="aspect-[16/10] bg-slate-700 relative overflow-hidden">
                     <iframe
-                      src={`/juku/${example.slug}`}
-                      className="w-full h-full border-0 scale-100 group-hover:scale-105 transition-transform duration-500"
+                      src={example.url}
+                      className="w-full h-full border-0 scale-100 group-hover:scale-105 transition-transform duration-500 pointer-events-none"
                       title={example.title}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-6">
@@ -567,7 +573,7 @@ export default function JukubaLPPage() {
                     <h4 className="font-bold mb-1">{example.title}</h4>
                     <p className="text-sm text-slate-400">{example.desc}</p>
                   </div>
-                </div>
+                </a>
               </AnimatedSection>
             ))}
           </div>
