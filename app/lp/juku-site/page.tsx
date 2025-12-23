@@ -5,9 +5,8 @@ import { Noto_Sans_JP } from 'next/font/google'
 import {
   Palette, Smartphone, CheckCircle, Globe,
   ArrowRight, Edit3, Image as ImageIcon, Layout, Search,
-  Star, MessageCircle, Building2
+  Star, MessageCircle, Building2, FileText, Phone
 } from 'lucide-react'
-import JukuSiteContactForm from './JukuSiteContactForm'
 
 const notoSansJP = Noto_Sans_JP({
   weight: ['400', '700', '900'],
@@ -45,10 +44,10 @@ export default function JukuSiteLandingPage() {
             />
           </Link>
           <Link
-            href="#contact"
+            href="/lp/juku-site/contact"
             className="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold hover:bg-indigo-700 transition-colors"
           >
-            お問い合わせ
+            無料相談・資料請求
           </Link>
         </div>
       </nav>
@@ -75,29 +74,31 @@ export default function JukuSiteLandingPage() {
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 mb-8">
+            <div className="bg-white px-5 py-3 rounded-full shadow-sm">
+              <span className="font-bold text-indigo-600 text-lg">月額 2,980円〜</span>
+            </div>
             <div className="bg-white px-4 py-2 rounded-full shadow-sm">
               <span className="font-bold text-indigo-600">テンプレート</span> 10種類
             </div>
             <div className="bg-white px-4 py-2 rounded-full shadow-sm">
-              <span className="font-bold text-indigo-600">月額</span> 2,980円〜
-            </div>
-            <div className="bg-white px-4 py-2 rounded-full shadow-sm">
-              <span className="font-bold text-indigo-600">初期設定代行</span> あり
+              <span className="font-bold text-indigo-600">関西圏</span> 対面サポート
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
-              href="#contact"
-              className="inline-block bg-indigo-600 text-white text-lg font-bold py-4 px-10 rounded-full shadow-lg hover:bg-indigo-700 hover:-translate-y-1 transition-all"
+              href="/lp/juku-site/contact"
+              className="inline-flex items-center justify-center gap-2 bg-indigo-600 text-white text-lg font-bold py-4 px-10 rounded-full shadow-lg hover:bg-indigo-700 hover:-translate-y-1 transition-all"
             >
+              <Phone className="w-5 h-5" />
               無料相談する
             </Link>
             <Link
-              href="#features"
+              href="/lp/juku-site/contact"
               className="inline-flex items-center justify-center gap-2 bg-white text-indigo-600 text-lg font-bold py-4 px-10 rounded-full shadow-lg border-2 border-indigo-500 hover:bg-indigo-50 hover:-translate-y-1 transition-all"
             >
-              機能を見る
+              <FileText className="w-5 h-5" />
+              資料をダウンロード
             </Link>
           </div>
         </div>
@@ -330,90 +331,67 @@ export default function JukuSiteLandingPage() {
 
       {/* Pricing */}
       <section className="py-16 px-4 bg-white">
-        <div className="max-w-[900px] mx-auto">
+        <div className="max-w-[800px] mx-auto">
           <h2 className="text-3xl font-bold text-center mb-4">
-            料金プラン
+            料金
           </h2>
           <p className="text-center mb-10 opacity-70">
-            どのプランでも自分で更新できます
+            月額費用のみでスタートできます
           </p>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* スタートプラン */}
-            <div className="bg-white border-2 border-indigo-200 rounded-3xl p-8">
-              <p className="text-indigo-600 font-bold mb-2">スタートプラン</p>
-              <div className="mb-4">
-                <span className="text-4xl font-black">29,800</span>
-                <span className="text-lg">円</span>
-                <span className="text-sm opacity-60 ml-2">（税込）</span>
-              </div>
-              <p className="text-sm opacity-70 mb-4">初期設定代行費用</p>
-              <div className="bg-indigo-50 rounded-xl p-3 mb-6">
-                <p className="text-sm font-bold text-indigo-600">+ 月額 2,980円</p>
-              </div>
-
-              <ul className="space-y-2 mb-6">
-                {[
-                  '10種類のテンプレート',
-                  '初期設定代行',
-                  'スマホ対応サイト',
-                  'お問い合わせフォーム',
-                  'ブログ機能',
-                  'SSL（https）対応',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="w-4 h-4 text-indigo-600" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-
-              <Link
-                href="#contact"
-                className="block text-center bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-700 transition-colors"
-              >
-                相談する
-              </Link>
+          {/* メイン料金 */}
+          <div className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-3xl p-8 text-center mb-8">
+            <p className="text-sm opacity-80 mb-2">月額利用料</p>
+            <div className="mb-2">
+              <span className="text-5xl font-black">2,980</span>
+              <span className="text-2xl">円〜</span>
+              <span className="text-sm opacity-60 ml-2">（税込）</span>
             </div>
+            <p className="text-sm opacity-80 mb-6">ご要望に応じてプランをご提案します</p>
 
-            {/* プレミアムプラン */}
-            <div className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-3xl p-8 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 text-xs font-bold px-4 py-1 rounded-full">
-                おすすめ
-              </div>
-              <p className="font-bold mb-2 opacity-90">プレミアムプラン</p>
-              <div className="mb-4">
-                <span className="text-4xl font-black">49,800</span>
-                <span className="text-lg">円</span>
-                <span className="text-sm opacity-60 ml-2">（税込）</span>
-              </div>
-              <p className="text-sm opacity-70 mb-4">初期設定代行 + 写真撮影</p>
-              <div className="bg-white/20 rounded-xl p-3 mb-6">
-                <p className="text-sm font-bold">+ 月額 4,980円</p>
-              </div>
+            <ul className="text-left max-w-md mx-auto space-y-2 mb-8">
+              {[
+                '10種類の塾専用テンプレート',
+                '自分で更新できる管理画面',
+                'スマホ対応レスポンシブデザイン',
+                'お問い合わせフォーム',
+                'ブログ機能',
+                'SSL（https）対応',
+              ].map((item, i) => (
+                <li key={i} className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-yellow-300 shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
 
-              <ul className="space-y-2 mb-6">
-                {[
-                  'スタートプランの全機能',
-                  '教室・講師の写真撮影',
-                  '月1回のオンライン相談',
-                  '独自ドメイン設定',
-                  'アクセス解析設定',
-                  '優先サポート',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="w-4 h-4 text-yellow-300" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            <Link
+              href="/lp/juku-site/contact"
+              className="inline-block bg-white text-indigo-600 font-bold py-3 px-10 rounded-full hover:bg-opacity-90 transition-colors"
+            >
+              無料で相談する
+            </Link>
+          </div>
 
-              <Link
-                href="#contact"
-                className="block text-center bg-white text-indigo-600 font-bold py-3 px-8 rounded-full hover:bg-opacity-90 transition-colors"
-              >
-                相談する
-              </Link>
+          {/* 初期費用について */}
+          <div className="bg-slate-100 rounded-2xl p-6">
+            <h3 className="font-bold text-lg mb-3 text-center">初期費用について</h3>
+            <p className="text-sm text-center opacity-70 mb-4">
+              塾の規模やご要望に応じてお見積りいたします。
+            </p>
+            <div className="grid md:grid-cols-3 gap-4 text-center text-sm">
+              <div className="bg-white rounded-xl p-4">
+                <p className="font-bold text-indigo-600 mb-1">シンプル</p>
+                <p className="opacity-70">テンプレートそのまま</p>
+              </div>
+              <div className="bg-white rounded-xl p-4">
+                <p className="font-bold text-indigo-600 mb-1">スタンダード</p>
+                <p className="opacity-70">初期設定代行込み</p>
+              </div>
+              <div className="bg-white rounded-xl p-4">
+                <p className="font-bold text-indigo-600 mb-1">プレミアム</p>
+                <p className="opacity-70">写真撮影・相談付き</p>
+              </div>
             </div>
           </div>
 
@@ -433,36 +411,22 @@ export default function JukuSiteLandingPage() {
             塾のホームページについてお気軽にご相談ください。<br />
             対面でのヒアリングも可能です。
           </p>
-          <Link
-            href="#contact"
-            className="inline-flex items-center gap-2 bg-white text-indigo-600 text-lg font-bold py-4 px-10 rounded-full shadow-lg hover:bg-opacity-90 hover:-translate-y-1 transition-all"
-          >
-            無料で相談する
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-        </div>
-      </section>
-
-      {/* Contact Form */}
-      <section id="contact" className="py-16 px-4 bg-slate-100">
-        <div className="max-w-[500px] mx-auto">
-          <div className="text-center mb-8">
-            <Image
-              src="/images/jukuba-icon.png"
-              alt="JUKUBA"
-              width={64}
-              height={64}
-              className="mx-auto mb-4"
-            />
-            <h2 className="text-3xl font-bold mb-2">
-              無料相談
-            </h2>
-            <p className="opacity-70">
-              ご質問・ご相談はお気軽にどうぞ
-            </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link
+              href="/lp/juku-site/contact"
+              className="inline-flex items-center justify-center gap-2 bg-white text-indigo-600 text-lg font-bold py-4 px-10 rounded-full shadow-lg hover:bg-opacity-90 hover:-translate-y-1 transition-all"
+            >
+              <Phone className="w-5 h-5" />
+              無料相談する
+            </Link>
+            <Link
+              href="/lp/juku-site/contact"
+              className="inline-flex items-center justify-center gap-2 bg-white/20 text-white text-lg font-bold py-4 px-10 rounded-full border-2 border-white/50 hover:bg-white/30 hover:-translate-y-1 transition-all"
+            >
+              <FileText className="w-5 h-5" />
+              資料請求
+            </Link>
           </div>
-
-          <JukuSiteContactForm />
         </div>
       </section>
 
@@ -481,8 +445,7 @@ export default function JukuSiteLandingPage() {
             </div>
             <div className="flex gap-6 text-sm">
               <Link href="/company" className="opacity-70 hover:opacity-100">会社概要</Link>
-              <Link href="/juku-admin" className="opacity-70 hover:opacity-100">管理画面</Link>
-              <Link href="#contact" className="opacity-70 hover:opacity-100">お問い合わせ</Link>
+              <Link href="/lp/juku-site/contact" className="opacity-70 hover:opacity-100">お問い合わせ</Link>
             </div>
           </div>
           <div className="text-center text-sm opacity-60">

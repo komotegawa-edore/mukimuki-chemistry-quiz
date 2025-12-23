@@ -21,6 +21,8 @@ interface JukuOwner {
   source: string | null
   prefecture: string | null
   city: string | null
+  is_active: boolean | null
+  can_use_custom_domain: boolean | null
   siteCount: number
   publishedCount: number
 }
@@ -60,6 +62,18 @@ export default function JukuOwnersTable({ owners }: Props) {
   const [editData, setEditData] = useState<Partial<JukuOwner>>({})
   const [saving, setSaving] = useState(false)
 
+  // Account creation state
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [newAccount, setNewAccount] = useState({ name: '', email: '', phone: '' })
+  const [creating, setCreating] = useState(false)
+  const [createdAccount, setCreatedAccount] = useState<{ email: string; tempPassword: string } | null>(null)
+
+  // Account status toggle
+  const [togglingStatus, setTogglingStatus] = useState<string | null>(null)
+
+  // Custom domain permission toggle
+  const [togglingDomain, setTogglingDomain] = useState<string | null>(null)
+
   const filteredOwners = owners.filter(owner => {
     if (filter === 'all') return true
     const status = owner.sales_status || 'new'
@@ -95,6 +109,122 @@ export default function JukuOwnersTable({ owners }: Props) {
   const closeModal = () => {
     setSelectedOwner(null)
     setEditData({})
+  }
+
+  // Create new account
+  const handleCreateAccount = async () => {
+    if (!newAccount.name || !newAccount.email) {
+      alert('名前とメールアドレスは必須です')
+      return
+    }
+
+    setCreating(true)
+
+    try {
+      const res = await fetch('/api/juku-admin/accounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newAccount.name,
+          email: newAccount.email,
+          phone: newAccount.phone || null,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        alert(data.error || 'アカウント作成に失敗しました')
+        setCreating(false)
+        return
+      }
+
+      // Show the created account info
+      setCreatedAccount({
+        email: data.email,
+        tempPassword: data.tempPassword,
+      })
+      setCreating(false)
+    } catch (error) {
+      alert('エラーが発生しました')
+      setCreating(false)
+    }
+  }
+
+  const closeCreateModal = () => {
+    setShowCreateModal(false)
+    setNewAccount({ name: '', email: '', phone: '' })
+    if (createdAccount) {
+      setCreatedAccount(null)
+      router.refresh()
+    }
+  }
+
+  // Toggle account status
+  const handleToggleStatus = async (ownerId: string, currentStatus: boolean | null) => {
+    const newStatus = !(currentStatus ?? true)
+    const confirmMessage = newStatus
+      ? 'このアカウントを有効化しますか？'
+      : 'このアカウントを無効化しますか？ログインできなくなります。'
+
+    if (!confirm(confirmMessage)) return
+
+    setTogglingStatus(ownerId)
+
+    try {
+      const res = await fetch('/api/juku-admin/accounts', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: ownerId,
+          isActive: newStatus,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        alert(data.error || 'ステータス変更に失敗しました')
+        setTogglingStatus(null)
+        return
+      }
+
+      setTogglingStatus(null)
+      router.refresh()
+    } catch (error) {
+      alert('エラーが発生しました')
+      setTogglingStatus(null)
+    }
+  }
+
+  // Toggle custom domain permission
+  const handleToggleCustomDomain = async (ownerId: string, currentValue: boolean | null) => {
+    const newValue = !(currentValue ?? false)
+
+    setTogglingDomain(ownerId)
+
+    try {
+      const supabase = createClient()
+      const { error } = await supabase
+        .from('juku_owner_profiles')
+        .update({
+          can_use_custom_domain: newValue,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', ownerId)
+
+      if (error) {
+        alert('権限変更に失敗しました: ' + error.message)
+        setTogglingDomain(null)
+        return
+      }
+
+      setTogglingDomain(null)
+      router.refresh()
+    } catch (error) {
+      alert('エラーが発生しました')
+      setTogglingDomain(null)
+    }
   }
 
   const handleSave = async () => {
@@ -133,34 +263,45 @@ export default function JukuOwnersTable({ owners }: Props) {
 
   return (
     <>
-      {/* フィルター */}
-      <div className="px-6 py-3 border-b border-gray-100 flex gap-2 overflow-x-auto">
+      {/* フィルター & アカウント作成ボタン */}
+      <div className="px-6 py-3 border-b border-gray-100 flex justify-between items-center">
+        <div className="flex gap-2 overflow-x-auto">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+              filter === 'all'
+                ? 'bg-gray-800 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            全て ({owners.length})
+          </button>
+          {STATUS_OPTIONS.map(status => {
+            const count = owners.filter(o => (o.sales_status || 'new') === status.value).length
+            return (
+              <button
+                key={status.value}
+                onClick={() => setFilter(status.value)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                  filter === status.value
+                    ? 'bg-gray-800 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {status.label} ({count})
+              </button>
+            )
+          })}
+        </div>
         <button
-          onClick={() => setFilter('all')}
-          className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-            filter === 'all'
-              ? 'bg-gray-800 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-          }`}
+          onClick={() => setShowCreateModal(true)}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-2"
         >
-          全て ({owners.length})
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          新規アカウント
         </button>
-        {STATUS_OPTIONS.map(status => {
-          const count = owners.filter(o => (o.sales_status || 'new') === status.value).length
-          return (
-            <button
-              key={status.value}
-              onClick={() => setFilter(status.value)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                filter === status.value
-                  ? 'bg-gray-800 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {status.label} ({count})
-            </button>
-          )
-        })}
       </div>
 
       {/* テーブル */}
@@ -169,18 +310,18 @@ export default function JukuOwnersTable({ owners }: Props) {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">塾名/連絡先</th>
+              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">アカウント</th>
+              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">独自ドメイン</th>
               <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">ステータス</th>
               <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">サイト</th>
               <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">規模</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">流入経路</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">次回アクション</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">登録日</th>
               <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">操作</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {filteredOwners.map(owner => (
-              <tr key={owner.id} className="hover:bg-gray-50">
+              <tr key={owner.id} className={`hover:bg-gray-50 ${owner.is_active === false ? 'opacity-50' : ''}`}>
                 <td className="px-4 py-3">
                   <div>
                     <p className="font-medium text-gray-800">{owner.name || '未設定'}</p>
@@ -190,6 +331,32 @@ export default function JukuOwnersTable({ owners }: Props) {
                       <p className="text-xs text-gray-400">{owner.prefecture} {owner.city}</p>
                     )}
                   </div>
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <button
+                    onClick={() => handleToggleStatus(owner.id, owner.is_active)}
+                    disabled={togglingStatus === owner.id}
+                    className={`px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                      owner.is_active === false
+                        ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                        : 'bg-green-100 text-green-700 hover:bg-green-200'
+                    } ${togglingStatus === owner.id ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {togglingStatus === owner.id ? '...' : (owner.is_active === false ? '無効' : '有効')}
+                  </button>
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <button
+                    onClick={() => handleToggleCustomDomain(owner.id, owner.can_use_custom_domain)}
+                    disabled={togglingDomain === owner.id}
+                    className={`px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                      owner.can_use_custom_domain
+                        ? 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                    } ${togglingDomain === owner.id ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {togglingDomain === owner.id ? '...' : (owner.can_use_custom_domain ? '許可' : '不可')}
+                  </button>
                 </td>
                 <td className="px-4 py-3 text-center">
                   {getStatusBadge(owner.sales_status)}
@@ -207,19 +374,6 @@ export default function JukuOwnersTable({ owners }: Props) {
                 <td className="px-4 py-3 text-sm text-gray-600">
                   {SOURCE_OPTIONS.find(s => s.value === owner.source)?.label || owner.source || '-'}
                 </td>
-                <td className="px-4 py-3 text-sm">
-                  {owner.next_action_at ? (
-                    <span className={`${
-                      new Date(owner.next_action_at) < new Date()
-                        ? 'text-red-600 font-medium'
-                        : 'text-gray-600'
-                    }`}>
-                      {new Date(owner.next_action_at).toLocaleDateString('ja-JP')}
-                    </span>
-                  ) : (
-                    <span className="text-gray-400">-</span>
-                  )}
-                </td>
                 <td className="px-4 py-3 text-sm text-gray-500">
                   {new Date(owner.created_at).toLocaleDateString('ja-JP')}
                 </td>
@@ -235,7 +389,7 @@ export default function JukuOwnersTable({ owners }: Props) {
             ))}
             {filteredOwners.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
+                <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
                   該当する塾がありません
                 </td>
               </tr>
@@ -468,6 +622,167 @@ export default function JukuOwnersTable({ owners }: Props) {
                 {saving ? '保存中...' : '保存'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* アカウント作成モーダル */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md">
+            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+              <h3 className="text-lg font-bold text-gray-800">
+                {createdAccount ? 'アカウント作成完了' : '新規アカウント作成'}
+              </h3>
+              <button
+                onClick={closeCreateModal}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {createdAccount ? (
+              <div className="p-6">
+                <div className="bg-green-50 rounded-xl p-4 mb-4">
+                  <p className="text-green-700 font-medium mb-2">アカウントが作成されました</p>
+                  <p className="text-sm text-green-600">以下の情報を顧客にお伝えください</p>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">
+                      ログインURL
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        readOnly
+                        value="https://edore-edu.com/juku-admin/login"
+                        className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"
+                      />
+                      <button
+                        onClick={() => navigator.clipboard.writeText('https://edore-edu.com/juku-admin/login')}
+                        className="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 text-sm"
+                      >
+                        コピー
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">
+                      メールアドレス
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        readOnly
+                        value={createdAccount.email}
+                        className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"
+                      />
+                      <button
+                        onClick={() => navigator.clipboard.writeText(createdAccount.email)}
+                        className="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 text-sm"
+                      >
+                        コピー
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">
+                      仮パスワード
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        readOnly
+                        value={createdAccount.tempPassword}
+                        className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-mono"
+                      />
+                      <button
+                        onClick={() => navigator.clipboard.writeText(createdAccount.tempPassword)}
+                        className="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 text-sm"
+                      >
+                        コピー
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      ※初回ログイン後、パスワード変更を案内してください
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={closeCreateModal}
+                  className="w-full mt-6 py-3 bg-gray-800 text-white rounded-lg font-medium hover:bg-gray-900 transition-colors"
+                >
+                  閉じる
+                </button>
+              </div>
+            ) : (
+              <div className="p-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      塾名/オーナー名 <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={newAccount.name}
+                      onChange={(e) => setNewAccount({ ...newAccount, name: e.target.value })}
+                      placeholder="例: ○○学習塾 山田太郎"
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      メールアドレス <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={newAccount.email}
+                      onChange={(e) => setNewAccount({ ...newAccount, email: e.target.value })}
+                      placeholder="your@email.com"
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      電話番号
+                    </label>
+                    <input
+                      type="tel"
+                      value={newAccount.phone}
+                      onChange={(e) => setNewAccount({ ...newAccount, phone: e.target.value })}
+                      placeholder="090-0000-0000"
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={closeCreateModal}
+                    className="flex-1 py-3 border border-gray-200 text-gray-600 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    onClick={handleCreateAccount}
+                    disabled={creating}
+                    className="flex-1 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
+                  >
+                    {creating ? '作成中...' : 'アカウント作成'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

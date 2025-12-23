@@ -24,6 +24,7 @@ export default function SiteEditorPage() {
   const [hasChanges, setHasChanges] = useState(false)
   const [pendingSiteChanges, setPendingSiteChanges] = useState<Partial<JukuSite>>({})
   const [pendingSectionChanges, setPendingSectionChanges] = useState<Record<string, any>>({})
+  const [canUseCustomDomain, setCanUseCustomDomain] = useState(false)
 
   const router = useRouter()
   const supabase = createClient()
@@ -55,6 +56,17 @@ export default function SiteEditorPage() {
     }
 
     setSite(siteData as JukuSite)
+
+    // オーナープロファイルを取得してカスタムドメイン権限を確認
+    const { data: profileData } = await supabase
+      .from('juku_owner_profiles')
+      .select('can_use_custom_domain')
+      .eq('id', user.id)
+      .single()
+
+    if (profileData) {
+      setCanUseCustomDomain(profileData.can_use_custom_domain ?? false)
+    }
 
     // セクション取得
     const { data: sectionsData } = await supabase
@@ -380,7 +392,7 @@ export default function SiteEditorPage() {
         )}
 
         {activeTab === 'settings' && (
-          <SiteSettings site={site} onUpdate={handleUpdateSite} />
+          <SiteSettings site={site} onUpdate={handleUpdateSite} canUseCustomDomain={canUseCustomDomain} />
         )}
 
         {activeTab === 'preview' && (
