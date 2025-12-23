@@ -6,7 +6,7 @@ import Image from 'next/image'
 import {
   CheckCircle, ArrowRight, Edit3, Layout, Smartphone,
   MessageSquare, Search, Globe, Users, Clock, Shield,
-  ChevronDown, Play, Sparkles
+  ChevronDown, Play, Sparkles, Banknote, Lock
 } from 'lucide-react'
 
 // Intersection Observer Hook for scroll animations
@@ -291,13 +291,15 @@ export default function JukubaLPPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: '💰', title: 'HP制作費が高すぎる', desc: '制作会社に頼むと30〜50万円。維持費も月1〜2万円かかる。' },
-              { icon: '🔒', title: '自分で更新できない', desc: '作ってもらったHPを更新するたびに業者に依頼。時間もお金もかかる。' },
-              { icon: '📱', title: 'スマホ対応してない', desc: '古いサイトのままでスマホで見づらい。今どきの保護者に悪印象。' },
+              { icon: Banknote, title: 'HP制作費が高すぎる', desc: '制作会社に頼むと30〜50万円。維持費も月1〜2万円かかる。' },
+              { icon: Lock, title: '自分で更新できない', desc: '作ってもらったHPを更新するたびに業者に依頼。時間もお金もかかる。' },
+              { icon: Smartphone, title: 'スマホ対応してない', desc: '古いサイトのままでスマホで見づらい。今どきの保護者に悪印象。' },
             ].map((item, i) => (
               <AnimatedSection key={i} delay={i * 100}>
                 <div className="bg-slate-800 rounded-2xl p-8 h-full">
-                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center mb-4">
+                    <item.icon className="w-6 h-6 text-red-400" />
+                  </div>
                   <h3 className="text-xl font-bold mb-3">{item.title}</h3>
                   <p className="text-slate-400">{item.desc}</p>
                 </div>
