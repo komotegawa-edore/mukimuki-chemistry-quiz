@@ -298,29 +298,38 @@ export default function JukubaLPPage() {
 
                 {/* Browser Frame */}
                 <GlassCard className="relative overflow-hidden" hover={false}>
-                  <div className="bg-slate-800/50 px-4 py-3 flex items-center gap-3 border-b border-white/10">
-                    <div className="flex gap-2">
-                      <div className="w-3 h-3 rounded-full bg-red-500" />
-                      <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                      <div className="w-3 h-3 rounded-full bg-green-500" />
+                  <div className="bg-slate-800/50 px-3 md:px-4 py-2 md:py-3 flex items-center gap-2 md:gap-3 border-b border-white/10">
+                    <div className="flex gap-1.5">
+                      <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500" />
+                      <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-yellow-500" />
+                      <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-green-500" />
                     </div>
-                    <div className="flex-1 mx-4">
-                      <div className="bg-slate-700/50 rounded-lg px-4 py-2 text-xs text-slate-400 max-w-sm mx-auto text-center">
+                    <div className="flex-1 mx-2 md:mx-4">
+                      <div className="bg-slate-700/50 rounded-lg px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs text-slate-400 max-w-sm mx-auto text-center truncate">
                         edore-edu.com/juku/your-site
                       </div>
                     </div>
                   </div>
+                  {/* スマホではスクリーンショット、PCではiframe */}
                   <div className="aspect-[16/10] bg-slate-900/50 overflow-hidden">
+                    <div className="md:hidden relative w-full h-full">
+                      <Image
+                        src="/JUKUBA-2.png"
+                        alt="デモサイト"
+                        fill
+                        className="object-cover object-top"
+                      />
+                    </div>
                     <iframe
                       src="https://edore-edu.com/juku/jukuba"
-                      className="w-full h-full border-0"
+                      className="hidden md:block w-full h-full border-0"
                       title="デモサイト"
                     />
                   </div>
                 </GlassCard>
 
-                {/* Floating Elements */}
-                <div className="absolute -top-6 -right-6 animate-bounce" style={{ animationDuration: '3s' }}>
+                {/* Floating Elements - PC only */}
+                <div className="hidden lg:block absolute -top-6 -right-6 animate-bounce" style={{ animationDuration: '3s' }}>
                   <GlassCard className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
@@ -334,7 +343,7 @@ export default function JukubaLPPage() {
                   </GlassCard>
                 </div>
 
-                <div className="absolute -bottom-4 -left-4 animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}>
+                <div className="hidden lg:block absolute -bottom-4 -left-4 animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}>
                   <GlassCard className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center">
@@ -496,15 +505,15 @@ export default function JukubaLPPage() {
       </section>
 
       {/* Video Demo Section */}
-      <section className="py-20 relative">
+      <section className="py-16 md:py-20 relative">
         <div className="max-w-7xl mx-auto px-4">
           <AnimatedSection>
-            <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <div className="text-center mb-8 md:mb-12">
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">
                 <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">30秒</span>
                 でわかる操作感
               </h2>
-              <p className="text-xl text-slate-400">
+              <p className="text-base md:text-xl text-slate-400">
                 実際の管理画面を使った編集の様子をご覧ください
               </p>
             </div>
@@ -515,27 +524,49 @@ export default function JukubaLPPage() {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-2xl scale-105" />
                 <GlassCard className="relative overflow-hidden" hover={false}>
-                  <div className="bg-slate-800/50 px-4 py-3 flex items-center gap-3 border-b border-white/10">
-                    <div className="flex gap-2">
-                      <div className="w-3 h-3 rounded-full bg-red-500" />
-                      <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                      <div className="w-3 h-3 rounded-full bg-green-500" />
+                  <div className="bg-slate-800/50 px-3 md:px-4 py-2 md:py-3 flex items-center gap-2 md:gap-3 border-b border-white/10">
+                    <div className="flex gap-1.5">
+                      <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500" />
+                      <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-yellow-500" />
+                      <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-green-500" />
                     </div>
-                    <div className="flex-1 mx-4">
-                      <div className="bg-slate-700/50 rounded-lg px-4 py-2 text-xs text-slate-400 max-w-sm mx-auto text-center flex items-center justify-center gap-2">
-                        <Play className="w-3 h-3" />
+                    <div className="flex-1 mx-2 md:mx-4">
+                      <div className="bg-slate-700/50 rounded-lg px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs text-slate-400 max-w-sm mx-auto text-center flex items-center justify-center gap-1 md:gap-2">
+                        <Play className="w-2.5 h-2.5 md:w-3 md:h-3" />
                         JUKUBA 管理画面デモ
                       </div>
                     </div>
                   </div>
-                  <div className="aspect-video bg-slate-900/50 overflow-hidden">
+                  <div className="aspect-video bg-slate-900/50 overflow-hidden relative">
+                    {/* スマホではスクリーンショット */}
+                    <div className="md:hidden relative w-full h-full">
+                      <Image
+                        src="/JUKUBA-1.png"
+                        alt="JUKUBA管理画面デモ"
+                        fill
+                        className="object-cover object-top"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                        <a
+                          href="/JUKUBA.mov"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-6 py-3 text-white font-medium hover:bg-white/30 transition-colors"
+                        >
+                          <Play className="w-5 h-5" />
+                          動画を再生
+                        </a>
+                      </div>
+                    </div>
+                    {/* PCでは動画 */}
                     <video
-                      className="w-full h-full object-cover"
+                      className="hidden md:block w-full h-full object-cover"
                       autoPlay
                       loop
                       muted
                       playsInline
                     >
+                      <source src="/JUKUBA.mov" type="video/quicktime" />
                       <source src="/JUKUBA.mov" type="video/mp4" />
                     </video>
                   </div>
