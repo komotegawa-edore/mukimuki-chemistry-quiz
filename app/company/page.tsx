@@ -406,9 +406,16 @@ export default function CompanyPage() {
           <FadeInSection delay={200} direction="left">
           <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 md:p-12 shadow-lg border border-gray-100">
             <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-              {/* プロフィール写真（プレースホルダー） */}
-              <div className="w-48 h-48 bg-gradient-to-br from-[#5DDFC3] to-cyan-500 rounded-full flex items-center justify-center shrink-0 shadow-lg">
-                <span className="text-white text-4xl font-bold">Photo</span>
+              {/* プロフィール写真 */}
+              <div className="w-48 h-48 rounded-full shrink-0 shadow-lg overflow-hidden bg-gradient-to-br from-[#5DDFC3] to-cyan-500 relative">
+                <Image
+                  src="/profile.jpg"   // public/profile.jpg
+                  alt="Profile"
+                  fill
+                  className="object-cover"
+                  sizes="192px"
+                  priority
+                />
               </div>
 
               <div className="flex-1 text-center md:text-left">
