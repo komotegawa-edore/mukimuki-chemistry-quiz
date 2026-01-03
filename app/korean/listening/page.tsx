@@ -77,10 +77,39 @@ function useSoundEffects() {
   return { playSelectSound, playCorrectSound, playWrongSound, playCompleteSound }
 }
 
+// カテゴリグループ定義
+const CATEGORY_GROUPS = [
+  {
+    id: 'daily',
+    name: '日常会話',
+    description: '空港・カフェ・買い物など',
+    icon: '💬',
+    gradient: 'from-blue-400 to-cyan-400',
+    setRange: [1, 10],
+  },
+  {
+    id: 'kpop',
+    name: 'K-POP',
+    description: 'ファンミ・VLive・コンサートなど',
+    icon: '🎤',
+    gradient: 'from-pink-400 to-purple-400',
+    setRange: [11, 20],
+  },
+  {
+    id: 'drama',
+    name: 'ドラマ',
+    description: '告白・別れ・再会シーンなど',
+    icon: '🎬',
+    gradient: 'from-red-400 to-orange-400',
+    setRange: [21, 30],
+  },
+]
+
 function SetSelector({ onSelect }: { onSelect: (setId: string) => void }) {
   const router = useRouter()
   const [sets, setSets] = useState<{ id: string; set_number: number; category: string }[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchSets() {
@@ -105,13 +134,21 @@ function SetSelector({ onSelect }: { onSelect: (setId: string) => void }) {
     )
   }
 
+  const currentGroup = CATEGORY_GROUPS.find(g => g.id === selectedGroup)
+  const filteredSets = selectedGroup && currentGroup
+    ? sets.filter(s => s.set_number >= currentGroup.setRange[0] && s.set_number <= currentGroup.setRange[1])
+    : []
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
       <nav className="bg-white border-b border-pink-100 sticky top-0 z-50">
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
-          <button onClick={() => router.push('/korean')} className="flex items-center gap-2 text-pink-600">
+          <button
+            onClick={() => selectedGroup ? setSelectedGroup(null) : router.push('/korean')}
+            className="flex items-center gap-2 text-pink-600"
+          >
             <Home className="w-5 h-5" />
-            <span className="font-medium">ホーム</span>
+            <span className="font-medium">{selectedGroup ? '戻る' : 'ホーム'}</span>
           </button>
           <div className="flex items-center gap-2">
             <Image src="/korean/Roopy-Korean-icon.png" alt="Roopy Korean" width={32} height={32} className="rounded-lg" />
@@ -122,38 +159,75 @@ function SetSelector({ onSelect }: { onSelect: (setId: string) => void }) {
       </nav>
 
       <main className="max-w-lg mx-auto px-4 py-6">
-        <h1 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-          <Headphones className="w-6 h-6 text-pink-500" />
-          セットを選ぶ
-        </h1>
+        {!selectedGroup ? (
+          <>
+            <h1 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <Headphones className="w-6 h-6 text-pink-500" />
+              カテゴリを選ぶ
+            </h1>
 
-        {sets.length === 0 ? (
-          <div className="bg-white rounded-2xl p-8 text-center shadow-md">
-            <Headphones className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500">リスニング問題はまだありません</p>
-            <p className="text-sm text-gray-400 mt-2">近日公開予定</p>
-          </div>
+            <div className="space-y-4">
+              {CATEGORY_GROUPS.map((group) => {
+                const groupSets = sets.filter(
+                  s => s.set_number >= group.setRange[0] && s.set_number <= group.setRange[1]
+                )
+                return (
+                  <button
+                    key={group.id}
+                    onClick={() => setSelectedGroup(group.id)}
+                    className="w-full bg-white rounded-2xl p-5 shadow-md border border-pink-100 hover:border-pink-400 hover:shadow-lg transition-all"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className={`w-14 h-14 bg-gradient-to-br ${group.gradient} rounded-xl flex items-center justify-center shrink-0 text-2xl`}>
+                        {group.icon}
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="font-bold text-gray-800 text-lg">{group.name}</p>
+                        <p className="text-sm text-gray-500">{group.description}</p>
+                        <p className="text-xs text-pink-500 mt-1">{groupSets.length}セット</p>
+                      </div>
+                      <ChevronRight className="w-6 h-6 text-gray-400" />
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </>
         ) : (
-          <div className="space-y-3">
-            {sets.map((set) => (
-              <button
-                key={set.id}
-                onClick={() => onSelect(set.id)}
-                className="w-full bg-white rounded-xl p-4 shadow-md border border-pink-100 hover:border-pink-400 hover:shadow-lg transition-all"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center shrink-0">
-                    <Headphones className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <p className="font-medium text-gray-800">{set.category}</p>
-                    <p className="text-xs text-gray-500">3問</p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
-                </div>
-              </button>
-            ))}
-          </div>
+          <>
+            <h1 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <span className="text-2xl">{currentGroup?.icon}</span>
+              {currentGroup?.name}
+            </h1>
+
+            {filteredSets.length === 0 ? (
+              <div className="bg-white rounded-2xl p-8 text-center shadow-md">
+                <Headphones className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500">このカテゴリの問題はまだありません</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filteredSets.map((set) => (
+                  <button
+                    key={set.id}
+                    onClick={() => onSelect(set.id)}
+                    className="w-full bg-white rounded-xl p-4 shadow-md border border-pink-100 hover:border-pink-400 hover:shadow-lg transition-all"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 bg-gradient-to-br ${currentGroup?.gradient || 'from-pink-400 to-purple-400'} rounded-full flex items-center justify-center shrink-0`}>
+                        <Headphones className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="font-medium text-gray-800">{set.category}</p>
+                        <p className="text-xs text-gray-500">3問</p>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>
