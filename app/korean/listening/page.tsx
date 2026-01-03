@@ -417,14 +417,15 @@ function ResultScreen({
   total,
   onRetry,
   onHome,
+  onSelectOther,
 }: {
   set: ListeningSet
   score: number
   total: number
   onRetry: () => void
   onHome: () => void
+  onSelectOther: () => void
 }) {
-  const router = useRouter()
   const percentage = Math.round((score / total) * 100)
 
   return (
@@ -454,7 +455,7 @@ function ResultScreen({
             もう一度挑戦
           </button>
           <button
-            onClick={() => router.push('/korean/listening')}
+            onClick={onSelectOther}
             className="w-full bg-white border-2 border-pink-300 text-pink-600 py-3 rounded-xl font-bold hover:bg-pink-50 transition-colors"
           >
             別のセットを選ぶ
@@ -508,6 +509,13 @@ function KoreanListeningContent() {
     router.push('/korean')
   }
 
+  const handleSelectOther = () => {
+    setSelectedSetId(null)
+    setSet(null)
+    setQuestions([])
+    setScore(null)
+  }
+
   if (!selectedSetId) {
     return <SetSelector onSelect={setSelectedSetId} />
   }
@@ -528,6 +536,7 @@ function KoreanListeningContent() {
         total={questions.length}
         onRetry={handleRetry}
         onHome={handleHome}
+        onSelectOther={handleSelectOther}
       />
     )
   }
