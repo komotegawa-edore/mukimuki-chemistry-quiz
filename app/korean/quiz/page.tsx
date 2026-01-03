@@ -35,7 +35,7 @@ function QuizContent() {
         if (category) {
           params.set('category', category)
         }
-        params.set('count', '10')
+        params.set('count', '5')
         params.set('audioOnly', 'true')  // リスニングモード
 
         const res = await fetch(`/api/korean/phrases?${params}`)

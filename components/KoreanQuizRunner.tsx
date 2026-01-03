@@ -1,9 +1,80 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { Play, Pause, RotateCcw, Volume2, Check, X, ChevronRight, Home } from 'lucide-react'
 import type { KoreanPhrase } from '@/lib/types/database'
+
+// サウンドエフェクト生成
+function useSoundEffects() {
+  const audioContextRef = useRef<AudioContext | null>(null)
+
+  const getAudioContext = useCallback(() => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
+    }
+    return audioContextRef.current
+  }, [])
+
+  const playCorrectSound = useCallback(() => {
+    const ctx = getAudioContext()
+    const oscillator = ctx.createOscillator()
+    const gainNode = ctx.createGain()
+
+    oscillator.connect(gainNode)
+    gainNode.connect(ctx.destination)
+
+    oscillator.frequency.setValueAtTime(523.25, ctx.currentTime) // C5
+    oscillator.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1) // E5
+    oscillator.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2) // G5
+
+    gainNode.gain.setValueAtTime(0.3, ctx.currentTime)
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4)
+
+    oscillator.start(ctx.currentTime)
+    oscillator.stop(ctx.currentTime + 0.4)
+  }, [getAudioContext])
+
+  const playWrongSound = useCallback(() => {
+    const ctx = getAudioContext()
+    const oscillator = ctx.createOscillator()
+    const gainNode = ctx.createGain()
+
+    oscillator.connect(gainNode)
+    gainNode.connect(ctx.destination)
+
+    oscillator.frequency.setValueAtTime(200, ctx.currentTime)
+    oscillator.frequency.setValueAtTime(150, ctx.currentTime + 0.15)
+
+    gainNode.gain.setValueAtTime(0.3, ctx.currentTime)
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3)
+
+    oscillator.start(ctx.currentTime)
+    oscillator.stop(ctx.currentTime + 0.3)
+  }, [getAudioContext])
+
+  const playCompleteSound = useCallback(() => {
+    const ctx = getAudioContext()
+    const notes = [523.25, 659.25, 783.99, 1046.5] // C5, E5, G5, C6
+
+    notes.forEach((freq, i) => {
+      const oscillator = ctx.createOscillator()
+      const gainNode = ctx.createGain()
+
+      oscillator.connect(gainNode)
+      gainNode.connect(ctx.destination)
+
+      oscillator.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.15)
+      gainNode.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.15)
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + 0.3)
+
+      oscillator.start(ctx.currentTime + i * 0.15)
+      oscillator.stop(ctx.currentTime + i * 0.15 + 0.3)
+    })
+  }, [getAudioContext])
+
+  return { playCorrectSound, playWrongSound, playCompleteSound }
+}
 
 interface KoreanQuizRunnerProps {
   phrases: KoreanPhrase[]
@@ -19,6 +90,7 @@ export default function KoreanQuizRunner({ phrases, onComplete, onHome, onAnswer
   const [isPlaying, setIsPlaying] = useState(false)
   const [playbackSpeed, setPlaybackSpeed] = useState<PlaybackSpeed>(1.0)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
+  const { playCorrectSound, playWrongSound, playCompleteSound } = useSoundEffects()
   const [showResult, setShowResult] = useState(false)
   const [score, setScore] = useState(0)
   const [isFinished, setIsFinished] = useState(false)
@@ -68,6 +140,9 @@ export default function KoreanQuizRunner({ phrases, onComplete, onHome, onAnswer
     const isAnswerCorrect = index === currentPhrase.correctIndex
     if (isAnswerCorrect) {
       setScore((prev) => prev + 1)
+      playCorrectSound()
+    } else {
+      playWrongSound()
     }
 
     // 回答をトラッキング
@@ -84,7 +159,8 @@ export default function KoreanQuizRunner({ phrases, onComplete, onHome, onAnswer
   const nextQuestion = () => {
     if (currentIndex + 1 >= phrases.length) {
       setIsFinished(true)
-      onComplete(score + (isCorrect ? 0 : 0), phrases.length) // scoreは既に更新済み
+      playCompleteSound()
+      onComplete(score, phrases.length)
     } else {
       setCurrentIndex((prev) => prev + 1)
       setSelectedAnswer(null)

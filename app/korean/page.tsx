@@ -2,25 +2,10 @@
 
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { Heart, HeartCrack, Users, Sparkles, Sun, Play } from 'lucide-react'
-import { KOREAN_CATEGORIES, type KoreanCategory } from '@/lib/types/database'
-
-// アイコンマッピング
-const iconMap = {
-  Heart,
-  HeartCrack,
-  Users,
-  Sparkles,
-  Sun,
-}
+import { Headphones, MessageCircleQuestion, Play, BookOpen, ChevronRight } from 'lucide-react'
 
 export default function KoreanHomePage() {
   const router = useRouter()
-
-  const handleStartQuiz = (category?: KoreanCategory) => {
-    const url = category ? `/korean/quiz?category=${category}` : '/korean/quiz'
-    router.push(url)
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
@@ -36,79 +21,89 @@ export default function KoreanHomePage() {
           />
           <div>
             <h1 className="text-xl font-bold">Roopy Korean</h1>
-            <p className="text-xs text-pink-100">韓国語リスニングクイズ</p>
+            <p className="text-xs text-pink-100">韓国語リスニング</p>
           </div>
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6">
-        {/* キャラクター＆スタートボタン */}
-        <div className="bg-gradient-to-r from-pink-500 to-purple-500 rounded-2xl p-6 shadow-lg mb-6 relative overflow-hidden">
-          <div className="flex items-center gap-4">
-            <Image
-              src="/korean/Roopy-Korean-icon.png"
-              alt="Roopy"
-              width={80}
-              height={80}
-              className="shrink-0"
-            />
-            <div className="flex-1">
-              <p className="text-pink-100 text-sm">韓国語を聞いて答えよう!</p>
-              <button
-                onClick={() => handleStartQuiz()}
-                className="mt-2 bg-white text-pink-500 font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2"
-              >
-                <Play className="w-5 h-5 fill-current" />
-                クイズスタート
-              </button>
-            </div>
-          </div>
+        {/* キャラクター紹介 */}
+        <div className="bg-gradient-to-r from-pink-500 to-purple-500 rounded-2xl p-6 shadow-lg mb-6 text-center text-white">
+          <Image
+            src="/korean/Roopy-Korean-icon.png"
+            alt="Roopy"
+            width={80}
+            height={80}
+            className="mx-auto mb-3"
+          />
+          <p className="text-pink-100 text-sm">韓国語を聞いて楽しく学ぼう!</p>
         </div>
 
-        {/* カテゴリ選択 */}
-        <h2 className="text-lg font-bold text-gray-700 mb-4">カテゴリから選ぶ</h2>
-        <div className="grid grid-cols-2 gap-3">
-          {(Object.entries(KOREAN_CATEGORIES) as [KoreanCategory, typeof KOREAN_CATEGORIES[KoreanCategory]][]).map(
-            ([key, category]) => {
-              const IconComponent = iconMap[category.icon as keyof typeof iconMap]
-              return (
-                <button
-                  key={key}
-                  onClick={() => handleStartQuiz(key)}
-                  className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all border border-pink-100 hover:border-pink-300"
-                >
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="w-12 h-12 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full flex items-center justify-center">
-                      <IconComponent className="w-6 h-6 text-pink-500" />
-                    </div>
-                    <div className="text-center">
-                      <p className="font-bold text-gray-800">{category.japanese}</p>
-                      <p className="text-sm text-gray-500">{category.korean}</p>
-                    </div>
-                  </div>
-                </button>
-              )
-            }
-          )}
+        {/* メイン機能: リスニング練習 */}
+        <div className="mb-6">
+          <h2 className="text-lg font-bold text-gray-700 mb-3 flex items-center gap-2">
+            <Headphones className="w-5 h-5 text-pink-500" />
+            リスニング練習
+          </h2>
+          <button
+            onClick={() => router.push('/korean/listen')}
+            className="w-full bg-white rounded-2xl p-5 shadow-lg border-2 border-pink-200 hover:border-pink-400 transition-all text-left group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-pink-400 to-purple-400 rounded-xl flex items-center justify-center shrink-0">
+                <Play className="w-7 h-7 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="font-bold text-gray-800 text-lg">フレーズを聞く</p>
+                <p className="text-sm text-gray-500">韓国語・日本語訳・ローマ字で学習</p>
+              </div>
+              <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-pink-500 transition-colors" />
+            </div>
+          </button>
+        </div>
+
+        {/* サブ機能: クイズ */}
+        <div className="mb-6">
+          <h2 className="text-lg font-bold text-gray-700 mb-3 flex items-center gap-2">
+            <MessageCircleQuestion className="w-5 h-5 text-purple-500" />
+            聞き取りクイズ
+          </h2>
+          <button
+            onClick={() => router.push('/korean/quiz')}
+            className="w-full bg-white rounded-2xl p-5 shadow-md border border-pink-100 hover:border-pink-300 transition-all text-left group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center shrink-0">
+                <BookOpen className="w-7 h-7 text-purple-500" />
+              </div>
+              <div className="flex-1">
+                <p className="font-bold text-gray-800">5問クイズ</p>
+                <p className="text-sm text-gray-500">韓国語を聞いて意味を当てよう</p>
+              </div>
+              <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-purple-500 transition-colors" />
+            </div>
+          </button>
         </div>
 
         {/* 説明 */}
-        <div className="mt-8 bg-white rounded-xl p-4 shadow-md border border-pink-100">
-          <h3 className="font-bold text-gray-700 mb-2">遊び方</h3>
-          <ol className="text-sm text-gray-600 space-y-2">
-            <li className="flex items-start gap-2">
-              <span className="w-5 h-5 bg-pink-100 rounded-full flex items-center justify-center text-xs font-bold text-pink-600 shrink-0">1</span>
-              韓国語の音声を聞く
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="w-5 h-5 bg-pink-100 rounded-full flex items-center justify-center text-xs font-bold text-pink-600 shrink-0">2</span>
-              4つの日本語から正解を選ぶ
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="w-5 h-5 bg-pink-100 rounded-full flex items-center justify-center text-xs font-bold text-pink-600 shrink-0">3</span>
-              韓国語のテキストを確認して覚える
-            </li>
-          </ol>
+        <div className="bg-white rounded-xl p-4 shadow-md border border-pink-100">
+          <h3 className="font-bold text-gray-700 mb-3">学習の流れ</h3>
+          <div className="space-y-3 text-sm text-gray-600">
+            <div className="flex items-start gap-3">
+              <span className="w-6 h-6 bg-pink-100 rounded-full flex items-center justify-center text-xs font-bold text-pink-600 shrink-0">1</span>
+              <div>
+                <p className="font-medium text-gray-800">リスニング練習</p>
+                <p className="text-gray-500">フレーズを聞きながらスクリプトで確認</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center text-xs font-bold text-purple-600 shrink-0">2</span>
+              <div>
+                <p className="font-medium text-gray-800">クイズで力試し</p>
+                <p className="text-gray-500">聞き取った内容を4択で回答</p>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
