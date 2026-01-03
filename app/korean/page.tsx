@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { Headphones, MessageCircleQuestion, Play, BookOpen, ChevronRight } from 'lucide-react'
+import { Headphones, BookOpen, Play, ChevronRight } from 'lucide-react'
 
 export default function KoreanHomePage() {
   const router = useRouter()
@@ -39,14 +39,14 @@ export default function KoreanHomePage() {
           <p className="text-pink-100 text-sm">韓国語を聞いて楽しく学ぼう!</p>
         </div>
 
-        {/* メイン機能: リスニング練習 */}
+        {/* メイン機能: リスニング */}
         <div className="mb-6">
           <h2 className="text-lg font-bold text-gray-700 mb-3 flex items-center gap-2">
             <Headphones className="w-5 h-5 text-pink-500" />
-            リスニング練習
+            リスニング
           </h2>
           <button
-            onClick={() => router.push('/korean/listen')}
+            onClick={() => router.push('/korean/listening')}
             className="w-full bg-white rounded-2xl p-5 shadow-lg border-2 border-pink-200 hover:border-pink-400 transition-all text-left group"
           >
             <div className="flex items-center gap-4">
@@ -54,19 +54,20 @@ export default function KoreanHomePage() {
                 <Play className="w-7 h-7 text-white" />
               </div>
               <div className="flex-1">
-                <p className="font-bold text-gray-800 text-lg">フレーズを聞く</p>
-                <p className="text-sm text-gray-500">韓国語・日本語訳・ローマ字で学習</p>
+                <p className="font-bold text-gray-800 text-lg">リスニング問題</p>
+                <p className="text-sm text-gray-500">韓国語を聞いて内容を理解しよう</p>
+                <p className="text-xs text-pink-500 mt-1">3問×10セット</p>
               </div>
               <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-pink-500 transition-colors" />
             </div>
           </button>
         </div>
 
-        {/* サブ機能: クイズ */}
+        {/* サブ機能: 単文聞き取り練習 */}
         <div className="mb-6">
           <h2 className="text-lg font-bold text-gray-700 mb-3 flex items-center gap-2">
-            <MessageCircleQuestion className="w-5 h-5 text-purple-500" />
-            聞き取りクイズ
+            <BookOpen className="w-5 h-5 text-purple-500" />
+            単文聞き取り練習
           </h2>
           <button
             onClick={() => router.push('/korean/quiz')}
@@ -77,8 +78,9 @@ export default function KoreanHomePage() {
                 <BookOpen className="w-7 h-7 text-purple-500" />
               </div>
               <div className="flex-1">
-                <p className="font-bold text-gray-800">5問クイズ</p>
-                <p className="text-sm text-gray-500">韓国語を聞いて意味を当てよう</p>
+                <p className="font-bold text-gray-800">単文クイズ</p>
+                <p className="text-sm text-gray-500">1文を聞いて意味を当てよう</p>
+                <p className="text-xs text-purple-500 mt-1">5問ランダム出題</p>
               </div>
               <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-purple-500 transition-colors" />
             </div>
@@ -92,15 +94,15 @@ export default function KoreanHomePage() {
             <div className="flex items-start gap-3">
               <span className="w-6 h-6 bg-pink-100 rounded-full flex items-center justify-center text-xs font-bold text-pink-600 shrink-0">1</span>
               <div>
-                <p className="font-medium text-gray-800">リスニング練習</p>
-                <p className="text-gray-500">フレーズを聞きながらスクリプトで確認</p>
+                <p className="font-medium text-gray-800">リスニング</p>
+                <p className="text-gray-500">2-3行の韓国語を聞いて内容を把握</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <span className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center text-xs font-bold text-purple-600 shrink-0">2</span>
               <div>
-                <p className="font-medium text-gray-800">クイズで力試し</p>
-                <p className="text-gray-500">聞き取った内容を4択で回答</p>
+                <p className="font-medium text-gray-800">単文練習</p>
+                <p className="text-gray-500">短いフレーズで語彙力アップ</p>
               </div>
             </div>
           </div>
