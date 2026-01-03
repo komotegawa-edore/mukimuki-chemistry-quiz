@@ -15,7 +15,10 @@ import OpenAI from 'openai'
 import { createClient } from '@supabase/supabase-js'
 import * as fs from 'fs'
 import * as path from 'path'
-import 'dotenv/config'
+import * as dotenv from 'dotenv'
+
+// .env.local を読み込む
+dotenv.config({ path: '.env.local' })
 
 // 設定
 const CONFIG = {

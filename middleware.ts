@@ -27,6 +27,11 @@ export async function middleware(request: NextRequest) {
   if (isSubdomain && SUBDOMAIN_MAP[subdomain]) {
     const basePath = SUBDOMAIN_MAP[subdomain]
 
+    // API routes should not be rewritten (they already include the subdomain path)
+    if (url.pathname.startsWith('/api/')) {
+      return await updateSession(request)
+    }
+
     // すでにベースパスが含まれている場合はスキップ
     if (!url.pathname.startsWith(basePath)) {
       url.pathname = `${basePath}${url.pathname}`
