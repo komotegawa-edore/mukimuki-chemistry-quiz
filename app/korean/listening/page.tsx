@@ -42,61 +42,28 @@ type Answer = 'A' | 'B' | 'C' | 'D'
 
 // サウンドエフェクト
 function useSoundEffects() {
-  const audioContextRef = useRef<AudioContext | null>(null)
-
-  const getAudioContext = useCallback(() => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
-    }
-    return audioContextRef.current
+  const playSound = useCallback((src: string) => {
+    const audio = new Audio(src)
+    audio.play().catch(() => {})
   }, [])
 
+  const playSelectSound = useCallback(() => {
+    playSound('/korean/sounds/select.mp3')
+  }, [playSound])
+
   const playCorrectSound = useCallback(() => {
-    const ctx = getAudioContext()
-    const oscillator = ctx.createOscillator()
-    const gainNode = ctx.createGain()
-    oscillator.connect(gainNode)
-    gainNode.connect(ctx.destination)
-    oscillator.frequency.setValueAtTime(523.25, ctx.currentTime)
-    oscillator.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1)
-    oscillator.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2)
-    gainNode.gain.setValueAtTime(0.3, ctx.currentTime)
-    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4)
-    oscillator.start(ctx.currentTime)
-    oscillator.stop(ctx.currentTime + 0.4)
-  }, [getAudioContext])
+    playSound('/korean/sounds/correct.mp3')
+  }, [playSound])
 
   const playWrongSound = useCallback(() => {
-    const ctx = getAudioContext()
-    const oscillator = ctx.createOscillator()
-    const gainNode = ctx.createGain()
-    oscillator.connect(gainNode)
-    gainNode.connect(ctx.destination)
-    oscillator.frequency.setValueAtTime(200, ctx.currentTime)
-    oscillator.frequency.setValueAtTime(150, ctx.currentTime + 0.15)
-    gainNode.gain.setValueAtTime(0.3, ctx.currentTime)
-    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3)
-    oscillator.start(ctx.currentTime)
-    oscillator.stop(ctx.currentTime + 0.3)
-  }, [getAudioContext])
+    playSound('/korean/sounds/wrong.mp3')
+  }, [playSound])
 
   const playCompleteSound = useCallback(() => {
-    const ctx = getAudioContext()
-    const notes = [523.25, 659.25, 783.99, 1046.5]
-    notes.forEach((freq, i) => {
-      const oscillator = ctx.createOscillator()
-      const gainNode = ctx.createGain()
-      oscillator.connect(gainNode)
-      gainNode.connect(ctx.destination)
-      oscillator.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.15)
-      gainNode.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.15)
-      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + 0.3)
-      oscillator.start(ctx.currentTime + i * 0.15)
-      oscillator.stop(ctx.currentTime + i * 0.15 + 0.3)
-    })
-  }, [getAudioContext])
+    playSound('/korean/sounds/complete.mp3')
+  }, [playSound])
 
-  return { playCorrectSound, playWrongSound, playCompleteSound }
+  return { playSelectSound, playCorrectSound, playWrongSound, playCompleteSound }
 }
 
 function SetSelector({ onSelect }: { onSelect: (setId: string) => void }) {
@@ -194,10 +161,10 @@ function QuizRunner({
   const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null)
   const [showAnswer, setShowAnswer] = useState(false)
   const [answers, setAnswers] = useState<Record<string, Answer>>({})
-  const [playbackRate, setPlaybackRate] = useState(0.85)
+  const [playbackRate, setPlaybackRate] = useState(1.0)
   const [isPlaying, setIsPlaying] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
-  const { playCorrectSound, playWrongSound, playCompleteSound } = useSoundEffects()
+  const { playSelectSound, playCorrectSound, playWrongSound, playCompleteSound } = useSoundEffects()
 
   const currentQuestion = questions[currentIndex]
   const isLastQuestion = currentIndex === questions.length - 1
@@ -229,6 +196,7 @@ function QuizRunner({
 
   const handleAnswerSelect = (answer: Answer) => {
     if (!showAnswer) {
+      playSelectSound()
       setSelectedAnswer(answer)
     }
   }
@@ -323,12 +291,15 @@ function QuizRunner({
             >
               {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-0.5" />}
             </button>
+
+            {/* バランス用のスペーサー */}
+            <div className="w-11 h-11" />
           </div>
 
           <div className="flex items-center justify-center gap-2">
             <Volume2 className="w-4 h-4 text-gray-500" />
             <span className="text-sm text-gray-500">速度:</span>
-            {[0.7, 0.85, 1.0].map((rate) => (
+            {[0.8, 1.0, 1.2].map((rate) => (
               <button
                 key={rate}
                 onClick={() => setPlaybackRate(rate)}
