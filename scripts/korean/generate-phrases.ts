@@ -76,16 +76,18 @@ async function generatePhrases(category: Category, count: number): Promise<Gener
 - 一文の簡単な韓国語フレーズ（5-15語程度）
 - 自然な韓国語表現
 - K-POPや日常会話でよく使われる表現
-- 各フレーズに対して、似ているが意味が違う誤答選択肢を3つ
+- 各フレーズに対して、正解に似ているが意味が違う「日本語の」誤答選択肢を3つ
+
+重要: wrong_choicesは必ず日本語で記述してください（韓国語ではなく日本語）
 
 以下のJSON形式で出力してください:
 {
   "phrases": [
     {
-      "korean_text": "韓国語フレーズ",
-      "japanese_meaning": "日本語の意味（正解）",
-      "romanization": "ローマ字読み",
-      "wrong_choices": ["誤答1", "誤答2", "誤答3"],
+      "korean_text": "사랑해요",
+      "japanese_meaning": "愛しています",
+      "romanization": "saranghaeyo",
+      "wrong_choices": ["好きです", "会いたいです", "ありがとうございます"],
       "difficulty_level": 1
     }
   ]
