@@ -15,6 +15,17 @@ import {
   RotateCcw,
 } from 'lucide-react'
 
+// セッションID取得（localStorageに保存）
+function getSessionId(): string {
+  if (typeof window === 'undefined') return ''
+  let sessionId = localStorage.getItem('korean_session_id')
+  if (!sessionId) {
+    sessionId = `ks_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+    localStorage.setItem('korean_session_id', sessionId)
+  }
+  return sessionId
+}
+
 interface ListeningSet {
   id: string
   set_number: number
@@ -157,7 +168,7 @@ function QuizRunner({
 }: {
   set: ListeningSet
   questions: Question[]
-  onComplete: (score: number) => void
+  onComplete: (score: number, answers: { questionId: string; correct: boolean; selected: string }[]) => void
   onHome: () => void
 }) {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -226,7 +237,14 @@ function QuizRunner({
         return acc + (newAnswers[q.id] === q.correct_answer ? 1 : 0)
       }, 0)
       playCompleteSound()
-      onComplete(score)
+
+      // 回答データを整形
+      const answersData = questions.map(q => ({
+        questionId: q.id,
+        correct: newAnswers[q.id] === q.correct_answer,
+        selected: newAnswers[q.id],
+      }))
+      onComplete(score, answersData)
     } else {
       setCurrentIndex(currentIndex + 1)
       setSelectedAnswer(null)
@@ -497,8 +515,28 @@ function KoreanListeningContent() {
     }
   }, [selectedSetId])
 
-  const handleComplete = (finalScore: number) => {
+  const handleComplete = async (finalScore: number, answers: { questionId: string; correct: boolean; selected: string }[]) => {
     setScore(finalScore)
+
+    // 結果を保存
+    if (set) {
+      try {
+        await fetch('/api/korean/listening/results', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sessionId: getSessionId(),
+            setId: set.id,
+            category: set.category,
+            score: finalScore,
+            total: questions.length,
+            answers,
+          }),
+        })
+      } catch (err) {
+        console.error('Failed to save listening result:', err)
+      }
+    }
   }
 
   const handleRetry = () => {
