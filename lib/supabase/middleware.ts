@@ -109,6 +109,7 @@ export async function updateSession(request: NextRequest) {
     '/juku',     // 塾サイトビルダー（公開）
     '/note/login',   // RoopyNote ログイン
     '/note/signup',  // RoopyNote 登録
+    '/korean',   // Roopy Korean（公開）
   ]
 
   // juku-admin の公開ページ（ログイン/登録/認証コールバック）

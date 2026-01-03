@@ -301,6 +301,50 @@ export interface Database {
           updated_by?: string | null
         }
       }
+      mukimuki_korean_phrases: {
+        Row: {
+          id: string
+          phrase_date: string
+          category: 'love' | 'breakup' | 'friendship' | 'hope' | 'daily'
+          korean_text: string
+          japanese_meaning: string
+          romanization: string | null
+          audio_url: string | null
+          wrong_choices: string[]
+          difficulty_level: 1 | 2 | 3
+          is_published: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          phrase_date: string
+          category: 'love' | 'breakup' | 'friendship' | 'hope' | 'daily'
+          korean_text: string
+          japanese_meaning: string
+          romanization?: string | null
+          audio_url?: string | null
+          wrong_choices: string[]
+          difficulty_level?: 1 | 2 | 3
+          is_published?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          phrase_date?: string
+          category?: 'love' | 'breakup' | 'friendship' | 'hope' | 'daily'
+          korean_text?: string
+          japanese_meaning?: string
+          romanization?: string | null
+          audio_url?: string | null
+          wrong_choices?: string[]
+          difficulty_level?: 1 | 2 | 3
+          is_published?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -436,4 +480,49 @@ export interface DailyListeningSetResponse {
   date: string
   totalSets: number
   seed: number
+}
+
+// ====================================
+// 韓国語リスニングクイズ用の型定義
+// ====================================
+
+export type KoreanPhraseRow = Database['public']['Tables']['mukimuki_korean_phrases']['Row']
+export type KoreanCategory = 'love' | 'breakup' | 'friendship' | 'hope' | 'daily'
+
+// カテゴリ定義（アイコンはLucide iconの名前）
+export const KOREAN_CATEGORIES = {
+  love: { korean: '연애', japanese: '恋愛', icon: 'Heart' },
+  breakup: { korean: '이별', japanese: '別れ', icon: 'HeartCrack' },
+  friendship: { korean: '우정', japanese: '友情', icon: 'Users' },
+  hope: { korean: '희망', japanese: '希望', icon: 'Sparkles' },
+  daily: { korean: '일상', japanese: '日常', icon: 'Sun' },
+} as const
+
+// クイズ用のフレーズ型
+export interface KoreanPhrase {
+  id: string
+  koreanText: string
+  japaneseMeaning: string
+  romanization: string | null
+  audioUrl: string | null
+  choices: string[]  // 正解 + 誤答3つをシャッフル
+  correctIndex: number
+  category: KoreanCategory
+  difficultyLevel: 1 | 2 | 3
+}
+
+// クイズ結果
+export interface KoreanQuizResult {
+  phraseId: string
+  userChoice: number
+  isCorrect: boolean
+}
+
+// クイズセッション結果
+export interface KoreanQuizSession {
+  date: string
+  category: KoreanCategory | 'all'
+  results: KoreanQuizResult[]
+  score: number
+  total: number
 }
