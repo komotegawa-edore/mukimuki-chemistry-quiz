@@ -1,0 +1,38 @@
+{
+  "name": "Roopy Korean",
+  "short_name": "Roopy Korean",
+  "description": "韓国語リスニングクイズ",
+  "start_url": "/korean",
+  "display": "standalone",
+  "background_color": "#FFF5F8",
+  "theme_color": "#FF6B9D",
+  "icons": [
+    {
+      "src": "/korean/favicon-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/korean/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/korean/favicon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/korean/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/korean/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
