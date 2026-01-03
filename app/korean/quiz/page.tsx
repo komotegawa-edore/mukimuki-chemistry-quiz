@@ -1,10 +1,21 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, Suspense, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import KoreanQuizRunner from '@/components/KoreanQuizRunner'
 import type { KoreanPhrase, KoreanCategory } from '@/lib/types/database'
 import { Loader2 } from 'lucide-react'
+
+// セッションID取得（localStorageに保存）
+function getSessionId(): string {
+  if (typeof window === 'undefined') return ''
+  let sessionId = localStorage.getItem('korean_session_id')
+  if (!sessionId) {
+    sessionId = `ks_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+    localStorage.setItem('korean_session_id', sessionId)
+  }
+  return sessionId
+}
 
 function QuizContent() {
   const router = useRouter()
@@ -14,6 +25,7 @@ function QuizContent() {
   const [phrases, setPhrases] = useState<KoreanPhrase[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const answersRef = useRef<{ phraseId: string; correct: boolean; selectedIndex: number }[]>([])
 
   useEffect(() => {
     const fetchPhrases = async () => {
@@ -24,6 +36,7 @@ function QuizContent() {
           params.set('category', category)
         }
         params.set('count', '10')
+        params.set('audioOnly', 'true')  // リスニングモード
 
         const res = await fetch(`/api/korean/phrases?${params}`)
         const data = await res.json()
@@ -33,9 +46,10 @@ function QuizContent() {
         }
 
         if (data.phrases.length === 0) {
-          setError('まだ問題がありません')
+          setError('音声付きの問題がまだありません')
         } else {
           setPhrases(data.phrases)
+          answersRef.current = []
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'エラーが発生しました')
@@ -47,8 +61,24 @@ function QuizContent() {
     fetchPhrases()
   }, [category])
 
-  const handleComplete = (score: number, total: number) => {
-    console.log(`Quiz completed: ${score}/${total}`)
+  const handleComplete = async (score: number, total: number) => {
+    // 結果を保存
+    try {
+      await fetch('/api/korean/results', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: getSessionId(),
+          category: category || null,
+          score,
+          total,
+          phraseIds: phrases.map(p => p.id),
+          answers: answersRef.current,
+        }),
+      })
+    } catch (err) {
+      console.error('Failed to save result:', err)
+    }
   }
 
   const handleHome = () => {
@@ -82,11 +112,16 @@ function QuizContent() {
     )
   }
 
+  const handleAnswer = (phraseId: string, correct: boolean, selectedIndex: number) => {
+    answersRef.current.push({ phraseId, correct, selectedIndex })
+  }
+
   return (
     <KoreanQuizRunner
       phrases={phrases}
       onComplete={handleComplete}
       onHome={handleHome}
+      onAnswer={handleAnswer}
     />
   )
 }

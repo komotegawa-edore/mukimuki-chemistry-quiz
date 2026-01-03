@@ -9,11 +9,12 @@ interface KoreanQuizRunnerProps {
   phrases: KoreanPhrase[]
   onComplete: (score: number, total: number) => void
   onHome: () => void
+  onAnswer?: (phraseId: string, correct: boolean, selectedIndex: number) => void
 }
 
 type PlaybackSpeed = 0.8 | 1.0 | 1.2
 
-export default function KoreanQuizRunner({ phrases, onComplete, onHome }: KoreanQuizRunnerProps) {
+export default function KoreanQuizRunner({ phrases, onComplete, onHome, onAnswer }: KoreanQuizRunnerProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [playbackSpeed, setPlaybackSpeed] = useState<PlaybackSpeed>(1.0)
@@ -64,9 +65,13 @@ export default function KoreanQuizRunner({ phrases, onComplete, onHome }: Korean
     setSelectedAnswer(index)
     setShowResult(true)
 
-    if (index === currentPhrase.correctIndex) {
+    const isAnswerCorrect = index === currentPhrase.correctIndex
+    if (isAnswerCorrect) {
       setScore((prev) => prev + 1)
     }
+
+    // 回答をトラッキング
+    onAnswer?.(currentPhrase.id, isAnswerCorrect, index)
 
     // 音声を停止
     if (audioRef.current) {

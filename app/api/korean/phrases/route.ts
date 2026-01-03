@@ -40,6 +40,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category') as KoreanCategory | null
     const count = parseInt(searchParams.get('count') || '10', 10)
     const shuffle = searchParams.get('shuffle') !== 'false'
+    const audioOnly = searchParams.get('audioOnly') === 'true'
 
     let query = supabase
       .from('mukimuki_korean_phrases')
@@ -48,6 +49,11 @@ export async function GET(request: NextRequest) {
 
     if (category) {
       query = query.eq('category', category)
+    }
+
+    // リスニングモード：音声ありのみ
+    if (audioOnly) {
+      query = query.not('audio_url', 'is', null)
     }
 
     query = query.limit(count)
