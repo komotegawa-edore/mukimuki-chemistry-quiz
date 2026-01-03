@@ -107,6 +107,14 @@ export default function KoreanHomePage() {
             </div>
           </div>
         </div>
+
+        {/* フッター */}
+        <footer className="mt-8 pt-6 border-t border-pink-100 text-center text-sm text-gray-400">
+          <a href="/korean/privacy" className="hover:text-pink-500 transition-colors">
+            プライバシーポリシー
+          </a>
+          <p className="mt-2">&copy; 2025 Edore</p>
+        </footer>
       </main>
     </div>
   )

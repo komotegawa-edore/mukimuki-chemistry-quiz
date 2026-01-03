@@ -364,6 +364,9 @@ export default function KoreanLPPage() {
               <Link href="/korean/quiz" className="hover:text-pink-500 transition-colors">
                 単文練習
               </Link>
+              <Link href="/korean/privacy" className="hover:text-pink-500 transition-colors">
+                プライバシーポリシー
+              </Link>
             </div>
           </div>
 
