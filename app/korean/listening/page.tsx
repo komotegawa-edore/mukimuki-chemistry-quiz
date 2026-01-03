@@ -13,7 +13,17 @@ import {
   ChevronRight,
   Headphones,
   RotateCcw,
+  MessageCircle,
+  Mic,
+  Clapperboard,
 } from 'lucide-react'
+
+// アイコンマップ
+const ICONS = {
+  MessageCircle,
+  Mic,
+  Clapperboard,
+} as const
 
 // セッションID取得（localStorageに保存）
 function getSessionId(): string {
@@ -83,7 +93,7 @@ const CATEGORY_GROUPS = [
     id: 'daily',
     name: '日常会話',
     description: '空港・カフェ・買い物など',
-    icon: '💬',
+    iconType: 'MessageCircle' as const,
     gradient: 'from-blue-400 to-cyan-400',
     setRange: [1, 10],
   },
@@ -91,7 +101,7 @@ const CATEGORY_GROUPS = [
     id: 'kpop',
     name: 'K-POP',
     description: 'ファンミ・VLive・コンサートなど',
-    icon: '🎤',
+    iconType: 'Mic' as const,
     gradient: 'from-pink-400 to-purple-400',
     setRange: [11, 20],
   },
@@ -99,7 +109,7 @@ const CATEGORY_GROUPS = [
     id: 'drama',
     name: 'ドラマ',
     description: '告白・別れ・再会シーンなど',
-    icon: '🎬',
+    iconType: 'Clapperboard' as const,
     gradient: 'from-red-400 to-orange-400',
     setRange: [21, 30],
   },
@@ -178,9 +188,14 @@ function SetSelector({ onSelect }: { onSelect: (setId: string) => void }) {
                     className="w-full bg-white rounded-2xl p-5 shadow-md border border-pink-100 hover:border-pink-400 hover:shadow-lg transition-all"
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`w-14 h-14 bg-gradient-to-br ${group.gradient} rounded-xl flex items-center justify-center shrink-0 text-2xl`}>
-                        {group.icon}
-                      </div>
+                      {(() => {
+                        const Icon = ICONS[group.iconType]
+                        return (
+                          <div className={`w-14 h-14 bg-gradient-to-br ${group.gradient} rounded-xl flex items-center justify-center shrink-0`}>
+                            <Icon className="w-7 h-7 text-white" />
+                          </div>
+                        )
+                      })()}
                       <div className="flex-1 text-left">
                         <p className="font-bold text-gray-800 text-lg">{group.name}</p>
                         <p className="text-sm text-gray-500">{group.description}</p>
@@ -196,7 +211,10 @@ function SetSelector({ onSelect }: { onSelect: (setId: string) => void }) {
         ) : (
           <>
             <h1 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <span className="text-2xl">{currentGroup?.icon}</span>
+              {currentGroup && (() => {
+                const Icon = ICONS[currentGroup.iconType]
+                return <Icon className="w-6 h-6 text-pink-500" />
+              })()}
               {currentGroup?.name}
             </h1>
 

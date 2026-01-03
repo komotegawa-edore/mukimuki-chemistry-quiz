@@ -21,6 +21,8 @@ import {
   MapPin,
   GraduationCap,
   UtensilsCrossed,
+  Mic,
+  Clapperboard,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -190,13 +192,22 @@ export default function KoreanLPPage() {
                       メイン
                     </span>
                   </div>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-gray-600 mb-3">
                     2〜3行の韓国語を聞いて、内容を理解するクイズ形式。
-                    空港アナウンス、カフェでの注文、友達との会話など、
-                    実践的なシチュエーションで学べます。
                   </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-600 text-xs font-medium px-2 py-1 rounded-full">
+                      <MessageCircle className="w-3 h-3" /> 日常会話
+                    </span>
+                    <span className="inline-flex items-center gap-1 bg-pink-50 text-pink-600 text-xs font-medium px-2 py-1 rounded-full">
+                      <Music className="w-3 h-3" /> K-POP
+                    </span>
+                    <span className="inline-flex items-center gap-1 bg-orange-50 text-orange-600 text-xs font-medium px-2 py-1 rounded-full">
+                      <Tv className="w-3 h-3" /> ドラマ
+                    </span>
+                  </div>
                   <div className="flex flex-wrap gap-2 text-sm">
-                    <span className="bg-pink-50 text-pink-600 px-3 py-1 rounded-full">3問×10セット</span>
+                    <span className="bg-pink-50 text-pink-600 px-3 py-1 rounded-full">3カテゴリ×各10セット</span>
                     <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full">速度調整可能</span>
                     <span className="bg-pink-50 text-pink-600 px-3 py-1 rounded-full">スクリプト付き</span>
                   </div>
