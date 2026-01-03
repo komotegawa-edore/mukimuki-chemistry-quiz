@@ -68,7 +68,7 @@ function useSoundEffects() {
 
 function SetSelector({ onSelect }: { onSelect: (setId: string) => void }) {
   const router = useRouter()
-  const [sets, setSets] = useState<{ id: string; set_number: number }[]>([])
+  const [sets, setSets] = useState<{ id: string; set_number: number; category: string }[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -123,19 +123,22 @@ function SetSelector({ onSelect }: { onSelect: (setId: string) => void }) {
             <p className="text-sm text-gray-400 mt-2">近日公開予定</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-3">
             {sets.map((set) => (
               <button
                 key={set.id}
                 onClick={() => onSelect(set.id)}
-                className="bg-white rounded-xl p-4 shadow-md border border-pink-100 hover:border-pink-400 hover:shadow-lg transition-all"
+                className="w-full bg-white rounded-xl p-4 shadow-md border border-pink-100 hover:border-pink-400 hover:shadow-lg transition-all"
               >
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <span className="text-white font-bold">{set.set_number}</span>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center shrink-0">
+                    <Headphones className="w-6 h-6 text-white" />
                   </div>
-                  <p className="font-medium text-gray-800">セット {set.set_number}</p>
-                  <p className="text-xs text-gray-500">3問</p>
+                  <div className="flex-1 text-left">
+                    <p className="font-medium text-gray-800">{set.category}</p>
+                    <p className="text-xs text-gray-500">3問</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
                 </div>
               </button>
             ))}
@@ -247,7 +250,7 @@ function QuizRunner({
           <button onClick={onHome} className="flex items-center gap-2 text-pink-600">
             <Home className="w-5 h-5" />
           </button>
-          <span className="font-bold text-gray-800">セット {set.set_number}</span>
+          <span className="font-bold text-gray-800 text-sm truncate max-w-[150px]">{set.category}</span>
           <span className="text-sm text-gray-500">{currentIndex + 1} / {questions.length}</span>
         </div>
         <div className="h-1 bg-pink-100">
@@ -435,7 +438,8 @@ function ResultScreen({
           className="mx-auto mb-4"
         />
 
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">セット {set.set_number} 完了!</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">{set.category}</h1>
+        <p className="text-gray-500 mb-4">完了!</p>
 
         <div className="bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl p-6 mb-6">
           <div className="text-5xl font-bold text-pink-600 mb-2">{score} / {total}</div>
