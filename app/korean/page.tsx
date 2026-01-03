@@ -1,7 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { Heart, HeartCrack, Users, Sparkles, Sun, Headphones, Play } from 'lucide-react'
+import Image from 'next/image'
+import { Heart, HeartCrack, Users, Sparkles, Sun, Play } from 'lucide-react'
 import { KOREAN_CATEGORIES, type KoreanCategory } from '@/lib/types/database'
 
 // アイコンマッピング
@@ -25,31 +26,44 @@ export default function KoreanHomePage() {
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
       {/* ヘッダー */}
       <header className="sticky top-0 z-50 bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-lg">
-        <div className="max-w-lg mx-auto px-4 py-4">
-          <div className="flex items-center gap-2">
-            <Headphones className="w-6 h-6" />
+        <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
+          <Image
+            src="/korean/Roopy-Korean-icon.png"
+            alt="Roopy Korean"
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
+          <div>
             <h1 className="text-xl font-bold">Roopy Korean</h1>
+            <p className="text-xs text-pink-100">韓国語リスニングクイズ</p>
           </div>
-          <p className="text-sm text-pink-100 mt-1">韓国語リスニングクイズ</p>
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6">
-        {/* 全問チャレンジ */}
-        <button
-          onClick={() => handleStartQuiz()}
-          className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all mb-6"
-        >
-          <div className="flex items-center justify-between">
-            <div className="text-left">
-              <p className="text-pink-100 text-sm">すべてのカテゴリ</p>
-              <p className="text-2xl font-bold mt-1">クイズスタート</p>
-            </div>
-            <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
-              <Play className="w-8 h-8 fill-current" />
+        {/* キャラクター＆スタートボタン */}
+        <div className="bg-gradient-to-r from-pink-500 to-purple-500 rounded-2xl p-6 shadow-lg mb-6 relative overflow-hidden">
+          <div className="flex items-center gap-4">
+            <Image
+              src="/korean/Roopy-Korean-icon.png"
+              alt="Roopy"
+              width={80}
+              height={80}
+              className="shrink-0"
+            />
+            <div className="flex-1">
+              <p className="text-pink-100 text-sm">韓国語を聞いて答えよう!</p>
+              <button
+                onClick={() => handleStartQuiz()}
+                className="mt-2 bg-white text-pink-500 font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2"
+              >
+                <Play className="w-5 h-5 fill-current" />
+                クイズスタート
+              </button>
             </div>
           </div>
-        </button>
+        </div>
 
         {/* カテゴリ選択 */}
         <h2 className="text-lg font-bold text-gray-700 mb-4">カテゴリから選ぶ</h2>

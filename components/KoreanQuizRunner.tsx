@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import Image from 'next/image'
 import { Play, Pause, RotateCcw, Volume2, Check, X, ChevronRight, Home } from 'lucide-react'
 import type { KoreanPhrase } from '@/lib/types/database'
 
@@ -105,10 +106,24 @@ export default function KoreanQuizRunner({ phrases, onComplete, onHome }: Korean
 
   if (isFinished) {
     const percentage = Math.round((score / phrases.length) * 100)
+    const getMessage = () => {
+      if (percentage === 100) return '완벽해요! (完璧!)'
+      if (percentage >= 80) return '잘했어요! (よくできた!)'
+      if (percentage >= 60) return '좋아요! (いいね!)'
+      return '화이팅! (ファイト!)'
+    }
     return (
       <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-          <div className="w-20 h-20 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center mx-auto mb-6">
+          <Image
+            src="/korean/Roopy-Korean-icon.png"
+            alt="Roopy"
+            width={100}
+            height={100}
+            className="mx-auto mb-4"
+          />
+          <p className="text-lg text-pink-500 font-bold mb-2">{getMessage()}</p>
+          <div className="w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl font-bold text-white">{percentage}%</span>
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">クイズ完了!</h2>
