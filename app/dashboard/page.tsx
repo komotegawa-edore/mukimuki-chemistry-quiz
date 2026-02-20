@@ -7,7 +7,7 @@ import DashboardContent from '@/components/DashboardContent'
 import DailyMissionSettings from '@/components/DailyMissionSettings'
 import ServiceSettings from '@/components/ServiceSettings'
 import Header from '@/components/Header'
-import { BookOpen, ArrowRight, Trophy, Bell, Zap, Layers, Library, Brain, Users, BarChart3, Building2 } from 'lucide-react'
+import { BookOpen, ArrowRight, Trophy, Bell, Zap, Users, FileText } from 'lucide-react'
 
 export default async function DashboardPage() {
   const profile = await getCurrentProfile()
@@ -133,53 +133,17 @@ export default async function DashboardPage() {
           </Link>
 
           <Link
-            href="/dashboard/drill"
+            href="/dashboard/blog-referrals"
             className="block bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
           >
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
-                  <Layers className="w-5 h-5" />
-                  ドリル管理
+                  <FileText className="w-5 h-5" />
+                  ブログ流入分析
                 </h2>
                 <p className="text-white opacity-90 text-sm">
-                  単語カードのセクション・問題を管理
-                </p>
-              </div>
-              <ArrowRight className="w-6 h-6 text-white" />
-            </div>
-          </Link>
-
-          <Link
-            href="/dashboard/materials"
-            className="block bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
-                  <Library className="w-5 h-5" />
-                  参考書管理
-                </h2>
-                <p className="text-white opacity-90 text-sm">
-                  英語学習ロードマップ用の参考書を管理
-                </p>
-              </div>
-              <ArrowRight className="w-6 h-6 text-white" />
-            </div>
-          </Link>
-
-          <Link
-            href="/dashboard/mbti-analytics"
-            className="block bg-gradient-to-r from-pink-500 to-rose-500 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
-                  <Brain className="w-5 h-5" />
-                  MBTI診断分析
-                </h2>
-                <p className="text-white opacity-90 text-sm">
-                  受験生タイプ診断の結果と登録転換率を確認
+                  どのブログ記事から登録されたかを分析
                 </p>
               </div>
               <ArrowRight className="w-6 h-6 text-white" />
@@ -198,42 +162,6 @@ export default async function DashboardPage() {
                 </h2>
                 <p className="text-white opacity-90 text-sm">
                   新規ユーザーの流入元を確認
-                </p>
-              </div>
-              <ArrowRight className="w-6 h-6 text-white" />
-            </div>
-          </Link>
-
-          <Link
-            href="/dashboard/ads-analytics"
-            className="block bg-gradient-to-r from-pink-500 to-pink-600 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5" />
-                  Roopy English 広告分析
-                </h2>
-                <p className="text-white opacity-90 text-sm">
-                  TikTok広告のコンバージョン・ROIを分析
-                </p>
-              </div>
-              <ArrowRight className="w-6 h-6 text-white" />
-            </div>
-          </Link>
-
-          <Link
-            href="/dashboard/juku-owners"
-            className="block bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
-                  <Building2 className="w-5 h-5" />
-                  学習塾リスト管理
-                </h2>
-                <p className="text-white opacity-90 text-sm">
-                  登録した塾オーナーの営業ステータスを管理
                 </p>
               </div>
               <ArrowRight className="w-6 h-6 text-white" />

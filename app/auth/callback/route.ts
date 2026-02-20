@@ -5,6 +5,8 @@ export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
   const next = requestUrl.searchParams.get('next')
+  const ref = requestUrl.searchParams.get('ref')
+  const slug = requestUrl.searchParams.get('slug')
   const origin = requestUrl.origin
 
   if (code) {
@@ -40,12 +42,18 @@ export async function GET(request: NextRequest) {
 
       // プロフィールが存在しない場合は作成
       if (!profile) {
+        // referral情報：URLパラメータ or ユーザーメタデータから取得
+        const referralSource = ref || data.user.user_metadata?.referral_source || null
+        const referralSlug = slug || data.user.user_metadata?.referral_slug || null
+
         const { error: insertError } = await supabase
           .from('profiles')
           .insert({
             id: data.user.id,
             name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'ユーザー',
-            role: 'student', // Google/ソーシャルログインは学生として登録
+            role: 'student',
+            referral_source: referralSource,
+            referral_slug: referralSlug,
           })
 
         if (insertError) {

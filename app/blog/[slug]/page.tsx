@@ -235,7 +235,7 @@ export default async function BlogDetailPage({
             毎日の学習をゲーム感覚で続けられます。
           </p>
           <Link
-            href="/signup"
+            href={`/signup?ref=blog&slug=${slug}`}
             className="inline-block bg-white text-[#5DDFC3] font-bold px-8 py-3 rounded-full hover:shadow-lg transition-shadow"
           >
             無料で始める

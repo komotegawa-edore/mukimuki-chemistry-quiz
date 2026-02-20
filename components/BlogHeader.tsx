@@ -38,7 +38,7 @@ export default function BlogHeader() {
             ログイン
           </Link>
           <Link
-            href="/signup"
+            href="/signup?ref=blog"
             className="bg-[#5DDFC3] text-white px-6 py-2 rounded-full font-bold hover:bg-[#4ECFB3] transition-colors"
           >
             無料で始める
@@ -84,7 +84,7 @@ export default function BlogHeader() {
               ログイン
             </Link>
             <Link
-              href="/signup"
+              href="/signup?ref=blog"
               className="block bg-[#5DDFC3] text-white px-6 py-3 rounded-full font-bold text-center hover:bg-[#4ECFB3] transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >

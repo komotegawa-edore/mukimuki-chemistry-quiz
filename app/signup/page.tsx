@@ -1,12 +1,18 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Beaker, Trophy, Coins, RotateCcw, CheckCircle, Mail } from 'lucide-react'
 
-export default function SignupPage() {
+function SignupForm() {
+  const searchParams = useSearchParams()
+  const ref = searchParams.get('ref')
+  const slug = searchParams.get('slug')
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -20,10 +26,14 @@ export default function SignupPage() {
 
     try {
       const supabase = createClient()
+      const callbackUrl = new URL('/auth/callback', window.location.origin)
+      if (ref) callbackUrl.searchParams.set('ref', ref)
+      if (slug) callbackUrl.searchParams.set('slug', slug)
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: callbackUrl.toString(),
         },
       })
 
@@ -55,6 +65,8 @@ export default function SignupPage() {
           data: {
             name,
             role: 'student',
+            ...(ref && { referral_source: ref }),
+            ...(slug && { referral_slug: slug }),
           },
         },
       })
@@ -366,5 +378,13 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F4F9F7]" />}>
+      <SignupForm />
+    </Suspense>
   )
 }
