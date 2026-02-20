@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/react'
-import { Suspense } from 'react'
-import { TikTokPixel } from '@/lib/analytics/tiktok-pixel'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -89,9 +87,6 @@ export default function RootLayout({
       <body className="antialiased bg-gray-50 text-black">
         {children}
         <Analytics />
-        <Suspense fallback={null}>
-          <TikTokPixel />
-        </Suspense>
       </body>
     </html>
   )
