@@ -34,7 +34,7 @@ export default function BlogComments({ blogSlug }: Props) {
 
       if (user) {
         const { data: profile } = await supabase
-          .from('profiles')
+          .from('mukimuki_profiles')
           .select('name')
           .eq('id', user.id)
           .single()
@@ -65,7 +65,7 @@ export default function BlogComments({ blogSlug }: Props) {
       // ユーザー名を取得
       const userIds = Array.from(new Set(data.map(c => c.user_id)))
       const { data: profiles } = await supabase
-        .from('profiles')
+        .from('mukimuki_profiles')
         .select('id, name')
         .in('id', userIds)
 

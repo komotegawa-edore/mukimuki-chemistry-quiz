@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
 
       // Roopyユーザーのプロフィールを確認
       const { data: profile } = await supabase
-        .from('profiles')
+        .from('mukimuki_profiles')
         .select('id')
         .eq('id', data.user.id)
         .single()
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
         const referralSlug = slug || data.user.user_metadata?.referral_slug || null
 
         const { error: insertError } = await supabase
-          .from('profiles')
+          .from('mukimuki_profiles')
           .insert({
             id: data.user.id,
             name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'ユーザー',

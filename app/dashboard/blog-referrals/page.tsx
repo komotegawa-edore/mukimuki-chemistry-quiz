@@ -15,14 +15,14 @@ export default async function BlogReferralsPage() {
 
   // ブログ経由の登録ユーザー一覧
   const { data: blogUsers } = await supabase
-    .from('profiles')
+    .from('mukimuki_profiles')
     .select('id, name, referral_source, referral_slug, created_at')
     .eq('referral_source', 'blog')
     .order('created_at', { ascending: false })
 
   // 全登録数
   const { count: totalUsers } = await supabase
-    .from('profiles')
+    .from('mukimuki_profiles')
     .select('*', { count: 'exact', head: true })
     .eq('role', 'student')
 
